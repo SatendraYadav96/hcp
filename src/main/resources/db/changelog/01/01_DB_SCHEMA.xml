@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog logicalFilePath="db/changelog/01/01_DB_SCHEMA.xml"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="100_location" author="admin">
+        <createTable tableName="location">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="ci_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="location_type" type="char(37)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="parent_id" type="char(37)">
+            </column>
+            <column name="status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp" defaultValueDate="current_timestamp"/>
+            <column name="updated_at" type="timestamp"/>
+            <column name="created_by" type="char(37)"/>
+            <column name="updated_by" type="char(37)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="100_location_type" author="admin">
+        <createTable tableName="location_type">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="ci_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="parent_id" type="char(37)">
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- job title -->
+    <changeSet id="100_job_title" author="admin">
+        <createTable tableName="job_title">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="ci_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="common_function" type="boolean" />
+        </createTable>
+    </changeSet>
+    <!-- user -->
+    <changeSet id="100_user" author="admin">
+        <createTable tableName="users">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ci_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp" defaultValueDate="current_timestamp"/>
+            <column name="updated_at" type="timestamp"/>
+            <column name="created_by" type="char(37)"/>
+            <column name="updated_by" type="char(37)"/>
+        </createTable>
+    </changeSet>
+    <!-- doctor -->
+    <changeSet id="100_doctor" author="admin">
+        <createTable tableName="doctor">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="external_code" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="specialization" type="char(37)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ci_name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="varchar(50)">
+            </column>
+            <column name="pan_no" type="varchar(20)">
+            </column>
+            <column name="gst_no" type="varchar(20)">
+            </column>
+            <column name="status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approval_status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="location_id" type="char(37)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fmv_details_id" type="char(37)"></column>
+            <column name="bank_details_id" type="char(37)"/>
+            <column name="created_at" type="timestamp" defaultValueDate="current_timestamp"/>
+            <column name="updated_at" type="timestamp"/>
+            <column name="created_by" type="char(37)"/>
+            <column name="updated_by" type="char(37)"/>
+        </createTable>
+    </changeSet>
+    <!-- document type -->
+    <changeSet id="100_document_type" author="admin">
+        <createTable tableName="document_type">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="ci_name" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="owner_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_required" type="boolean">
+            </column>
+            <column name="status" type="varchar(25)"></column>
+            <column name="max_num_documents" type="INT"/>
+            <column name="max_size" type="int"/>
+            <column name="types" type="varchar(255)" />
+        </createTable>
+    </changeSet>
+    <changeSet id="100_document_store" author="admin">
+        <createTable tableName="document_store">
+            <column name="id" type="char(37)" ></column>
+            <column name="owner_id" type="char(37)" />
+            <column name="file_name" type="varchar(100)"></column>
+            <column name="document_type_id" type="char(37)"></column>
+            <column name="document_owner_type" type="varchar(100)"/>
+            <column name="document_path" type="varchar(255)"></column>
+            <column name="created_at" type="timestamp" defaultValueDate="current_timestamp"/>
+            <column name="updated_at" type="timestamp"/>
+            <column name="created_by" type="char(37)"/>
+            <column name="updated_by" type="char(37)"/>
+        </createTable>
+    </changeSet>
+    <!-- approval chain definition-->
+    <changeSet id="100_approval_chain_definition" author="admin">
+        <createTable tableName="approval_chain_definition">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="ci_name" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="chain_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner_type" type="varchar(50)"></column>
+            <column name="created_at" type="timestamp" defaultValueDate="current_timestamp"/>
+            <column name="updated_at" type="timestamp"/>
+            <column name="created_by" type="char(37)"/>
+            <column name="updated_by" type="char(37)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="100_approval_chain_detail_definition" author="admin">
+        <createTable tableName="approval_chain_details">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="definition_id" type="char(37)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+            <column name="job_role_id" type="char(37)"/>
+            <column name="is_required" type="boolean">
+            </column>
+            <column name="wait_in_days" type="int"></column>
+            <column name="level_no" type="int"></column>
+            <column name="created_at" type="timestamp" defaultValueDate="current_timestamp"/>
+            <column name="updated_at" type="timestamp"/>
+            <column name="created_by" type="char(37)"/>
+            <column name="updated_by" type="char(37)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="200_employee" author="admin">
+        <createTable tableName="employee">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="varchar(50)" />
+            <column name="name" type="varchar(100)"></column>
+            <column name="ci_name" type="varchar(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="job_title_id" type="char(37)"></column>
+            <column name="location_id" type="char(37)"></column>
+            <column name="manager_id" type="char(37)"></column>
+            <column name="status" type="varchar(20)"></column>
+            <column name="user_id" type="char(37)"></column>
+            <column name="created_at" type="timestamp" defaultValueDate="current_timestamp"/>
+            <column name="updated_at" type="timestamp"/>
+            <column name="created_by" type="char(37)"/>
+            <column name="updated_by" type="char(37)"/>
+         </createTable>
+    </changeSet>
+    <changeSet id="300_security_role" author="admin">
+        <createTable tableName="security_role">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)"/>
+            <column name="ci_name" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="created_at" type="timestamp" defaultValueDate="current_timestamp"/>
+            <column name="updated_at" type="timestamp"/>
+            <column name="created_by" type="char(37)"/>
+            <column name="updated_by" type="char(37)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="300_security_privilege" author="admin">
+        <createTable tableName="security_privilege">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)"/>
+            <column name="ci_name" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="300_security_role_privileges" author="admin">
+        <createTable tableName="security_role_privileges">
+            <column name="role_id" type="char(37)">
+            </column>
+            <column name="privilege_id" type="char(37)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="300_security_user_role" author="admin">
+        <createTable tableName="security_user_role">
+            <column name="user_id" type="char(37)">
+            </column>
+            <column name="role_id" type="char(37)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="300_menu_actions" author="admin">
+        <createTable tableName="menu_action">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)"/>
+            <column name="ci_name" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="path" type="varchar(100)"/>
+            <column name="icon" type="varchar(50)"/>
+            <column name="ui_interface" type="varchar(10)"/>
+            <column name="parent_id" type="char(37)"/>
+            <column name="privilege_id" type="char(37)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="400_approval_chain_instance" author="admin">
+        <createTable tableName="approval_chain_instance">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="definition_id" type="char(37)"/>
+            <column name="chain_owner_type" type="varchar(50)"/>
+            <column name="person_id" type="char(37)"/>
+            <column name="in_queue_from" type="timestamp"/>
+            <column name="approval_status" type="varchar(25)"/>
+            <column name="action_date" type="timestamp"/>
+            <column name="details_group_id" type="varchar(50)"/>
+            <column name="current_approver" type="boolean"/>
+            <column name="owner_id" type="char(37)"/>
+            <column name="level_no" type="int"></column>
+            <column name="created_at" type="timestamp" defaultValueDate="current_timestamp"/>
+            <column name="updated_at" type="timestamp"/>
+            <column name="created_by" type="char(37)"/>
+            <column name="updated_by" type="char(37)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="500_list_of_values" author="admin">
+        <createTable tableName="list_of_values">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(100)"/>
+            <column name="ci_name" type="varchar(100)"/>
+            <column name="display_order" type="int"/>
+            <column name="visibile" type="boolean"/>
+            <column name="lov_type" type="varchar(50)"/>
+            <column name="status" type="varchar(20)"/>
+         </createTable>
+    </changeSet>
+    <changeSet id="500_fmv_details" author="admin">
+        <createTable tableName="fmvdetails">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="doctor_id" type="char(37)"/>
+            <column name="tier_id" type="char(37)"/>
+            <column name="place" type="varchar(255)"/>
+            <column name="qualification" type="varchar(100)"/>
+            <column name="speciality_id" type="char(37)"/>
+            <column name="experience_in_years" type="int"/>
+            <column name="hourly_rate" type="double"/>
+            <column name="comments" type="varchar(255)"/>
+            <column name="created_at" type="timestamp" defaultValueDate="current_timestamp"/>
+            <column name="updated_at" type="timestamp"/>
+            <column name="created_by" type="char(37)"/>
+            <column name="updated_by" type="char(37)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="600_hcp_bank_details" author="author">
+        <createTable tableName="hcpbank_details">
+            <column name="id" type="char(37)" >
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="doctor_id" type="char(37)"/>
+            <column name="address" type="varchar(255)"/>
+            <column name="benificiary_name" type="varchar(100)"/>
+            <column name="name_of_bank" type="varchar(100)"/>
+            <column name="bank_branch" type="varchar(100)"/>
+            <column name="bank_account_number" type="varchar(255)"/>
+            <column name="ifsc_code" type="varchar(25)"/>
+            <column name="comments" type="varchar(255)"/>
+            <column name="created_at" type="timestamp" defaultValueDate="current_timestamp"/>
+            <column name="updated_at" type="timestamp"/>
+            <column name="created_by" type="char(37)"/>
+            <column name="updated_by" type="char(37)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="650_form_label_meta" author="admin">
+        <createTable tableName="form_label_meta">
+            <column name="id" type="char(37)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="varchar(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="custom_value"  type="varchar(100)"/>
+            <column name="default_value" type="varchar(100)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="700_form_meta" author="admin">
+        <createTable tableName="form_meta">
+            <column name="id" type="char(37)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="form_code" type="varchar(50)"/>
+            <column name="code" type="varchar(50)" />
+            <column name="required" type="boolean" />
+            <column name="min_length" type="int"/>
+            <column name="max_length" type="int"/>
+            <column name="min_value"  type="double"/>
+            <column name="max_value"  type="double"/>
+            <column name="data_type" type="varchar(25)"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

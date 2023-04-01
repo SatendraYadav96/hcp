@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.TempGRNUploadMapper">
+
+    <resultMap id="tempGRNUploadResultMap" type="com.squer.promobee.service.repository.domain.TempGRNUpload">
+        <id property="id" column="id_grt"/>
+        <result property="poNo" column="po_no_grt"/>
+        <result property="ccmCode" column="cost_center_grt"/>
+        <result property="material" column="material_grt" />
+        <result property="batchNo" column="batch_no_grt"/>
+        <result property="materialDescription" column="material_description_grt"/>
+        <result property="postingDate" column="posting_date_grt" />
+        <result property="qtyIn" column="qty_in_grt" />
+        <result property="amount" column="amount_grt" />
+        <result property="vendorCode" column="vendor_code_grt" />
+        <result property="vendorName" column="vendor_name_grt" />
+        <result property="ratePerUnit" column="rate_per_unit_grt" />
+        <result property="medicalCode" column="medical_code_grt" />
+        <result property="matDoc" column="mat_doc_grt" />
+        <result property="itemName" column="item_name_grt" />
+        <result property="sampleExpiry" column="sample_expiry_grt" />
+        <result property="errorText" column="error_text"/>
+        <result property="hsnCode" column="hsn_code_grt" />
+        <association property="uploadId" column="id_upload_upl_grt" select="getUploadId" javaType="com.squer.promobee.service.repository.domain.UploadLog">
+            <id property="id" column="id_upl"/>
+        </association>
+        <association property="ccmId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_ccm_grt"/>
+            <result property="name" column="name_ccm"/>
+        </association>
+        <association property="vendorId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_vnd_grt"/>
+            <result property="name" column="name_vnd"/>
+        </association>
+    </resultMap>
+
+    <select id="getUploadLog" parameterType="map" resultType="com.squer.promobee.service.repository.domain.UploadLog" >
+        select id_upl as id from UPLOAD_LOG_UPL where id_upl=#{id_upload_upl_grt}
+    </select>
+
+</mapper>

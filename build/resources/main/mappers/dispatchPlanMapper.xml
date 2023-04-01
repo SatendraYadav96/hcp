@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DispatchPlanMapper">
+
+    <resultMap id="dispatchPlanResultMap" type="com.squer.promobee.service.repository.domain.DispatchPlan">
+        <id property="id" column="id_dip"/>
+        <result property="month" column="month_dip"/>
+        <result property="year" column="year_dip"/>
+        <result property="submissionDate" column="submission_dip" />
+        <result property="approvalDate" column="approval_date_dip"/>
+        <result property="isSpecial" column="is_special_dip"/>
+        <result property="remarks" column="remarks_dip" />
+        <result property="quarterlyPlan" column="qtr_dip" />
+        <result property="isVirtual" column="is_virtual_dip" />
+        <result property="createdAt" column="created_on_dip"/>
+        <result property="createdBy" column="created_by_dip" />
+        <result property="updatedAt" column="updated_on_dip" />
+        <result property="updatedBy" column="updated_by_dip"/>
+        <association property="owner" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_owner_usr_dip"/>
+            <result property="name" column="name_usr"/>
+        </association>
+        <association property="planStatus" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_status_slv_dip"/>
+            <result property="name" column="name_slv"/>
+        </association>
+        <association property="invoiceStatus" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_invoice_status_slv_dip"/>
+            <result property="name" column="name_slv"/>
+        </association>
+    </resultMap>
+
+    <select id="getPlanHeaderSelect" resultMap="dispatchPlanResultMap">
+        SELECT ID_DIP, ID_OWNER_USR_DIP, MONTH_DIP, YEAR_DIP,
+         ID_STATUS_SLV_DIP, SUBMISSION_DATE_DIP, APPROVAL_DATE_DIP,
+         IS_SPECIAL_DIP, REMARKS_DIP, CREATED_ON_DIP, CREATED_BY_DIP,
+         UPDATED_ON_DIP, UPDATED_BY_DIP, ID_INVOICE_STATUS_SLV_DIP,
+         QTR_DIP, IS_VIRTUAL_DIP from DISPATCH_PLAN_DIP
+         <where>
+         <if test="monthPlan!=null">
+           MONTH_DIP = #{monthPlan} </if>
+         <if test="yearPlan!=null"> and YEAR_DIP = #{yearPlan} </if>
+         <if test="userId!=null"> and ID_OWNER_USR_DIP = #{userId} </if>
+         <if test="isSpecial!=null">and IS_SPECIAL_DIP = #{isSpecial}</if>
+          </where>
+    </select>
+
+    <insert id="insertPlan">
+        INSERT INTO DISPATCH_PLAN_DIP(ID_DIP, ID_OWNER_USR_DIP, MONTH_DIP, YEAR_DIP,ID_STATUS_SLV_DIP,
+             IS_SPECIAL_DIP, REMARKS_DIP, CREATED_ON_DIP, CREATED_BY_DIP,
+             UPDATED_ON_DIP, UPDATED_BY_DIP, ID_INVOICE_STATUS_SLV_DIP,
+             QTR_DIP, IS_VIRTUAL_DIP) VALUES( #{id}, #{owner.id}, #{month}, #{year}, #{planStatus.id}, #{isSpecial},
+            #{remarks}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy}, #{invoiceStatus.id}, #{quarterlyPlan}, #{isVirtual})
+    </insert>
+
+</mapper>

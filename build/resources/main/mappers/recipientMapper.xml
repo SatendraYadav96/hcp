@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RecipientMapper">
+
+    <select id="recipientSelect" resultType="Map">
+        select ID_RCT as id,NAME_RCT as name, CI_NAME_RCT as ciName,  ID_DESG_ULV_RCT as designationId, NAME_ULV as designationName,
+                ID_TEM_RCT as teamId from RECIPIENT_MASTER_RCT
+        inner join USER_LOV_ULV on ID_DESG_ULV_RCT = USER_LOV_ULV.ID_ULV
+        <where>
+            <if test="teamId != null and teamId != ''">
+                and ID_TEM_RCT = #{teamId}
+            </if>
+            <if test="statusId != null and statusId != ''">
+                and ID_STATUS_SLV_RCT = #{statusId}
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="recipientResultMap" type="com.squer.promobee.service.repository.domain.Recipient">
+        <id property="id" column="id_rct"/>
+        <result property="name" column="name_rct"/>
+        <result property="ciName" column="ci_name_rct"/>
+        <result property="code" column="code_rct"/>
+        <result property="address" column="address_rct"/>
+        <result property="city" column="city_rct"/>
+        <result property="state" column="state_rct"/>
+        <result property="zip" column="zip_rct"/>
+        <result property="email" column="email_rct"/>
+        <result property="mobile" column="mobile_rct"/>
+        <result property="headQuarter" column="head_quarter_rct"/>
+        <result property="zone" column="zone_rct"/>
+        <result property="joiningDate" column="joining_date_rct"/>
+        <result property="amName" column="am_name_rct"/>
+        <result property="amCode" column="am_code_rct" />
+        <result property="rmName" column="rm_name_rct" />
+        <result property="rmCode" column="rm_code_rct" />
+        <result property="nsmName" column="nsm_name_rct" />
+        <result property="nsmCode" column="nsm_code_rct" />
+        <result property="cfa" column="cfa_rct" />
+        <result property="statusChangeDate" column="status_change_date_rct" />
+        <result property="loginId" column="LoginId" />
+        <result property="gender" column="Gender" />
+        <result property="workId" column="WorkId" />
+        <result property="createdAt" column="created_on_rct"/>
+        <result property="createdBy" column="created_by_rct"/>
+        <result property="updatedAt" column="updated_on_rct"/>
+        <result property="updatedBy" column="updated_by_rct"/>
+        <association property="designation" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_desg_ulv_rct"/>
+            <result property="name" column="name_ulv"/>
+        </association>
+        <association property="team" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_team_rct"/>
+            <result property="name" column="name_tem"/>
+        </association>
+        <association property="recipientStatus" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_status_slv_rct"/>
+            <result property="name" column="name_slv"/>
+        </association>
+    </resultMap>
+
+</mapper>

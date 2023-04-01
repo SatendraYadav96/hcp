@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="VendorMapper">
+    <resultMap id="vendorResultMap" type="com.squer.promobee.service.repository.domain.Vendor">
+        <id property="id" column="id_vnd"/>
+        <result property="name" column="name_vnd"/>
+        <result property="ciName" column="ci_name_vnd"/>
+        <result property="code" column="code_vnd"/>
+        <result property="addressLine1" column="address_line_1_vnd"/>
+        <result property="addressLine2" column="address_line_2_vnd"/>
+        <result property="city" column="city_vnd"/>
+        <result property="state" column="state_vnd"/>
+        <result property="zip" column="zip_vnd"/>
+        <result property="active" column="is_active_vnd"/>
+        <result property="createdAt" column="created_on_vnd"/>
+        <result property="createdBy" column="created_by_vnd"/>
+        <result property="updatedAt" column="updated_on_vnd"/>
+        <result property="updatedBy" column="updated_by_vnd"/>
+    </resultMap>
+
+    <select id="getVendorByCode" resultMap="vendorResultMap">
+        select ID_VND from VENDOR_MASTER_VND where IS_ACTIVE_VND= 1 and CODE_VND = #{vendorCode}
+    </select>
+
+    <insert id="insertVendor">
+        insert into VENDOR_MASTER_VND (ID_VND, NAME_VND, CI_NAME_VND, CODE_VND, IS_ACTIVE_VND, CREATED_ON_VND, CREATED_BY_VND, UPDATED_ON_VND, UPDATED_BY_VND)
+            values(#{id}, #{name}, LOWER(#{ciName}), #{code}, #{active}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})
+    </insert>
+
+    <select id="getVendor" resultMap="vendorResultMap" >
+        select * from VENDOR_MASTER_VND
+        where IS_ACTIVE_VND = #{active}
+    </select>
+
+    <insert id="addVendor">
+        insert into VENDOR_MASTER_VND (ID_VND, NAME_VND, CI_NAME_VND, CODE_VND, ADDRESS_LINE_1_VND, ADDRESS_LINE_2_VND, CITY_VND, STATE_VND, ZIP_VND, IS_ACTIVE_VND, CREATED_ON_VND, CREATED_BY_VND,
+                                       UPDATED_ON_VND,UPDATED_BY_VND)
+        values( #{id}, #{name}, #{ciName}, #{code}, #{addressLine1}, #{addressLine2}, #{city}, #{state}, #{zip},
+                #{active}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy} )
+    </insert>
+
+
+    <update id="editVendor">
+
+        UPDATE VENDOR_MASTER_VND SET ADDRESS_LINE_1_VND = #{addressLine1}, ADDRESS_LINE_2_VND = #{addressLine2}, CITY_VND = #{city}, STATE_VND = #{state}, ZIP_VND = #{zip},
+                                     IS_ACTIVE_VND = #{active},  UPDATED_BY_VND = #{updatedBy} , UPDATED_ON_VND = GETDATE()
+        WHERE ID_VND = #{id}
+
+    </update>
+
+
+    <select id="getVendorById" resultMap="vendorResultMap" >
+        select * from VENDOR_MASTER_VND
+        where ID_VND = #{id}
+    </select>
+
+
+</mapper>

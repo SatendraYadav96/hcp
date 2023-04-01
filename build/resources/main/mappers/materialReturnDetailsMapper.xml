@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.MaterialReturnDetailsMapper">
+    <resultMap id="materialReturnDetailsResultMap" type="com.squer.promobee.service.repository.domain.MaterialReturnDetails">
+        <id property="id" column="id_mrd"/>
+        <result property="employeeCode" column="employeecode_mrd"/>
+        <result property="month" column="month_mrd"/>
+        <result property="year" column="year_mrd"/>
+        <result property="itemCode" column="itemcode_mrd"/>
+        <result property="batchNo" column="batchno_mrd"/>
+        <result property="balance" column="balance_mrd"/>
+        <result property="currierNo" column="currierno_mrd"/>
+        <result property="remark" column="remark_mrd"/>
+        <result property="reason" column="reason_mrd"/>
+        <result property="isAck" column="isack_mrd"/>
+        <result property="createdAt" column="created_on_mrd"/>
+        <result property="createdBy" column="created_by_mrd"/>
+        <result property="updatedAt" column="updated_on_mrd"/>
+        <result property="updatedBy" column="updated_by_mrd"/>
+        <result property="isSentTo" column="issentto_mrd"/>
+        <result property="team" column="team_mrd"/>
+        <result property="itemName" column="item_name_mrd"/>
+        <result property="expiryDate" column="expiry_date_mrd"/>
+        <result property="qtySent" column="qty_sent_mrd"/>
+        <result property="diffQtyReason" column="diff_qty_reason_mrd"/>
+        <result property="courierName" column="courier_name_mrd"/>
+        <result property="dispatchDate" column="dispatch_date_mrd"/>
+        <result property="podNumCourier" column="pod_num_courier_mrd"/>
+        <result property="isDistroy" column="isdistroy_mrd"/>
+        <association property="omidId" column="id_omid_mrd" select="getOmid" javaType="com.squer.promobee.service.repository.domain.OptimaMiData">
+            <id property="id" column="id_omid"/>
+        </association>
+    </resultMap>
+
+    <select id="getOmid" parameterType="map" resultType="com.squer.promobee.service.repository.domain.OptimaMiData">
+        select id_omid as id from OPTIMA_MI_DATA_OMID where id_omid=#{id_omid_mrd}
+    </select>
+</mapper>

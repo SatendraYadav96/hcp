@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DispatchInvoicingMapper">
+
+    <select id="getPickListDetailForVirtual" resultType="com.squer.promobee.controller.dto.PickingSlipDTO">
+        SELECT team, teamID, ownerId, brandManager, months, years, specialDispatch, planName, planID, planInvoiceStatus, approvalDate FROM (
+            SELECT DISTINCT '' AS team, '00000000-0000-0000-0000-000000000000' AS teamID,
+            DIP.ID_OWNER_USR_DIP AS ownerId, USR.NAME_USR as brandManager, #{month} as months, #{year} as years, 1 as specialDispatch, DIP.REMARKS_DIP as planName, DIP.ID_DIP as planID,
+            SLV.NAME_SLV as planInvoiceStatus, MAX(API.UPDATED_ON_API) as approvalDate
+            FROM DISPATCH_PLAN_DIP DIP
+            JOIN APPROVAL_CHAIN_TRANSACTION_API API ON DIP.ID_DIP = API.ID_OWNER_API AND API.ID_STATUS_SLV_API = 'BF12B5B5-2923-4A6F-BE33-27B417D5158E'
+            JOIN USER_MASTER_USR USR ON USR.ID_USR = DIP.ID_OWNER_USR_DIP
+            JOIN SYSTEM_LOV_SLV SLV ON DIP.ID_INVOICE_STATUS_SLV_DIP = SLV.ID_SLV
+            join DISPATCH_DETAIL_DID did on did.ID_DIP_DID=dip.ID_DIP
+            WHERE DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND
+            DIP.IS_SPECIAL_DIP = #{dispatchType} and DIP.IS_VIRTUAL_DIP=1 and DIP.ID_STATUS_SLV_DIP = '00000000-0000-0000-0000-000000000024'
+            GROUP BY DIP.ID_OWNER_USR_DIP,USR.NAME_USR,DIP.ID_DIP,DIP.REMARKS_DIP,SLV.NAME_SLV) AS TEMP1 ORDER BY ApprovalDate DESC
+    </select>
+
+    <select id="getPickListDetailsForSpecial" resultType="com.squer.promobee.controller.dto.PickingSlipDTO">
+        SELECT team, teamID, ownerId, brandManager, months, years, specialDispatch, planName, planID, planInvoiceStatus, approvalDate FROM (
+            SELECT DISTINCT '' AS team, '00000000-0000-0000-0000-000000000000' AS teamID,
+            DIP.ID_OWNER_USR_DIP AS ownerId, USR.NAME_USR as brandManager, #{month} as months, #{year} as years, #{dispatchType} as specialDispatch, DIP.REMARKS_DIP as planName, DIP.ID_DIP as planID,
+            SLV.NAME_SLV as planInvoiceStatus, MAX(API.UPDATED_ON_API) as approvalDate
+            FROM DISPATCH_PLAN_DIP DIP
+            JOIN APPROVAL_CHAIN_TRANSACTION_API API ON DIP.ID_DIP = API.ID_OWNER_API AND API.ID_STATUS_SLV_API = 'BF12B5B5-2923-4A6F-BE33-27B417D5158E'
+            JOIN USER_MASTER_USR USR ON USR.ID_USR = DIP.ID_OWNER_USR_DIP
+            JOIN SYSTEM_LOV_SLV SLV ON DIP.ID_INVOICE_STATUS_SLV_DIP = SLV.ID_SLV
+            WHERE DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND
+            DIP.IS_SPECIAL_DIP = #{dispatchType} and DIP.ID_STATUS_SLV_DIP = '00000000-0000-0000-0000-000000000024'
+            GROUP BY DIP.ID_OWNER_USR_DIP,USR.NAME_USR,DIP.ID_DIP,DIP.REMARKS_DIP,SLV.NAME_SLV) AS TEMP1 ORDER BY ApprovalDate DESC
+    </select>
+
+    <select id="getPickListDetailsForMonthly" resultType="com.squer.promobee.controller.dto.PickingSlipDTO">
+        SELECT DISTINCT TEM.NAME_TEM AS team,  TEM.ID_TEM AS teamID, '00000000-0000-0000-0000-000000000000' AS ownerId, '00000000-0000-0000-0000-000000000000' as brandManager,
+        #{month} as months, #{year} as years, #{dispatchType} as specialDispatch, '' as planName, '00000000-0000-0000-0000-000000000000' as planID,
+        '' as planInvoiceStatus, null as approvalDate
+        FROM DISPATCH_PLAN_DIP DIP JOIN DISPATCH_DETAIL_DID DID ON DIP.ID_DIP = DID.ID_DIP_DID
+            JOIN RECIPIENT_MASTER_RCT RCT ON DID.ID_RCT_DID = RCT.ID_RCT
+            JOIN TEAM_MASTER_TEM TEM ON RCT.ID_TEM_RCT = TEM.ID_TEM
+            JOIN USER_MASTER_USR USR on USR.ID_USR = DIP.ID_OWNER_USR_DIP
+        WHERE DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND
+            DIP.IS_SPECIAL_DIP = #{dispatchType}
+        order by Team
+    </select>
+
+    <select id="getPlanInvoice" resultType="com.squer.promobee.controller.dto.TeamInvoiceDTO">
+        SELECT DISTINCT TEM.ID_TEM as idTEM, TEM.NAME_TEM as nameTEM, USR.ID_USR as idBM, USR.NAME_USR as nameBM, DIP.ID_DIP as idDip,
+        DIP.REMARKS_DIP as planName, DIP.IS_SPECIAL_DIP as isSpecialDip, DIP.ID_STATUS_SLV_DIP as idPlanStatus, DIP.APPROVAL_DATE_DIP as approvalDate, SLV.NAME_SLV as planStatus,
+        TEMINVSTATUS.ActualStatus as teamStatus, TEMINVSTATUS.InvoiceStatus as idInvoiceStatus
+        FROM DISPATCH_PLAN_DIP DIP JOIN DISPATCH_DETAIL_DID DID ON DIP.ID_DIP = DID.ID_DIP_DID
+        JOIN USER_MASTER_USR USR ON DIP.ID_OWNER_USR_DIP = USR.ID_USR
+        JOIN RECIPIENT_MASTER_RCT RCT ON DID.ID_RCT_DID = RCT.ID_RCT
+        JOIN TEAM_MASTER_TEM TEM ON RCT.ID_TEM_RCT = TEM.ID_TEM
+        JOIN (SELECT TEM.ID_TEM 'TeamID',MIN(DID.ID_STATUS_SLV_DID) 'TempStatus',
+        COUNT(DISTINCT DID.ID_STATUS_SLV_DID) 'StatusCount',
+        CASE WHEN COUNT(DISTINCT DID.ID_STATUS_SLV_DID) > 1 THEN 'Partial Invoiced'
+        ELSE(CASE WHEN MIN(DID.ID_STATUS_SLV_DID ) = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7' THEN 'Not Initiated' ELSE 'Fully Invoiced' END)
+        END 'ActualStatus',
+        CASE WHEN COUNT(DISTINCT DID.ID_STATUS_SLV_DID) > 1 THEN '00000000-0000-0000-0000-000000000026'
+        ELSE(CASE WHEN MIN(DID.ID_STATUS_SLV_DID) = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7' THEN '00000000-0000-0000-0000-000000000026' ELSE '00000000-0000-0000-0000-000000000027' END)
+        END 'InvoiceStatus' FROM DISPATCH_DETAIL_DID DID JOIN DISPATCH_PLAN_DIP DIP ON DID.ID_DIP_DID = DIP.ID_DIP
+        JOIN RECIPIENT_MASTER_RCT RCT ON DID.ID_RCT_DID = RCT.ID_RCT
+        JOIN TEAM_MASTER_TEM TEM ON RCT.ID_TEM_RCT = TEM.ID_TEM
+        WHERE DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND DIP.IS_SPECIAL_DIP = #{isSpecial}
+        GROUP BY TEM.ID_TEM) TEMINVSTATUS ON TEM.ID_TEM = TEMINVSTATUS.TeamID
+        JOIN SYSTEM_LOV_SLV SLV ON DIP.ID_STATUS_SLV_DIP = SLV.ID_SLV
+        WHERE DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND DIP.IS_SPECIAL_DIP = #{isSpecial}
+        ORDER BY TEM.NAME_TEM,USR.NAME_USR
+    </select>
+
+    <select id="getEmployeeInvoiceDetailDraft" resultType="com.squer.promobee.controller.dto.DataModelInvoiceDetailsDTO">
+        SELECT DISTINCT RCT.NAME_RCT AS 'employeeName',RCT.ID_RCT AS 'employeeID',RCT.CODE_RCT AS 'code', '' AS 'invoiceNumber','' AS 'groupInvoiceNumber',
+        (SELECT ID_SLV FROM SYSTEM_LOV_SLV WHERE ID_SLV = '00000000-0000-0000-0000-000000000026') AS 'invoiceStatusID',
+        'Draft' AS 'invoiceStatus', 0 AS 'boxes', CONVERT(FLOAT,0) AS 'weight','' AS 'lrNumber',
+        RCT.STATE_RCT as 'state',RCT.CITY_RCT 'city',DIP.MONTH_DIP AS 'month', DIP.YEAR_DIP as 'year', DES.NAME_ULV as 'designation',DIP.ID_DIP as 'planId',
+        CASE WHEN DIP.IS_SPECIAL_DIP=0 THEN 'MONTHLY' ELSE 'SPECIAL' END AS 'plan'
+        FROM DISPATCH_PLAN_DIP DIP
+        JOIN DISPATCH_DETAIL_DID DID ON DIP.ID_DIP = DID.ID_DIP_DID
+        JOIN RECIPIENT_MASTER_RCT RCT ON DID.ID_RCT_DID = RCT.ID_RCT
+        inner JOIN USER_LOV_ULV DES ON DES.ID_ULV = RCT.ID_DESG_ULV_RCT
+        left join INVOICE_DETAIL_IND ind on ind.ID_DID_IND = did.ID_DID
+        WHERE DIP.MONTH_DIP = #{month}
+        AND DIP.YEAR_DIP = #{year}
+        AND DID.ID_RCT_DID IN (SELECT ID_RCT FROM RECIPIENT_MASTER_RCT WHERE ID_TEM_RCT = #{teamId})
+        AND DIP.ID_STATUS_SLV_DIP = #{status} AND DIP.IS_SPECIAL_DIP = #{isSpecialDisp}
+        and IND.ID_IND is NULL
+        and RCT.ID_STATUS_SLV_RCT= '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
+    </select>
+
+    <select id="GetEmployeeInvoiceDetail_GP_C_R" resultType="com.squer.promobee.controller.dto.DataModelInvoiceDetailsDTO">
+        SELECT DISTINCT INH.ID_INH AS 'invoiceHeaderID', RCT.NAME_RCT AS 'employeeName',RCT.ID_RCT AS 'employeeID',
+        RCT.CODE_RCT AS 'code',CONVERT(NVARCHAR(255), INH.INVOICE_NO_INH) AS 'invoiceNumber',
+        CASE WHEN INH.IDREDIRECTEDINH_INH IS NULL THEN NULL ELSE (SELECT INVOICE_NO_INH FROM INVOICE_HEADER_INH INH1 WHERE INH1.ID_INH = INH.IDREDIRECTEDINH_INH) END 'redirectedTo',
+        (SELECT INH2.INVOICE_NO_INH FROM INVOICE_HEADER_INH INH2 WHERE INH2.IDREDIRECTEDINH_INH = INH.ID_INH) 'redirectedFrom',
+        CONVERT(NVARCHAR(255),INH.GROUP_INVOICE_NO_INH) AS 'groupInvoiceNumber',SLV.ID_SLV 'invoiceStatusID',
+        SLV.NAME_SLV AS 'invoiceStatus',INH.NO_OF_BOXES_INH AS 'boxes', INH.WEIGHT_INH AS 'weight',INH.ID_TRN_INH AS 'transporterID',INH.LR_NUMBER_INH AS 'lrNumber', INH.ADDRESS_STATE_INH as 'state',
+        INH.ADDRESS_CITY_INH 'city',DIP.MONTH_DIP AS 'month', DIP.YEAR_DIP as 'year', DES.NAME_ULV as 'designation', TEM.NAME_TEM as 'teamName'
+        FROM INVOICE_HEADER_INH INH
+        INNER JOIN INVOICE_DISPATCH_PLAN_IDP IDP ON INH.ID_INH = IDP.ID_INH_IDP
+        INNER JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP = IDP.ID_PLAN_IDP
+            --JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
+        JOIN RECIPIENT_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        JOIN TEAM_MASTER_TEM TEM ON INH.ID_TEM_INH = TEM.ID_TEM
+        JOIN SYSTEM_LOV_SLV SLV ON INH.ID_STATUS_SLV_INH = SLV.ID_SLV
+        join USER_LOV_ULV DES ON DES.ID_ULV = RCT.ID_DESG_ULV_RCT
+        WHERE DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND (#{teamId} = '00000000-0000-0000-0000-000000000000' or TEM.ID_TEM = #{teamId})
+        AND INH.ID_STATUS_SLV_INH = #{status} AND DIP.IS_SPECIAL_DIP = #{isSpecialDisp}
+    </select>
+
+    <select id="getGroupingInvoiceForHUB" resultType="com.squer.promobee.controller.dto.GroupingInvoiceDetailsDTO" parameterType = "map" statementType = "CALLABLE">
+        {call PROC_GetGroupingInvoiceForHUB(#{FromDate, jdbcType = DATE, mode = IN}, #{ToDate, jdbcType = DATE, mode = IN}, #{InvoiceNumber, jdbcType = VARCHAR, mode = IN})}
+    </select>
+
+    <select id="getInvoicesForGrouping" resultType="com.squer.promobee.controller.dto.GroupingInvoiceDetailsDTO" parameterType = "map" statementType = "CALLABLE">
+        {call PROC_GetInvoicesForGrouping(#{FromDate, jdbcType = DATE, mode = IN}, #{ToDate, jdbcType = DATE, mode = IN}, #{InvoiceNumber, jdbcType = VARCHAR, mode = IN})}
+    </select>
+
+    <select id="getSpecialDispatchListing" resultType="com.squer.promobee.controller.dto.TeamPlanInvoiceDTO" >
+        select idDip, isSpecialDip,idStatusDip,nameStatusDip,namePlan,
+        idBmRec,nameBmRec,invoiceStatus,convert(varchar(10),ApprovalDate,103) 'approvalDate' from (
+        select * from(
+        select ID_DIP 'idDip', IS_SPECIAL_DIP 'isSpecialDip',dip.id_status_slv_dip 'idStatusDip', lov.NAME_SLV 'nameStatusDip',dip.REMARKS_DIP 'namePlan',
+        dip.ID_OWNER_USR_DIP 'idBmRec', USR.NAME_USR 'nameBmRec',SLV.NAME_SLV 'invoiceStatus',max(api.UPDATED_ON_API) 'approvalDate'
+        from DISPATCH_PLAN_DIP dip
+        inner join USER_MASTER_USR USR on dip.ID_OWNER_USR_DIP = usr.ID_USR
+        inner join SYSTEM_LOV_SLV lov on lov.ID_SLV = dip.ID_STATUS_SLV_DIP
+        INNER JOIN SYSTEM_LOV_SLV SLV ON DIP.ID_INVOICE_STATUS_SLV_DIP = SLV.ID_SLV
+        inner join APPROVAL_CHAIN_TRANSACTION_API api on dip.ID_DIP = api.ID_OWNER_API and api.ID_STATUS_SLV_API = 'BF12B5B5-2923-4A6F-BE33-27B417D5158E'
+        where dip.MONTH_DIP = #{month} and dip.YEAR_DIP = #{year}
+        and dip.IS_SPECIAL_DIP =1 and dip.IS_VIRTUAL_DIP !=1
+        and dip.ID_STATUS_SLV_DIP = '00000000-0000-0000-0000-000000000024'
+        GROUP BY ID_DIP,IS_SPECIAL_DIP,dip.id_status_slv_dip,lov.NAME_SLV,dip.REMARKS_DIP,
+        dip.ID_OWNER_USR_DIP,USR.NAME_USR,SLV.NAME_SLV
+        ) as Temp1
+        union
+        select * from(
+        select ID_DIP 'idDip', IS_SPECIAL_DIP 'isSpecialDip',dip.id_status_slv_dip 'idStatusDip', lov.NAME_SLV 'nameStatusDip',dip.REMARKS_DIP 'namePlan',
+        dip.ID_OWNER_USR_DIP  'idBmRec', USR.NAME_USR 'nameBmRec',SLV.NAME_SLV 'invoiceStatus',max(api.UPDATED_ON_API) 'approvalDate'
+        from DISPATCH_PLAN_DIP dip
+        inner join USER_MASTER_USR USR on dip.ID_OWNER_USR_DIP = usr.ID_USR
+        inner join SYSTEM_LOV_SLV lov on lov.ID_SLV = dip.ID_STATUS_SLV_DIP
+        INNER JOIN SYSTEM_LOV_SLV SLV ON DIP.ID_INVOICE_STATUS_SLV_DIP = SLV.ID_SLV
+        inner join APPROVAL_CHAIN_TRANSACTION_API api on dip.ID_DIP = api.ID_OWNER_API and api.ID_STATUS_SLV_API = 'BF12B5B5-2923-4A6F-BE33-27B417D5158E'
+        where
+        dip.MONTH_DIP = month(dateadd(MONTH, -1,convert(datetime, (concat(#{year},'-',#{month},'-01')))))
+        and dip.YEAR_DIP = year(dateadd(month, -1,convert(datetime, (concat(#{year},'-',#{month},'-01')))))
+        and dip.IS_SPECIAL_DIP =1 and dip.IS_VIRTUAL_DIP !=1
+        and dip.ID_STATUS_SLV_DIP = '00000000-0000-0000-0000-000000000024'
+        and slv.ID_SLV != 'F8CDB30B-E49B-48EE-BB59-4005B5B4A0FE'
+        GROUP BY ID_DIP,IS_SPECIAL_DIP,dip.id_status_slv_dip,lov.NAME_SLV,dip.REMARKS_DIP,
+        dip.ID_OWNER_USR_DIP,USR.NAME_USR,SLV.NAME_SLV
+        ) as Temp3
+        ) temp2
+        order by approvalDate desc
+    </select>
+
+
+
+    <select id="getSpecialDispatchInvoiceDetailDraft" resultType="com.squer.promobee.controller.dto.DataModelInvoiceDetailsDTO">
+        SELECT DISTINCT RCT.NAME_RCT AS 'employeeName',RCT.ID_RCT AS 'employeeId',RCT.CODE_RCT AS 'code', '' AS 'invoiceNumber','' AS 'groupInvoiceNumber',
+        (SELECT ID_SLV FROM SYSTEM_LOV_SLV WHERE ID_SLV = '00000000-0000-0000-0000-000000000026') AS 'invoiceStatusID','Draft' AS 'invoiceStatus', 0 AS 'boxes', CONVERT(FLOAT,0) AS 'weight','' AS 'lrNumber',
+        DIP.REMARKS_DIP as 'planName', RCT.STATE_RCT as 'state',RCT.CITY_RCT 'city', DIP.MONTH_DIP as 'month', DIP.YEAR_DIP as 'year', DES.NAME_ULV as 'designation', RCT.STATE_RCT as 'state', DIP.ID_DIP as 'planId',
+        CASE WHEN DIP.IS_SPECIAL_DIP=0 THEN 'MONTHLY' ELSE 'SPECIAL' END AS 'plan', dip.ID_OWNER_USR_DIP AS 'PlanOwner'
+        FROM DISPATCH_PLAN_DIP DIP
+        JOIN DISPATCH_DETAIL_DID DID ON DIP.ID_DIP = DID.ID_DIP_DID
+        JOIN RECIPIENT_MASTER_RCT RCT ON DID.ID_RCT_DID = RCT.ID_RCT
+        inner JOIN USER_LOV_ULV DES ON DES.ID_ULV = RCT.ID_DESG_ULV_RCT
+        left join INVOICE_DETAIL_IND ind on ind.ID_DID_IND = did.ID_DID
+        WHERE  DIP.ID_DIP = #{planId}
+        AND DIP.ID_STATUS_SLV_DIP = #{status}
+        --AND DIP.ID_STATUS_SLV_DIP = '00000000-0000-0000-0000-000000000024'
+        and IND.ID_IND is NULL
+        and RCT.ID_STATUS_SLV_RCT= '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
+    </select>
+
+    <select id="getSpecialInvoiceDetail_GP_C_R" resultType="com.squer.promobee.controller.dto.DataModelInvoiceDetailsDTO">
+        SELECT DISTINCT INH.ID_INH AS 'invoiceHeaderID',TEM.NAME_TEM 'teamName',RCT.NAME_RCT AS 'employeeName',RCT.ID_RCT AS 'employeeId',
+        RCT.CODE_RCT AS 'code',INH.ADDRESS_STATE_INH 'state',INH.ADDRESS_CITY_INH 'city',CONVERT(NVARCHAR(255), INH.INVOICE_NO_INH) AS 'invoiceNumber',
+        CASE WHEN INH.IDREDIRECTEDINH_INH IS NULL THEN NULL ELSE (SELECT INVOICE_NO_INH FROM INVOICE_HEADER_INH INH1 WHERE INH1.ID_INH = INH.IDREDIRECTEDINH_INH) END 'redirectedTo',
+        (SELECT INH2.INVOICE_NO_INH FROM INVOICE_HEADER_INH INH2 WHERE INH2.IDREDIRECTEDINH_INH = INH.ID_INH) 'redirectedFrom',
+        CONVERT(NVARCHAR(255), INH.GROUP_INVOICE_NO_INH) AS 'groupInvoiceNumber',SLV.ID_SLV 'invoiceStatusID',
+        SLV.NAME_SLV AS 'invoiceStatus',INH.NO_OF_BOXES_INH AS 'boxes', INH.WEIGHT_INH AS 'weight',INH.ID_TRN_INH AS 'transporterID',INH.LR_NUMBER_INH AS 'lrNumber'
+        FROM INVOICE_HEADER_INH INH
+        INNER JOIN INVOICE_DISPATCH_PLAN_IDP IDP ON INH.ID_INH = IDP.ID_INH_IDP
+        INNER JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP = IDP.ID_PLAN_IDP
+        JOIN RECIPIENT_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        JOIN TEAM_MASTER_TEM TEM ON RCT.ID_TEM_RCT = TEM.ID_TEM
+        JOIN SYSTEM_LOV_SLV SLV ON INH.ID_STATUS_SLV_INH = SLV.ID_SLV
+        WHERE DIP.ID_DIP = #{planId}
+        AND INH.ID_STATUS_SLV_INH = #{status}
+    </select>
+
+    <select id="getVirtualDispatchListing" resultType="com.squer.promobee.controller.dto.TeamPlanInvoiceDTO" >
+        select idDip, isSpecialDip,idStatusDip,nameStatusDip,namePlan,
+        idBmRec,nameBmRec,invoiceStatus,convert(varchar(10),ApprovalDate,103) 'approvalDate' from (
+        select * from(
+        select idDip, isSpecialDip,dip.id_status_slv_dip idStatusDip, lov.NAME_SLV nameStatusDip,dip.REMARKS_DIP namePlan,
+        dip.ID_OWNER_USR_DIP  idBmRec, USR.NAME_USR nameBmRec,SLV.NAME_SLV 'invoiceStatus',max(api.UPDATED_ON_API) 'approvalDate'
+        from DISPATCH_PLAN_DIP dip
+        inner join DISPATCH_DETAIL_DID did on did.ID_DIP_DID=dip.ID_DIP
+        inner join USER_MASTER_USR USR on dip.ID_OWNER_USR_DIP = usr.ID_USR
+        inner join SYSTEM_LOV_SLV lov on lov.ID_SLV = dip.ID_STATUS_SLV_DIP
+        INNER JOIN SYSTEM_LOV_SLV SLV ON DIP.ID_INVOICE_STATUS_SLV_DIP = SLV.ID_SLV
+        inner join APPROVAL_CHAIN_TRANSACTION_API api on dip.ID_DIP = api.ID_OWNER_API and api.ID_STATUS_SLV_API = 'BF12B5B5-2923-4A6F-BE33-27B417D5158E'
+        where dip.MONTH_DIP = #{month} and dip.YEAR_DIP = #{year}
+        and dip.IS_SPECIAL_DIP =1 and IS_VIRTUAL_DIP=1
+        and dip.ID_STATUS_SLV_DIP = '00000000-0000-0000-0000-000000000024'
+        GROUP BY ID_DIP,IS_SPECIAL_DIP,dip.id_status_slv_dip,lov.NAME_SLV,dip.REMARKS_DIP,
+        dip.ID_OWNER_USR_DIP,USR.NAME_USR,SLV.NAME_SLV
+        ) as Temp1
+        union
+        select * from(
+        select idDip, isSpecialDip,dip.id_status_slv_dip idStatusDip, lov.NAME_SLV nameStatusDip,dip.REMARKS_DIP namePlan,
+        dip.ID_OWNER_USR_DIP  idBmRec, USR.NAME_USR nameBmRec,SLV.NAME_SLV 'invoiceStatus',max(api.UPDATED_ON_API) 'approvalDate'
+        from DISPATCH_PLAN_DIP dip
+        inner join DISPATCH_DETAIL_DID did on did.ID_DIP_DID=dip.ID_DIP
+        inner join USER_MASTER_USR USR on dip.ID_OWNER_USR_DIP = usr.ID_USR
+        inner join SYSTEM_LOV_SLV lov on lov.ID_SLV = dip.ID_STATUS_SLV_DIP
+        INNER JOIN SYSTEM_LOV_SLV SLV ON DIP.ID_INVOICE_STATUS_SLV_DIP = SLV.ID_SLV
+        inner join APPROVAL_CHAIN_TRANSACTION_API api on dip.ID_DIP = api.ID_OWNER_API and api.ID_STATUS_SLV_API = 'BF12B5B5-2923-4A6F-BE33-27B417D5158E'
+        where
+        dip.MONTH_DIP = month(dateadd(MONTH, -1,convert(datetime, (concat(#{year},'-',#{month},'-01')))))
+        and dip.YEAR_DIP = year(dateadd(month, -1,convert(datetime, (concat(#{year},'-',#{month},'-01')))))
+        and dip.IS_SPECIAL_DIP =1 and IS_VIRTUAL_DIP=1
+        and dip.ID_STATUS_SLV_DIP = '00000000-0000-0000-0000-000000000024'
+
+        GROUP BY ID_DIP,IS_SPECIAL_DIP,dip.id_status_slv_dip,lov.NAME_SLV,dip.REMARKS_DIP,
+        dip.ID_OWNER_USR_DIP,USR.NAME_USR,SLV.NAME_SLV
+        ) as Temp3
+        ) temp2
+        order by approvalDate desc
+    </select>
+
+
+
+
+
+</mapper>

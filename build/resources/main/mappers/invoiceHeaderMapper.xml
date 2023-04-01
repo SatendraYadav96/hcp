@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="InvoiceHeaderMapper">
+    <resultMap id="invoiceHeaderResultMap" type="com.squer.promobee.service.repository.domain.InvoiceHeader">
+        <id property="id" column="id_inh"/>
+        <result property="invoiceNo" column="invoice_no_inh"/>
+        <result property="addressLine1" column="address_line_1_inh"/>
+        <result property="addressLine2" column="address_line_2_inh"/>
+        <result property="states" column="address_state_inh"/>
+        <result property="city" column="address_city_inh"/>
+        <result property="zip" column="address_zip_inh"/>
+        <result property="phone" column="phone_inh"/>
+        <result property="weight" column="weight_inh"/>
+        <result property="noOfBoxes" column="no_of_boxes_inh"/>
+        <result property="notes" column="notes_inh"/>
+        <result property="sampleValue" column="sample_value_inh"/>
+        <result property="otherItemValue" column="other_item_value_inh"/>
+        <result property="indirectedId" column="indirectedinh_inh"/>
+        <result property="groupInvoiceNo" column="group_invoice_no_inh"/>
+        <result property="groupInvoiceId" column="id_group_invoice_inh"/>
+        <result property="lrNumber" column="lr_number_inh"/>
+        <result property="cfa" column="cfa_inh"/>
+        <result property="createdAt" column="created_on_inh"/>
+        <result property="createdBy" column="created_by_inh"/>
+        <result property="updatedAt" column="updated_on_inh"/>
+        <result property="updatedBy" column="updated_by_inh"/>
+        <association property="type" javaType="com.squer.promobee.service.repository.domain.UserStatus">
+            <id property="id" column="id_type_slv_inh"/>
+            <result property="name" column="name_slv"/>
+        </association>
+        <association property="statusId" javaType="com.squer.promobee.service.repository.domain.UserStatus">
+            <id property="id" column="id_status_slv_inh"/>
+            <result property="name" column="name_inh"/>
+        </association>
+        <association property="teamId" javaType="com.squer.promobee.service.repository.domain.Team">
+            <id property="id" column="id_tem_inh"/>
+            <result property="name" column="name_tem"/>
+        </association>
+        <association property="recipientId" javaType="com.squer.promobee.service.repository.domain.Recipient">
+            <id property="id" column="id_rct_inh"/>
+            <result property="name" column="name_rct"/>
+        </association>
+        <association property="transporterId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_trn-inh"/>
+            <result property="name" column="name_trn"/>
+        </association>
+        <association property="designationId" javaType="com.squer.promobee.service.repository.domain.UserDesignation">
+            <id property="id" column="id_rct_desg_ulv_inh"/>
+            <result property="name" column="name_ulv"/>
+        </association>
+    </resultMap>
+
+
+    <update id="editInvoiceHeader">
+        UPDATE INVOICE_HEADER_INH SET WEIGHT_INH = #{weight} , NO_OF_BOXES_INH = #{noOfBoxes} , UPDATED_BY_INH = #{updatedBy} , UPDATED_ON_INH = GETDATE()
+        WHERE INVOICE_NO_INH = #{invoiceNo}
+    </update>
+
+
+
+</mapper>

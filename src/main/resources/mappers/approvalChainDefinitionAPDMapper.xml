@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.ApprovalChainDefinitionAPDMapper">
+    <resultMap id="approvalChainDefinitionAPDResultMap" type="com.squer.promobee.service.repository.domain.ApprovalChainDefinitionAPD">
+        <id property="id" column="id_apd"/>
+        <result property="srNo" column="sr_no_apd"/>
+        <result property="rolId" column="id_rol_apd"/>
+        <result property="createdAt" column="created_on_apd"/>
+        <result property="createdBy" column="created_by_apd"/>
+        <result property="updatedAt" column="updated_on_apd"/>
+        <result property="updatedBy" column="updated_by_apd"/>
+        <association property="statusType" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_type_slv_apd"/>
+            <result property="name" column="name_slv"/>
+        </association>
+    </resultMap>
+</mapper>

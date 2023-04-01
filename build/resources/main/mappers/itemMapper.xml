@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ItemMapper">
+
+
+    <select id="getMaxItemCode" resultType="Map">
+        select MAX(code_itm) as count from ITEM_MASTER_ITM where CODE_ITM like #{code}
+    </select>
+
+    <select id="getItemDataById" resultMap="itemResultMap">
+        select ID_ITM ,NAME_ITM ,CI_NAME_ITM ,CODE_ITM ,ID_ITC_ITM ,DESCRIPTION_ITM ,MEDICAL_CODE_ITM ,ID_CCM_ITM ,IS_ACTIVE_ITM ,CREATED_ON_ITM ,CREATED_BY_ITM ,UPDATED_ON_ITM ,UPDATED_BY_ITM ,HSN_CODE_ITM from ITEM_MASTER_ITM where ID_ITM=#{id}
+    </select>
+
+    <select id="getItemDataByCode" resultMap="itemResultMap">
+        select ID_ITM ,NAME_ITM ,CI_NAME_ITM ,CODE_ITM ,ID_ITC_ITM ,DESCRIPTION_ITM ,MEDICAL_CODE_ITM ,ID_CCM_ITM ,IS_ACTIVE_ITM ,CREATED_ON_ITM ,CREATED_BY_ITM ,UPDATED_ON_ITM ,UPDATED_BY_ITM ,HSN_CODE_ITM from ITEM_MASTER_ITM where IS_ACTIVE_ITM = 1 and CODE_ITM=#{code}
+    </select>
+
+    <resultMap id="itemResultMap" type="com.squer.promobee.service.repository.domain.Item">
+        <id property="id" column="id_itm"/>
+        <result property="name" column="name_itm"/>
+        <result property="ciName" column="ci_name_itm"/>
+        <result property="code" column="code_itm"/>
+        <result property="description" column="description_itm"/>
+        <result property="medicalCode" column="medical_code_itm"/>
+        <result property="hsnCode" column="hsn_code_itm"/>
+        <result property="active" column="is_active_itm"/>
+        <result property="createdAt" column="created_on_itm"/>
+        <result property="createdBy" column="created_by_itm"/>
+        <result property="updatedAt" column="updated_on_itm"/>
+        <result property="updatedBy" column="updated_by_itm"/>
+        <association property="category"  javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_itc_itm"/>
+            <result property="name" column="name_itc"/>
+        </association>
+        <association property="ccmId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_ccm_itm"/>
+            <result property="name" column="name_ccm"/>
+        </association>
+    </resultMap>
+
+    <insert id="insertItem">
+        insert into ITEM_MASTER_ITM (ID_ITM, NAME_ITM, CI_NAME_ITM, CODE_ITM ,ID_ITC_ITM ,DESCRIPTION_ITM ,MEDICAL_CODE_ITM ,ID_CCM_ITM
+            ,IS_ACTIVE_ITM ,CREATED_ON_ITM ,CREATED_BY_ITM ,UPDATED_ON_ITM ,UPDATED_BY_ITM, HSN_CODE_ITM)
+             VALUES(#{id}, #{name}, lower(#{ciName}), #{code}, #{category.id}, #{description}, #{medicalCode}, #{ccmId.id}, #{active}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy}, #{hsnCode})
+    </insert>
+</mapper>

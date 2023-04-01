@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.ApprovalChainTransactionMapper">
+    <resultMap id="approvalChainTransactionResultMap" type="com.squer.promobee.service.repository.domain.ApprovalChainTransaction">
+        <id property="id" column="id_api"/>
+        <result property="owner" column="id_owner_api"/>
+        <result property="comments" column="comment_api"/>
+        <result property="createdAt" column="created_on_api"/>
+        <result property="createdBy" column="created_by_api"/>
+        <result property="updatedAt" column="updated_on_api"/>
+        <result property="updatedBy" column="updated_by_api"/>
+        <association property="approvedByUser" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_approved_by_usr_api"/>
+            <result property="name" column="name_usr"/>
+        </association>
+        <association property="typeStatus" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_type_slv_api"/>
+            <result property="name" column="name_slv"/>
+        </association>
+        <association property="apiStatus" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_status_slv_api"/>
+            <result property="name" column="name_slv"/>
+        </association>
+        <association property="designation" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_desg_ulv_api"/>
+            <result property="name" column="name_ulv"/>
+        </association>
+    </resultMap>
+
+    <select id="approval_chain_transaction_select" resultMap="approvalChainTransactionResultMap">
+        select * from APPROVAL_CHAIN_TRANSACTION_API
+        <where>
+            <if test="ownerId!= null">ID_OWNER_API = #{ownerId}</if>
+        </where>
+    </select>
+
+</mapper>

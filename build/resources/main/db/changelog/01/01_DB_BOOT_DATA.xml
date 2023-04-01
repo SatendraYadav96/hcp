@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog logicalFilePath="db/changelog/dummydata/01_DB_DUMMY_DATA.xml"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <!-- insert sample test user 1 -->
+    <changeSet id="100_job_title_insert" author="admin">
+        <insert tableName="job_title">
+            <column name="id" value="jobrl00000000000000000000000000000001"/>
+            <column name="name" value="TM"/>
+            <column name="ci_name" value="tm"/>
+        </insert>
+        <insert tableName="job_title">
+            <column name="id" value="jobrl00000000000000000000000000000002"/>
+            <column name="name" value="RM"/>
+            <column name="ci_name" value="rm"/>
+        </insert>
+        <insert tableName="job_title">
+            <column name="id" value="jobrl00000000000000000000000000000003"/>
+            <column name="name" value="GM Sales"/>
+            <column name="ci_name" value="gm sales"/>
+        </insert>
+        <insert tableName="job_title">
+            <column name="id" value="jobrl00000000000000000000000000000004"/>
+            <column name="name" value="Marketing Manager"/>
+            <column name="ci_name" value="marketing manager"/>
+            <column name="common_function" value="true"/>
+        </insert>
+        <insert tableName="job_title">
+            <column name="id" value="jobrl00000000000000000000000000000005"/>
+            <column name="name" value="Finance Controller"/>
+            <column name="ci_name" value="finance controller"/>
+            <column name="common_function" value="true"/>
+        </insert>
+        <rollback>
+            <delete tableName="job_title">
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="100_document_type_insert" author="admin">
+        <insert tableName="document_type">
+            <column name="id" value="doctt00000000000000000000000000000001"/>
+            <column name="name" value="PAN Card"/>
+            <column name="ci_name" value="pan card"/>
+            <column name="owner_type" value="DOCTOR"/>
+            <column name="is_required" value="true"/>
+            <column name="status" value="ACTIVE"/>
+        </insert>
+        <rollback>
+            <delete tableName="document_type">
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="100_location_type_insert" author="admin">
+        <insert tableName="location_type">
+            <column name="id" value="loctt00000000000000000000000000000001"/>
+            <column name="name" value="HO"/>
+            <column name="ci_name" value="ho"/>
+        </insert>
+        <insert tableName="location_type">
+            <column name="id" value="loctt00000000000000000000000000000002"/>
+            <column name="name" value="Region"/>
+            <column name="ci_name" value="region"/>
+            <column name="parent_id" value="loctt00000000000000000000000000000001"/>
+        </insert>
+        <insert tableName="location_type">
+            <column name="id" value="loctt00000000000000000000000000000003"/>
+            <column name="name" value="Zone"/>
+            <column name="ci_name" value="zone"/>
+            <column name="parent_id" value="loctt00000000000000000000000000000002"/>
+        </insert>
+        <insert tableName="location_type">
+            <column name="id" value="loctt00000000000000000000000000000004"/>
+            <column name="name" value="Area"/>
+            <column name="ci_name" value="area"/>
+            <column name="parent_id" value="loctt00000000000000000000000000000003"/>
+        </insert>
+        <insert tableName="location_type">
+            <column name="id" value="loctt00000000000000000000000000000005"/>
+            <column name="name" value="Territory"/>
+            <column name="ci_name" value="territory"/>
+            <column name="parent_id" value="loctt00000000000000000000000000000004"/>
+        </insert>
+    </changeSet>
+    <changeSet id="200_security_privilege" author="admin">
+        <insert tableName="security_privilege">
+            <column name="id" value="spriv00000000000000000000000000000001"/>
+            <column name="name" value="Can View Dashboard" />
+            <column name="ci_name" value="can view dashboard" />
+        </insert>
+        <insert tableName="security_privilege">
+            <column name="id" value="spriv00000000000000000000000000000002"/>
+            <column name="name" value="Can View HCP List" />
+            <column name="ci_name" value="can view hcp list" />
+        </insert>
+        <insert tableName="security_privilege">
+            <column name="id" value="spriv00000000000000000000000000000003"/>
+            <column name="name" value="Can Register HCP" />
+            <column name="ci_name" value="can register hcp" />
+        </insert>
+    </changeSet>
+    <changeSet id="200_security_role" author="admin">
+        <insert tableName="security_role">
+            <column name="id" value="srole00000000000000000000000000000001"/>
+            <column name="name" value="Common Privileges for User"></column>
+            <column name="ci_name" value="common privileges for user"></column>
+            <column name="created_by" value="users00000000000000000000000000000001"/>
+        </insert>
+        <insert tableName="security_role">
+            <column name="id" value="srole00000000000000000000000000000002"/>
+            <column name="name" value="Common Privileges for TM"></column>
+            <column name="ci_name" value="common privileges for tm"></column>
+            <column name="created_by" value="users00000000000000000000000000000001"/>
+        </insert>
+        <insert tableName="security_role">
+            <column name="id" value="srole00000000000000000000000000000003"/>
+            <column name="name" value="Common Privileges for ABM"></column>
+            <column name="ci_name" value="common privileges for abm"></column>
+            <column name="created_by" value="users00000000000000000000000000000001"/>
+        </insert>
+    </changeSet>
+    <changeSet id="200_role_privileges" author="admin">
+        <insert tableName="security_role_privileges">
+            <column name="role_id" value="srole00000000000000000000000000000001"></column>
+            <column name="privilege_id" value="spriv00000000000000000000000000000001"></column>
+        </insert>
+        <insert tableName="security_role_privileges">
+            <column name="role_id" value="srole00000000000000000000000000000002"></column>
+            <column name="privilege_id" value="spriv00000000000000000000000000000002"></column>
+        </insert>
+        <insert tableName="security_role_privileges">
+            <column name="role_id" value="srole00000000000000000000000000000002"></column>
+            <column name="privilege_id" value="spriv00000000000000000000000000000003"></column>
+        </insert>
+    </changeSet>
+    <changeSet id="200_user_role" author="admin">
+        <insert tableName="security_user_role">
+            <column name="user_id" value="users00000000000000000000000000000002"></column>
+            <column name="role_id" value="srole00000000000000000000000000000001"></column>
+        </insert>
+        <insert tableName="security_user_role">
+            <column name="user_id" value="users00000000000000000000000000000002"></column>
+            <column name="role_id" value="srole00000000000000000000000000000002"></column>
+        </insert>
+    </changeSet>
+    <changeSet id="200_menu_action" author="admin">
+        <insert tableName="menu_action">
+            <column name="id" value="menua00000000000000000000000000000001"></column>
+            <column name="name" value="Home"/>
+            <column name="ci_name" value="home"/>
+            <column name="ui_interface" value="web"/>
+        </insert>
+        <insert tableName="menu_action">
+            <column name="id" value="menua00000000000000000000000000000002"></column>
+            <column name="name" value="Dashboard"/>
+            <column name="ci_name" value="dashboard"/>
+            <column name="ui_interface" value="web"/>
+            <column name="path" value="/home/dashboard"/>
+            <column name="privilege_id" value="spriv00000000000000000000000000000001"/>
+            <column name="parent_id" value="menua00000000000000000000000000000001"/>
+        </insert>
+        <insert tableName="menu_action">
+            <column name="id" value="menua00000000000000000000000000000003"></column>
+            <column name="name" value="HCP"/>
+            <column name="ci_name" value="hcp"/>
+            <column name="ui_interface" value="web"/>
+        </insert>
+        <insert tableName="menu_action">
+            <column name="id" value="menua00000000000000000000000000000004"></column>
+            <column name="name" value="List"/>
+            <column name="ci_name" value="list"/>
+            <column name="ui_interface" value="web"/>
+            <column name="path" value="/home/hcplist"/>
+            <column name="privilege_id" value="spriv00000000000000000000000000000002"/>
+            <column name="parent_id" value="menua00000000000000000000000000000003"/>
+        </insert>
+    </changeSet>
+    <changeSet id="300_admin_menus" author="admin">
+        <insert tableName="security_role">
+            <column name="id" value="srole00000000000000000000000000000004" />
+            <column name="name" value="Common Privileges for Admin"></column>
+            <column name="ci_name" value="common privileges for admin" />
+        </insert>
+        <insert tableName="security_privilege">
+            <column name="id" value="spriv00000000000000000000000000000004" />
+            <column name="name" value="Can Maintain Document types" />
+            <column name="ci_name" value="can maintain document types" />
+        </insert>
+        <insert tableName="security_user_role">
+            <column name="user_id" value="users00000000000000000000000000000001"></column>
+            <column name="role_id" value="srole00000000000000000000000000000004"></column>
+        </insert>
+        <insert tableName="security_role_privileges">
+            <column name="role_id" value="srole00000000000000000000000000000004"></column>
+            <column name="privilege_id" value="spriv00000000000000000000000000000004"></column>
+        </insert>
+        <insert tableName="menu_action">
+            <column name="id" value="menua00000000000000000000000000000005"></column>
+            <column name="name" value="Masters"/>
+            <column name="ci_name" value="masters"/>
+            <column name="ui_interface" value="web"/>
+        </insert>
+        <insert tableName="menu_action">
+            <column name="id" value="menua00000000000000000000000000000006"></column>
+            <column name="name" value="Document Types"/>
+            <column name="ci_name" value="document types"/>
+            <column name="ui_interface" value="web"/>
+            <column name="path" value="/admin/documenttypes"/>
+            <column name="privilege_id" value="spriv00000000000000000000000000000004"/>
+            <column name="parent_id" value="menua00000000000000000000000000000005"/>
+        </insert>
+    </changeSet>
+    <changeSet id="300_approval_chain_definition_menus" author="admin">
+        <insert tableName="security_privilege">
+            <column name="id" value="spriv00000000000000000000000000000005" />
+            <column name="name" value="Can Maintain Approval chain definitions" />
+            <column name="ci_name" value="can maintain approval chain definitions"/>
+        </insert>
+        <insert tableName="security_role_privileges">
+            <column name="role_id" value="srole00000000000000000000000000000004"></column>
+            <column name="privilege_id" value="spriv00000000000000000000000000000005"></column>
+        </insert>
+        <insert tableName="menu_action">
+            <column name="id" value="menua00000000000000000000000000000007"></column>
+            <column name="name" value="Approval Chain Definitions"/>
+            <column name="ci_name" value="approval chain definitions"/>
+            <column name="ui_interface" value="web"/>
+            <column name="path" value="/admin/approvalchain/definitions"/>
+            <column name="privilege_id" value="spriv00000000000000000000000000000005"/>
+            <column name="parent_id" value="menua00000000000000000000000000000005"/>
+        </insert>
+    </changeSet>
+    <changeSet id="400_security_privilege" author="admin">
+        <insert tableName="security_privilege">
+            <column name="id" value="spriv00000000000000000000000000000006" />
+            <column name="name" value="Can enter bank details" />
+            <column name="ci_name" value="can enter bank details"/>
+        </insert>
+        <insert tableName="security_privilege">
+            <column name="id" value="spriv00000000000000000000000000000007" />
+            <column name="name" value="Can enter FMV details" />
+            <column name="ci_name" value="can enter fmv details"/>
+        </insert>
+        <insert tableName="security_role_privileges">
+            <column name="role_id" value="srole00000000000000000000000000000001"></column>
+            <column name="privilege_id" value="spriv00000000000000000000000000000006"></column>
+        </insert>
+        <insert tableName="security_role_privileges">
+            <column name="role_id" value="srole00000000000000000000000000000001"></column>
+            <column name="privilege_id" value="spriv00000000000000000000000000000007"></column>
+        </insert>
+    </changeSet>
+    <changeSet id="410_form_label_meta" author="">
+        <insert tableName="form_label_meta">
+            <column name="id" value="fmlbl00000000000000000000000000000001"/>
+            <column name="code" value="hcp"></column>
+            <column name="default_value" value="HCP"></column>
+        </insert>
+        <insert tableName="form_label_meta">
+            <column name="id" value="fmlbl00000000000000000000000000000002"/>
+            <column name="code" value="hcp_registration"></column>
+            <column name="default_value" value="Register #{hcp}"></column>
+        </insert>
+        <insert tableName="form_label_meta">
+            <column name="id" value="fmlbl00000000000000000000000000000003"/>
+            <column name="code" value="hcp_name"></column>
+            <column name="default_value" value="Name"></column>
+        </insert>
+    </changeSet>
+    <changeSet id="420_hcp_form_meta" author="admin">
+        <insert tableName="form_meta">
+            <column name="id" value="fmmet00000000000000000000000000000001"/>
+            <column name="form_code" value="hcp_registration"></column>
+            <column name="code" value="hcp_name"/>
+            <column name="required" value="true"/>
+            <column name="max_length" value="50"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

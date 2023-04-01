@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TeamMapper">
+    <resultMap id="teamResultMap" type="com.squer.promobee.service.repository.domain.Team">
+        <id property="id" column="id_tem"/>
+        <result property="name" column="name_tem"/>
+        <result property="ciName" column="ci_name_tem"/>
+        <result property="code" column="code_tem"/>
+        <result property="active" column="is_active_tem"/>
+        <result property="createdAt" column="created_on_tem"/>
+        <result property="createdBy" column="created_by_tem"/>
+        <result property="updatedAt" column="updated_on_tem"/>
+        <result property="updatedBy" column="updated_by_tem"/>
+        <association property="division" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_dim_tem"/>
+            <result property="name" column="name_dim"/>
+        </association>
+    </resultMap>
+
+    <select id="usersTeamSelect" resultMap="teamDTOResultMap">
+        SELECT
+            tem.ID_TEM , tem.NAME_TEM , tem.CI_NAME_TEM , tem.CODE_TEM , tem.IS_ACTIVE_TEM ,
+            tem.CREATED_ON_TEM , tem.CREATED_BY_TEM , tem.UPDATED_ON_TEM ,
+            tem.UPDATED_BY_TEM , tem.ID_DIM_TEM , count(1) as recipient
+        FROM
+            TEAM_MASTER_TEM tem
+                INNER JOIN RECIPIENT_MASTER_RCT rct on rct.ID_TEM_RCT=tem.ID_TEM and rct.ID_STATUS_SLV_RCT='80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
+                INNER JOIN (
+                SELECT
+                    DISTINCT tbr.ID_TEM_TBR AS ID_TEM_TBR
+                FROM TEAM_MASTER_TEM tem1
+                         INNER JOIN TEAM_BRAND_TBR tbr ON tbr.ID_TEM_TBR=tem1.ID_TEM AND tem1.IS_ACTIVE_TEM=1
+                         INNER JOIN BRAND_MASTER_BRD brd ON brd.ID_BRD=tbr.ID_BRD_TBR AND brd.IS_ACTIVE_BRD=1
+                         INNER JOIN BRANDMANAGER_BRAND_BBR bbr ON brd.ID_BRD = bbr.ID_BRD_BBR
+                WHERE bbr.ID_USR_BBR = #{userId}
+            ) a ON a.ID_TEM_TBR=tem.ID_TEM AND tem.IS_ACTIVE_TEM=1
+        group by tem.ID_TEM, tem.NAME_TEM, tem.CI_NAME_TEM, tem.CODE_TEM, tem.IS_ACTIVE_TEM,
+                 tem.CREATED_ON_TEM, tem.CREATED_BY_TEM, tem.UPDATED_ON_TEM, tem.UPDATED_BY_TEM, tem.ID_DIM_TEM
+    </select>
+
+    <resultMap id="teamDTOResultMap" type="com.squer.promobee.controller.dto.TeamDTO" autoMapping="true">
+        <id property="id" column="id_tem"/>
+        <result property="name" column="name_tem"/>
+        <result property="ciName" column="ci_name_tem"/>
+        <result property="code" column="code_tem"/>
+        <result property="active" column="is_active_tem"/>
+        <result property="createdAt" column="created_on_tem"/>
+        <result property="createdBy" column="created_by_tem"/>
+        <result property="updatedAt" column="updated_on_tem"/>
+        <result property="updatedBy" column="updated_by_tem"/>
+        <result property="recipient" column="recipient"></result>
+        <association property="division" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_tem"/>
+        </association>
+    </resultMap>
+
+    <select id="getTeam" parameterType="list" resultMap="teamResultMap">
+        select * from TEAM_MASTER_TEM where IS_ACTIVE_TEM = 1
+        <if test="team!= null">
+           and ID_TEM in
+            <foreach item="team" collection="team"
+                     open="(" separator="," close=")">
+                #{team}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="getBMTeams" resultMap="teamResultMap">
+        select tem.ID_TEM , tem.NAME_TEM , tem.CI_NAME_TEM , tem.CODE_TEM , tem.IS_ACTIVE_TEM ,
+               tem.CREATED_ON_TEM , tem.CREATED_BY_TEM , tem.UPDATED_ON_TEM ,
+               tem.UPDATED_BY_TEM , tem.ID_DIM_TEM from TEAM_MASTER_TEM tem
+        join TEAM_BRAND_TBR tbr  on tem.ID_TEM = tbr.ID_TEM_TBR
+        join BRAND_MASTER_BRD brd on tbr.ID_BRD_TBR = brd.ID_BRD
+        join BRANDMANAGER_BRAND_BBR bbr on brd.ID_BRD = bbr.ID_BRD_BBR
+        where bbr.ID_USR_BBR = #{userID} and tem.IS_ACTIVE_TEM = 1
+    </select>
+</mapper>

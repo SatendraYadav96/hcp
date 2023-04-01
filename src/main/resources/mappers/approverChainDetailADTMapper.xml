@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.ApproverChainDetailADTMapper">
+    <resultMap id="approverChainDetailADTResultMap" type="com.squer.promobee.service.repository.domain.ApproverChainDetailADT">
+        <id property="id" column="id_adt"/>
+        <result property="level" column="level_adt"/>
+        <result property="daysInQueue" column="days_in_queue_adt"/>
+        <result property="isRequired" column="is_required_adt"/>
+        <result property="createdAt" column="created_on_adt"/>
+        <result property="createdBy" column="created_by_adt"/>
+        <result property="updatedAt" column="updated_on_adt"/>
+        <result property="updatedBy" column="updated_by_adt"/>
+        <association property="adfId" column="id_adf_adt" select="getADF" javaType="com.squer.promobee.service.repository.domain.ApprovalChainDefinitionADF">
+            <id property="id" column="id_adf"/>
+        </association>
+        <association property="rolId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_rol_adt"/>
+            <result property="name" column="name_rol"/>
+        </association>
+    </resultMap>
+
+    <select id="getADF" parameterType="map" resultType="com.squer.promobee.service.repository.domain.ApprovalChainDefinitionADF">
+        select id_adf as id from APPROVAL_CHAIN_DEFINITION_ADF where id_adf=#{id_adf_adt}
+    </select>
+</mapper>

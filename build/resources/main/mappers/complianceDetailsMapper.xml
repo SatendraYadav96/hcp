@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.ComplianceDetailsMapper">
+    <resultMap id="complianceDetailsResultMap" type="com.squer.promobee.service.repository.domain.ComplianceDetails">
+        <id property="id" column="id_cm"/>
+        <result property="ff" column="ff_cm"/>
+        <result property="drId" column="dr_id"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="drName" column="dr_name"/>
+        <result property="totSampleGiven" column="tot_sample_given"/>
+        <result property="bu" column="bu"/>
+        <result property="am" column="am"/>
+        <result property="rbm" column="rbm"/>
+        <result property="remarks" column="remarks"/>
+        <result property="reason" column="reason"/>
+        <result property="ffCode" column="ff_code"/>
+        <result property="teamId" column="team_id_cd"/>
+        <result property="teamName" column="team_name"/>
+    </resultMap>
+</mapper>

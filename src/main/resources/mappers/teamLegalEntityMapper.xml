@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TeamLegalEntityMapper">
+    <resultMap id="teamLegalEntityResultMap" type="com.squer.promobee.service.repository.domain.TeamLegalEntity">
+        <id property="id" column="id_tet"/>
+        <association property="team" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_tem_tet"/>
+            <result property="name" column="name_tem"/>
+        </association>
+        <association property="legalEntity" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_ety_tet"/>
+            <result property="name" column="name_ety"/>
+        </association>
+    </resultMap>
+
+    <select id="getUserLegalTeam" resultMap="teamLegalEntityResultMap">
+        select distinct ID_TEM_TET , ID_TET, ID_ETY_TET from TEAM_LEGAL_ENTITY_TET where ID_ETY_TET = #{entityId}
+    </select>
+</mapper>

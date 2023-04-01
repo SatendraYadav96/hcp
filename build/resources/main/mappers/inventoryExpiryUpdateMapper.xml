@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.InventoryExpiryUpdateMapper">
+    <resultMap id="inventoryExpiryUpdateResultMap" type="com.squer.promobee.service.repository.domain.InventoryExpiryUpdate">
+        <id property="id" column="id_ieu"/>
+        <result property="expiryDate" column="expiry_date_ieu"/>
+        <result property="uploadDocumentPath" column="upload_document_path_ieu"/>
+        <result property="quantityRemaining" column="quantity_remaining_ieu"/>
+        <result property="replyNote" column="reply_note_ieu"/>
+        <result property="createdAt" column="created_on_ieu"/>
+        <result property="createdBy" column="created_by_ieu"/>
+        <result property="updatedAt" column="updated_on_ieu"/>
+        <result property="updatedBy" column="updated_by_ieu"/>
+        <association property="inventoryId" column="id_inv_ieu" select="getInventory" javaType="com.squer.promobee.service.repository.domain.Inventory">
+            <id property="id" column="id_inv"/>
+        </association>
+        <association property="ownerId" javaType="com.squer.promobee.security.domain.User">
+            <id property="id" column="id_owner_usr_ieu"/>
+            <result property="name" column="name_usr"/>
+        </association>
+        <association property="statusId" javaType="com.squer.promobee.service.repository.domain.UserStatus">
+            <id property="id" column="id_status_slv_ieu"/>
+            <result property="name" column="name_slv"/>
+        </association>
+    </resultMap>
+
+    <select id="getInventory" parameterType="map" resultType="com.squer.promobee.service.repository.domain.Inventory">
+        select id_inv as id from INVENTORY_INV where id_inv=#{id_inv_ieu}
+    </select>
+</mapper>

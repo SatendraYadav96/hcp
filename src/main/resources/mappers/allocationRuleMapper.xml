@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.AllocationRuleMapper">
+    <resultMap id="allocationRuleResultMap" type="com.squer.promobee.service.repository.domain.AllocationRule">
+        <id property="id" column="id_alr"/>
+        <result property="unitAllocation" column="is_unit_allocation_alr"/>
+        <result property="createdAt" column="created_on_alr"/>
+        <result property="createdBy" column="created_by_alr"/>
+        <result property="updatedAt" column="updated_on_alr"/>
+        <result property="updatedBy" column="updated_by_alr"/>
+        <association property="designationId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_ulv_alr"/>
+            <result property="name" column="name_ulv"/>
+        </association>
+        <association property="ownerStatus" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_owner_slv_alr"/>
+            <result property="name" column="name_slv"/>
+        </association>
+        <association property="categoryId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_itc_alr"/>
+            <result property="name" column="name_itc"/>
+        </association>
+    </resultMap>
+</mapper>

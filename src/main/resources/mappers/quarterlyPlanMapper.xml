@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.QuarterlyPlanMapper">
+    <resultMap id="quarterlyPlanResultMap" type="com.squer.promobee.service.repository.domain.QuarterlyPlan">
+        <id property="id" column="id_qtp"/>
+        <result property="fromDate" column="from_date_qtp"/>
+        <result property="toDate" column="to_date_qtp"/>
+        <result property="createdAt" column="created_on_qtp"/>
+        <result property="createdBy" column="created_by_qtp"/>
+        <result property="updatedAt" column="updated_on_qtp"/>
+        <result property="updatedBy" column="updated_by_qtp"/>
+        <association property="owner" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_owner_usr_qtp"/>
+            <result property="name" column="name_usr"/>
+        </association>
+        <association property="planStatus" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_status_slv_qtp"/>
+            <result property="name" column="name_slv"/>
+        </association>
+    </resultMap>
+
+</mapper>

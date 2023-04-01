@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.BrandMasterMapper">
+    <resultMap id="brandMasterResultMap" type="com.squer.promobee.service.repository.domain.BrandMaster">
+        <id property="id" column="id_brd"/>
+        <result property="name" column="name_brd"/>
+        <result property="ciName" column="ci_name_brd" />
+        <result property="code" column="code_brd"/>
+        <result property="active" column="is_active_brd"/>
+        <result property="createdAt" column="created_on_brd"/>
+        <result property="createdBy" column="created_by_brd"/>
+        <result property="updatedAt" column="updated_on_brd"/>
+        <result property="updatedBy" column="updated_by_brd"/>
+    </resultMap>
+
+
+
+
+
+</mapper>

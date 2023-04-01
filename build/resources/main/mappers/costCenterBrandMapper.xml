@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CostCenterBrandMapper">
+    <resultMap id="costCenterBrandResultMap" type="com.squer.promobee.service.repository.domain.CostCenterBrand">
+        <id property="id" column="id_cbr"/>
+        <association property="ccmId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_ccm_cbr"/>
+            <result property="name" column="name_ccm"/>
+        </association>
+        <association property="brandId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_brd_cbr"/>
+            <result property="name" column="name_brd"/>
+        </association>
+    </resultMap>
+
+    <insert id="editCostCenterBrand">
+        insert into COSTCENTER_BRAND_CBR (ID_CBR, ID_CCM_CBR, ID_BRD_CBR)
+        values( #{id}, #{ccmId}, #{brandId})
+    </insert>
+
+
+    <insert id="addCostCenterBrand">
+        insert into COSTCENTER_BRAND_CBR (ID_CBR, ID_CCM_CBR, ID_BRD_CBR)
+        values( #{id}, #{ccmId}, #{brandId})
+    </insert>
+
+
+
+
+
+</mapper>

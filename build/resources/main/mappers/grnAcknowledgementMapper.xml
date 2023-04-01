@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GRNAcknowledgementMapper">
+    <resultMap id="grnAcknowledgementResultMap" type="com.squer.promobee.service.repository.domain.GRNAcknowledgement">
+        <id property="id" column="id_grn"/>
+        <result property="transactionNo" column="transaction_no_grn"/>
+        <result property="poNo" column="po_no_grn"/>
+        <result property="limid" column="limid_grn"/>
+        <result property="batchNo" column="batch_no_grn"/>
+        <result property="itemName" column="item_name_grn"/>
+        <result property="postingDate" column="posting_date_grn"/>
+        <result property="qty" column="qty_grn"/>
+        <result property="value" column="value_grn"/>
+        <result property="vendorCode" column="vendor_code_grn"/>
+        <result property="vendorName" column="vendor_name_grn"/>
+        <result property="ratePerUnit" column="rate_per_unit_grn"/>
+        <result property="lineText" column="line_text_grn"/>
+        <result property="isAcknowledged" column="is_acknowledged_grn"/>
+        <result property="onDate" column="acknowledged_on_date_grn"/>
+        <result property="remarks" column="acknowledge_remarks_grn"/>
+        <result property="expiryDate" column="expiry_date_grn"/>
+        <result property="hsnCode" column="hsn_code_grn" />
+        <result property="ratePerGRN" column="rate_per_grn" />
+        <result property="createdAt" column="created_on_grn"/>
+        <result property="createdBy" column="created_by_grn"/>
+        <result property="updatedAt" column="updated_on_grn"/>
+        <result property="updatedBy" column="updated_by_grn"/>
+        <association property="ccmId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_ccm_grn"/>
+            <result property="name" column="name_ccm"/>
+        </association>
+        <association property="category" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_itc_grn"/>
+            <result property="name" column="name_itc"/>
+        </association>
+    </resultMap>
+
+    <select id="grn_acknowledgement_select" resultMap="grnAcknowledgementResultMap">
+        select * from dbo.GRN_ACKNOWLEDGEMENT_GRN where IS_ACKNOWLEDGED_GRN = 0
+    </select>
+
+    <select id="getGrnById" resultMap="grnAcknowledgementResultMap">
+        Select * from GRN_ACKNOWLEDGEMENT_GRN where ID_GRN=#{id}
+    </select>
+
+    <update id="rejectGrnAcknowledge">
+        update GRN_ACKNOWLEDGEMENT_GRN set IS_ACKNOWLEDGED_GRN= 2, UPDATED_ON_GRN=GETDATE(), UPDATED_BY_GRN=#{userId}, ACKNOWLEDGE_REMARKS_GRN = #{reason} where ID_GRN = #{grnId}
+    </update>
+
+    <update id="approveAcknowledge">
+        update GRN_ACKNOWLEDGEMENT_GRN set IS_ACKNOWLEDGED_GRN = 1, ACKNOWLEDGED_ON_DATE_GRN = GETDATE(), ID_ITC_GRN = #{itcId}, EXPIRY_DATE_GRN = #{expiryDate},
+         UPDATED_ON_GRN = GETDATE(), UPDATED_BY_GRN = #{userId}
+         <if test="medicalCode != null">, LINE_TEXT_GRN = #{medicalCode}</if>
+         <if test="hsnCode != null">, HSN_CODE_GRN = #{hsnCode}</if>
+         <if test="ratePer != null">, RATE_PER_GRN = #{ratePer}</if>
+         where ID_GRN = #{grnId}
+    </update>
+</mapper>

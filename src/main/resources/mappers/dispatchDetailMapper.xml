@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DispatchDetailMapper">
+    <resultMap id="dispatchDetailResultMap" type="com.squer.promobee.service.repository.domain.DispatchDetail">
+        <id property="id" column="id_did"/>
+        <result property="qtyDispatch" column="quantity_dispatch_did"/>
+        <result property="remarks" column="remarks_did"/>
+        <result property="createdAt" column="created_on_did"/>
+        <result property="createdBy" column="created_by_did"/>
+        <result property="updatedAt" column="updated_on_did"/>
+        <result property="updatedBy" column="updated_by_did"/>
+        <association property="planId" column="id_dip_did" select="getDispatchPlan" javaType="com.squer.promobee.service.repository.domain.DispatchPlan">
+            <id property="id" column="id_dip"/>
+        </association>
+        <association property="inventoryId" column="id_inv_did" select="getInventory" javaType="com.squer.promobee.service.repository.domain.Inventory">
+            <id property="id" column="id_inv"/>
+        </association>
+        <association property="recipientId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_rct_did"/>
+            <result property="name" column="name_rct"/>
+        </association>
+        <association property="quarterlyPlanId" column="id_qtp_did" select="getQuarterlyPlan" javaType="com.squer.promobee.service.repository.domain.QuarterlyPlan">
+            <id property="id" column="id_qtp"/>
+        </association>
+        <association property="detailStatus" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_status_slv_did"/>
+            <result property="name" column="name_slv"/>
+        </association>
+        <association property="categoryId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_itc_did"/>
+            <result property="name" column="name_itc"/>
+        </association>
+    </resultMap>
+
+
+    <select id="getDispatchPlan" parameterType="map" resultType="com.squer.promobee.service.repository.domain.DispatchPlan" >
+        select id_dip as id from DISPATCH_PLAN_DIP where id_dip=#{id_dip_did}
+    </select>
+
+    <select id="getInventory" parameterType="map" resultType="com.squer.promobee.service.repository.domain.Inventory" >
+        select id_inv as id from INVENTORY_INV where id_inv=#{id_inv_did}
+    </select>
+
+    <select id="getQuarterlyPlan" parameterType="map" resultType="com.squer.promobee.service.repository.domain.QuarterlyPlan" >
+        select id_qtp as id from QUARTERLY_PLAN_QTP where id_rct=#{id_qtp_did}
+    </select>
+
+    <insert id="dispatchDetailInsert" >
+        insert into DISPATCH_DETAIL_DID(ID_DID, ID_DIP_DID, ID_INV_DID, ID_RCT_DID, QUANTITY_DISPATCH_DID, ID_QTP_DID, ID_STATUS_SLV_DID, REMARKS_DID, CREATED_ON_DID, CREATED_BY_DID, UPDATED_ON_DID, UPDATED_BY_DID, ID_ITC_DID)
+        values(#{id}, #{planId.id}, #{inventoryId.id}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId.id}, #{detailStatus.id}, #{remarks}, GETDATE(), #{craetedBy}, GETDATE(), #{updatedBy}, #{categoryId.id})
+    </insert>
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserMapper">
+    <resultMap id="usersResultMap" type="com.squer.promobee.security.domain.User">
+        <id property="id" column="id_usr" />
+        <result property="name" column="name_usr"/>
+        <result property="ciName" column="ci_name_usr" />
+        <result property="username" column="login_name_usr"/>
+        <result property="employeeCode" column="employee_code_usr"/>
+        <result property="activeFrom" column="active_from_usr"/>
+        <result property="activeTo" column="active_to_usr"/>
+        <result property="email" column="email_address_usr"/>
+        <result property="lastLoggedIn" column="last_logged_in_usr"/>
+        <result property="createdAt" column="created_on_usr"/>
+        <result property="createdBy" column="created_by_usr"/>
+        <result property="updatedAt" column="updated_on_usr"/>
+        <result property="updatedBy" column="updated_by_usr"/>
+        <association property="userDesignation" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_desg_ulv_usr"/>
+            <result property="name" column="name_ulv"/>
+        </association>
+        <association property="userStatus" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_status_slv_usr"/>
+            <result property="name" column="name_slv" />
+        </association>
+        <association property="legalEntity" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_ety_usr"/>
+            <result property="name" column="name_ety" />
+        </association>
+    </resultMap>
+
+    <select id="findUserById" resultMap="usersResultMap">
+        select u.ID_USR, u.NAME_USR, u.CI_NAME_USR, u.EMAIL_ADDRESS_USR, u.EMPLOYEE_CODE_USR, u.ACTIVE_FROM_USR,
+        u.ACTIVE_TO_USR, u.LAST_LOGGED_IN_USR, u.LOGIN_NAME_USR, u.CREATED_BY_USR, u.CREATED_ON_USR, u.UPDATED_BY_USR,
+        u.UPDATED_ON_USR, u.ID_ETY_USR, NAME_ETY, u.ID_DESG_ULV_USR, NAME_ULV, u.ID_STATUS_SLV_USR, NAME_SLV
+        from USER_MASTER_USR u
+        left join USER_LOV_ULV d on d.ID_ULV = u.ID_DESG_ULV_USR
+        left join SYSTEM_LOV_SLV s on s.ID_SLV = u.ID_STATUS_SLV_USR
+        left join LEGAL_ENTITY_MASTER_ETY e on e.ID_ETY = u.ID_ETY_USR
+        where u.id_usr=#{id}
+    </select>
+
+    <select id="findByUsername" resultMap="usersResultMap">
+        SELECT * from USER_MASTER_USR where login_name_usr = #{username}
+    </select>
+
+    <insert id="insertUser">
+        INSERT INTO USER_MASTER_USR(name_usr, ci_name_usr, employee_code_usr, id_desg_ulv_usr, active_from_usr, active_to_usr, id_ety_usr,
+        email_address_usr, login_name_usr, last_logged_in_usr, id_status_slv_usr, created_on_usr, created_by_usr, updated_on_usr, updated_by_usr)
+        values (#{fullName}, #{ciName}, #{employeeCode}, #{userDesignation.id}, #{activeFrom}, #{activeTo}, #{legalEntity.id},
+        #{email}, #{username}, #{lastLoggedIn}, #{status.id}, #{createdAt}, #{createdBy}, #{updatedAt}, #{updatedBy})
+    </insert>
+
+    <update id="updateUser">
+        UPDATE USERS set name_usr=#{fullName}, ci_name_usr=#{ciName}, login_name_usr=#{username}, employee_code_usr=#{employeeCode},
+            id_desg_ulv_usr=#{userDesignation.id}, active_from_usr=#{activeFrom}, active_to_usr=#{activeTo}, id_ety_usr=#{legalEntity.id},
+            email_address_usr=#{email}, last_loggd_in_usr=#{lastLoggedIn}, id_status_slv_usr=#{status.id}, updated_on_usr=#{updatedAt}, updated_by_usr=#{updatedBy} where id_usr=#{id}
+    </update>
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.DivisionBrandMapper">
+    <resultMap id="divisionBrandResultMap" type="com.squer.promobee.service.repository.domain.DivisionBrand">
+        <id property="id" column="id_dbr"/>
+        <association property="divisionid" javaType="com.squer.promobee.service.repository.domain.Division">
+            <id property="id" column="id_dim_dbr"/>
+            <result property="name" column="name_dim"/>
+        </association>
+        <association property="brandId" javaType="com.squer.promobee.service.repository.domain.BrandMaster">
+            <id property="id" column="id_brd_dbr"/>
+            <result property="name" column="name_brd"/>
+        </association>
+    </resultMap>
+</mapper>

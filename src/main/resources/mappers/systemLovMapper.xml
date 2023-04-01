@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SystemLovMapper">
+    <resultMap id="systemLovResultMap" type="com.squer.promobee.service.repository.domain.SystemLov">
+        <id property="id" column="id_slv"/>
+        <result property="name" column="name_slv"/>
+        <result property="ciName" column="ci_name_slv"/>
+        <result property="type" column="type_slv"/>
+        <result property="displayOrder" column="description_slv"/>
+    </resultMap>
+
+    <select id="systemLovSelect" resultMap="systemLovResultMap">
+        select * from SYSTEM_LOV_SLV
+        <where>
+            <if test="type!= null">TYPE_SLV = #{type}</if>
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UploadLogMapper">
+    <resultMap id="uploadLogResultMap" type="com.squer.promobee.service.repository.domain.UploadLog">
+        <id property="id" column="id_upl"/>
+        <result property="startTime" column="start_time_upl"/>
+        <result property="endTime" column="end_time_upl"/>
+        <result property="totalRecord" column="total_records_upl"/>
+        <result property="recordUpload" column="records_upload_upl"/>
+        <result property="parentId" column="parent_id_upl"/>
+        <result property="createdAt" column="created_on_upl"/>
+        <result property="createdBy" column="created_by_upl"/>
+        <result property="updatedAt" column="updated_on_upl"/>
+        <result property="updatedBy" column="updated_by_upl"/>
+        <association property="type" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="idtypeslv_upl"/>
+            <result property="name" column="name_slv"/>
+        </association>
+        <association property="statusId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_status_slv_upl"/>
+            <result property="name" column="name_slv"/>
+        </association>
+    </resultMap>
+    
+    <select id="uploadLogSelectByStatusId" resultMap="uploadLogResultMap">
+        select ID_UPL ,IDTYPESLV_UPL ,START_TIME_UPL ,END_TIME_UPL ,TOTAL_RECORDS_UPL ,RECORDS_UPLOAD_UPL ,ID_STATUS_SLV_UPL
+                ,CREATED_ON_UPL ,CREATED_BY_UPL ,UPDATED_ON_UPL ,UPDATED_BY_UPL ,PARENT_ID_UPL from UPLOAD_LOG_UPL where IDTYPESLV_UPL = #{statusId}
+    </select>
+</mapper>

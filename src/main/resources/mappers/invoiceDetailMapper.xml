@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.InvoiceDetailMapper">
+    <resultMap id="invoiceDetailResultMap" type="com.squer.promobee.service.repository.domain.InvoiceDetail">
+        <id property="id" column="id_ind"/>
+        <result property="quantity" column="quantity_ind"/>
+        <result property="value" column="value_ind"/>
+        <result property="hsnCode" column="hsn_code_ind"/>
+        <result property="rate" column="rate_per_ind"/>
+        <result property="createdAt" column="created_on_ind"/>
+        <result property="createdBy" column="created_by_ind"/>
+        <result property="updatedAt" column="updated_on_ind"/>
+        <result property="updatedBy" column="updated_by_ind"/>
+        <association property="headerId" column="id_inh_ind" select="getHeader" javaType="com.squer.promobee.service.repository.domain.InvoiceHeader">
+            <id property="id" column="id_inh"/>
+        </association>
+        <association property="itemId" javaType="com.squer.promobee.service.repository.domain.Item">
+            <id property="id" column="id_itm_ind"/>
+            <result property="name" column="name_itm"/>
+        </association>
+        <association property="didId" column="id_did_ind" select="getDid" javaType="com.squer.promobee.service.repository.domain.DispatchDetail">
+            <id property="id" column="id_did"/>
+        </association>
+        <association property="inventoryId" column="id_inv_ind" select="getInventory" javaType="com.squer.promobee.service.repository.domain.Inventory">
+            <id property="id" column="id_inv"/>
+        </association>
+    </resultMap>
+
+    <select id="getHeader" parameterType="map" resultType="com.squer.promobee.service.repository.domain.InvoiceHeader">
+        select id_inh as id from INVOICE_HEADER_INH where id_inh=#{id_inh_ind}
+    </select>
+
+    <select id="getDid" parameterType="map" resultType="com.squer.promobee.service.repository.domain.DispatchDetail">
+        select id_did as id from DISPATCH_DETAIL_DID where id_did=#{id_did_ind}
+    </select>
+
+    <select id="getInventory" parameterType="map" resultType="com.squer.promobee.service.repository.domain.Inventory" >
+        select id_inv as id from INVENTORY_INV where id_inv=#{id_inv_ind}
+    </select>
+
+</mapper>

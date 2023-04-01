@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.DetailsComplianceMapper">
+    <resultMap id="detailsComplianceResultMap" type="com.squer.promobee.service.repository.domain.DetailsCompliance">
+        <id property="id" column="id_cd"/>
+        <result property="territoryName" column="name_territory_cd" />
+        <result property="territoryId" column="id_territory_cd" />
+        <result property="personId" column="id_person_cd" />
+        <result property="personName" column="name_person_cd" />
+        <result property="locationId" column="id_location_cd" />
+        <result property="locationName" column="name_location_cd" />
+        <result property="visited" column="visited_cd" />
+        <result property="itemCategory" column="itemcategory_cd" />
+        <result property="itemId" column="id_item_cd" />
+        <result property="itemName" column="name_item_cd" />
+        <result property="batchNo" column="batch_no_cd" />
+        <result property="quantity" column="quantity_cd" />
+        <result property="subteam" column="subteam_cd" />
+        <result property="team" column="team_cd" />
+        <result property="am" column="am_cd" />
+        <result property="rbm" column="rbm_cd" />
+        <result property="month" column="month_cd" />
+        <result property="startDate" column="start_date_cd" />
+        <result property="endDate" column="end_date_cd" />
+        <result property="createdAt" column="created_on_cd"/>
+        <result property="createdBy" column="created_by_cd"/>
+        <result property="updatedAt" column="updated_on_cd"/>
+        <result property="updatedBy" column="updated_by_cd"/>
+    </resultMap>
+</mapper>

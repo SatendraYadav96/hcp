@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="base">
+    <cache />
+    <sql id="where_statement">
+        <where>
+            <foreach item="item" index="index" collection="conditions" separator=" and ">
+                <choose>
+                    <when test="item.operator =='IN'">
+                        ${item.name} ${item.operator}
+                        <foreach item="i" index="index" collection="item.value" separator="," open="(" close=")">
+                            #{i}
+                        </foreach>
+                    </when>
+                    <when test="item.operator =='NOT IN'">
+                        ${item.name} ${item.operator}
+                        <foreach item="i" index="index" collection="item.value" separator="," open="(" close=")">
+                            #{i}
+                        </foreach>
+                    </when>
+                    <otherwise>
+                        ${item.name} ${item.operator} #{item.value}
+                    </otherwise>
+                </choose>
+            </foreach>
+        </where>
+        <if test="orderBy!=''">
+            ${orderBy}
+        </if>
+    </sql>
+
+    <sql id="delete_where_statement">
+        <where>
+            <foreach item="item" index="index" collection="conditions"
+                     separator=" and ">
+                ${item.name} ${item.operator} #{item.value}
+            </foreach>
+        </where>
+    </sql>
+
+    <sql id="audit_insert">
+        #{entity.createdBy}, #{entity.createdOn},  #{entity.updatedBy}, #{entity.updatedOn}, #{entity.staleId}
+    </sql>
+
+    <sql id="location_heirarchy">
+        with RECURSIVE cmt_locations as
+        (
+        select locat_id, locat_name, cmt_location_master.locat_type_id locat_type_id, loctt_name
+        from cmt_location_master
+        inner join cmt_location_type on locat_type_id = loctt_id
+        where locat_parent_id = #{conditions.locationId.value} and locat_is_active = true
+        union all
+        select cm.locat_id locat_id, cm.locat_name locat_name, cm.locat_type_id locat_type_id, ct.loctt_name loctt_name
+        from cmt_location_master cm
+        INNER JOIN cmt_locations cl on cl.locat_id = cm.locat_parent_id
+        inner join cmt_location_type  ct on cm.locat_type_id = ct.loctt_id
+        where locat_is_active = true)
+        select * from cmt_locations where locat_type_id = #{conditions.locationTypeId.value}
+    </sql>
+</mapper>

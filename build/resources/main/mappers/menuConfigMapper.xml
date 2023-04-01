@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.MenuConfigMapper">
+    <resultMap id="menuConfigResultMap" type="com.squer.promobee.service.repository.domain.MenuConfig">
+        <id property="id" column="id_men"/>
+        <result property="name" column="name_men"/>
+        <result property="ciName" column="ci_name_men"/>
+        <result property="url" column="url_men"/>
+        <result property="level" column="level_men"/>
+        <result property="displayOrder" column="display_order_men"/>
+        <association property="parentId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="parent_id_men"/>
+            <result property="name" column="name_men"/>
+        </association>
+        <association property="prvId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_prv_men"/>
+            <result property="name" column="name_prv"/>
+        </association>
+    </resultMap>
+</mapper>
+
+

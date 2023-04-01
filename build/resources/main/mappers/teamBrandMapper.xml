@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TeamBrandMapper">
+    <resultMap id="teamBrandResultMap" type="com.squer.promobee.service.repository.domain.Team">
+        <id property="id" column="id_tbr"/>
+        <association property="teamId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_tem_tbr"/>
+            <result property="name" column="name_tem"/>
+        </association>
+        <association property="brandId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_brd_tbr"/>
+            <result property="name" column="name_brd"/>
+        </association>
+    </resultMap>
+
+
+</mapper>

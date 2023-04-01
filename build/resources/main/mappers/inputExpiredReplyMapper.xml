@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.InputExpiredReplyMapper">
+    <resultMap id="inputExpiredReplyResultMap" type="com.squer.promobee.service.repository.domain.InputExpiredReply">
+        <id property="id" column="id_rly"/>
+        <result property="month" column="months"/>
+        <result property="years" column="years"/>
+        <association property="rctId" javaType="com.squer.promobee.service.repository.domain.Recipient">
+            <id property="id" column="rct_id_rly"/>
+            <result property="name" column="name_rct"/>
+        </association>
+    </resultMap>
+</mapper>

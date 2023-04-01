@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.BUHeadMapper">
+    <resultMap id="buHeadResultMap" type="com.squer.promobee.service.repository.domain.BUHead">
+        <id property="id" column="id"/>
+        <association property="userId" javaType="com.squer.promobee.security.domain.User">
+            <id property="id" column="id_usr_buh_bum"/>
+            <result property="name" column="name_usr"/>
+        </association>
+        <association property="buId" javaType="com.squer.promobee.service.repository.domain.BU">
+            <id property="id" column="id_bum_buh_bum"/>
+            <result property="name" column="name_bum"/>
+        </association>
+    </resultMap>
+</mapper>

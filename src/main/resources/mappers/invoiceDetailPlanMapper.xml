@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.InvoiceDetailPlanMapper">
+    <resultMap id="invoiceDetailPlanResultMap" type="com.squer.promobee.service.repository.domain.InvoiceDetailPlan">
+        <id property="id" column="id_idp"/>
+        <association property="headerId" column="id_inh_idp" select="getHeader" javaType="com.squer.promobee.service.repository.domain.InvoiceHeader">
+            <id property="id" column="id_inh"/>
+        </association>
+        <association property="planId" column="id_plan_idp" select="getPlan" javaType="com.squer.promobee.service.repository.domain.DispatchPlan">
+            <id property="id" column="id_idp"/>
+        </association>
+    </resultMap>
+
+    <select id="getHeader" parameterType="map" resultType="com.squer.promobee.service.repository.domain.InvoiceHeader">
+        select id_inh as id from INVOICE_HEADER_INH where id_inh=#{id_inh_idp}
+    </select>
+
+    <select id="getPlan" parameterType="map" resultType="com.squer.promobee.service.repository.domain.DispatchPlan" >
+        select id_dip as id from DISPATCH_PLAN_DIP where id_dip=#{id_plan-idp}
+    </select>
+
+</mapper>
+

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.squer.promobee.mapper.BlockDataMapper">
+    <resultMap id="blockDataResultMap" type="com.squer.promobee.service.repository.domain.BlockData">
+        <id property="id" column="id_bdt"/>
+        <result property="month" column="month_bdt"/>
+        <result property="year" column="year_bdt"/>
+        <result property="team" column="team_bdt"/>
+        <result property="block" column="block_bdt"/>
+        <result property="unblock" column="unblock_bdt"/>
+    </resultMap>
+</mapper>

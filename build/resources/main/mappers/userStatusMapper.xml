@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserStatusMapper">
+    <resultMap id="userStatusResultMap" type="com.squer.promobee.service.repository.domain.UserStatus">
+        <id property="id" column="id_slv"/>
+        <result property="name" column="name_slv"/>
+        <result property="ciName" column="ci_name_slv"/>
+        <result property="type" column="type_ulv" />
+        <result property="displayOrder" column="display_order_slv"/>
+    </resultMap>
+
+    <select id="getStatusList" resultMap="userStatusResultMap">
+        SELECT * FROM SYSTEM_LOV_SLV
+    </select>
+</mapper>

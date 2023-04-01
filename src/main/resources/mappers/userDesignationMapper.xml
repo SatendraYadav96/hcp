@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UserDesignationMapper">
+
+    <resultMap id="userDesignationResultMap" type="com.squer.promobee.service.repository.domain.UserDesignation">
+        <id property="id" column="id_ulv"/>
+        <result property="name" column="name_ulv"/>
+        <result property="ciName" column="ci_name_ulv"/>
+        <result property="type" column="type_ulv" />
+        <result property="displayOrder" column="display_order_ulv"/>
+        <result property="createdAt" column="created_on_ulv"/>
+        <result property="createdBy" column="created_by_ulv" />
+        <result property="updatedAt" column="updated_on_ulv" />
+        <result property="updatedBy" column="updated_by_ulv"/>
+    </resultMap>
+
+    <select id="findById" resultMap="userDesignationResultMap">
+        select * from USER_LOV_ULV where id_ulv=#{id}
+    </select>
+
+</mapper>

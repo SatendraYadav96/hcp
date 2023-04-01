@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ReportMapper">
+
+
+
+
+    <select id="getReportRecipient" resultType="com.squer.promobee.controller.dto.RecipientReportDTO">
+        SELECT * INTO #FilterTable FROM
+        (
+        select TEM.ID_TEM,BUM.NAME_BUM as 'businessUnit', DIM.NAME_DIM as 'divison' from
+        TEAM_MASTER_TEM TEM join DIVISION_MASTER_DIM DIM on TEM.ID_DIM_TEM =Dim.ID_DIM
+        join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
+        where DIM.ID_BUM_DIM  in (SELECT Item from [dbo].SplitGUIDs (#{businessUnit}))
+        and (#{divison} is null or DIM.ID_DIM  in (SELECT Item from [dbo].SplitGUIDs (#{divison})))
+        and (#{team} is null or TEM.ID_TEM  in (SELECT Item from [dbo].SplitGUIDs (#{team})))
+        ) AS FilterResult
+
+
+
+        SELECT distinct FT.businessUnit , FT.divison ,TEM.ID_TEM AS TeamID,RCT.ID_RCT AS EmployeeID,
+        RCT.CODE_RCT AS 'employeeCode',
+        RCT.NAME_RCT AS employeeName,
+        RCT.ADDRESS_RCT 'address',
+        RCT.CITY_RCT AS city,
+        ULV.NAME_ULV AS designation,
+        RCT.STATE_RCT AS 'state',
+        RCT.ZIP_RCT AS zip,
+        RCT.ZONE_RCT AS zone,
+        RCT.LoginId as loginId,
+        RCT.WorkId as workId ,RCT.Gender as gender,
+        CONVERT(nvarchar(100),RCT.JOINING_DATE_RCT, 103) AS 'joiningDate',
+        RCT.MOBILE_RCT AS mobile,
+        RCT.EMAIL_RCT AS email,
+        TEM.NAME_TEM AS team,
+        RCT.NSM_NAME_RCT AS nsmName,
+        RCT.NSM_CODE_RCT AS nsmCode,
+        RCT.RM_NAME_RCT AS rmName,
+        RCT.RM_CODE_RCT AS rmCode,
+        RCT.AM_NAME_RCT AS amName,
+        RCT.AM_CODE_RCT AS amCode,
+        RCT.CFA_RCT AS cfa,
+        RCT.HEAD_QUARTER_RCT AS hq,
+        '' AS remarks,
+        SLV.NAME_SLV 'status'
+
+        FROM RECIPIENT_MASTER_RCT RCT
+        join #FilterTable FT on RCT.ID_TEM_RCT = FT.ID_TEM
+        JOIN TEAM_MASTER_TEM TEM ON FT.ID_TEM = TEM.ID_TEM
+        JOIN USER_LOV_ULV ULV ON RCT.ID_DESG_ULV_RCT = ULV.ID_ULV
+        JOIN SYSTEM_LOV_SLV SLV ON RCT.ID_STATUS_SLV_RCT = SLV.ID_SLV
+        WHERE RCT.ID_STATUS_SLV_RCT = #{statusId}
+        ORDER BY RCT.NAME_RCT
+
+        DROP TABLE #FilterTable
+    </select>
+
+
+
+    <select id="getReportPurchase" resultType="com.squer.promobee.controller.dto.PurchaseReportDTO">
+
+        SELECT * INTO #FilterTable FROM
+        (
+        select BRD.ID_BRD,BUM.NAME_BUM as 'businessUnit', DIM.NAME_DIM as 'divison' from
+        BRAND_MASTER_BRD BRD
+        join DIVISION_BRAND_DBR DBR on BRD.ID_BRD= dbr.ID_BRD_DBR
+        join DIVISION_MASTER_DIM DIM on dbr.ID_DIM_DBR =Dim.ID_DIM
+        join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
+        where DIM.ID_BUM_DIM  in (SELECT Item from [dbo].SplitGUIDs (#{businessUnit}))
+        and (#{division} is null or DIM.ID_DIM  in (SELECT Item from [dbo].SplitGUIDs (#{division})))
+
+        ) AS FilterResult
+
+        SELECT * INTO #Purchase1 FROM (
+        SELECT  distinct FT.businessUnit,FT.divison,BBR.ID_USR_BBR AS 'BrandManagerID',usr.NAME_USR as 'BrandManager',INV.ID_INV,CCM.ID_CCM 'CostCenterID',CONVERT(nvarchar(100), INV.POSTING_DATE_INV, 103) AS grnDate, VND.NAME_VND AS vendorName, VND.CODE_VND AS vendorCode, INV.PO_NO_INV AS poNo,
+        ITM.NAME_ITM AS productName, ITM.CODE_ITM AS productCode, CCM.NAME_CCM AS 'costCenter', INV.QTY_RECEIVED_INV AS quantity,
+        --INV.RATE_PER_UNIT_INV AS rate,(INV.RATE_PER_UNIT_INV * INV.QTY_RECEIVED_INV) AS value,
+        Round(INV.RATE_PER_UNIT_INV,2) AS rate,Round(INV.RATE_PER_UNIT_INV * INV.QTY_RECEIVED_INV,0) AS value,
+        inv.BATCH_NO_INV as 'batchNo',inv.MEDICAL_CODE_INV as 'medicalCode',inv.NUM_BOXES_INV as 'noBoxes'
+        FROM INVENTORY_INV INV
+        JOIN ITEM_MASTER_ITM ITM ON INV.ID_ITM_INV = ITM.ID_ITM
+        JOIN VENDOR_MASTER_VND VND ON INV.ID_VND_INV = VND.ID_VND
+        JOIN COST_CENTER_MASTER_CCM CCM ON ITM.ID_CCM_ITM = CCM.ID_CCM
+        join COSTCENTER_BRAND_CBR CBR on CCM.ID_CCM=CBR.ID_CCM_CBR
+        JOIN BRAND_MASTER_BRD BRD ON CBR.ID_BRD_CBR = BRD.ID_BRD
+        JOIN BRANDMANAGER_BRAND_BBR BBR ON CBR.ID_BRD_CBR = BBR.ID_BRD_BBR
+        join USER_MASTER_USR usr on usr.ID_USR = BBR.ID_USR_BBR
+        JOIN #FilterTable FT on BRD.ID_BRD  = FT.ID_BRD
+        WHERE INV.POSTING_DATE_INV &gt;= #{startDate} AND INV.POSTING_DATE_INV &lt;=  #{endDate}
+        UNION
+        SELECT distinct FT.businessUnit,FT.divison,BBR1.ID_USR_BBR AS 'BrandManagerID',usr.NAME_USR as 'BrandManager',INV.ID_INV,BRD1.ID_BRD 'CostCenterID',CONVERT(nvarchar(100), INV.POSTING_DATE_INV, 103) AS grnDate,
+        ISNULL(VND.NAME_VND,'TEST') AS vendorName,ISNULL(VND.CODE_VND, 'TEST') AS vendorCode, INV.PO_NO_INV AS poNo,
+        SMP.NAME_SMP AS productName, SMP.LMID_SMP AS productCode, BRD1.NAME_BRD AS 'costCenter', INV.QTY_RECEIVED_INV AS quantity,
+        --INV.RATE_PER_UNIT_INV AS rate, 	(INV.RATE_PER_UNIT_INV * INV.QTY_RECEIVED_INV) AS value,
+        Round(INV.RATE_PER_UNIT_INV,2) AS rate,Round(INV.RATE_PER_UNIT_INV * INV.QTY_RECEIVED_INV,0) AS value,
+        inv.BATCH_NO_INV as 'batchNo',inv.MEDICAL_CODE_INV as 'medicalCode',inv.NUM_BOXES_INV as 'noBoxes'
+        FROM INVENTORY_INV INV
+        JOIN SAMPLE_MASTER_SMP SMP ON INV.ID_ITM_INV = SMP.ID_SMP
+        left JOIN VENDOR_MASTER_VND VND ON INV.ID_VND_INV = VND.ID_VND
+        JOIN BRANDMANAGER_BRAND_BBR BBR1 ON SMP.ID_BRD_SMP = BBR1.ID_BRD_BBR
+        JOIN BRAND_MASTER_BRD BRD1 ON BBR1.ID_BRD_BBR = BRD1.ID_BRD
+        join USER_MASTER_USR usr on usr.ID_USR = BBR1.ID_USR_BBR
+        JOIN  #FilterTable FT  ON BRD1.ID_BRD = FT.ID_BRD
+        WHERE INV.POSTING_DATE_INV &gt;= #{startDate} AND INV.POSTING_DATE_INV &lt;=  #{endDate})
+        AS Purchase1
+
+        IF(#{userDesgId} = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5')--BM
+        BEGIN
+        SELECT distinct * FROM #Purchase1 WHERE CostCenterID IN (SELECT DISTINCT ID_CCM_CBR FROM BRANDMANAGER_BRAND_BBR BBR
+        JOIN COSTCENTER_BRAND_CBR CBR ON BBR.ID_BRD_BBR = CBR.ID_BRD_CBR WHERE BBR.ID_USR_BBR = #{userId}
+        UNION SELECT ID_BRD_BBR FROM BRANDMANAGER_BRAND_BBR WHERE ID_USR_BBR = #{userId})
+        END
+        ELSE IF(#{userDesgId} = '88F90CCF-FB95-42DB-AECF-B4C5E8C25BE6')--BEX
+        BEGIN
+
+        SELECT distinct * FROM #Purchase1 WHERE CostCenterID IN (
+        SELECT DISTINCT CBR.ID_CCM_CBR FROM COSTCENTER_BRAND_CBR CBR
+        JOIN TEAM_BRAND_TBR TBR ON CBR.ID_BRD_CBR = TBR.ID_BRD_TBR
+        JOIN TEAM_LEGAL_ENTITY_TET TET ON TBR.ID_TEM_TBR = TET.ID_TEM_TET
+        join USER_LEGAL_ENTITY_ULE ULE on TET.ID_ETY_TET = ULE.ID_ETY_ULE
+        join USER_MASTER_USR USR on USR.ID_USR= ULE.ID_USR_ULE
+        WHERE USR.ID_USR = #{userId}
+        UNION
+        SELECT DISTINCT TBR.ID_BRD_TBR FROM TEAM_BRAND_TBR TBR
+        JOIN TEAM_LEGAL_ENTITY_TET TET ON TBR.ID_TEM_TBR = TET.ID_TEM_TET
+        join USER_LEGAL_ENTITY_ULE ULE on TET.ID_ETY_TET = ULE.ID_ETY_ULE
+        join USER_MASTER_USR USR on USR.ID_USR= ULE.ID_USR_ULE
+        WHERE USR.ID_USR = #{userId}
+        )
+
+        END
+        ELSE--HUB
+        BEGIN
+        SELECT distinct * FROM #Purchase1
+        END
+
+        DROP TABLE #FilterTable
+        DROP TABLE #Purchase1
+
+
+    </select>
+
+
+
+    <select id="getReportDispatches" resultType="com.squer.promobee.controller.dto.DispatchesReportDTO" parameterType = "map" statementType = "CALLABLE">
+        {call PROC_ReportDispatch (#{Filter, jdbcType = VARCHAR, mode = IN},#{StartDate, jdbcType = VARCHAR, mode = IN}, #{EndDate, jdbcType = VARCHAR, mode = IN}, #{UserID, jdbcType = VARCHAR, mode = IN},
+        #{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN},#{Division, jdbcType = VARCHAR, mode = IN},
+        #{filterplan, jdbcType = VARCHAR, mode = IN} )}
+    </select>
+
+
+
+    <select id="getReportDispatchRegister" resultType="com.squer.promobee.controller.dto.DispatchRegisterReportDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_ReportDispatchRegister(#{StartDate, jdbcType = VARCHAR, mode = IN}, #{EndDate, jdbcType = VARCHAR, mode = IN}, #{UserID, jdbcType = VARCHAR, mode = IN},
+        #{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN},#{Division, jdbcType = VARCHAR, mode = IN},
+        #{Team, jdbcType = VARCHAR, mode = IN},#{StatusID, jdbcType = VARCHAR, mode = IN},#{Filterplan, jdbcType = VARCHAR, mode = IN}) }
+    </select>
+
+
+    <select id="getReportDeviation" resultType="com.squer.promobee.controller.dto.DeviationReportDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_ReportDeviation(#{QuarterName, jdbcType = VARCHAR, mode = IN},#{FromDate, jdbcType = VARCHAR, mode = IN}, #{ToDate, jdbcType = VARCHAR, mode = IN},
+        #{UserID, jdbcType = VARCHAR, mode = IN},
+        #{UserDesgID, jdbcType = VARCHAR, mode = IN}) }
+    </select>
+
+
+    <select id="getReportItemConsumption" resultType="com.squer.promobee.controller.dto.ItemConsumptionReportDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_ReportItemConsumption (#{FromDate, jdbcType = VARCHAR, mode = IN}, #{ToDate, jdbcType = VARCHAR, mode = IN},
+        #{UserID, jdbcType = VARCHAR, mode = IN},#{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN},
+        #{Division, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+
+    <select id="getReportDestruction" resultType="com.squer.promobee.controller.dto.DestructionReportDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_ReportDestruction (#{FromDate, jdbcType = VARCHAR, mode = IN}, #{ToDate, jdbcType = VARCHAR, mode = IN},
+        #{UserID, jdbcType = VARCHAR, mode = IN},#{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN},
+        #{Division, jdbcType = VARCHAR, mode = IN},#{StatusID, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+
+    <select id="getReportSimpleInventory" resultType="com.squer.promobee.controller.dto.SimpleInventoryReportDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_ReportSimpleInventory (#{BusinessUnit, jdbcType = VARCHAR, mode = IN},
+        #{Division, jdbcType = VARCHAR, mode = IN},#{UserID, jdbcType = VARCHAR, mode = IN},#{UserDesgID, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+    <select id="getReportNearToExpirySample" resultType="com.squer.promobee.controller.dto.NearToExpiryReportDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_ReportNearToExpiry (#{BusinessUnit, jdbcType = VARCHAR, mode = IN},
+        #{Division, jdbcType = VARCHAR, mode = IN},#{UserID, jdbcType = VARCHAR, mode = IN},#{UserDesgID, jdbcType = VARCHAR, mode = IN}
+        ,#{Type, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+    <select id="getReportNearToExpiryInput" resultType="com.squer.promobee.controller.dto.NearToExpiryReportDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_ReportNearToExpiry (#{BusinessUnit, jdbcType = VARCHAR, mode = IN},
+        #{Division, jdbcType = VARCHAR, mode = IN},#{UserID, jdbcType = VARCHAR, mode = IN},#{UserDesgID, jdbcType = VARCHAR, mode = IN}
+        ,#{Type, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+
+    <select id="getReportSpecialDispatch" resultType="com.squer.promobee.controller.dto.SpecialDispatchReportDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_ReportSpecialDispatch (#{FromDate, jdbcType = VARCHAR, mode = IN}, #{ToDate, jdbcType = VARCHAR, mode = IN},
+        #{UserID, jdbcType = VARCHAR, mode = IN},#{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN},
+        #{Division, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+
+    <select id="getReportDispatchByTeam" resultType="com.squer.promobee.controller.dto.DispatchByTeamReportDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GET_DISPATCH_PLAN_FOR_YEAR (#{YEAR, jdbcType = VARCHAR, mode = IN}, #{Special, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+
+
+
+
+</mapper>
