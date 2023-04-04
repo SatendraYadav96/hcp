@@ -15,6 +15,7 @@ enum class UserMenuEnum(val label: String, val key: String, val title: String, v
     DELIVERY_UPDATE("Delivery Update", "delivery_update", "delivery_update", "/home/dispatchInvoicing/deliveryUpdate", "dispatch_invoicing"),
     MASTERS("Masters", "masters", "masters", "", ""),
     VENDOR("Vendor", "vendor", "vendor", "/home/masters/vendor", "masters"),
+
     INVENTORY("Inventory", "inventory", "inventory","", ""),
     SEARCH_INVENTORY("Search", "search_inventory","search_inventory", "/home/inventory/search", "inventory"),
     ITEM_WISE_REPORT("Item Wise Report", "item_wise_report", "item_wise_report", "/home/inventory/itemWiseReport", "inventory"),
