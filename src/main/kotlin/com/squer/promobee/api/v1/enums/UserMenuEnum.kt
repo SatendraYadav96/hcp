@@ -16,7 +16,7 @@ enum class UserMenuEnum(val label: String, val key: String, val title: String, v
     MASTERS("Masters", "masters", "masters", "", ""),
     VENDOR("Vendor", "vendor", "vendor", "/home/masters/vendor", "masters"),
     COST_CENTER("costCenter", "costCenter", "costCenter", "/home/masters/costCenter", "masters"),
-    SAMPLE("sample", "sample", "sample", "/home/masters/sample", "masters"),
+    SAMPLE("sample", "sample", "sample", "/home/masters/samples", "masters"),
     INVENTORY("Inventory", "inventory", "inventory","", ""),
     SEARCH_INVENTORY("Search", "search_inventory","search_inventory", "/home/inventory/search", "inventory"),
     ITEM_WISE_REPORT("Item Wise Report", "item_wise_report", "item_wise_report", "/home/inventory/itemWiseReport", "inventory"),
