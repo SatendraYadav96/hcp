@@ -35,8 +35,8 @@ open class MasterController@Autowired constructor(
         val data = masterService.getVendor(status)
         return ResponseEntity(data, HttpStatus.OK)
     }
-    
 
+    
 
     @PostMapping("/addVendor")
     open fun addVendor(@RequestBody vnd: Vendor): ResponseEntity<*>{
