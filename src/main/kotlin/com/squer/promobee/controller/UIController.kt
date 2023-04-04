@@ -42,6 +42,8 @@ open class UIController @Autowired constructor(
                         UserMenuEnum.SEARCH_INVOICE,
                         UserMenuEnum.DELIVERY_UPDATE,
                         UserMenuEnum.VENDOR,
+                        UserMenuEnum.COST_CENTER,
+                        UserMenuEnum.SAMPLE,
                         UserMenuEnum.SEARCH_INVENTORY,
                         UserMenuEnum.ITEM_WISE_REPORT,
                         UserMenuEnum.STOCK_LEDGER_REPORT,
