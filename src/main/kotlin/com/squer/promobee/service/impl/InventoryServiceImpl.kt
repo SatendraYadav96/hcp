@@ -2,6 +2,7 @@ package com.squer.promobee.service.impl
 
 import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
 import com.squer.promobee.controller.dto.InventoryDTO
+import com.squer.promobee.controller.dto.InventoryReversalDTO
 import com.squer.promobee.controller.dto.RecipientReportDTO
 import com.squer.promobee.service.InventoryService
 import com.squer.promobee.service.repository.InventoryRepository
@@ -38,8 +39,12 @@ class InventoryServiceImpl @Autowired constructor(
     }
 
 
-    override fun searchInventory(name: String, isExhausted: String, isPopup:Int) : List<InventoryDTO>{
-        return inventoryRepository.searchInventory(name, isExhausted, isPopup)
+    override fun searchInventory( isExhausted: Boolean, isPopup:Int) : List<InventoryDTO>{
+        return inventoryRepository.searchInventory( isExhausted, isPopup)
+    }
+
+    override fun getInventoryReversalHistory( invId: String) : List<InventoryReversalDTO> {
+        return inventoryRepository.getInventoryReversalHistory(invId )
     }
 
 }

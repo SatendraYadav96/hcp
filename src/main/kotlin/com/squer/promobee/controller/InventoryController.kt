@@ -39,9 +39,15 @@ open class InventoryController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
-    @GetMapping("/searchInventory/{name}/{isExhausted}/{isPopup}")
-    fun searchInventory (@PathVariable name: String, @PathVariable isExhausted: String, @PathVariable isPopup:Int): ResponseEntity<*> {
-        val data = inventoryService.searchInventory(name, isExhausted, isPopup)
+    @GetMapping("/searchInventory/{isExhausted}/{isPopup}")
+    fun searchInventory ( @PathVariable isExhausted: Boolean, @PathVariable isPopup:Int): ResponseEntity<*> {
+        val data = inventoryService.searchInventory( isExhausted, isPopup)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getInventoryReversalHistory/{invId}")
+    fun getInventoryReversalHistory ( @PathVariable invId: String): ResponseEntity<*> {
+        val data = inventoryService.getInventoryReversalHistory( invId)
         return ResponseEntity(data, HttpStatus.OK)
     }
 

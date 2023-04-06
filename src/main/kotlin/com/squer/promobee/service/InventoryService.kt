@@ -2,6 +2,7 @@ package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
 import com.squer.promobee.controller.dto.InventoryDTO
+import com.squer.promobee.controller.dto.InventoryReversalDTO
 import com.squer.promobee.controller.dto.RecipientReportDTO
 import com.squer.promobee.service.repository.domain.Inventory
 import org.springframework.web.bind.annotation.PathVariable
@@ -18,6 +19,8 @@ interface InventoryService {
 
     fun blockItem(inv:InventoryDTO)
 
-    fun searchInventory(name: String, isExhausted: String, isPopup:Int) : List<InventoryDTO>
+    fun searchInventory( isExhausted: Boolean, isPopup:Int) : List<InventoryDTO>
+
+    fun getInventoryReversalHistory( invId: String) : List<InventoryReversalDTO>
 
 }

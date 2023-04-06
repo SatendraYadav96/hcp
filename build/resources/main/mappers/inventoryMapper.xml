@@ -119,9 +119,101 @@
 
 
     <select id="searchInventory" resultType="com.squer.promobee.controller.dto.InventoryDTO" parameterType = "map" statementType = "CALLABLE">
-        { call PROC_GET_INVENTORY_ITEMS (#{name, jdbcType = NVARCHAR , mode = IN}, #{isExhausted, jdbcType = BOOLEAN , mode = IN},
+        { call PROC_GET_INVENTORY_ITEMS ( #{isExhausted, jdbcType = BOOLEAN , mode = IN},
                                            #{isPopup, jdbcType = INTEGER, mode = IN}) }
 
+    </select>
+
+
+<!--    <select id="searchInventory" resultType="com.squer.promobee.controller.dto.InventoryDTO" parameterType = "map" >-->
+<!--        SELECT * INTO #TempInventory FROM-->
+<!--            (SELECT ID_INV as 'invId'-->
+<!--                  ,ID_ITM_INV as 'itemId'-->
+<!--                  ,ID_GRN_INV as 'grnId'-->
+<!--                  ,NAME_ITM as 'itemName'-->
+<!--			  ,PACK_SIZE_INV as 'packSize'-->
+<!--                  ,PO_NO_INV as 'poNo'-->
+<!--                  ,ID_CCM_INV as 'ccmId'-->
+<!--                  ,LMID_INV as 'limId'-->
+<!--                  ,POSTING_DATE_INV as 'postingDate'-->
+<!--                  ,EXPIRY_DATE_INV as 'expiryDate'-->
+<!--                  ,ID_ITC_INV as 'categoryId'-->
+<!--                  ,MEDICAL_CODE_INV as 'medicalCode'-->
+<!--                  ,CODE_ITM 'ItemCode'-->
+<!--			  ,ID_VND_INV as 'vendorId'-->
+<!--                  ,RATE_PER_UNIT_INV as 'ratePerUnit'-->
+<!--                  ,QTY_RECEIVED_INV as 'qtyReceived'-->
+<!--                  ,QTY_ALLOCATED_INV as 'qtyAllocated'-->
+<!--                  ,QTY_DISPATCHED_INV as 'qtyDispatched'-->
+<!--                  ,NUM_BOXES_INV as 'numBoxes'-->
+<!--                  ,IS_UNIT_ALLOCATION_INV as 'isUnitAllocation'-->
+<!--                  ,BATCH_NO_INV as 'batchNo'-->
+<!--                  ,NAME_ITC  as 'categoryName'-->
+<!--			  ,IS_BLOCK_ITEM_INV as 'isBlockItem'-->
+<!--			  ,COMMENT_INV as 'comment'-->
+<!--			  ,UNITS_INV as 'units'-->
+<!--             FROM INVENTORY_INV-->
+<!--                      inner join ITEM_MASTER_ITM on ID_ITM = ID_ITM_INV-->
+<!--                      inner join ITEM_CATEGORY_MASTER_ITC on ITEM_CATEGORY_MASTER_ITC.ID_ITC = ID_ITC_ITM-->
+<!--&#45;&#45;              where CI_NAME_ITM like  #{name} + '%'-->
+<!--             union all-->
+<!--             SELECT  ID_INV as 'invId'-->
+<!--                  ,ID_ITM_INV as 'itemId'-->
+<!--                  ,ID_GRN_INV as 'grnId'-->
+<!--                  ,NAME_SMP as 'ITEM_NAME'-->
+<!--			  ,PACK_SIZE_INV as 'packSize'-->
+<!--                  ,PO_NO_INV as 'poNo'-->
+<!--                  ,ID_CCM_INV as 'ccmId'-->
+<!--                  ,LMID_INV as 'limId'-->
+<!--                  ,POSTING_DATE_INV as 'postingDate'-->
+<!--                  ,EXPIRY_DATE_INV as 'expiryDate'-->
+<!--                  ,ID_ITC_INV as 'categoryId'-->
+<!--                  ,MEDICAL_CODE_INV as 'medicalCode'-->
+<!--                  ,LMID_SMP  as 'itemCode'-->
+<!--			  ,ID_VND_INV as 'vendorId'-->
+<!--                  ,RATE_PER_UNIT_INV as 'ratePerUnit'-->
+<!--                  ,QTY_RECEIVED_INV as 'qtyReceived'-->
+<!--                  ,QTY_ALLOCATED_INV as 'qtyAllocated'-->
+<!--                  ,QTY_DISPATCHED_INV as 'qtyDispatched'-->
+<!--                  ,NUM_BOXES_INV as 'numBoxes'-->
+<!--                  ,IS_UNIT_ALLOCATION_INV as 'isUnitAllocation'-->
+<!--                  ,BATCH_NO_INV as 'batchNo'-->
+<!--                 ,'Sample' as 'categoryName',-->
+<!--                 IS_BLOCK_ITEM_INV as 'isBlockItem',-->
+<!--                 COMMENT_INV as 'comment'-->
+<!--                  ,UNITS_INV as 'units'-->
+<!--             FROM INVENTORY_INV-->
+<!--                      inner join SAMPLE_MASTER_SMP on ID_SMP = ID_ITM_INV-->
+<!--&#45;&#45;              where CI_NAME_SMP like  #{name} + '%'-->
+<!--            ) AS TempInventory-->
+
+<!--            IF(#{isPopup} = 0)-->
+<!--        begin-->
+<!--		  IF(#{isExhausted} = 1)-->
+<!--        BEGIN-->
+<!--        SELECT * FROM #TempInventory WHERE (qtyReceived - qtyDispatched) = 0-->
+<!--        END-->
+<!--        ELSE-->
+<!--        BEGIN-->
+<!--        SELECT * FROM #TempInventory WHERE (qtyReceived - qtyDispatched) > 0-->
+<!--        END-->
+<!--        end-->
+<!--        else-->
+<!--        begin-->
+<!--        SELECT * FROM #TempInventory-->
+<!--        end-->
+
+<!--    </select>-->
+
+    <select id="getInventoryReversalHistory" parameterType="map" resultType="com.squer.promobee.controller.dto.InventoryReversalDTO" >
+        SELECT INH.CREATED_ON_INH AS 'reversalDate',
+                INH.NOTES_INH AS 'remarks',
+                IND.QUANTITY_IND AS 'quantity',
+        IND.ID_INV_IND AS 'invId'
+        FROM INVOICE_HEADER_INH INH
+        JOIN INVOICE_DETAIL_IND IND ON IND.ID_INH_IND =  INH.ID_INH
+        WHERE INH.ID_TYPE_SLV_INH = 'EDC4D827-6C08-46CA-BF60-B41FFFC4EABE' AND
+            IND.ID_INV_IND = #{id}
     </select>
 
 

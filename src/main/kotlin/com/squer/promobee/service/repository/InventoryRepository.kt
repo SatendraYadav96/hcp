@@ -2,6 +2,7 @@ package com.squer.promobee.service.repository
 
 import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
 import com.squer.promobee.controller.dto.InventoryDTO
+import com.squer.promobee.controller.dto.InventoryReversalDTO
 import com.squer.promobee.controller.dto.RecipientReportDTO
 import com.squer.promobee.mapper.InventoryMapper
 import com.squer.promobee.persistence.BaseRepository
@@ -77,12 +78,20 @@ class InventoryRepository @Autowired constructor(
     }
 
 
-    fun searchInventory( name: String, isExhausted: String, isPopup:Int) : List<InventoryDTO>{
+    fun searchInventory(  isExhausted: Boolean, isPopup:Int) : List<InventoryDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
-        data.put("name", name)
+//        data.put("name", name)
         data.put("isExhausted", isExhausted)
         data.put("isPopup", isPopup)
         return sqlSessionFactory.openSession().selectList("InventoryMapper.searchInventory", data)
+    }
+
+
+    fun getInventoryReversalHistory(  invId: String) : List<InventoryReversalDTO> {
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("id", invId)
+
+         return sqlSessionFactory.openSession().selectList("InventoryMapper.getInventoryReversalHistory", data)
     }
 
 
