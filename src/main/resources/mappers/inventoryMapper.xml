@@ -35,14 +35,14 @@
             <id property="id" column="id_itc_inv"/>
             <result property="name" column="name_itc"/>
         </association>
-        <association property="grn" column="id_grn_inv" select="getGRN" javaType="com.squer.promobee.security.domain.SquerEntity">
+        <association property="grnId" column="id_grn_inv" select="getGRN" javaType="com.squer.promobee.security.domain.SquerEntity">
             <id property="id" column="id_grn"/>
         </association>
         <association property="vendorId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
             <id property="id" column="id_vnd_inv"/>
             <result property="name" column="name_vnd"/>
         </association>
-        <association property="item" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+        <association property="itemId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
             <id property="id" column="id_itm_inv"/>
             <result property="name" column="name_itm"/>
         </association>
@@ -101,5 +101,30 @@
          IS_UNIT_ALLOCATION_INV, BATCH_NO_INV, CREATED_ON_INV, CREATED_BY_INV, UPDATED_ON_INV, UPDATED_BY_INV, HSN_CODE_INV, RATE_PER_INV, UNITS_INV) values(#{id}, #{item.id}, #{grn.id}, #{packSize}, #{poNo}, #{ccmID.id}, #{limid}, #{postingDate}, #{expiryDate}, #{categoryId.id}, #{medicalCode}, #{vendorId.id},
          #{ratePerUnit}, #{qtyReceived}, #{qtyAllocated}, #{qtyDispatched}, #{numBoxes}, #{unitAllocation}, #{batchNo}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy}, #{hsnCode}, #{rate}, #{units})
     </insert>
+
+    <update id="editUnitAllocation">
+
+        UPDATE INVENTORY_INV SET IS_UNIT_ALLOCATION_INV = #{isUnitAllocation},   UPDATED_BY_INV = #{updatedBy} , UPDATED_ON_INV = GETDATE()
+        WHERE ID_INV = #{id}
+
+    </update>
+
+
+    <update id="blockItem">
+
+        UPDATE INVENTORY_INV SET IS_BLOCK_ITEM_INV = #{isBlockItem},   UPDATED_BY_INV = #{updatedBy} , UPDATED_ON_INV = GETDATE()
+        WHERE ID_INV = #{id}
+
+    </update>
+
+
+    <select id="searchInventory" resultType="com.squer.promobee.controller.dto.InventoryDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GET_INVENTORY_ITEMS (#{name, jdbcType = NVARCHAR , mode = IN}, #{isExhausted, jdbcType = BOOLEAN , mode = IN},
+                                           #{isPopup, jdbcType = INTEGER, mode = IN}) }
+
+    </select>
+
+
+
 
 </mapper>

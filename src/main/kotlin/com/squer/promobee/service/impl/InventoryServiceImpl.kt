@@ -1,9 +1,12 @@
 package com.squer.promobee.service.impl
 
 import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
+import com.squer.promobee.controller.dto.InventoryDTO
+import com.squer.promobee.controller.dto.RecipientReportDTO
 import com.squer.promobee.service.InventoryService
 import com.squer.promobee.service.repository.InventoryRepository
 import com.squer.promobee.service.repository.domain.Inventory
+import com.squer.promobee.service.repository.domain.Vendor
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -22,7 +25,21 @@ class InventoryServiceImpl @Autowired constructor(
         return inventoryRepository.getMonthlyAllocation(planId, userId)
     }
 
-    override fun getInventoryDistributionByTeamForPlan(planId: String): List<MutableMap<String, Any>>{
+    override fun getInventoryDistributionByTeamForPlan(planId: String): List<MutableMap<String, Any>> {
         return inventoryRepository.getInventoryDistributionByTeamForPlan(planId)
     }
+
+        override fun editUnitAllocation(inv: InventoryDTO) {
+             inventoryRepository.editUnitAllocation(inv)
+        }
+
+    override fun blockItem(inv: InventoryDTO) {
+        inventoryRepository.blockItem(inv)
+    }
+
+
+    override fun searchInventory(name: String, isExhausted: String, isPopup:Int) : List<InventoryDTO>{
+        return inventoryRepository.searchInventory(name, isExhausted, isPopup)
+    }
+
 }

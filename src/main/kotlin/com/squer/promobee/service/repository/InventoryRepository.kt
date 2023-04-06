@@ -1,12 +1,18 @@
 package com.squer.promobee.service.repository
 
 import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
+import com.squer.promobee.controller.dto.InventoryDTO
+import com.squer.promobee.controller.dto.RecipientReportDTO
 import com.squer.promobee.mapper.InventoryMapper
 import com.squer.promobee.persistence.BaseRepository
+import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.Inventory
+import com.squer.promobee.service.repository.domain.Vendor
 import org.apache.ibatis.session.SqlSessionFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -37,4 +43,48 @@ class InventoryRepository @Autowired constructor(
     fun getInventoryDistributionByTeamForPlan(planId: String): List<MutableMap<String, Any>>{
         return sqlSessionFactory.openSession().selectList("InventoryMapper.planDistributionForItemSelect", planId)
     }
+
+
+    fun editUnitAllocation(inv: InventoryDTO) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        inv.invId?.let { data.put("id", it) }
+        inv.isUnitAllocation?.let { data.put("isUnitAllocation", it) }
+
+        data.put("updatedBy", user.id)
+
+        sqlSessionFactory.openSession().update("InventoryMapper.editUnitAllocation",data)
+
+
+    }
+
+
+    fun blockItem(inv: InventoryDTO) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        inv.invId?.let { data.put("id", it) }
+        inv.isBlockItem?.let { data.put("isBlockItem", it) }
+
+        data.put("updatedBy", user.id)
+
+        sqlSessionFactory.openSession().update("InventoryMapper.blockItem",data)
+
+
+    }
+
+
+    fun searchInventory( name: String, isExhausted: String, isPopup:Int) : List<InventoryDTO>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("name", name)
+        data.put("isExhausted", isExhausted)
+        data.put("isPopup", isPopup)
+        return sqlSessionFactory.openSession().selectList("InventoryMapper.searchInventory", data)
+    }
+
+
+
 }
