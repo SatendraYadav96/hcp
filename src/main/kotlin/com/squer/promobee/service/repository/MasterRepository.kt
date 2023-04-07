@@ -40,6 +40,14 @@ class MasterRepository
         return sqlSessionFactory.openSession().selectList("VendorMapper.getVendor",data)
     }
 
+    fun getVendorById( vndId: String) : List<VendorDTO>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",vndId)
+
+        return sqlSessionFactory.openSession().selectList("VendorMapper.getVendorById",data)
+    }
+
 
     fun addVendor(vnd: Vendor) {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
