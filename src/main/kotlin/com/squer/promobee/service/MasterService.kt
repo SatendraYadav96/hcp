@@ -14,7 +14,7 @@ interface MasterService {
 
     fun getVendor (status: Int): List<VendorDTO>
 
-    fun getVendorById (id: String): List<VendorDTO>
+    fun getVendorById (id: String): Vendor
 
     fun addVendor(vnd: Vendor)
 

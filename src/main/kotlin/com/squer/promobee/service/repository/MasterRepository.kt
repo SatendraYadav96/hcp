@@ -40,12 +40,12 @@ class MasterRepository
         return sqlSessionFactory.openSession().selectList("VendorMapper.getVendor",data)
     }
 
-    fun getVendorById( id: String) : List<VendorDTO>{
+    fun getVendorById( id: String) : Vendor {
         var data: MutableMap<String, Any> = mutableMapOf()
 
         data.put("id",id)
 
-        return sqlSessionFactory.openSession().selectList("VendorMapper.getVendorById",data)
+        return sqlSessionFactory.openSession().selectOne("VendorMapper.getVendorById",data)
     }
 
 
