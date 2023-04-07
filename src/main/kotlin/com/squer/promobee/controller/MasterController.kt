@@ -36,10 +36,10 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
-    @GetMapping("/getVendorById/{vndId}")
-    fun getVendorById(@PathVariable vndId: String): ResponseEntity<*> {
+    @GetMapping("/getVendorById/{id}")
+    fun getVendorById(@PathVariable id: String): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        val data = masterService.getVendorById(vndId)
+        val data = masterService.getVendorById(id)
         return ResponseEntity(data, HttpStatus.OK)
     }
 

@@ -27,8 +27,8 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getVendor(status)
     }
 
-    override fun getVendorById(vndId: String): List<VendorDTO> {
-        return masterRepository.getVendorById(vndId)
+    override fun getVendorById(id: String): List<VendorDTO> {
+        return masterRepository.getVendorById(id)
     }
 
     override fun addVendor(vnd: Vendor) {
