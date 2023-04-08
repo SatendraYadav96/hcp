@@ -56,7 +56,7 @@ class MasterRepository
 
         data.put("id", UUID.randomUUID().toString())
         vnd.name?.let { data.put("name", it.uppercase()) }
-        vnd.ciName?.let { data.put("ciName", it.lowercase()) }
+        vnd.name?.let { data.put("ciName", it.lowercase()) }
         vnd.code?.let { data.put("code", it.uppercase()) }
         vnd.addressLine1?.let { data.put("addressLine1", it) }
         vnd.addressLine2?.let { data.put("addressLine2", it) }
@@ -132,12 +132,11 @@ class MasterRepository
 
         var cbr = CostCenterBrand()
 
-
         data.put("id", UUID.randomUUID().toString())
         data.put("ccmId", ccmId5)
         ccm.brandId?.let { data.put("brandId", it) }
 
-         sqlSessionFactory.openSession().insert("CostCenterBrandMapper.addCostCenterBrand",data)
+        sqlSessionFactory.openSession().insert("CostCenterBrandMapper.addCostCenterBrand", data)
 
 
 

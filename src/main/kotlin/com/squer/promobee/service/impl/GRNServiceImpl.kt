@@ -32,6 +32,8 @@ class GRNServiceImpl @Autowired constructor(
         private val inventoryService: InventoryService
 ): GrnService{
 
+
+
     private val log = LoggerFactory.getLogger(javaClass)
 
     override fun getUnacknowledgeData() : MutableMap<String, Any> {
@@ -67,6 +69,7 @@ class GRNServiceImpl @Autowired constructor(
         category.forEach{
             categoryList[it.id] = it.name
         }
+
         println(categoryList)
 
         var itemCategory: MutableMap<String, String?> = HashMap()
@@ -87,11 +90,15 @@ class GRNServiceImpl @Autowired constructor(
             else{
                 it.category = NamedSquerEntity( ItemCategoryEnum.NON_MEDICAL.id, ItemCategoryEnum.NON_MEDICAL.name)
             }
+
             //set Cost Center
             if(it.limid != null ){
                 var lmid = it.limid!!.lowercase(Locale.getDefault())
                 it.costCenter = sampleMasterService.getSampleName(lmid)["NAME_BRD"] as String?
             }
+
+
+
             else{
                 it.costCenter = costCenterService.getCostCenterNameById(it.ccmId?.id)["NAME_CCM"] as String?
             }
