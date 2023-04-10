@@ -37,7 +37,7 @@
     </update>
 
     <select id="getBusinessUnitDropdown" resultMap="buResultMap" >
-        select * from BU_MASTER_BUM
+        select * from BU_MASTER_BUM WHERE IS_ACTIVE_BUM = 1
 
     </select>
 

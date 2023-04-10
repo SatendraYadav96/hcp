@@ -120,6 +120,15 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getSampleById/{id}")
+    fun getSampleById(@PathVariable id: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getSampleById(id)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
     // DROPDOWN CONTROLLER
 
     @GetMapping("/getBusinessUnitDropdown")

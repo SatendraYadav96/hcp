@@ -54,6 +54,14 @@
     </update>
 
 
+    <select id="getSampleById" resultMap="sampleMasterResultMap" >
+        select * from SAMPLE_MASTER_SMP
+        where ID_SMP = #{id}
+    </select>
+
+
+
+
 
 
 </mapper>

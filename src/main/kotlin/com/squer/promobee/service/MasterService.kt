@@ -35,6 +35,8 @@ interface MasterService {
 
     fun editSample(smp: SampleMaster)
 
+    fun getSampleById (id: String): SampleMaster
+
     // DROPDOWN SERVICES
 
     fun getBusinessUnitDropdown(): List<BU>

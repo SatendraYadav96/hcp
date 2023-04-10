@@ -253,6 +253,15 @@ class MasterRepository
 
     }
 
+
+    fun getSampleById( id: String) : SampleMaster {
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",id)
+
+        return sqlSessionFactory.openSession().selectOne("SampleMasterMapper.getSampleById",data)
+    }
+
     fun getBusinessUnitDropdown( ) : List<BU>{
 //        var data: MutableMap<String, Any> = mutableMapOf()
 

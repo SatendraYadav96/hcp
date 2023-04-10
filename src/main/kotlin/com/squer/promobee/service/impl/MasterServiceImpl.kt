@@ -70,6 +70,10 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.editSample(smp)
     }
 
+    override fun getSampleById(id: String): SampleMaster {
+        return masterRepository.getSampleById(id)
+    }
+
 
     //DROPDOWN IMPL
 
