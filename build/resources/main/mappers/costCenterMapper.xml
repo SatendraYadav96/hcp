@@ -43,4 +43,10 @@
 
     </update>
 
+    <select id="getCostCenterById" resultMap="costCenterResultMap" >
+        select * from COST_CENTER_MASTER_CCM
+        where ID_CCM = #{id}
+    </select>
+
+
 </mapper>

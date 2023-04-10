@@ -87,6 +87,13 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getCostCenterById/{id}")
+    fun getCostCenterById(@PathVariable id: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getCostCenterById(id)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
 
     //SAMPLE MASTER CONTROLLER
 
@@ -112,6 +119,17 @@ open class MasterController@Autowired constructor(
         val data = masterService.editSample(smp)
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+    // DROPDOWN CONTROLLER
+
+    @GetMapping("/getBusinessUnitDropdown")
+    fun getBusinessUnitDropdown(@RequestBody bu: BU): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getBusinessUnitDropdown(bu)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
 
 
 

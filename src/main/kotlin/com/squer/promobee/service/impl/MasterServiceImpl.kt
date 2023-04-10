@@ -3,10 +3,7 @@ package com.squer.promobee.service.impl
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.MasterService
 import com.squer.promobee.service.repository.MasterRepository
-import com.squer.promobee.service.repository.domain.CostCenter
-import com.squer.promobee.service.repository.domain.CostCenterBrand
-import com.squer.promobee.service.repository.domain.SampleMaster
-import com.squer.promobee.service.repository.domain.Vendor
+import com.squer.promobee.service.repository.domain.*
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -54,6 +51,10 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.editCostCenter(ccm)
     }
 
+    override fun getCostCenterById(id: String): CostCenter {
+        return masterRepository.getCostCenterById(id)
+    }
+
 
     //SAMPLE IMPL
 
@@ -68,6 +69,16 @@ class MasterServiceImpl @Autowired constructor(
     override fun editSample(smp: SampleMaster) {
         return masterRepository.editSample(smp)
     }
+
+
+    //DROPDOWN IMPL
+
+    override fun getBusinessUnitDropdown(bu: BU): List<BU> {
+        return masterRepository.getBusinessUnitDropdown(bu)
+    }
+
+
+
 
 
 }

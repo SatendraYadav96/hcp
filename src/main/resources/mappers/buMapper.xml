@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.squer.promobee.mapper.BUMapper">
+<mapper namespace="BUMapper">
     <resultMap id="buResultMap" type="com.squer.promobee.service.repository.domain.BU">
         <id property="id" column="id_bum"/>
         <result property="name" column="name_bum"/>
@@ -35,5 +35,10 @@
         WHERE ID_BUM = #{id}
 
     </update>
+
+    <select id="getBusinessUnitDropdown" resultMap="buResultMap" >
+        select * from BU_MASTER_BUM
+
+    </select>
 
 </mapper>

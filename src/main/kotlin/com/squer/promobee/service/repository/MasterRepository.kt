@@ -177,6 +177,15 @@ class MasterRepository
     }
 
 
+    fun getCostCenterById( id: String) : CostCenter {
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",id)
+
+        return sqlSessionFactory.openSession().selectOne("CostCenterMapper.getCostCenterById",data)
+    }
+
+
 
     //SAMPLE REPOSITORY
 
@@ -242,13 +251,17 @@ class MasterRepository
         sqlSessionFactory.openSession().update("SampleMasterMapper.editSample",data)
 
 
-
-
-
-
-
-
     }
+
+    fun getBusinessUnitDropdown( bu: BU) : List<BU>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        return sqlSessionFactory.openSession().selectList("BUMapper.getBusinessUnitDropdown",data)
+    }
+
+
+
 
 
 

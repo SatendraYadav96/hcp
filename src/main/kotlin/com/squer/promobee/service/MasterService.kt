@@ -1,10 +1,7 @@
 package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.*
-import com.squer.promobee.service.repository.domain.CostCenter
-import com.squer.promobee.service.repository.domain.CostCenterBrand
-import com.squer.promobee.service.repository.domain.SampleMaster
-import com.squer.promobee.service.repository.domain.Vendor
+import com.squer.promobee.service.repository.domain.*
 import java.util.*
 
 
@@ -28,6 +25,8 @@ interface MasterService {
 
     fun editCostCenter (ccm: CostCenter)
 
+    fun getCostCenterById (id: String): CostCenter
+
     //MASTER SERVICES
 
     fun getSample(status: Int): List<SampleMaster>
@@ -35,6 +34,10 @@ interface MasterService {
     fun addSample(smp: SampleMaster)
 
     fun editSample(smp: SampleMaster)
+
+    // DROPDOWN SERVICES
+
+    fun getBusinessUnitDropdown(bu: BU): List<BU>
 
 
 }
