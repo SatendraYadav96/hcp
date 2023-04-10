@@ -123,9 +123,9 @@ open class MasterController@Autowired constructor(
     // DROPDOWN CONTROLLER
 
     @GetMapping("/getBusinessUnitDropdown")
-    fun getBusinessUnitDropdown(@RequestBody bu: BU): ResponseEntity<*> {
+    fun getBusinessUnitDropdown(): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        val data = masterService.getBusinessUnitDropdown(bu)
+        val data = masterService.getBusinessUnitDropdown()
         return ResponseEntity(data, HttpStatus.OK)
     }
 

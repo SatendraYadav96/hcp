@@ -37,7 +37,7 @@ interface MasterService {
 
     // DROPDOWN SERVICES
 
-    fun getBusinessUnitDropdown(bu: BU): List<BU>
+    fun getBusinessUnitDropdown(): List<BU>
 
 
 }

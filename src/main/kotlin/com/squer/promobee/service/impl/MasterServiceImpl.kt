@@ -73,8 +73,8 @@ class MasterServiceImpl @Autowired constructor(
 
     //DROPDOWN IMPL
 
-    override fun getBusinessUnitDropdown(bu: BU): List<BU> {
-        return masterRepository.getBusinessUnitDropdown(bu)
+    override fun getBusinessUnitDropdown(): List<BU> {
+        return masterRepository.getBusinessUnitDropdown()
     }
 
 
