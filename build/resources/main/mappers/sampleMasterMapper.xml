@@ -17,10 +17,9 @@
         <result property="createdBy" column="created_by_smp"/>
         <result property="updatedAt" column="updated_on_smp"/>
         <result property="updatedBy" column="updated_by_smp"/>
-        <association property="brandId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
-            <id property="id" column="id_brd_smp"/>
-            <result property="name" column="name_brd"/>
-        </association>
+        <result property="brandId.id" column="id_brd_smp"/>
+        <result property="brandId.name" column="name_brd"/>
+
     </resultMap>
 
     <select id="getSampleName" resultType="Map">
@@ -55,9 +54,18 @@
 
 
     <select id="getSampleById" resultMap="sampleMasterResultMap" >
-        select * from SAMPLE_MASTER_SMP
-        where ID_SMP = #{id}
+        SELECT smp.*,
+               BRD.NAME_BRD,BRD.CODE_BRD,BRD.IS_ACTIVE_BRD
+               FROM SAMPLE_MASTER_SMP smp
+               join BRAND_MASTER_BRD brd on brd.ID_BRD = smp.ID_BRD_SMP
+        WHERE ID_SMP =  #{id}
     </select>
+
+<!--    <select id="getSampleById" resultMap="sampleMasterResultMap" >-->
+<!--        SELECT * FROM SAMPLE_MASTER_SMP smp-->
+<!--        WHERE ID_SMP =  #{id}-->
+<!--    </select>-->
+
 
 
 
