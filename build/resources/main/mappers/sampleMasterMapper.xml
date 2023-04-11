@@ -20,6 +20,7 @@
         <result property="brandId.id" column="id_brd_smp"/>
         <result property="brandId.name" column="name_brd"/>
 
+
     </resultMap>
 
     <select id="getSampleName" resultType="Map">

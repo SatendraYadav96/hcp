@@ -236,11 +236,12 @@ class MasterRepository
         var data: MutableMap<String, Any> = mutableMapOf()
 
         smp.id?.let { data.put("id", it) }
+
         smp.lmid?.let { data.put("lmid", it.uppercase()) }
         smp.name?.let { data.put("name", it.uppercase()) }
         smp.name?.let { data.put("ciName", it.lowercase()) }
         smp.description?.let { data.put("description", it) }
-        smp.brandId?.let { data.put("brandId", it) }
+       data.put("brandId",NamedSquerEntity(smp.brandId?.id.toString(),""))
         smp.packSize?.let { data.put("packSize", it) }
         smp.active?.let { data.put("active", it) }
         smp.cap?.let { data.put("cap", it) }
