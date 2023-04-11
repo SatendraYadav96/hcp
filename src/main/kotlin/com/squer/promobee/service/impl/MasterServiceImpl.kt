@@ -81,6 +81,10 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getBusinessUnitDropdown()
     }
 
+    override fun getBrandDropdown(): List<BrandMaster> {
+        return masterRepository.getBrandDropdown()
+    }
+
 
 
 

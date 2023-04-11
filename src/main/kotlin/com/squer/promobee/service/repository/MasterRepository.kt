@@ -271,6 +271,14 @@ class MasterRepository
     }
 
 
+    fun getBrandDropdown( ) : List<BrandMaster>{
+//        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        return sqlSessionFactory.openSession().selectList("BrandMasterMapper.getBrandDropdown")
+    }
+
+
 
 
 

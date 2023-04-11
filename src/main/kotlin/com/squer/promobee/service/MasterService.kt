@@ -41,5 +41,7 @@ interface MasterService {
 
     fun getBusinessUnitDropdown(): List<BU>
 
+    fun getBrandDropdown(): List<BrandMaster>
+
 
 }
