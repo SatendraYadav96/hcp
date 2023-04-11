@@ -40,7 +40,7 @@
     <insert id="addSample">
         insert into SAMPLE_MASTER_SMP (ID_SMP,LMID_SMP,NAME_SMP,CI_NAME_SMP,DESCRIPTION_SMP,ID_BRD_SMP,PACK_SIZE_SMP,IS_ACTIVE_SMP,
                                        CREATED_ON_SMP,CREATED_BY_SMP,UPDATED_ON_SMP,UPDATED_BY_SMP,HSN_CODE_SMP,CAP_SMP)
-        values( #{id}, #{lmid}, #{name}, #{ciName},  #{description}, #{brandId}, #{packSize}, #{active}, GETDATE(), #{createdBy}, GETDATE(),
+        values( #{id}, #{lmid}, #{name}, #{ciName},  #{description}, #{brandId.id}, #{packSize}, #{active}, GETDATE(), #{createdBy}, GETDATE(),
                 #{updatedBy},  #{hsnCode},  #{cap} )
     </insert>
 

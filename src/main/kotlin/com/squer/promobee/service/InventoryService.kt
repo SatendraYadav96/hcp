@@ -23,4 +23,6 @@ interface InventoryService {
 
     fun getInventoryReversalHistory( invId: String) : List<InventoryReversalDTO>
 
+    fun reverseInventory(inv:InventoryReversalDTO)
+
 }

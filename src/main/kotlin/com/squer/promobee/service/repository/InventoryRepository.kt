@@ -95,5 +95,22 @@ class InventoryRepository @Autowired constructor(
     }
 
 
+    fun reverseInventory(inv: InventoryReversalDTO) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        inv.invId?.let { data.put("id", it) }
+        inv.quantity?.let { data.put("quantity", it) }
+        inv.remarks?.let { data.put("remarks", it) }
+
+        data.put("updatedBy", user.id)
+
+        sqlSessionFactory.openSession().update("InventoryMapper.blockItem",data)
+
+
+    }
+
+
 
 }

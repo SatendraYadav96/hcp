@@ -8,6 +8,7 @@ class CostCenter: AuditableEntity() {
     var ciName: String?= null
     var code: String?= null
     var active: Int?= null
-    var brandId: String? = null
+    var brandId: NamedSquerEntity? = null
+
 
 }

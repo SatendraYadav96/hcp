@@ -4,6 +4,7 @@ package com.squer.promobee.controller
 
 
 import com.squer.promobee.controller.dto.InventoryDTO
+import com.squer.promobee.controller.dto.InventoryReversalDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.InventoryService
 
@@ -50,6 +51,16 @@ open class InventoryController@Autowired constructor(
         val data = inventoryService.getInventoryReversalHistory( invId)
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+    @PostMapping("/reverseInventory")
+    open fun reverseInventory(@RequestBody inv: InventoryReversalDTO): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val reverseData = inventoryService.reverseInventory(inv)
+        return ResponseEntity(reverseData, HttpStatus.OK)
+    }
+
+
+
 
 
 }

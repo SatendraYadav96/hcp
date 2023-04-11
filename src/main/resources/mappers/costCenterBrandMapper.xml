@@ -17,13 +17,13 @@
 
     <insert id="editCostCenterBrand">
         insert into COSTCENTER_BRAND_CBR (ID_CBR, ID_CCM_CBR, ID_BRD_CBR)
-        values( #{id}, #{ccmId}, #{brandId})
+        values( #{id}, #{ccmId}, #{brandId.id})
     </insert>
 
 
     <insert id="addCostCenterBrand" parameterType="map">
         insert into COSTCENTER_BRAND_CBR (ID_CBR, ID_CCM_CBR, ID_BRD_CBR)
-        values( #{id}, #{ccmId}, #{brandId})
+        values( #{id}, #{ccmId}, #{brandId.id})
     </insert>
 
 

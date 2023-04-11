@@ -134,7 +134,7 @@ class MasterRepository
 
         data.put("id", UUID.randomUUID().toString())
         data.put("ccmId", ccmId5)
-        ccm.brandId?.let { data.put("brandId", it) }
+        data.put("brandId",NamedSquerEntity(ccm.brandId?.id.toString(),""))
 
         sqlSessionFactory.openSession().insert("CostCenterBrandMapper.addCostCenterBrand", data)
 
@@ -168,7 +168,7 @@ class MasterRepository
 
         data.put("id", UUID.randomUUID().toString())
         data.put("ccmId", ccmId1 )
-        ccm.brandId?.let { data.put("brandId", it) }
+        data.put("brandId",NamedSquerEntity(ccm.brandId?.id.toString(),""))
 
         sqlSessionFactory.openSession().insert("CostCenterBrandMapper.editCostCenterBrand",data)
 
@@ -213,7 +213,7 @@ class MasterRepository
         smp.name?.let { data.put("name", it.uppercase()) }
         smp.name?.let { data.put("ciName", it.lowercase()) }
         smp.description?.let { data.put("description", it) }
-        smp.brandId?.let { data.put("brandId", it) }
+        data.put("brandId",NamedSquerEntity(smp.brandId?.id.toString(),""))
         smp.packSize?.let { data.put("packSize", it) }
         smp.active?.let { data.put("active", it) }
         smp.hsnCode?.let { data.put("hsnCode", it) }
