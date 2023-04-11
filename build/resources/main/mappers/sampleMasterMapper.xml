@@ -44,9 +44,9 @@
     </insert>
 
 
-    <update id="editSample">
+    <update id="editSample" >
 
-        UPDATE SAMPLE_MASTER_SMP SET LMID_SMP = #{lmid}, NAME_SMP = #{name}, CI_NAME_SMP = #{ciName} ,DESCRIPTION_SMP = #{description}, ID_BRD_SMP = #{brandId}, PACK_SIZE_SMP = #{packSize},
+        UPDATE SAMPLE_MASTER_SMP SET LMID_SMP = #{lmid}, NAME_SMP = #{name}, CI_NAME_SMP = #{ciName} ,DESCRIPTION_SMP = #{description}, ID_BRD_SMP = #{brandId.id}, PACK_SIZE_SMP = #{packSize},
                                      IS_ACTIVE_SMP = #{active}, CAP_SMP = #{cap} ,UPDATED_BY_SMP = #{updatedBy} , UPDATED_ON_SMP = GETDATE()
         WHERE ID_SMP = #{id}
 

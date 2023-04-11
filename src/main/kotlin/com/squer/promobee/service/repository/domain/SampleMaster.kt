@@ -14,4 +14,6 @@ class SampleMaster: AuditableEntity() {
     var active: Int ?= null
     var hsnCode: String?= null
     var cap: Int? = null
+
+
 }
