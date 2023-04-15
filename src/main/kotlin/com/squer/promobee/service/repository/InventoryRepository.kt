@@ -95,22 +95,38 @@ class InventoryRepository @Autowired constructor(
     }
 
 
-    fun reverseInventory(inv: InventoryReversalDTO) {
-        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-
-        var data: MutableMap<String, Any> = mutableMapOf()
-
-        inv.invId?.let { data.put("id", it) }
-        inv.quantity?.let { data.put("quantity", it) }
-        inv.remarks?.let { data.put("remarks", it) }
-
-        data.put("updatedBy", user.id)
-
-        sqlSessionFactory.openSession().update("InventoryMapper.blockItem",data)
-
-
-    }
+//    fun reverseInventory(inv: InventoryReversalDTO) {
+//        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+//
+//        var data: MutableMap<String, Any> = mutableMapOf()
+//
+//        inv.invId?.let { data.put("id", it) }
+//        inv.quantity?.let { data.put("quantity", it) }
+//        inv.remarks?.let { data.put("remarks", it) }
+//
+//        var inv1 = Inventory()
+//
+//        if(inv1.qtyAllocated != null && inv1.qtyAllocated!! > 0 && inv.quantity!! > ((inv1.qtyReceived?.minus((inv1.qtyAllocated!! + inv1.qtyDispatched!!!!))).toString())){
+//
+//            inv.invId?.let { data.put("id", it) }
+//
+//             sqlSessionFactory.openSession().selectList<InventoryReversalDTO>("InventoryMapper.getInventoryAllocatedByBM",data)
+//
+//        }
+//
+//        inv1.qtyDispatched = inv1.qtyDispatched?.plus(inv.quantity?.toInt()!!)
+//
+//
+//
+//
+//
+//
+//
+//    }
 
 
 
 }
+
+
+

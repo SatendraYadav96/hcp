@@ -87,10 +87,10 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
-    @GetMapping("/getCostCenterById/{id}")
-    fun getCostCenterById(@PathVariable id: String): ResponseEntity<*> {
+    @GetMapping("/getCostCenterById/{ccmId}")
+    fun getCostCenterById(@PathVariable ccmId: String): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        val data = masterService.getCostCenterById(id)
+        val data = masterService.getCostCenterById(ccmId)
         return ResponseEntity(data, HttpStatus.OK)
     }
 

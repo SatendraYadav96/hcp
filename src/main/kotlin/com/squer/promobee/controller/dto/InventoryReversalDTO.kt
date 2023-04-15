@@ -8,5 +8,7 @@ class InventoryReversalDTO {
     var reversalDate: String ?= null
     var remarks: String ? = null
     var quantity: String ? = null
+    var userName: String ? = null
+    var UserId: String ? = null
 
 }

@@ -217,6 +217,13 @@
     </select>
 
 
+<!--    <select id="getInventoryAllocatedByBM" resultType="com.squer.promobee.controller.dto.InventoryReversalDTO" parameterType = "map" statementType = "CALLABLE">-->
+<!--        { call PROC_GetInventoryAllocationByBM ( #{InvID, jdbcType = STRING , mode = IN})}-->
+
+
+<!--    </select>-->
+
+
 
 
 </mapper>
