@@ -25,16 +25,16 @@ open class InventoryController@Autowired constructor(
     private val inventoryService: InventoryService
 ){
 
-    @PutMapping("/editUnitAllocation")
-    open fun editUnitAllocation(@RequestBody inv: InventoryDTO): ResponseEntity<*>{
+    @PutMapping("/editUnitAllocation/{invId}")
+    open fun editUnitAllocation(@PathVariable invId: String,@RequestBody inv: InventoryDTO): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = inventoryService.editUnitAllocation(inv)
         return ResponseEntity(data, HttpStatus.OK)
     }
 
 
-    @PutMapping("/blockItem" )
-    open fun blockItem(@RequestBody inv: InventoryDTO): ResponseEntity<*>{
+    @PutMapping("/blockItem/{invId}" )
+    open fun blockItem(@PathVariable invId: String,@RequestBody inv: InventoryDTO): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = inventoryService.blockItem(inv)
         return ResponseEntity(data, HttpStatus.OK)
