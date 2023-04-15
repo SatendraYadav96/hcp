@@ -33,7 +33,7 @@ open class InventoryController@Autowired constructor(
     }
 
 
-    @PutMapping("/blockItem")
+    @PutMapping("/blockItem" )
     open fun blockItem(@RequestBody inv: InventoryDTO): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = inventoryService.blockItem(inv)
