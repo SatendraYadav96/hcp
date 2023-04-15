@@ -144,16 +144,16 @@ class MasterRepository
 
 
 
-    fun editCostCenter(ccm: CostCenter) {
+    fun editCostCenter(ccm: CostCenterDTO) {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var data: MutableMap<String, Any> = mutableMapOf()
 
-        ccm.id?.let { data.put("id", it) }
-        ccm.name?.let { data.put("name", it.uppercase()) }
-        ccm.name?.let { data.put("ciName", it.lowercase()) }
-        ccm.code?.let { data.put("code", it.uppercase()) }
-        ccm.active?.let { data.put("active", it) }
+        ccm.ccmId?.let { data.put("id", it) }
+        ccm.ccmName?.let { data.put("name", it.uppercase()) }
+        ccm.ccmName?.let { data.put("ciName", it.lowercase()) }
+        ccm.ccmCode?.let { data.put("code", it.uppercase()) }
+        ccm.ccmActive?.let { data.put("active", it) }
         data.put("updatedBy", user.id)
 
 
@@ -161,14 +161,15 @@ class MasterRepository
         sqlSessionFactory.openSession().update("CostCenterMapper.editCostCenter",data)
 
 
-        var ccmId1 = ccm.id
+        var ccmId2 = ccm.ccmId
         var cbr = CostCenterBrand()
 
 
 
         data.put("id", UUID.randomUUID().toString())
-        data.put("ccmId", ccmId1 )
-        data.put("brandId",NamedSquerEntity(ccm.brandId?.id.toString(),""))
+        ccmId2?.let { data.put("ccmId", it) }
+//        data.put("brandId",NamedSquerEntity(ccm.brandId?.id.toString(),""))
+        ccm.brandId?.let { data.put("brandId", it) }
 
         sqlSessionFactory.openSession().insert("CostCenterBrandMapper.editCostCenterBrand",data)
 

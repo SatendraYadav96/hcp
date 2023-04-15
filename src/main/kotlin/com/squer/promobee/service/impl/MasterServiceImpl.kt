@@ -47,7 +47,7 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.addCostCenter(ccm)
     }
 
-    override fun editCostCenter(ccm: CostCenter) {
+    override fun editCostCenter(ccm: CostCenterDTO) {
         return masterRepository.editCostCenter(ccm)
     }
 

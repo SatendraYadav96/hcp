@@ -12,6 +12,7 @@
         <association property="brandId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
             <id property="id" column="id_brd_cbr"/>
             <result property="name" column="name_brd"/>
+            <result property="brandId" column="id_brd_cbr"/>
         </association>
     </resultMap>
 
@@ -21,10 +22,16 @@
     </insert>
 
 
+<!--    <insert id="addCostCenterBrand" parameterType="map">-->
+<!--        insert into COSTCENTER_BRAND_CBR (ID_CBR, ID_CCM_CBR, ID_BRD_CBR)-->
+<!--        values( #{id}, #{ccmId}, #{brandId.id})-->
+<!--    </insert>-->
+
     <insert id="addCostCenterBrand" parameterType="map">
         insert into COSTCENTER_BRAND_CBR (ID_CBR, ID_CCM_CBR, ID_BRD_CBR)
-        values( #{id}, #{ccmId}, #{brandId.id})
+        values( #{id}, #{ccmId}, #{brandId})
     </insert>
+
 
 
 
