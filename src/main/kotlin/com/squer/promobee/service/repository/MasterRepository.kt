@@ -177,12 +177,12 @@ class MasterRepository
     }
 
 
-    fun getCostCenterById( id: String) : List<CostCenter> {
+    fun getCostCenterById( id: String) : CostCenter {
         var data: MutableMap<String, Any> = mutableMapOf()
 
         data.put("id",id)
 
-         return sqlSessionFactory.openSession().selectList("CostCenterMapper.getCostCenterById",data)
+         return sqlSessionFactory.openSession().selectOne("CostCenterMapper.getCostCenterById",data)
     }
 
 

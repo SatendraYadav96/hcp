@@ -51,7 +51,7 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.editCostCenter(ccm)
     }
 
-    override fun getCostCenterById(id: String): List<CostCenter> {
+    override fun getCostCenterById(id: String): CostCenter{
         return masterRepository.getCostCenterById(id)
     }
 
