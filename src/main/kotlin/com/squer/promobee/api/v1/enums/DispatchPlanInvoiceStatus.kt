@@ -1,0 +1,8 @@
+package com.squer.promobee.api.v1.enums
+
+enum class DispatchPlanInvoiceStatus(val id: String) {
+    PARTIAL_INVOICED("14C80930-7460-4203-9A55-2B2F93C8E016"),
+    FULLY_INVOICED("F8CDB30B-E49B-48EE-BB59-4005B5B4A0FE"),
+    NOT_INITIATED("A32070DD-EC66-4E71-B877-A4175DB0EAEA")
+
+}

@@ -59,5 +59,17 @@
     </update>
 
 
+    <insert id="insertReversalInvoiceHeader" >
+        insert into INVOICE_HEADER_INH
+        (ID_INH,INVOICE_NO_INH,ID_TYPE_SLV_INH,ID_STATUS_SLV_INH,ID_TEM_INH,ID_RCT_INH,ADDRESS_LINE_1_INH,ADDRESS_STATE_INH,ADDRESS_CITY_INH,ADDRESS_ZIP_INH,NOTES_INH,
+         ID_TRN_INH,CREATED_ON_INH,CREATED_BY_INH,UPDATED_ON_INH,UPDATED_BY_INH,ID_RCT_DESG_ULV_INH)
+        values (
+                   NEWID(),(SELECT MAX(INVOICE_NO_INH) FROM INVOICE_HEADER_INH) + 1,#{type},#{statusId},#{teamId},#{recipientId},
+                   '','','','',#{notes},#{transporterId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{designationId})
+    </insert>
+
+
+
+
 
 </mapper>

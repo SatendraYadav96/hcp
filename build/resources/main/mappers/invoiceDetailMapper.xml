@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.squer.promobee.mapper.InvoiceDetailMapper">
+<mapper namespace="InvoiceDetailMapper">
     <resultMap id="invoiceDetailResultMap" type="com.squer.promobee.service.repository.domain.InvoiceDetail">
         <id property="id" column="id_ind"/>
         <result property="quantity" column="quantity_ind"/>
@@ -39,5 +39,13 @@
     <select id="getInventory" parameterType="map" resultType="com.squer.promobee.service.repository.domain.Inventory" >
         select id_inv as id from INVENTORY_INV where id_inv=#{id_inv_ind}
     </select>
+
+    <insert id="insertReversalInvoiceDetail" >
+        INSERT INTO INVOICE_DETAIL_IND (ID_IND,ID_INH_IND,ID_ITM_IND,QUANTITY_IND,ID_DID_IND,VALUE_IND,CREATED_ON_IND,
+                                        CREATED_BY_IND,UPDATED_ON_IND,UPDATED_BY_IND,ID_INV_IND,HSN_CODE_IND,RATE_PER_IND)
+        VALUES(#{id},#{headerId},#{itemId},#{quantity},#{didId},#{value},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{inventoryId},NULL,NULL)
+    </insert>
+
+
 
 </mapper>

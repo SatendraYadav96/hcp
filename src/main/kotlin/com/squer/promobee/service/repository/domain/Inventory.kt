@@ -8,7 +8,7 @@ import java.util.Date
 
 class Inventory: AuditableEntity() {
     var item: NamedSquerEntity?= null
-    var grn: SquerEntity?= null
+    var grnId: SquerEntity?= null
     var packSize: Int?= null
     var poNo: String?= null
     var ccmID: NamedSquerEntity?= null

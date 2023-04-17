@@ -55,4 +55,15 @@
             #{remarks}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy}, #{invoiceStatus.id}, #{quarterlyPlan}, #{isVirtual})
     </insert>
 
+
+    <insert id="insertReversalPlan">
+        INSERT INTO DISPATCH_PLAN_DIP(ID_DIP, ID_OWNER_USR_DIP, MONTH_DIP, YEAR_DIP,ID_STATUS_SLV_DIP,SUBMISSION_DATE_DIP,
+            APPROVAL_DATE_DIP,
+            IS_SPECIAL_DIP, REMARKS_DIP, CREATED_ON_DIP, CREATED_BY_DIP,
+            UPDATED_ON_DIP, UPDATED_BY_DIP, ID_INVOICE_STATUS_SLV_DIP
+            ) VALUES( #{id}, #{owner}, #{month}, #{year}, #{planStatus},GETDATE(),GETDATE(),
+          #{isSpecial},#{remarks}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy}, #{invoiceStatus}
+                                            )
+    </insert>
+
 </mapper>

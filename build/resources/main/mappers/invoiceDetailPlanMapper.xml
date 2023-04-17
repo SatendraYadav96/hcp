@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.squer.promobee.mapper.InvoiceDetailPlanMapper">
+<mapper namespace="InvoiceDetailPlanMapper">
     <resultMap id="invoiceDetailPlanResultMap" type="com.squer.promobee.service.repository.domain.InvoiceDetailPlan">
         <id property="id" column="id_idp"/>
         <association property="headerId" column="id_inh_idp" select="getHeader" javaType="com.squer.promobee.service.repository.domain.InvoiceHeader">
@@ -20,6 +20,12 @@
     <select id="getPlan" parameterType="map" resultType="com.squer.promobee.service.repository.domain.DispatchPlan" >
         select id_dip as id from DISPATCH_PLAN_DIP where id_dip=#{id_plan-idp}
     </select>
+
+
+    <insert id="insertReversalIDP" >
+        INSERT INTO INVOICE_DISPATCH_PLAN_IDP (ID_IDP,ID_INH_IDP,ID_PLAN_IDP)
+        VALUES(#{id},#{headerId},#{planId})
+    </insert>
 
 </mapper>
 

@@ -184,7 +184,7 @@ class GRNServiceImpl @Autowired constructor(
                 var addInventoryParam = Inventory()
                 addInventoryParam.id = UUID.randomUUID().toString()
                 addInventoryParam.item = NamedSquerEntity(itemid, "")
-                addInventoryParam.grn = SquerEntity(grn.id)
+                addInventoryParam.grnId = SquerEntity(grn.id)
                 addInventoryParam.packSize = data.basePack
                 addInventoryParam.poNo = grn.poNo
                 addInventoryParam.ccmID = NamedSquerEntity(grn.ccmId?.id.toString(), "")
@@ -255,7 +255,7 @@ class GRNServiceImpl @Autowired constructor(
                 var addInventoryParam = Inventory()
                 addInventoryParam.id = UUID.randomUUID().toString()
                 addInventoryParam.item = NamedSquerEntity(itemid,"")
-                addInventoryParam.grn = SquerEntity(grn.id)
+                addInventoryParam.grnId = SquerEntity(grn.id)
                 addInventoryParam.packSize = data.basePack
                 addInventoryParam.poNo = grn.poNo
                 addInventoryParam.ccmID = NamedSquerEntity(grn.ccmId?.id.toString(), "")

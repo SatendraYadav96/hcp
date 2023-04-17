@@ -23,6 +23,12 @@ interface InventoryService {
 
     fun getInventoryReversalHistory( invId: String) : List<InventoryReversalDTO>
 
-//    fun reverseInventory(inv:InventoryReversalDTO)
+    fun getInventoryReversalBMAllocation( invId: String) : List<InventoryReversalDTO>
+
+    fun getInventoryById( invId: String): Inventory
+
+    fun reverseInventory(inv:InventoryReversalDTO)
+
+
 
 }

@@ -47,8 +47,16 @@ class InventoryServiceImpl @Autowired constructor(
         return inventoryRepository.getInventoryReversalHistory(invId )
     }
 
-//    override fun reverseInventory(inv: InventoryReversalDTO) {
-//        inventoryRepository.reverseInventory(inv)
-//    }
+    override fun getInventoryReversalBMAllocation( invId: String) : List<InventoryReversalDTO> {
+        return inventoryRepository.getInventoryReversalBMAllocation(invId )
+    }
+
+    override fun getInventoryById( invId: String): Inventory  {
+        return inventoryRepository.getInventoryById(invId )
+    }
+
+    override fun reverseInventory(inv: InventoryReversalDTO) {
+        inventoryRepository.reverseInventory(inv)
+    }
 
 }

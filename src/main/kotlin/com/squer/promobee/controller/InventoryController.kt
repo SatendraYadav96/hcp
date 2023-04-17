@@ -52,12 +52,26 @@ open class InventoryController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
-//    @PostMapping("/reverseInventory")
-//    open fun reverseInventory(@RequestBody inv: InventoryReversalDTO): ResponseEntity<*>{
-//        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-//        val reverseData = inventoryService.reverseInventory(inv)
-//        return ResponseEntity(reverseData, HttpStatus.OK)
-//    }
+    @GetMapping("/getInventoryReversalBMAllocation/{invId}")
+    fun getInventoryReversalBMAllocation ( @PathVariable invId: String): ResponseEntity<*> {
+        val data = inventoryService.getInventoryReversalBMAllocation( invId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getInventoryById/{invId}")
+    fun getInventoryById ( @PathVariable invId: String): ResponseEntity<*> {
+        val data = inventoryService.getInventoryById( invId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PostMapping("/reverseInventory")
+    open fun reverseInventory(@RequestBody inv: InventoryReversalDTO): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val reverseData = inventoryService.reverseInventory(inv)
+        return ResponseEntity(reverseData, HttpStatus.OK)
+    }
+
+
 
 
 

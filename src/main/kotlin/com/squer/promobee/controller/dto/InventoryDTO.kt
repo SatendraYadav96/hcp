@@ -8,7 +8,7 @@ class InventoryDTO {
     var isUnitAllocation: Int ?= null
     var isBlockItem: Int ? = null
     var poNo: String ?= null
-    var limId: String ?= null
+    var limid: String ?= null
     var postingDate: String ?= null
     var expiryDate: String ?= null
     var medicalCode: String ?= null

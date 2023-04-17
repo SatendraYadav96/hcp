@@ -42,7 +42,7 @@
             <id property="id" column="id_vnd_inv"/>
             <result property="name" column="name_vnd"/>
         </association>
-        <association property="itemId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+        <association property="item" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
             <id property="id" column="id_itm_inv"/>
             <result property="name" column="name_itm"/>
         </association>
@@ -217,12 +217,26 @@
     </select>
 
 
-<!--    <select id="getInventoryAllocatedByBM" resultType="com.squer.promobee.controller.dto.InventoryReversalDTO" parameterType = "map" statementType = "CALLABLE">-->
-<!--        { call PROC_GetInventoryAllocationByBM ( #{InvID, jdbcType = STRING , mode = IN})}-->
+    <select id="getInventoryAllocatedByBM" resultType="com.squer.promobee.controller.dto.InventoryReversalDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetInventoryAllocationByBM ( #{InvID, jdbcType = VARCHAR , mode = IN})}
 
 
-<!--    </select>-->
+    </select>
 
+
+    <update id="inventoryUpdateQtyDispatch">
+
+        UPDATE INVENTORY_INV SET QTY_DISPATCHED_INV = #{qtyDispatched},   UPDATED_BY_INV = #{updatedBy} , UPDATED_ON_INV = GETDATE()
+        WHERE ID_INV = #{id}
+
+    </update>
+
+    <select id="getInventoryById" resultMap="inventoryResultMap">
+        select ID_INV,ID_ITM_INV,PACK_SIZE_INV,PO_NO_INV,ID_CCM_INV,LMID_INV,POSTING_DATE_INV,EXPIRY_DATE_INV,
+               ID_ITC_INV,MEDICAL_CODE_INV,ID_VND_INV,RATE_PER_UNIT_INV,QTY_RECEIVED_INV,QTY_ALLOCATED_INV,QTY_DISPATCHED_INV,NUM_BOXES_INV,IS_UNIT_ALLOCATION_INV,BATCH_NO_INV,
+               CREATED_ON_INV,CREATED_BY_INV,UPDATED_ON_INV,UPDATED_BY_INV,IS_BLOCK_ITEM_INV,COMMENT_INV,HSN_CODE_INV,RATE_PER_INV,UNITS_INV
+        from INVENTORY_INV where ID_INV = #{id}
+    </select>
 
 
 
