@@ -39,7 +39,7 @@ class InventoryServiceImpl @Autowired constructor(
     }
 
 
-    override fun searchInventory( isExhausted: Boolean, isPopup:Int) : List<InventoryDTO>{
+    override fun searchInventory( isExhausted: Boolean, isPopup:Int) : List<Inventory>{
         return inventoryRepository.searchInventory( isExhausted, isPopup)
     }
 

@@ -16,7 +16,7 @@
         <association property="headerId" column="id_inh_ind" select="getHeader" javaType="com.squer.promobee.service.repository.domain.InvoiceHeader">
             <id property="id" column="id_inh"/>
         </association>
-        <association property="itemId" javaType="com.squer.promobee.service.repository.domain.Item">
+        <association property="item" javaType="com.squer.promobee.service.repository.domain.Item">
             <id property="id" column="id_itm_ind"/>
             <result property="name" column="name_itm"/>
         </association>
@@ -42,8 +42,8 @@
 
     <insert id="insertReversalInvoiceDetail" >
         INSERT INTO INVOICE_DETAIL_IND (ID_IND,ID_INH_IND,ID_ITM_IND,QUANTITY_IND,ID_DID_IND,VALUE_IND,CREATED_ON_IND,
-                                        CREATED_BY_IND,UPDATED_ON_IND,UPDATED_BY_IND,ID_INV_IND,HSN_CODE_IND,RATE_PER_IND)
-        VALUES(#{id},#{headerId},#{itemId},#{quantity},#{didId},#{value},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{inventoryId},NULL,NULL)
+                                        CREATED_BY_IND,UPDATED_ON_IND,UPDATED_BY_IND,ID_INV_IND)
+        VALUES(#{id},#{headerId},#{item},#{quantity},#{didId},#{value},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{inventoryId})
     </insert>
 
 

@@ -9,6 +9,7 @@ import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.NamedSquerEntity
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
+import com.squer.promobee.service.InventoryService
 import com.squer.promobee.service.repository.domain.*
 import org.apache.ibatis.jdbc.SQL
 import org.apache.ibatis.session.SqlSessionFactory
@@ -67,6 +68,7 @@ class InventoryRepository @Autowired constructor(
     }
 
 
+
     fun blockItem(inv: InventoryDTO) {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
@@ -83,7 +85,7 @@ class InventoryRepository @Autowired constructor(
     }
 
 
-    fun searchInventory(  isExhausted: Boolean, isPopup:Int) : List<InventoryDTO>{
+    fun searchInventory(  isExhausted: Boolean, isPopup:Int) : List<Inventory>{
         var data: MutableMap<String, Any> = mutableMapOf()
 //        data.put("name", name)
         data.put("isExhausted", isExhausted)
@@ -129,10 +131,16 @@ class InventoryRepository @Autowired constructor(
 
 
 
-        var inv1 = Inventory()
+        val inv1 = inv.invId?.let { getInventoryById(it) }
+         var itemId = inv1?.item?.id
 
 
-        if(inv1.qtyAllocated != null && inv1.qtyAllocated!! > 0 && inv.quantity!! > ((inv1.qtyReceived?.minus((inv1.qtyAllocated!! + inv1.qtyDispatched!!!!))).toString())){
+
+
+
+
+
+        if(inv1!!.qtyAllocated != null && inv1.qtyAllocated!! > 0 && inv.quantity!! > ((inv1.qtyReceived?.minus((inv1.qtyAllocated!! + inv1.qtyDispatched!!!!))).toString())){
 
             inv.invId?.let { data.put("id", it) }
 
@@ -144,7 +152,13 @@ class InventoryRepository @Autowired constructor(
 
         var data0: MutableMap<String, Any> = mutableMapOf()
 
-         var inqd = inv.qtyDispatched?.plus(inv.quantity?.toInt()!!)
+//        var inv2 =  InventoryService.getInventoryById(inv.invId)
+
+
+
+         var inqd = inv1.qtyDispatched?.plus(inv.quantity?.toInt()!!)
+
+
 
 //        var inqd = inv1.qtyDispatched?.plus(inv.quantity!!)
 
@@ -183,14 +197,14 @@ class InventoryRepository @Autowired constructor(
         data1.put("month",month)
         data1.put("year",year)
 //        data1.put("planStatus", NamedSquerEntity(plan.planStatus?.id.toString(),""))
-        data1.put("planStatus",MonthlyPlanStatusEnum.APPROVED_ID)
+        data1.put("planStatus",MonthlyPlanStatusEnum.APPROVED_ID.id)
 //        plan.submissionDate?.let { data1.put("submissionDate", it) }
 //        plan.approvalDate?.let { data1.put("approvalDate", it) }
         data1.put("isSpecial", 1)
         data1.put("remarks",reversalRemarks)
         data1.put("createdBy", user.id)
         data1.put("updatedBy", user.id)
-        data1.put("invoiceStatus",DispatchPlanInvoiceStatus.FULLY_INVOICED)
+        data1.put("invoiceStatus",DispatchPlanInvoiceStatus.FULLY_INVOICED.id)
 
         sqlSessionFactory.openSession().insert("DispatchPlanMapper.insertReversalPlan",data1)
 
@@ -207,10 +221,10 @@ class InventoryRepository @Autowired constructor(
         data2.put("id",planDetailId1)
         data2.put("planId",planId1)
         inv.invId?.let { data2.put("inventoryId", it) }
-        data2.put("recipientId",RecipientEnum.HUB_MANAGER)
+        data2.put("recipientId",RecipientEnum.HUB_MANAGER.id)
         inv.quantity?.let { data2.put("qtyDispatch", it) }
-        data2.put("quarterlyPlanId",QtpEnum.QTP)
-        data2.put("detailStatus",DispatchDetailStatusEnum.INVOICED)
+        data2.put("quarterlyPlanId",QtpEnum.QTP.id)
+        data2.put("detailStatus",DispatchDetailStatusEnum.INVOICED.id)
         data2.put("createdBy", user.id)
         data2.put("updatedBy", user.id)
 
@@ -226,19 +240,19 @@ class InventoryRepository @Autowired constructor(
 
         data3.put("id",inhId1)
         invoiceHeader.invoiceNo?.let { data3.put("invoiceNo", it) }
-        data3.put("type",InvoiceTypeEnum.REVERSAL)
-        data3.put("statusId",InvoiceStatusEnum.GENERATED_PRINTED)
-        data3.put("teamId", TeamEnum.HUB_TEAM)
-        data3.put("recipientId", RecipientEnum.HUB_MANAGER)
+        data3.put("type",InvoiceTypeEnum.REVERSAL.id)
+        data3.put("statusId",InvoiceStatusEnum.GENERATED_PRINTED.id)
+        data3.put("teamId", TeamEnum.HUB_TEAM.id)
+        data3.put("recipientId", RecipientEnum.HUB_MANAGER.id)
         invoiceHeader.addressLine1?.let { data3.put("addressLine1", it) }
         invoiceHeader.states?.let { data3.put("states", it) }
         invoiceHeader.city?.let { data3.put("city", it) }
         invoiceHeader.zip?.let { data3.put("zip", it) }
-        data3.put("notes",ReversalRemarkEnum.PRUNED)
-        data3.put("transporterId",TeamEnum.HUB_TRANSPORTER)
+        data3.put("notes",ReversalRemarkEnum.PRUNED.id)
+        data3.put("transporterId",TeamEnum.HUB_TRANSPORTER.id)
         data3.put("createdBy", user.id)
         data3.put("updatedBy", user.id)
-        data3.put("designationId",ReversalRemarkEnum.PRUNED)
+        data3.put("designationId",ReversalRemarkEnum.PRUNED.id)
 
         sqlSessionFactory.openSession().insert("InvoiceHeaderMapper.insertReversalInvoiceHeader",data3)
 
@@ -248,20 +262,24 @@ class InventoryRepository @Autowired constructor(
 
         var indId1 = UUID.randomUUID().toString()
 
-        var inQNTY : String? = inv.quantity
-        var inRPU : Double? = inv1.ratePerUnit
+//        var inQNTY : String? = inv.quantity
+//        var inRPU : Double? = inv1.ratePerUnit
+//
+//        var inQNTY1 : Int? = inQNTY as Int?
+//        var inRPU1 : Int? = inRPU as Int?
+//
+//        var valueResult = inRPU1?.let { inQNTY1?.times(it) }
 
-        var inQNTY1 : Int? = inQNTY as Int?
-        var inRPU1 : Int? = inRPU as Int?
+        var valueResult = inv.quantity?.let { inv1.ratePerUnit?.times(it.toDouble()) }
 
-        var valueResult = inRPU1?.let { inQNTY1?.times(it) }
+
 
 
 
 
         data4.put("id",indId1)
         data4.put("headerId",inhId1)
-        inv1.item?.let { data4.put("itemId", it) }
+        inv1.item?.let { data4.put("item", it.id) }
         inv.quantity?.let { data4.put("quantity", it) }
         data4.put("didId",planDetailId1)
         valueResult?.let { data4.put("value", it) }
@@ -275,6 +293,7 @@ class InventoryRepository @Autowired constructor(
         var idp = InvoiceDetailPlan();
 
         var data5: MutableMap<String, Any> = mutableMapOf()
+
 
         data5.put("id", UUID.randomUUID().toString())
         data5.put("headerId",inhId1)
@@ -291,6 +310,10 @@ class InventoryRepository @Autowired constructor(
 
 
 }
+
+
+
+
 
 
 
