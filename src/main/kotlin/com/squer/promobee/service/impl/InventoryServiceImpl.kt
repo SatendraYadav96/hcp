@@ -1,9 +1,6 @@
 package com.squer.promobee.service.impl
 
-import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
-import com.squer.promobee.controller.dto.InventoryDTO
-import com.squer.promobee.controller.dto.InventoryReversalDTO
-import com.squer.promobee.controller.dto.RecipientReportDTO
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.InventoryService
 import com.squer.promobee.service.repository.InventoryRepository
 import com.squer.promobee.service.repository.domain.Inventory
@@ -55,8 +52,18 @@ class InventoryServiceImpl @Autowired constructor(
         return inventoryRepository.getInventoryById(invId )
     }
 
+
+    override fun getMaxInvoiceNo( ): Int?  {
+        return inventoryRepository.getMaxInvoiceNo( )
+    }
+
+
     override fun reverseInventory(inv: InventoryReversalDTO) {
         inventoryRepository.reverseInventory(inv)
+    }
+
+    override fun switchInventory(inv: SwitchInventoryDTO) {
+        inventoryRepository.switchInventory(inv)
     }
 
 }

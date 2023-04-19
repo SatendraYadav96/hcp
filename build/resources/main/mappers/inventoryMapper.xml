@@ -238,6 +238,20 @@
         from INVENTORY_INV where ID_INV = #{id}
     </select>
 
+    <update id="switchInventoryFromQtyDispatch">
+
+        UPDATE INVENTORY_INV SET QTY_DISPATCHED_INV = #{qtyDispatched},   UPDATED_BY_INV = #{updatedBy} , UPDATED_ON_INV = GETDATE()
+        WHERE ID_INV = #{id}
+
+    </update>
+
+    <update id="switchInventoryToQtyDispatch">
+
+        UPDATE INVENTORY_INV SET QTY_DISPATCHED_INV = #{qtyDispatched},   UPDATED_BY_INV = #{updatedBy} , UPDATED_ON_INV = GETDATE()
+        WHERE ID_INV = #{id}
+
+    </update>
+
 
 
 </mapper>

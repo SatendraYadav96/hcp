@@ -4,6 +4,7 @@ import com.squer.promobee.api.v1.enums.*
 import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
 import com.squer.promobee.controller.dto.InventoryDTO
 import com.squer.promobee.controller.dto.InventoryReversalDTO
+import com.squer.promobee.controller.dto.SwitchInventoryDTO
 import com.squer.promobee.mapper.InventoryMapper
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.NamedSquerEntity
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Repository
 import java.time.ZoneId
 import java.util.*
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 
 @Repository
@@ -119,6 +121,16 @@ class InventoryRepository @Autowired constructor(
         return sqlSessionFactory.openSession().selectOne("InventoryMapper.getInventoryById", data)
     }
 
+    fun getMaxInvoiceNo(  ) : Int?  {
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+//        data.put("id", invId)
+
+        return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getMaxInvoiceNo")
+    }
+
+
 
     fun reverseInventory(inv: InventoryReversalDTO) {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -196,10 +208,10 @@ class InventoryRepository @Autowired constructor(
         data1.put("owner",user.id)
         data1.put("month",month)
         data1.put("year",year)
-//        data1.put("planStatus", NamedSquerEntity(plan.planStatus?.id.toString(),""))
+//        data4.put("planStatus", NamedSquerEntity(plan.planStatus?.id.toString(),""))
         data1.put("planStatus",MonthlyPlanStatusEnum.APPROVED_ID.id)
-//        plan.submissionDate?.let { data1.put("submissionDate", it) }
-//        plan.approvalDate?.let { data1.put("approvalDate", it) }
+//        plan.submissionDate?.let { data4.put("submissionDate", it) }
+//        plan.approvalDate?.let { data4.put("approvalDate", it) }
         data1.put("isSpecial", 1)
         data1.put("remarks",reversalRemarks)
         data1.put("createdBy", user.id)
@@ -238,8 +250,13 @@ class InventoryRepository @Autowired constructor(
 
         var inhId1 = UUID.randomUUID().toString()
 
+//        var invNo = getMaxInvoiceNo()
+//        var invNo1 = 1.plus(invNo)
+
+
         data3.put("id",inhId1)
         invoiceHeader.invoiceNo?.let { data3.put("invoiceNo", it) }
+//        data3.put("invoiceNo",invNo1)
         data3.put("type",InvoiceTypeEnum.REVERSAL.id)
         data3.put("statusId",InvoiceStatusEnum.GENERATED_PRINTED.id)
         data3.put("teamId", TeamEnum.HUB_TEAM.id)
@@ -248,7 +265,7 @@ class InventoryRepository @Autowired constructor(
         invoiceHeader.states?.let { data3.put("states", it) }
         invoiceHeader.city?.let { data3.put("city", it) }
         invoiceHeader.zip?.let { data3.put("zip", it) }
-        data3.put("notes",ReversalRemarkEnum.PRUNED.id)
+        data3.put("notes",ReversalRemarkEnum.PRUNED.name)
         data3.put("transporterId",TeamEnum.HUB_TRANSPORTER.id)
         data3.put("createdBy", user.id)
         data3.put("updatedBy", user.id)
@@ -292,14 +309,189 @@ class InventoryRepository @Autowired constructor(
 
         var idp = InvoiceDetailPlan();
 
+        var data6: MutableMap<String, Any> = mutableMapOf()
+
+
+        data6.put("id", UUID.randomUUID().toString())
+        data6.put("headerId",inhId1)
+        data6.put("planId",planId1)
+
+        sqlSessionFactory.openSession().insert("InvoiceDetailPlanMapper.insertReversalIDP",data6)
+
+
+
+
+    }
+
+    fun switchInventory(inv: SwitchInventoryDTO){
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        var fromInv = inv.fromInvId?.let { getInventoryById(it) }
+
+//        val a = fromInv?.qtyReceived!! - fromInv?.qtyDispatched!!
+
+
+//        if(a < inv.quantity?.toInt()!!){
+//
+//            println("Insufficient Qty to Swap")
+//        }
+
+        var switchQtyDispatched = fromInv?.qtyDispatched!! + inv?.quantity!!.toInt()
+
+
+
+        inv.fromInvId?.let { data0.put("id", it) }
+         data0.put("qtyDispatched", switchQtyDispatched)
+        data0.put("updatedBy", user.id)
+
+         sqlSessionFactory.openSession().update("InventoryMapper.switchInventoryFromQtyDispatch",data0)
+
+
+//        var maxInvNo: Int?  = getMaxInvoiceNo()?.plus(1)
+
+        var inh = InvoiceHeader()
+
+        var data1: MutableMap<String, Any> = mutableMapOf()
+
+        var inhId = UUID.randomUUID().toString()
+
+        data1.put("id",inhId)
+        inh.invoiceNo?.let { data1.put("invoiceNo", it) }
+
+        data1.put("type",InvoiceTypeEnum.SWITCH.id)
+        data1.put("statusId",InvoiceStatusEnum.GENERATED_PRINTED.id)
+        data1.put("teamId", TeamEnum.HUB_TEAM.id)
+        data1.put("recipientId", RecipientEnum.HUB_MANAGER.id)
+        inh.addressLine1?.let { data1.put("addressLine1", it) }
+        inh.states?.let { data1.put("states", it) }
+        inh.city?.let { data1.put("city", it) }
+        inh.zip?.let { data1.put("zip", it) }
+        inv.remarks?.let { data1.put("notes", it) }
+        data1.put("transporterId",TeamEnum.HUB_TRANSPORTER.id)
+        data1.put("createdBy", user.id)
+        data1.put("updatedBy", user.id)
+
+
+        sqlSessionFactory.openSession().insert("InvoiceHeaderMapper.insertSwitchInvoiceHeader",data1)
+
+        var ind = InvoiceDetail()
+
+        var data2: MutableMap<String, Any> = mutableMapOf()
+
+        var indId = UUID.randomUUID().toString()
+
+//        var inQNTY : String? = inv.quantity
+//        var inRPU : Double? = inv1.ratePerUnit
+//
+//        var inQNTY1 : Int? = inQNTY as Int?
+//        var inRPU1 : Int? = inRPU as Int?
+//
+//        var valueResult = inRPU1?.let { inQNTY1?.times(it) }
+
+        var valueResult = inv.quantity?.let { fromInv.ratePerUnit?.times(it.toDouble())?.roundToInt()}
+
+
+
+
+
+
+        data2.put("id",indId)
+        data2.put("headerId",inhId)
+        fromInv.item?.let { data2.put("item", it.id) }
+        inv.quantity?.let { data2.put("quantity", it) }
+//        data6.put("didId",planDetailId1)
+        valueResult?.let { data2.put("value", it) }
+        data2.put("createdBy", user.id)
+        data2.put("updatedBy", user.id)
+        inv.fromInvId?.let { data2.put("inventoryId", it) }
+
+        sqlSessionFactory.openSession().insert("InvoiceDetailMapper.insertSwitchInvoiceDetail",data2)
+
+
+        var data3: MutableMap<String, Any> = mutableMapOf()
+
+
+        var toInv = inv.toInvId?.let { getInventoryById(it) }
+
+        var switchQtyDispatched1 = toInv?.qtyDispatched!! - inv?.quantity!!.toInt()
+
+
+        inv.toInvId?.let { data3.put("id", it) }
+        data3.put("qtyDispatched", switchQtyDispatched1)
+        data3.put("updatedBy", user.id)
+
+         sqlSessionFactory.openSession().update("InventoryMapper.switchInventoryToQtyDispatch",data3)
+
+
+//        var maxInvNo1: Int?  = getMaxInvoiceNo()?.plus(1)
+
+        var inh1 = InvoiceHeader()
+
+        var data4: MutableMap<String, Any> = mutableMapOf()
+
+        var inhId1 = UUID.randomUUID().toString()
+
+        data4.put("id",inhId1)
+        inh1.invoiceNo?.let { data4.put("invoiceNo", it) }
+
+        data4.put("type",InvoiceTypeEnum.SWITCH.id)
+        data4.put("statusId",InvoiceStatusEnum.GENERATED_PRINTED.id)
+        data4.put("teamId", TeamEnum.HUB_TEAM.id)
+        data4.put("recipientId", RecipientEnum.HUB_MANAGER.id)
+        inh1.addressLine1?.let { data4.put("addressLine1", it) }
+        inh1.states?.let { data4.put("states", it) }
+        inh1.city?.let { data4.put("city", it) }
+        inh1.zip?.let { data4.put("zip", it) }
+        inv.remarks?.let { data4.put("notes", it) }
+        data4.put("transporterId",TeamEnum.HUB_TRANSPORTER.id)
+        data4.put("createdBy", user.id)
+        data4.put("updatedBy", user.id)
+
+
+        sqlSessionFactory.openSession().insert("InvoiceHeaderMapper.insertSwitchInvoiceHeader1",data4)
+
+        var ind1 = InvoiceDetail()
+
         var data5: MutableMap<String, Any> = mutableMapOf()
 
+        var indId1 = UUID.randomUUID().toString()
 
-        data5.put("id", UUID.randomUUID().toString())
+//        var inQNTY : String? = inv.quantity
+//        var inRPU : Double? = inv1.ratePerUnit
+//
+//        var inQNTY1 : Int? = inQNTY as Int?
+//        var inRPU1 : Int? = inRPU as Int?
+//
+//        var valueResult = inRPU1?.let { inQNTY1?.times(it) }
+
+        var valueResult1 = inv.quantity?.let { toInv.ratePerUnit?.times(it.toDouble())?.roundToInt()  }
+
+
+
+
+
+
+        data5.put("id",indId1)
         data5.put("headerId",inhId1)
-        data5.put("planId",planId1)
+        toInv.item?.let { data5.put("item", it.id) }
+        inv.quantity?.let { data5.put("quantity", it) }
+//        data6.put("didId",planDetailId1)
+        valueResult1?.let { data5.put("value", it) }
+        data5.put("createdBy", user.id)
+        data5.put("updatedBy", user.id)
+        inv.toInvId?.let { data5.put("inventoryId", it) }
 
-        sqlSessionFactory.openSession().insert("InvoiceDetailPlanMapper.insertReversalIDP",data5)
+        sqlSessionFactory.openSession().insert("InvoiceDetailMapper.insertSwitchInvoiceDetail1",data5)
+
+
+
+
+
+
+
 
 
 
@@ -310,6 +502,10 @@ class InventoryRepository @Autowired constructor(
 
 
 }
+
+
+
+
 
 
 

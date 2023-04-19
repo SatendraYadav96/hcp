@@ -30,4 +30,6 @@ class Inventory: AuditableEntity() {
     var hsnCode: String?= null
     var rate: Double?= null
     var units: String?= null
+    var isExhausted: String ?= null
+    var isPopup: Int ?= null
 }
