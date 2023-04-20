@@ -280,6 +280,24 @@ class MasterRepository
     }
 
 
+    fun getDivisionDropdown( ) : List<Division>{
+//        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        return sqlSessionFactory.openSession().selectList("DivisionMapper.getDivisionDropdown")
+    }
+
+    fun getTeamDropdown( ) : List<Team>{
+
+        return sqlSessionFactory.openSession().selectList("TeamMapper.getTeamDropdown")
+    }
+
+    fun getCostCenterDropdown( ) : List<CostCenter>{
+
+        return sqlSessionFactory.openSession().selectList("CostCenterMapper.getCostCenterDropdown")
+    }
+
+
 
 
 

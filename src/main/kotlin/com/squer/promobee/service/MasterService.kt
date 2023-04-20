@@ -43,5 +43,10 @@ interface MasterService {
 
     fun getBrandDropdown(): List<BrandMaster>
 
+    fun getDivisionDropdown(): List<Division>
+
+    fun getTeamDropdown(): List<Team>
+
+    fun getCostCenterDropdown(): List<CostCenter>
 
 }

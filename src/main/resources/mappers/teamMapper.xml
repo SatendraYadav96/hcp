@@ -76,4 +76,15 @@
         join BRANDMANAGER_BRAND_BBR bbr on brd.ID_BRD = bbr.ID_BRD_BBR
         where bbr.ID_USR_BBR = #{userID} and tem.IS_ACTIVE_TEM = 1
     </select>
+
+
+    <select id="getTeamDropdown" resultMap="teamResultMap" >
+        SELECT * FROM TEAM_MASTER_TEM TEM
+        JOIN DIVISION_MASTER_DIM DIM ON DIM.ID_DIM = TEM.ID_DIM_TEM
+        WHERE IS_ACTIVE_TEM = 1
+    </select>
+
+
+
+
 </mapper>

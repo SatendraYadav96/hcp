@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.squer.promobee.mapper.DivisionMapper">
+<mapper namespace="DivisionMapper">
     <resultMap id="divisionResultMap" type="com.squer.promobee.service.repository.domain.Division">
         <id property="id" column="id_dim"/>
         <result property="name" column="name_dim"/>
@@ -24,6 +24,12 @@
 <!--        select * from DIVISION_MASTER_DIM-->
 <!--        where IS_ACTIVE_DIM = #{active}-->
 <!--    </select>-->
+
+    <select id="getDivisionDropdown" resultMap="divisionResultMap" >
+        select * from DIVISION_MASTER_DIM DIM
+                          JOIN BU_MASTER_BUM BUM ON BUM.ID_BUM = DIM.ID_BUM_DIM
+        where IS_ACTIVE_DIM = 1
+    </select>
 
 
 </mapper>

@@ -147,6 +147,31 @@ open class MasterController@Autowired constructor(
     }
 
 
+    @GetMapping("/getDivisionDropdown")
+    fun getDivisionDropdown(): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getDivisionDropdown()
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/getTeamDropdown")
+    fun getTeamDropdown(): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getTeamDropdown()
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getCostCenterDropdown")
+    fun getCostCenterDropdown(): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getCostCenterDropdown()
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
+
 
 
 

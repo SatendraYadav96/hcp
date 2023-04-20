@@ -54,4 +54,13 @@
     </select>
 
 
+    <select id="getCostCenterDropdown" resultMap="costCenterResultMap" >
+        SELECT * FROM COST_CENTER_MASTER_CCM CCM
+        JOIN COSTCENTER_BRAND_CBR CBR ON CBR.ID_CCM_CBR = CCM.ID_CCM
+        JOIN BRAND_MASTER_BRD BRD ON BRD.ID_BRD = CBR.ID_BRD_CBR
+        WHERE CCM.IS_ACTIVE_CCM = 1
+    </select>
+
+
+
 </mapper>

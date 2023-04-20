@@ -86,6 +86,19 @@ class MasterServiceImpl @Autowired constructor(
     }
 
 
+    override fun getDivisionDropdown(): List<Division> {
+        return masterRepository.getDivisionDropdown()
+    }
+
+    override fun getTeamDropdown(): List<Team> {
+        return masterRepository.getTeamDropdown()
+    }
+
+    override fun getCostCenterDropdown(): List<CostCenter> {
+        return masterRepository.getCostCenterDropdown()
+    }
+
+
 
 
 
