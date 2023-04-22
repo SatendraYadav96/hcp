@@ -26,30 +26,42 @@
         <result property="createdBy" column="created_by_inh"/>
         <result property="updatedAt" column="updated_on_inh"/>
         <result property="updatedBy" column="updated_by_inh"/>
-        <association property="type" javaType="com.squer.promobee.service.repository.domain.UserStatus">
-            <id property="id" column="id_type_slv_inh"/>
-            <result property="name" column="name_slv"/>
-        </association>
-        <association property="statusId" javaType="com.squer.promobee.service.repository.domain.UserStatus">
-            <id property="id" column="id_status_slv_inh"/>
-            <result property="name" column="name_inh"/>
-        </association>
-        <association property="teamId" javaType="com.squer.promobee.service.repository.domain.Team">
-            <id property="id" column="id_tem_inh"/>
-            <result property="name" column="name_tem"/>
-        </association>
-        <association property="recipientId" javaType="com.squer.promobee.service.repository.domain.Recipient">
-            <id property="id" column="id_rct_inh"/>
-            <result property="name" column="name_rct"/>
-        </association>
-        <association property="transporterId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
-            <id property="id" column="id_trn-inh"/>
-            <result property="name" column="name_trn"/>
-        </association>
-        <association property="designationId" javaType="com.squer.promobee.service.repository.domain.UserDesignation">
-            <id property="id" column="id_rct_desg_ulv_inh"/>
-            <result property="name" column="name_ulv"/>
-        </association>
+        <result property="type.id" column="id_type_slv_inh"/>
+        <result property="type.name" column="name_slv"/>
+        <result property="statusId.id" column="id_status_slv_inh"/>
+        <result property="statusId.name" column="name_inh"/>
+        <result property="teamId.id" column="id_tem_inh"/>
+        <result property="teamId.name" column="name_tem"/>
+        <result property="recipientId.id" column="id_rct_inh"/>
+        <result property="recipientId.name" column="name_rct"/>
+        <result property="transporterId.id" column="id_trn_inh"/>
+        <result property="transporterId.name" column="name_trn"/>
+        <result property="designationId.id" column="id_rct_desg_ulv_inh"/>
+        <result property="designationId.name" column="name_ulv"/>
+<!--        <association property="type" javaType="com.squer.promobee.service.repository.domain.UserStatus">-->
+<!--            <id property="id" column="id_type_slv_inh"/>-->
+<!--            <result property="name" column="name_slv"/>-->
+<!--        </association>-->
+<!--        <association property="statusId" javaType="com.squer.promobee.service.repository.domain.UserStatus">-->
+<!--            <id property="id" column="id_status_slv_inh"/>-->
+<!--            <result property="name" column="name_inh"/>-->
+<!--        </association>-->
+<!--        <association property="teamId" javaType="com.squer.promobee.service.repository.domain.Team">-->
+<!--            <id property="id" column="id_tem_inh"/>-->
+<!--            <result property="name" column="name_tem"/>-->
+<!--        </association>-->
+<!--        <association property="recipientId" javaType="com.squer.promobee.service.repository.domain.Recipient">-->
+<!--            <id property="id" column="id_rct_inh"/>-->
+<!--            <result property="name" column="name_rct"/>-->
+<!--        </association>-->
+<!--        <association property="transporterId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">-->
+<!--            <id property="id" column="id_trn_inh"/>-->
+<!--            <result property="name" column="name_trn"/>-->
+<!--        </association>-->
+<!--        <association property="designationId" javaType="com.squer.promobee.service.repository.domain.UserDesignation">-->
+<!--            <id property="id" column="id_rct_desg_ulv_inh"/>-->
+<!--            <result property="name" column="name_ulv"/>-->
+<!--        </association>-->
     </resultMap>
 
 
@@ -98,6 +110,98 @@
                    NEWID(),(SELECT MAX(INVOICE_NO_INH) FROM INVOICE_HEADER_INH) + 1,#{type},#{statusId},#{teamId},#{recipientId},
                    '','','','',#{notes},#{transporterId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy})
     </insert>
+
+
+    <select id="getInvoiceHeaderById" resultMap="invoiceHeaderResultMap">
+        SELECT INH.*,SLV.NAME_SLV,TEM.NAME_TEM,TRN.NAME_TRN,ULV.NAME_ULV,RCT.NAME_RCT FROM INVOICE_HEADER_INH INH
+        JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = INH.ID_TEM_INH
+        JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = INH.ID_STATUS_SLV_INH
+        JOIN TRANSPORTER_TRN TRN ON TRN.ID_TRN = INH.ID_TRN_INH
+        JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = INH.ID_RCT_DESG_ULV_INH
+        JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = INH.ID_RCT_INH
+        WHERE ID_INH = #{id}
+    </select>
+
+
+
+    <select id="getVirtualPrintInvoiceHeaders" resultMap="invoiceHeaderResultMap">
+        SELECT  inh.ID_INH as invoiceHeaderId,
+                inh.INVOICE_NO_INH as invoiceNumber,
+                ulv.NAME_ULV as employeeDesignation,
+                DTM.ID_DTM as employeeId,
+                DTM.NAME_DTM as employeeName,
+                DTM.CODE_DTM as employeeCode,
+                inh.ADDRESS_LINE_1_INH as employeeAddress,
+                inh.ADDRESS_CITY_INH as employeeCity,
+                inh.ADDRESS_STATE_INH as employeeState,
+                inh.ADDRESS_ZIP_INH as employeePinCode,
+                inh.PHONE_INH as employeeMobileNumber,
+                inh.LR_NUMBER_INH as employeeLRNumber,
+                GETDATE() as employeeDate,
+                inh.CREATED_ON_INH as employeeLRDate,
+                tem.NAME_TEM as employeeTeam,
+                trn.NAME_TRN as employeeTransport,
+                '' as employeePermitNo,
+                inh.CFA_INH as employeeCFA,
+                inh.NO_OF_BOXES_INH as employeeTotalNoOfCases,
+                inh.WEIGHT_INH as employeeTotalWeight,
+                dip.ID_DIP as dipId,
+                dip.REMARKS_DIP as employeeRemark,
+                dip.MONTH_DIP as month,
+ dip.YEAR_DIP as year,
+ dip.IS_SPECIAL_DIP as isSpecial,
+ dip.QTR_DIP as qtr,
+         inh.ID_TEM_INH as teamId
+        FROM INVOICE_HEADER_INH INH
+        JOIN DOCTOR_MASTER_DTM DTM ON DTM.ID_DTM = INH.ID_RCT_INH
+        JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = INH.ID_TEM_INH
+        JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = INH.ID_RCT_DESG_ULV_INH
+        JOIN INVOICE_DISPATCH_PLAN_IDP IDP ON IDP.ID_INH_IDP = INH.ID_INH
+        JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP = IDP.ID_PLAN_IDP
+        JOIN TRANSPORTER_TRN TRN ON TRN.ID_TRN = INH.ID_TRN_INH
+        WHERE ID_INH = #{id}
+
+    </select>
+
+
+    <select id="getPrintInvoiceHeaders" resultMap="invoiceHeaderResultMap">
+        SELECT  inh.ID_INH as invoiceHeaderId,
+                inh.INVOICE_NO_INH as invoiceNumber,
+                ulv.NAME_ULV as employeeDesignation,
+                rct.ID_RCT as employeeId,
+                rct.NAME_RCT as employeeName,
+                rct.CODE_RCT as employeeCode,
+                inh.ADDRESS_LINE_1_INH as employeeAddress,
+                inh.ADDRESS_CITY_INH as employeeCity,
+                inh.ADDRESS_STATE_INH as employeeState,
+                inh.ADDRESS_ZIP_INH as employeePinCode,
+                inh.PHONE_INH as employeeMobileNumber,
+                inh.LR_NUMBER_INH as employeeLRNumber,
+                GETDATE() as employeeDate,
+                inh.CREATED_ON_INH as employeeLRDate,
+                tem.NAME_TEM as employeeTeam,
+                trn.NAME_TRN as employeeTransport,
+                '' as employeePermitNo,
+                inh.CFA_INH as employeeCFA,
+                inh.NO_OF_BOXES_INH as employeeTotalNoOfCases,
+                inh.WEIGHT_INH as employeeTotalWeight,
+                dip.ID_DIP as dipId,
+                dip.REMARKS_DIP as employeeRemark,
+                dip.MONTH_DIP as month,
+ dip.YEAR_DIP as year,
+ dip.IS_SPECIAL_DIP as isSpecial,
+ dip.QTR_DIP as qtr,
+         inh.ID_TEM_INH as teamId
+        FROM INVOICE_HEADER_INH INH
+        JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = INH.ID_RCT_INH
+        JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = INH.ID_TEM_INH
+        JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = INH.ID_RCT_DESG_ULV_INH
+        JOIN INVOICE_DISPATCH_PLAN_IDP IDP ON IDP.ID_INH_IDP = INH.ID_INH
+        JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP = IDP.ID_PLAN_IDP
+        JOIN TRANSPORTER_TRN TRN ON TRN.ID_TRN = INH.ID_TRN_INH
+        WHERE ID_INH = #{id}
+
+    </select>
 
 
 

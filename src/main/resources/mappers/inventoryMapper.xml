@@ -231,12 +231,18 @@
 
     </update>
 
-    <select id="getInventoryById" resultMap="inventoryResultMap">
-        select ID_INV,ID_ITM_INV,ID_GRN_INV,PACK_SIZE_INV,PO_NO_INV,ID_CCM_INV,LMID_INV,POSTING_DATE_INV,EXPIRY_DATE_INV,
-               ID_ITC_INV,MEDICAL_CODE_INV,ID_VND_INV,RATE_PER_UNIT_INV,QTY_RECEIVED_INV,QTY_ALLOCATED_INV,QTY_DISPATCHED_INV,NUM_BOXES_INV,IS_UNIT_ALLOCATION_INV,BATCH_NO_INV,
-               CREATED_ON_INV,CREATED_BY_INV,UPDATED_ON_INV,UPDATED_BY_INV,IS_BLOCK_ITEM_INV,COMMENT_INV,HSN_CODE_INV,RATE_PER_INV,UNITS_INV
-        from INVENTORY_INV where ID_INV = #{id}
-    </select>
+<!--    <select id="getInventoryById" resultMap="inventoryResultMap">-->
+<!--        select ID_INV,ID_ITM_INV,ID_GRN_INV,PACK_SIZE_INV,PO_NO_INV,ID_CCM_INV,LMID_INV,POSTING_DATE_INV,EXPIRY_DATE_INV,-->
+<!--               ID_ITC_INV,MEDICAL_CODE_INV,ID_VND_INV,RATE_PER_UNIT_INV,QTY_RECEIVED_INV,QTY_ALLOCATED_INV,QTY_DISPATCHED_INV,NUM_BOXES_INV,IS_UNIT_ALLOCATION_INV,BATCH_NO_INV,-->
+<!--               CREATED_ON_INV,CREATED_BY_INV,UPDATED_ON_INV,UPDATED_BY_INV,IS_BLOCK_ITEM_INV,COMMENT_INV,HSN_CODE_INV,RATE_PER_INV,UNITS_INV-->
+<!--        from INVENTORY_INV where ID_INV = #{id}-->
+<!--    </select>-->
+
+        <select id="getInventoryById" resultMap="inventoryResultMap">
+            select * from INVENTORY_INV where ID_INV = #{id}
+        </select>
+
+
 
     <update id="switchInventoryFromQtyDispatch">
 
