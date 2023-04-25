@@ -19,6 +19,11 @@
         VALUES (#{id}, #{hcmCode}, #{rate}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy});
     </insert>
 
+    <select id="getHsnRate" resultMap="hsnResultMap" >
+        SELECT * FROM HSN_CODE_MASTER
+        WHERE HSN_CODE_HCM = #{hcmCode}
+    </select>
+
 
 
 

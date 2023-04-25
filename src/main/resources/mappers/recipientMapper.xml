@@ -61,4 +61,13 @@
         </association>
     </resultMap>
 
+
+    <select id="getLegalEntity" resultMap="recipientResultMap">
+        SELECT * FROM RECIPIENT_MASTER_RCT RCT
+                          JOIN TEAM_LEGAL_ENTITY_TET TET ON TET.ID_TEM_TET = TEM.ID_TEM
+                          JOIN LEGAL_ENTITY_MASTER_ETY ETY ON ETY.ID_ETY = TET.ID_ETY_TET
+                          JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM =  RCT.ID_TEM_RCT
+        WHERE RCT.CODE_RCT = #{code}
+    </select>
+
 </mapper>

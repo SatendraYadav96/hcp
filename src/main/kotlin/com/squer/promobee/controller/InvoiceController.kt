@@ -2,6 +2,7 @@ package com.squer.promobee.controller
 
 
 import com.squer.promobee.controller.dto.InvoiceHeaderDTO
+import com.squer.promobee.controller.dto.PrintInvoiceDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.InvoiceService
 import lombok.extern.slf4j.Slf4j
@@ -33,11 +34,20 @@ open class InvoiceController@Autowired constructor(
 
 
     @GetMapping("/printInvoice")
-    open fun printInvoice(@RequestBody inh: InvoiceHeaderDTO): ResponseEntity<*> {
+    open fun printInvoice(@RequestBody inh: PrintInvoiceDTO): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val printInvoiceData = invoiceService.printInvoice(inh)
         return ResponseEntity(printInvoiceData, HttpStatus.OK)
     }
+
+    @GetMapping("/getHsnRate/{hcmCode}")
+    open fun getHsnRate(@PathVariable hcmCode: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val hsnData = invoiceService.getHsnRate(hcmCode)
+        return ResponseEntity(hsnData, HttpStatus.OK)
+    }
+
+
 
 
 
