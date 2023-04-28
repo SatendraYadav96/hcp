@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.util.Named
 import com.squer.promobee.security.domain.AuditableEntity
 import com.squer.promobee.security.domain.NamedSquerEntity
 
-class Doctor: AuditableEntity() {
+class Doctor {
 
-    var name: String?= null
+    var id: String? = null
     var code: String?= null
+    var name: String?= null
     var mobile: String?= null
     var address:String?= null
     var city:String?= null

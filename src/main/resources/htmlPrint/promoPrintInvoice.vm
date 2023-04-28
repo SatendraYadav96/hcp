@@ -1,0 +1,379 @@
+<html>
+<head>
+    <title></title>
+    <style>
+        .clearfix {
+            clear: both;
+        }
+
+        body {
+            font-family: sans-serif;
+            margin: 0 auto;
+            font-size: 12px;
+        }
+
+        table
+        {
+            table-layout:fixed;
+            width:100%;
+            word-break: break-word;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        .allBorder {
+            border: 1px solid #000;
+        }
+
+        .topBorder {
+            border-top: 1px solid #000;
+        }
+
+        .bottomBorder {
+            border-bottom: 1px solid #000;
+        }
+
+        header .leftSection {
+            float: left;
+            width: 50%;
+            padding-right: 5%;
+        }
+
+        header .leftSection h4 {
+            text-transform: uppercase;
+            margin-top: 0;
+        }
+
+        header .leftSection address {
+            font-style: normal;
+            font-size: 14px;
+            margin-top: -15px
+        }
+
+        header .rightSection {
+            float: left;
+            width: 45%;
+        }
+
+        header .rightSection label {
+            display: block;
+            font-weight: bold;
+        }
+        .tblRecipientRightSection {
+            font-size:13px;
+        }
+        .tblRecipientLeftSection {
+            font-size: 13px;
+        }
+
+        .ph_no {
+            font-size: 14px;
+            padding-left: 20px;
+        }
+
+        .billProductDetailsTable {
+            width: 100%;
+            font-size:9.5px;
+        }
+
+        .billProductDetailsTable thead th {
+            border-bottom: 1px solid #000;
+            border-left: 1px solid #000;
+        }
+
+        .billProductDetailsTable tbody td {
+            border-left: 1px solid #000;
+            /*padding: 7px;*/
+        }
+
+        .billProductDetailsTable thead th:first-of-type,
+        .billProductDetailsTable tbody td:first-of-type {
+            border-left: none;
+        }
+
+        .itemDetailSection p {
+            font-size: 12px;
+        }
+        .terminologyLeftTable{
+            float:left;
+        }
+        .terminologyRightTable {
+            float:right;
+        }
+        .terminology {
+            margin-top: 15px;
+        }
+
+        .terminology table {
+            font-size: 15px;
+        }
+
+        .terminology table td:nth-of-type(even) {
+            width: 35%;
+            padding-left: 40px;
+        }
+
+        .terminology aside {
+            text-align: end;
+            padding: 0 30px 0px 0;
+        }
+
+        .terminology aside h5 {
+            font-weight: normal;
+        }
+
+        .medicalDetails {
+            margin-bottom: 15px;
+        }
+
+        .medicalDetails table {
+            width: 44%;
+            float: left;
+        }
+
+        .medicalDetails table td {
+            padding: 7px;
+        }
+
+        .medicalDetails table td:nth-of-type(odd) {
+            font-weight: bold;
+        }
+
+        .FooterPaging {
+            margin: 50px 0 0 700px;
+            text-align: right;
+            padding: 10px 30px;
+            width: 180px;
+        }
+
+        .uns-title {
+            font-weight: bold;
+            font-size: 14;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .uns-title-address {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div class="wholePrintBody page-break">
+    <header>
+        <div class="uns-title">
+            UNS
+        </div>
+        <hr/>
+        <div class="uns-title-address">
+            Regd. Office : Universal Nutriscience PVT. LTD, 2 floor Fleet house, Marol, Andheri Kurla Road, Mumbai - 59
+        </div>
+        <hr/>
+        <section class="leftSection">
+            <h4>Sanofi India limited</h4>
+            <address>
+                SANOFI INDIA LTD
+                C/o-S K Logistics,Bldg no-4,1st floor,Gala No-1 to 7,
+                Citylink Warehousing Complex,Mumbai Nashik Highway,
+                S.No-120-121,Village-Vadpe,Taluka-Bhiwandi,
+                Dist.Thane-421302,Maharashtra
+                TEL-02522398014/16/17
+            </address>
+            <p>
+                <b>Mob</b>
+                <label class="ph_no">9619861901/8879627885</label>
+            </p>
+        </section>
+
+        <section class="rightSection">
+            <table>
+                <tr>
+                    <td>Transfer Note No.</td>
+                    <td>
+                        <label>$InvoiceNumber</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>D.L.No.</td>
+                    <td>
+                        <label>20B-TZ5-172894</label>
+                        <label>21B-TZ5-172895</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>GST No.</td>
+                    <td>
+                        <label>27AAACH2736F1ZU</label>
+                    </td>
+                </tr>
+            </table>
+        </section>
+        <div class="clearfix"></div>
+    </header>
+
+    <main>
+        <section class="medicalDetails allBorder">
+            <div>
+                <table class="tblRecipientLeftSection">
+                    <tr>
+                        <td>Colleague Code</td>
+                        <td>$EmployeeCode</td>
+                    </tr>
+                    <tr>
+                        <td>Designation</td>
+                        <td>$EmployeeDesignation</td>
+                    </tr>
+                    <tr>
+                        <td>Colleague Name</td>
+                        <td>$EmployeeName</td>
+                    </tr>
+                    <tr>
+                        <td>Addresss</td>
+                        <td>$EmployeeAddress</td>
+                    </tr>
+                    <tr>
+                        <td>City</td>
+                        <td>$EmployeeCity</td>
+                    </tr>
+                    <tr>
+                        <td>State</td>
+                        <td>$EmployeeState</td>
+                    </tr>
+                    <tr>
+                        <td>Pin code</td>
+                        <td>$EmployeePinCode</td>
+                    </tr>
+                    <tr>
+                        <td>Mobile No</td>
+                        <td>$EmployeeMobileNumber</td>
+                    </tr>
+                </table>
+                <table class="tblRecipientRightSection">
+                    <tr>
+                        <td>Period</td>
+                        <td>$EmployeePeriod</td>
+                        <td>LR No.</td>
+                        <td>$EmployeeLRNumber</td>
+                    </tr>
+                    <tr>
+                        <td>Date</td>
+                        <td>$EmployeeDate</td>
+                        <td>LR Date</td>
+                        <td>$EmployeeLRDate</td>
+                    </tr>
+                    <tr>
+                        <td>Team</td>
+                        <td>$EmployeeTeam</td>
+                    </tr>
+                    <!-- <tr>
+                      <td>Sub Team 1</td>
+                      <td>Mass Therepy</td>
+                      </tr>
+                      <tr>
+                      <td>Sub Team 2</td>
+                      <td></td>
+                    </tr> -->
+                    <tr>
+                        <td>Transport</td>
+                        <td>$EmployeeTransport</td>
+                    </tr>
+                    <tr>
+                        <td>CFA</td>
+                        <td>$EmployeeCFA</td>
+                    </tr>
+                    <tr>
+                        <td>PROMO MONTH</td>
+                        <td>$PROMOMONTH</td>
+                    </tr>
+                    <tr>
+                        <td>TYPE</td>
+                        <td>$PLANTYPE</td>
+                    </tr>
+                </table>
+                <div class="clearfix"></div>
+            </div>
+
+        </section>
+        <section class="itemDetailSection allBorder">
+            <div>
+                <table cellspacing="0" class="billProductDetailsTable bottomBorder">
+                    <thead>
+                    <tr>
+                        <th rowspan="2">Sr. No.</th>
+                        <th rowspan="2">Product Code</th>
+                        <th rowspan="2">HSN Code</th>
+                        <th rowspan="2">Product Description</th>
+                        <th rowspan="2">Quantity</th>
+                        <th rowspan="2">PO No.</th>
+                        <th rowspan="2">Batch No</th>
+                        <th rowspan="2">EXP Date</th>
+                        <th rowspan="2">Rate Rs.</th>
+                        <th rowspan="2">Taxable Value Rs.</th>
+                        <th colspan="2">CGST</th>
+                        <th colspan="2">SGST/UGST</th>
+                        <th colspan="2">IGST</th>
+                        <th rowspan="2">Total Amount in Rs. </th>
+                    </tr>
+                    <tr>
+                        <th>Rate</th>
+                        <th>Amount</th>
+                        <th>Rate</th>
+                        <th>Amount</th>
+                        <th>Rate</th>
+                        <th>Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+              $tableRow
+                    </tbody>
+                </table>
+            </div>
+            <div class="terminology topBorder">
+                <div>
+                    <table class="terminologyLeftTable">
+                        <tr>
+                            <td>Total no of cases</td>
+                            <td>$EmployeeTotalNoOfCases</td>
+                        </tr>
+                        <tr>
+                            <td>Total weight in Kgs</td>
+                            <td>$EmployeeTotalWeight</td>
+                        </tr>
+                        <tr>
+                            <td>Remark</td>
+                            <td>$EmployeeRemark</td>
+                        </tr>
+                    </table>
+                    <table class="terminologyRightTable">
+                        <tr>
+                            <td>Sample Value</td>
+                            <td>$TotalSampleValue</td>
+                        </tr>
+                        <tr>
+                            <td>Input Value</td>
+                            <td>$TotalInputValue</td>
+                        </tr>
+                        <tr>
+                            <td>Total Value</td>
+                            <td>$TotalSumValue</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="clearfix"></div>
+                <p>
+                    These cases contain promotional materials of no commercial value-Not for sale harmless promotional material for free distribution to the medical proession only. Value mentioned is for check post purpose only.
+                </p>
+                <aside>
+                    For Sanofi India LTD <br />
+                    Authorized Signatory
+                </aside>
+        </section>
+    </main>
+</div>
+</body>
+</html>

@@ -124,88 +124,114 @@
 
 
 
-    <select id="getVirtualPrintInvoiceHeaders" resultMap="invoiceHeaderResultMap">
-        SELECT  inh.ID_INH as invoiceHeaderId,
-                inh.INVOICE_NO_INH as invoiceNumber,
-                ulv.NAME_ULV as employeeDesignation,
-                DTM.ID_DTM as employeeId,
-                DTM.NAME_DTM as employeeName,
-                DTM.CODE_DTM as employeeCode,
-                inh.ADDRESS_LINE_1_INH as employeeAddress,
-                inh.ADDRESS_CITY_INH as employeeCity,
-                inh.ADDRESS_STATE_INH as employeeState,
-                inh.ADDRESS_ZIP_INH as employeePinCode,
-                inh.PHONE_INH as employeeMobileNumber,
-                inh.LR_NUMBER_INH as employeeLRNumber,
-                GETDATE() as employeeDate,
-                inh.CREATED_ON_INH as employeeLRDate,
-                tem.NAME_TEM as employeeTeam,
-                trn.NAME_TRN as employeeTransport,
-                '' as employeePermitNo,
-                inh.CFA_INH as employeeCFA,
-                inh.NO_OF_BOXES_INH as employeeTotalNoOfCases,
-                inh.WEIGHT_INH as employeeTotalWeight,
-                dip.ID_DIP as dipId,
-                dip.REMARKS_DIP as employeeRemark,
+    <select id="getVirtualPrintInvoiceHeaders" resultType="com.squer.promobee.controller.dto.InvoicePrintDetailsDTO">
+        SELECT  distinct inh.ID_INH as 'inhId',
+                inh.INVOICE_NO_INH as 'invoiceNumber',
+                ulv.NAME_ULV as 'employeeDesignation',
+                dtm.ID_DTM as 'employeeId',
+                dtm.NAME_DTM as 'employeeName',
+                dtm.CODE_DTM   as 'employeeCode',
+                inh.ADDRESS_LINE_1_INH as 'employeeAddress',
+                inh.ADDRESS_CITY_INH as 'employeeCity',
+                inh.ADDRESS_STATE_INH as 'employeeState',
+                inh.ADDRESS_ZIP_INH as 'employeePinCode',
+                inh.PHONE_INH as 'employeeMobileNumber',
+                inh.LR_NUMBER_INH as 'employeeLRNumber',
+                GETDATE() as 'employeeDate',
+                inh.CREATED_ON_INH as 'employeeLRDate',
+                tem.NAME_TEM as 'employeeTeam',
+                trn.NAME_TRN as 'employeeTransport',
+                '' as 'employeePermitNo',
+                inh.CFA_INH as 'employeeCFA',
+                inh.NO_OF_BOXES_INH as 'employeeTotalNoOfCases',
+                inh.WEIGHT_INH as 'employeeTotalWeight',
+                dip.ID_DIP as 'dipId',
+                dip.REMARKS_DIP as 'employeeRemark',
                 dip.MONTH_DIP as month,
  dip.YEAR_DIP as year,
- dip.IS_SPECIAL_DIP as isSpecial,
- dip.QTR_DIP as qtr,
-         inh.ID_TEM_INH as teamId
+ dip.IS_SPECIAL_DIP as 'isSpecial',
+ dip.QTR_DIP as 'qtr',
+         inh.ID_TEM_INH as teamId,
+		 inh.SAMPLE_VALUE_INH as 'employeeSampleValue',
+		 inh.OTHER_ITEM_VALUE_INH as 'employeeInputValue',
+		 inh.SAMPLE_VALUE_INH + inh.OTHER_ITEM_VALUE_INH as 'employeeValue',
+		 	CASE
+     WHEN DIP.IS_SPECIAL_DIP = '1' THEN 'SPECIAL'
+     WHEN DIP.IS_SPECIAL_DIP = '0' THEN 'MONTHLY'
+     ELSE 'Unknown AllocationType' END AS 'type',
+	 ETY.NAME_ETY AS 'legalEty'
         FROM INVOICE_HEADER_INH INH
-        JOIN DOCTOR_MASTER_DTM DTM ON DTM.ID_DTM = INH.ID_RCT_INH
-        JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = INH.ID_TEM_INH
-        JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = INH.ID_RCT_DESG_ULV_INH
-        JOIN INVOICE_DISPATCH_PLAN_IDP IDP ON IDP.ID_INH_IDP = INH.ID_INH
-        JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP = IDP.ID_PLAN_IDP
-        JOIN TRANSPORTER_TRN TRN ON TRN.ID_TRN = INH.ID_TRN_INH
-        WHERE ID_INH = #{id}
-
-    </select>
-
-
-    <select id="getPrintInvoiceHeaders" resultMap="invoiceHeaderResultMap">
-        SELECT  inh.ID_INH as invoiceHeaderId,
-                inh.INVOICE_NO_INH as invoiceNumber,
-                ulv.NAME_ULV as employeeDesignation,
-                rct.ID_RCT as employeeId,
-                rct.NAME_RCT as employeeName,
-                rct.CODE_RCT as employeeCode,
-                inh.ADDRESS_LINE_1_INH as employeeAddress,
-                inh.ADDRESS_CITY_INH as employeeCity,
-                inh.ADDRESS_STATE_INH as employeeState,
-                inh.ADDRESS_ZIP_INH as employeePinCode,
-                inh.PHONE_INH as employeeMobileNumber,
-                inh.LR_NUMBER_INH as employeeLRNumber,
-                GETDATE() as employeeDate,
-                inh.CREATED_ON_INH as employeeLRDate,
-                tem.NAME_TEM as employeeTeam,
-                trn.NAME_TRN as employeeTransport,
-                '' as employeePermitNo,
-                inh.CFA_INH as employeeCFA,
-                inh.NO_OF_BOXES_INH as employeeTotalNoOfCases,
-                inh.WEIGHT_INH as employeeTotalWeight,
-                dip.ID_DIP as dipId,
-                dip.REMARKS_DIP as employeeRemark,
-                dip.MONTH_DIP as month,
- dip.YEAR_DIP as year,
- dip.IS_SPECIAL_DIP as isSpecial,
- dip.QTR_DIP as qtr,
-         inh.ID_TEM_INH as teamId
-        FROM INVOICE_HEADER_INH INH
+			JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
+	JOIN INVENTORY_INV INV ON IND.ID_INV_IND = INV.ID_INV
+	JOIN ITEM_MASTER_ITM ITM ON IND.ID_ITM_IND = ITM.ID_ITM
         JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = INH.ID_RCT_INH
         JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = INH.ID_TEM_INH
         JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = INH.ID_RCT_DESG_ULV_INH
         JOIN INVOICE_DISPATCH_PLAN_IDP IDP ON IDP.ID_INH_IDP = INH.ID_INH
         JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP = IDP.ID_PLAN_IDP
         JOIN TRANSPORTER_TRN TRN ON TRN.ID_TRN = INH.ID_TRN_INH
+		JOIN TEAM_LEGAL_ENTITY_TET TET ON TET.ID_TEM_TET = TEM.ID_TEM
+		JOIN LEGAL_ENTITY_MASTER_ETY ETY ON ETY.ID_ETY = TET.ID_ETY_TET
+        WHERE ID_INH = #{id}
+
+    </select>
+
+
+    <select id="getPrintInvoiceHeaders" resultType="com.squer.promobee.controller.dto.InvoicePrintDetailsDTO">
+        SELECT  distinct inh.ID_INH as 'inhId',
+                inh.INVOICE_NO_INH as 'invoiceNumber',
+                ulv.NAME_ULV as 'employeeDesignation',
+                rct.ID_RCT as 'employeeId',
+                rct.NAME_RCT as 'employeeName',
+                rct.CODE_RCT as 'employeeCode',
+                inh.ADDRESS_LINE_1_INH as 'employeeAddress',
+                inh.ADDRESS_CITY_INH as 'employeeCity',
+                inh.ADDRESS_STATE_INH as 'employeeState',
+                inh.ADDRESS_ZIP_INH as 'employeePinCode',
+                inh.PHONE_INH as 'employeeMobileNumber',
+                inh.LR_NUMBER_INH as 'employeeLRNumber',
+                GETDATE() as 'employeeDate',
+                inh.CREATED_ON_INH as 'employeeLRDate',
+                tem.NAME_TEM as 'employeeTeam',
+                trn.NAME_TRN as 'employeeTransport',
+                '' as 'employeePermitNo',
+                inh.CFA_INH as 'employeeCFA',
+                inh.NO_OF_BOXES_INH as 'employeeTotalNoOfCases',
+                inh.WEIGHT_INH as 'employeeTotalWeight',
+                dip.ID_DIP as 'dipId',
+                dip.REMARKS_DIP as 'employeeRemark',
+                dip.MONTH_DIP as month,
+ dip.YEAR_DIP as year,
+ dip.IS_SPECIAL_DIP as 'isSpecial',
+ dip.QTR_DIP as 'qtr',
+         inh.ID_TEM_INH as teamId,
+		 inh.SAMPLE_VALUE_INH as 'employeeSampleValue',
+		 inh.OTHER_ITEM_VALUE_INH as 'employeeInputValue',
+		 inh.SAMPLE_VALUE_INH + inh.OTHER_ITEM_VALUE_INH as 'employeeValue',
+		 	CASE
+     WHEN DIP.IS_SPECIAL_DIP = '1' THEN 'SPECIAL'
+     WHEN DIP.IS_SPECIAL_DIP = '0' THEN 'MONTHLY'
+     ELSE 'Unknown AllocationType' END AS 'TYPE',
+	 ETY.NAME_ETY AS 'LEGAL'
+        FROM INVOICE_HEADER_INH INH
+			JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
+	JOIN INVENTORY_INV INV ON IND.ID_INV_IND = INV.ID_INV
+	JOIN ITEM_MASTER_ITM ITM ON IND.ID_ITM_IND = ITM.ID_ITM
+        JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = INH.ID_RCT_INH
+        JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = INH.ID_TEM_INH
+        JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = INH.ID_RCT_DESG_ULV_INH
+        JOIN INVOICE_DISPATCH_PLAN_IDP IDP ON IDP.ID_INH_IDP = INH.ID_INH
+        JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP = IDP.ID_PLAN_IDP
+        JOIN TRANSPORTER_TRN TRN ON TRN.ID_TRN = INH.ID_TRN_INH
+		JOIN TEAM_LEGAL_ENTITY_TET TET ON TET.ID_TEM_TET = TEM.ID_TEM
+		JOIN LEGAL_ENTITY_MASTER_ETY ETY ON ETY.ID_ETY = TET.ID_ETY_TET
         WHERE ID_INH = #{id}
 
     </select>
 
 
 
-    <select id="getDistrubutedValuesForPrintDetailSampleValue" resultMap="invoiceHeaderResultMap">
+    <select id="getDistrubutedValuesForPrintDetailSampleValue" resultType="com.squer.promobee.controller.dto.InvoicePrintDetailsDTO">
          select SUM(IND.VALUE_IND+(IND.VALUE_IND*RATE_PER_IND/100)) AS sampleValue from INVOICE_HEADER_INH INH
         JOIN INVOICE_DETAIL_IND IND ON IND.ID_INH_IND = INH.ID_INH
         JOIN SAMPLE_MASTER_SMP SMP ON SMP.ID_SMP = IND.ID_ITM_IND
@@ -213,7 +239,7 @@
 
     </select>
 
-    <select id="getDistrubutedValuesForPrintDetailInputValue" resultMap="invoiceHeaderResultMap">
+    <select id="getDistrubutedValuesForPrintDetailInputValue" resultType="com.squer.promobee.controller.dto.InvoicePrintDetailsDTO">
 
 
         select SUM(IND.VALUE_IND+(IND.VALUE_IND*RATE_PER_IND/100)) AS inputValue from INVOICE_HEADER_INH INH

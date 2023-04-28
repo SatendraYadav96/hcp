@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DoctorMapper">
+    <resultMap id="doctorResultMap" type="com.squer.promobee.service.repository.domain.Doctor">
+        <id property="id" column="id_dtm"/>
+        <result property="code" column="code_dtm"/>
+        <result property="name" column="name_dtm"/>
+        <result property="mobile" column="mobile_dtm"/>
+        <result property="address" column="address_dtm "/>
+        <result property="city" column="city_dtm  "/>
+        <result property="state" column="state_dtm"/>
+        <result property="zip" column="postal_code"/>
+        <result property="team" column="team_name_dtm "/>
+        <result property="teamId.id" column="id_tem_dtm  "/>
+        <result property="designationId.id" column="id_desg_ulv_dtm"/>
+        <result property="street1" column="street1_dtm "/>
+        <result property="street2" column="street2_dtm "/>
+        <result property="street3" column="street3_dtm "/>
+    </resultMap>
+
+
+
+    <select id="getDoctorById" resultMap="doctorResultMap" >
+        SELECT * FROM DOCTOR_MASTER_DTM
+        WHERE ID_DTM = #{id}
+    </select>
+
+
+</mapper>

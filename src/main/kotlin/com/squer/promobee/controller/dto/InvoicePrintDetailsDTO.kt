@@ -1,8 +1,8 @@
 package com.squer.promobee.controller.dto
 
-class InvoicePrintDetailsDTO(inhId: String) {
+class InvoicePrintDetailsDTO {
     var dipId: String?= null
-    var invoiceHeaderId: String?= null
+    var inhId: String?= null
     var invoiceNumber: String?= null
     var employeeId: String?= null
     var employeeDesignation: String?= null
@@ -33,6 +33,9 @@ class InvoicePrintDetailsDTO(inhId: String) {
     var isSpecial: Int?= null
     var qtr: String?= null
     var teamId: String? = null
+    var type: String? = null
+    var legalEty: String? = null
+
 
 
 }

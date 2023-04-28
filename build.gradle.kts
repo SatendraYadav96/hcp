@@ -45,6 +45,16 @@ dependencies {
 	implementation("com.google.code.gson:gson:2.9.0")
 	implementation("io.jsonwebtoken:jjwt:0.9.1")
 	implementation("org.jolokia:jolokia-core:1.7.1")
+	// https://mvnrepository.com/artifact/org.apache.velocity/velocity
+	implementation("org.apache.velocity:velocity:1.7")
+	// https://mvnrepository.com/artifact/com.itextpdf/itextpdf
+	implementation("com.itextpdf:itextpdf:5.0.6")
+	implementation("com.itextpdf:html2pdf:4.0.5")
+	implementation("com.itextpdf:kernel:7.2.5")
+
+
+
+
 
 }
 
@@ -58,3 +68,5 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
+
