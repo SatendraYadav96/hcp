@@ -111,4 +111,23 @@ open class ReportController @Autowired constructor(
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
+    @GetMapping("/getItemWiseReport/{fromDate}/{toDate}/{businessUnit}/{divison}")
+    fun getItemWiseReport(@PathVariable fromDate: String, @PathVariable  toDate: String,@PathVariable businessUnit: String,@PathVariable divison: String): ResponseEntity<*>{
+        val data = reportService.getItemWiseReport(fromDate,toDate,businessUnit,divison)
+        return  ResponseEntity(data,HttpStatus.OK)
+    }
+
+
+    @GetMapping("/getStockLedgerReport/{fromDate}/{toDate}/{itemId}")
+    fun getStockLedgerReport(@PathVariable fromDate: String, @PathVariable  toDate: String,@PathVariable itemId: String): ResponseEntity<*>{
+        val data = reportService.getStockLedgerReport(fromDate,toDate,itemId)
+        return  ResponseEntity(data,HttpStatus.OK)
+    }
+
+    @GetMapping("/getAgeingReport/{userId}/{userDesgId}/{businessUnit}/{divison}")
+    fun getAgeingReport(@PathVariable userId:String,@PathVariable userDesgId:String,@PathVariable businessUnit: String,@PathVariable divison: String): ResponseEntity<*>{
+        val data = reportService.getAgeingReport(userId,userDesgId,businessUnit,divison)
+        return  ResponseEntity(data,HttpStatus.OK)
+    }
+
 }

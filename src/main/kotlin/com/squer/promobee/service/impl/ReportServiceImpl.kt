@@ -73,4 +73,16 @@ class ReportServiceImpl @Autowired constructor(
         return reportRepository.getReportDispatchByTeam(year,special)
     }
 
+    override fun getItemWiseReport(fromDate: String,toDate: String,businessUnit: String,divison: String): List<ItemWiseReportDTO>{
+        return reportRepository.getItemWiseReport(fromDate,toDate,businessUnit,divison)
+    }
+
+    override fun getStockLedgerReport(fromDate: String,toDate: String,itemId: String): List<StockLedgerReportDTO>{
+        return reportRepository.getStockLedgerReport(fromDate,toDate,itemId)
+    }
+
+    override fun getAgeingReport(userId:String,userDesgId:String,businessUnit: String,divison: String): List<AgeingReportDTO>{
+        return reportRepository.getAgeingReport(userId,userDesgId,businessUnit,divison)
+    }
+
 }

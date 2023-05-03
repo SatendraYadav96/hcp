@@ -192,5 +192,43 @@ class ReportRepository
     }
 
 
+    fun getItemWiseReport( fromDate: String,toDate: String,businessUnit: String,divison: String) : List<ItemWiseReportDTO>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("FromDate", fromDate)
+        data.put("ToDate", toDate)
+        data.put("BusinessUnit", businessUnit)
+        data.put("Division", divison)
+
+
+
+        return sqlSessionFactory.openSession().selectList("ReportMapper.getItemWiseReport", data)
+    }
+
+
+    fun getStockLedgerReport( fromDate: String,toDate: String,itemId: String) : List<StockLedgerReportDTO>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("FromDate", fromDate)
+        data.put("ToDate", toDate)
+        data.put("ItemID", itemId)
+
+
+
+        return sqlSessionFactory.openSession().selectList("ReportMapper.getStockLedgerReport", data)
+    }
+
+
+    fun getAgeingReport( userId:String,userDesgId:String,businessUnit: String,divison: String) : List<AgeingReportDTO>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("UserID", userId)
+        data.put("UserDesgID", userDesgId)
+        data.put("BusinessUnit", businessUnit)
+        data.put("Division", divison)
+
+
+
+        return sqlSessionFactory.openSession().selectList("ReportMapper.getAgeingReport", data)
+    }
+
+
 
 }

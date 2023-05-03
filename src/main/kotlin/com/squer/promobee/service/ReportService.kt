@@ -32,4 +32,10 @@ interface ReportService {
 
     fun getReportDispatchByTeam(year: String, special: String): List<DispatchByTeamReportDTO>
 
+    fun getItemWiseReport(fromDate: String,toDate: String,businessUnit: String,divison: String): List<ItemWiseReportDTO>
+
+    fun getStockLedgerReport(fromDate: String,toDate: String,itemId: String): List<StockLedgerReportDTO>
+
+    fun getAgeingReport(userId: String,userDesgId: String,businessUnit: String,divison: String): List<AgeingReportDTO>
+
 }

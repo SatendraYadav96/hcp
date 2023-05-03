@@ -230,6 +230,25 @@
 
     </select>
 
+    <select id="getItemWiseReport" resultType="com.squer.promobee.controller.dto.ItemWiseReportDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_ReportGetAggregateInventory (#{FromDate, jdbcType = VARCHAR, mode = IN}, #{ToDate, jdbcType = VARCHAR, mode = IN},
+                                           #{BusinessUnit, jdbcType = VARCHAR, mode = IN},
+                                           #{Division, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+    <select id="getStockLedgerReport" resultType="com.squer.promobee.controller.dto.StockLedgerReportDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_ReportGetStockLedger (#{FromDate, jdbcType = VARCHAR, mode = IN}, #{ToDate, jdbcType = VARCHAR, mode = IN},
+                                                #{ItemID, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+    <select id="getAgeingReport" resultType="com.squer.promobee.controller.dto.AgeingReportDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_ReportAgeing (#{UserID, jdbcType = VARCHAR, mode = IN}, #{UserDesgID, jdbcType = VARCHAR, mode = IN},
+                                          #{BusinessUnit, jdbcType = VARCHAR, mode = IN}, #{Division, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
 
 
 
