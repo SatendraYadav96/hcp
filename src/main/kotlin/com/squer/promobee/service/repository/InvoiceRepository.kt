@@ -2,6 +2,7 @@ package com.squer.promobee.service.repository
 
 
 import com.itextpdf.text.Document
+import com.itextpdf.text.PageSize
 import com.itextpdf.text.Paragraph
 import com.itextpdf.text.pdf.PdfWriter
 import com.squer.promobee.api.v1.enums.TeamEnum
@@ -21,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.io.*
+import java.time.Year
 import java.time.ZoneId
 import java.util.*
 
@@ -120,8 +122,10 @@ class InvoiceRepository(
          val year = localDate.year
          val month = localDate.monthValue
          val day = localDate.dayOfMonth
-         var employeePeriod = month.toString() + "-" + year
-         var promoMonth = month.toString() + "-" + year
+//         var employeePeriod = month.toString() + "-" + year
+         var employeePeriod = localDate.month.toString() + "-" + year
+//         var promoMonth = month.toString() + "-" + year
+         var promoMonth = localDate.month.toString() + "-" + year
          var printDetails = inh.inhId?.let { getPrintInvoiceHeaders(it) }
         // var printDetailsDoc = inh.inhId?.let { getVirtualPrintInvoiceHeaders(it) }
          var printDetailsBody = inh.inhId?.let { getInvoiceDetailsForPrint(it) }
@@ -161,21 +165,23 @@ class InvoiceRepository(
          context.put("TotalInputValue", printDetails?.employeeInputValue)
          context.put("TotalSumValue", printDetails?.employeeValue)
          var tableRow = ""
+         var srNo = 1
+
 
 
          printDetailsBody?.forEach {
-             tableRow = tableRow + "<tr>" +
-                     "<td>" + it.invoiceDetailsSrNo + "<td>"+
+             tableRow = tableRow + "<tr>"+
+                     "<td>" + srNo++ + "<td>"+
              "<td>" + it.invoiceDetailsProductCode + "<td>"+
              "<td>" + it.invoiceDetailsHSNCode + "<td>"+
              "<td>" + it.invoiceDetailsItemDescription + "<td>"+
-             "<td>" + it.invoiceDetailsQuantity + "<td>"+
+             "<td>" + it.invoiceDetailsQuantity?.toInt() + "<td>"+
              "<td>" + it.invoiceDetailsSAPCode + "<td>"+
              "<td>" + it.invoiceDetailsBatchNo + "<td>"+
              "<td>" + it.invoiceDetailsExpiryDate + "<td>"+
-             "<td>" +  "<td>"+
-             "<td>" + it.invoiceItemValue + "<td>" +
-                     "</tr>"
+             "<td>" +   "<td>"+
+             "<td>" + it.invoiceItemValue + "<td>"+
+                     "</tr>" + tableRow
          }
 
          context.put("tableRow", tableRow)
@@ -203,6 +209,10 @@ class InvoiceRepository(
 
              //Create PDFWriter instance.
              PdfWriter.getInstance(document, outputStream)
+
+             //set A4 Size
+
+             document.pageSize = PageSize.A4
 
              //Open the document.
              document.open()
