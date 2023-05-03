@@ -51,9 +51,9 @@ open class ReportController @Autowired constructor(
     }
 
 
-    @GetMapping("/getReportDispatchRegister/{startDate}/{endDate}/{userId}/{userDesgId}/{businessUnit}/{divison}/{team}/{statusId}/{filterPlan}")
-    fun getReportDispatchRegister(@PathVariable  startDate: String, @PathVariable  endDate: String, @PathVariable userId:String, @PathVariable userDesgId:String, @PathVariable businessUnit: String, @PathVariable divison: String, @PathVariable team:String, @PathVariable statusId:String, @PathVariable filterPlan:Int): ResponseEntity<*>{
-        val data = reportService.getReportDispatchRegister(startDate,endDate,userId,userDesgId,businessUnit,divison,team,statusId,filterPlan)
+    @GetMapping("/getReportDispatchRegister/{startDate}/{endDate}/{userId}/{userDesgId}/{businessUnit}/{team}/{filterPlan}")
+    fun getReportDispatchRegister(@PathVariable  startDate: String, @PathVariable  endDate: String, @PathVariable userId:String, @PathVariable userDesgId:String, @PathVariable businessUnit: String,  @PathVariable team:String,  @PathVariable filterPlan:Int): ResponseEntity<*>{
+        val data = reportService.getReportDispatchRegister(startDate,endDate,userId,userDesgId,businessUnit,team,filterPlan)
         return  ResponseEntity(data,HttpStatus.OK)
     }
 

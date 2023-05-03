@@ -167,9 +167,9 @@
 
 
     <select id="getReportDispatchRegister" resultType="com.squer.promobee.controller.dto.DispatchRegisterReportDTO" parameterType = "map" statementType = "CALLABLE">
-        { call PROC_ReportDispatchRegister(#{StartDate, jdbcType = VARCHAR, mode = IN}, #{EndDate, jdbcType = VARCHAR, mode = IN}, #{UserID, jdbcType = VARCHAR, mode = IN},
-        #{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN},#{Division, jdbcType = VARCHAR, mode = IN},
-        #{Team, jdbcType = VARCHAR, mode = IN},#{StatusID, jdbcType = VARCHAR, mode = IN},#{Filterplan, jdbcType = VARCHAR, mode = IN}) }
+        { call PROC_ReportDispatchRegisterNewPlatform (#{StartDate, jdbcType = VARCHAR, mode = IN}, #{EndDate, jdbcType = VARCHAR, mode = IN}, #{UserID, jdbcType = VARCHAR, mode = IN},
+        #{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN},
+        #{Team, jdbcType = VARCHAR, mode = IN},#{Filterplan, jdbcType = VARCHAR, mode = IN}) }
     </select>
 
 

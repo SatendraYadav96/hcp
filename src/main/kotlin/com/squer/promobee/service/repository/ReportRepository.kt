@@ -72,16 +72,14 @@ class ReportRepository
     }
 
 
-    fun getReportDispatchRegister( startDate: String,endDate: String,userId:String,userDesgId:String, businessUnit: String, divison: String,team:String,statusId: String,filterPlan:Int) : List<DispatchRegisterReportDTO>{
+    fun getReportDispatchRegister( startDate: String,endDate: String,userId:String,userDesgId:String, businessUnit: String,team:String,filterPlan:Int) : List<DispatchRegisterReportDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
         data.put("StartDate", startDate)
         data.put("EndDate", endDate)
         data.put("UserID", userId)
         data.put("UserDesgID", userDesgId)
         data.put("BusinessUnit", businessUnit)
-        data.put("Division", divison)
         data.put("Team", team)
-        data.put("StatusID", "00000000-0000-0000-0000-000000000000")
         data.put("Filterplan", filterPlan)
 
         return sqlSessionFactory.openSession().selectList("ReportMapper.getReportDispatchRegister", data)

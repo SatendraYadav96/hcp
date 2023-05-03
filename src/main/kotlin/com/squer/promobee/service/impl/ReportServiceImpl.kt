@@ -35,8 +35,8 @@ class ReportServiceImpl @Autowired constructor(
         return reportRepository.getReportDispatches(startDate,endDate,filter,filterPlan,userId,userDesgId,businessUnit,divison)
     }
 
-    override fun getReportDispatchRegister(startDate: String,endDate: String,userId:String,userDesgId:String, businessUnit: String, divison: String,team:String,statusId: String,filterPlan:Int): List<DispatchRegisterReportDTO>{
-        return reportRepository.getReportDispatchRegister(startDate,endDate,userId,userDesgId,businessUnit,divison,team,statusId,filterPlan)
+    override fun getReportDispatchRegister(startDate: String,endDate: String,userId:String,userDesgId:String, businessUnit: String,team:String,filterPlan:Int): List<DispatchRegisterReportDTO>{
+        return reportRepository.getReportDispatchRegister(startDate,endDate,userId,userDesgId,businessUnit,team,filterPlan)
     }
 
     override fun getReportDeviation(quarterName:String,fromDate: String,toDate: String,userId:String,userDesgId:String): List<DeviationReportDTO>{
