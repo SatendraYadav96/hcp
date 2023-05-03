@@ -3,10 +3,13 @@ package com.squer.promobee.service.repository
 
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
+import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.Recipient
 import org.apache.ibatis.session.SqlSessionFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.util.Date
 
@@ -22,10 +25,20 @@ class ReportRepository
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
 
-    fun getReportRecipient( businessUnit: String, divison: String,team:String,statusId:String) : List<RecipientReportDTO>{
+//    fun getReportRecipient( businessUnit: String, divison: String,team:String,statusId:String) : List<RecipientReportDTO>{
+//        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+//        var data: MutableMap<String, Any> = mutableMapOf()
+//        data.put("businessUnit", businessUnit)
+//        data.put("divison", divison)
+//        data.put("team", team)
+//        data.put("statusId", statusId)
+//        return sqlSessionFactory.openSession().selectList("ReportMapper.getReportRecipient", data)
+//    }
+
+    fun getReportRecipient( businessUnit: String,team:String,statusId:String) : List<RecipientReportDTO>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
         data.put("businessUnit", businessUnit)
-        data.put("divison", divison)
         data.put("team", team)
         data.put("statusId", statusId)
         return sqlSessionFactory.openSession().selectList("ReportMapper.getReportRecipient", data)

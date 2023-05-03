@@ -18,8 +18,12 @@ class ReportServiceImpl @Autowired constructor(
 
 ): ReportService {
 
-    override fun getReportRecipient(businessUnit: String, divison: String,team:String,statusId:String) : List<RecipientReportDTO>{
-        return reportRepository.getReportRecipient(businessUnit, divison, team , statusId)
+//    override fun getReportRecipient(businessUnit: String, divison: String,team:String,statusId:String) : List<RecipientReportDTO>{
+//        return reportRepository.getReportRecipient(businessUnit, divison, team , statusId)
+//    }
+
+    override fun getReportRecipient(businessUnit: String,team:String,statusId:String) : List<RecipientReportDTO>{
+        return reportRepository.getReportRecipient(businessUnit, team , statusId)
     }
 
 

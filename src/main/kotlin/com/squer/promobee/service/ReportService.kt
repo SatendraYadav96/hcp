@@ -6,7 +6,9 @@ import java.util.*
 
 interface ReportService {
 
-    fun getReportRecipient(businessUnit: String, divison: String,team:String,statusId:String) : List<RecipientReportDTO>
+//    fun getReportRecipient(businessUnit: String, divison: String,team:String,statusId:String) : List<RecipientReportDTO>
+
+    fun getReportRecipient(businessUnit: String, team:String,statusId:String) : List<RecipientReportDTO>
 
     fun getReportPurchase(startDate: String, endDate: String, userId:String, userDesgId:String, businessUnit: String, divison: String): List<PurchaseReportDTO>
 

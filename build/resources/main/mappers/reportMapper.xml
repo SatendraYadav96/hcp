@@ -7,54 +7,68 @@
 
 
 
+<!--    <select id="getReportRecipient" resultType="com.squer.promobee.controller.dto.RecipientReportDTO">-->
+<!--        SELECT * INTO #FilterTable FROM-->
+<!--        (-->
+<!--        select TEM.ID_TEM,BUM.NAME_BUM as 'businessUnit', DIM.NAME_DIM as 'divison' from-->
+<!--        TEAM_MASTER_TEM TEM join DIVISION_MASTER_DIM DIM on TEM.ID_DIM_TEM =Dim.ID_DIM-->
+<!--        join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM-->
+<!--        where DIM.ID_BUM_DIM  in (SELECT Item from [dbo].SplitGUIDs (#{businessUnit}))-->
+<!--        and (#{divison} is null or DIM.ID_DIM  in (SELECT Item from [dbo].SplitGUIDs (#{divison})))-->
+<!--        and (#{team} is null or TEM.ID_TEM  in (SELECT Item from [dbo].SplitGUIDs (#{team})))-->
+<!--        ) AS FilterResult-->
+
+
+
+<!--        SELECT distinct FT.businessUnit , FT.divison ,TEM.ID_TEM AS TeamID,RCT.ID_RCT AS EmployeeID,-->
+<!--        RCT.CODE_RCT AS 'employeeCode',-->
+<!--        RCT.NAME_RCT AS employeeName,-->
+<!--        RCT.ADDRESS_RCT 'address',-->
+<!--        RCT.CITY_RCT AS city,-->
+<!--        ULV.NAME_ULV AS designation,-->
+<!--        RCT.STATE_RCT AS 'state',-->
+<!--        RCT.ZIP_RCT AS zip,-->
+<!--        RCT.ZONE_RCT AS zone,-->
+<!--        RCT.LoginId as loginId,-->
+<!--        RCT.WorkId as workId ,RCT.Gender as gender,-->
+<!--        CONVERT(nvarchar(100),RCT.JOINING_DATE_RCT, 103) AS 'joiningDate',-->
+<!--        RCT.MOBILE_RCT AS mobile,-->
+<!--        RCT.EMAIL_RCT AS email,-->
+<!--        TEM.NAME_TEM AS team,-->
+<!--        RCT.NSM_NAME_RCT AS nsmName,-->
+<!--        RCT.NSM_CODE_RCT AS nsmCode,-->
+<!--        RCT.RM_NAME_RCT AS rmName,-->
+<!--        RCT.RM_CODE_RCT AS rmCode,-->
+<!--        RCT.AM_NAME_RCT AS amName,-->
+<!--        RCT.AM_CODE_RCT AS amCode,-->
+<!--        RCT.CFA_RCT AS cfa,-->
+<!--        RCT.HEAD_QUARTER_RCT AS hq,-->
+<!--        '' AS remarks,-->
+<!--        SLV.NAME_SLV 'status'-->
+
+<!--        FROM RECIPIENT_MASTER_RCT RCT-->
+<!--        join #FilterTable FT on RCT.ID_TEM_RCT = FT.ID_TEM-->
+<!--        JOIN TEAM_MASTER_TEM TEM ON FT.ID_TEM = TEM.ID_TEM-->
+<!--        JOIN USER_LOV_ULV ULV ON RCT.ID_DESG_ULV_RCT = ULV.ID_ULV-->
+<!--        JOIN SYSTEM_LOV_SLV SLV ON RCT.ID_STATUS_SLV_RCT = SLV.ID_SLV-->
+<!--        WHERE RCT.ID_STATUS_SLV_RCT = #{statusId}-->
+<!--        ORDER BY RCT.NAME_RCT-->
+
+<!--        DROP TABLE #FilterTable-->
+<!--    </select>-->
+
+
     <select id="getReportRecipient" resultType="com.squer.promobee.controller.dto.RecipientReportDTO">
-        SELECT * INTO #FilterTable FROM
-        (
-        select TEM.ID_TEM,BUM.NAME_BUM as 'businessUnit', DIM.NAME_DIM as 'divison' from
-        TEAM_MASTER_TEM TEM join DIVISION_MASTER_DIM DIM on TEM.ID_DIM_TEM =Dim.ID_DIM
-        join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
-        where DIM.ID_BUM_DIM  in (SELECT Item from [dbo].SplitGUIDs (#{businessUnit}))
-        and (#{divison} is null or DIM.ID_DIM  in (SELECT Item from [dbo].SplitGUIDs (#{divison})))
-        and (#{team} is null or TEM.ID_TEM  in (SELECT Item from [dbo].SplitGUIDs (#{team})))
-        ) AS FilterResult
-
-
-
-        SELECT distinct FT.businessUnit , FT.divison ,TEM.ID_TEM AS TeamID,RCT.ID_RCT AS EmployeeID,
-        RCT.CODE_RCT AS 'employeeCode',
-        RCT.NAME_RCT AS employeeName,
-        RCT.ADDRESS_RCT 'address',
-        RCT.CITY_RCT AS city,
-        ULV.NAME_ULV AS designation,
-        RCT.STATE_RCT AS 'state',
-        RCT.ZIP_RCT AS zip,
-        RCT.ZONE_RCT AS zone,
-        RCT.LoginId as loginId,
-        RCT.WorkId as workId ,RCT.Gender as gender,
-        CONVERT(nvarchar(100),RCT.JOINING_DATE_RCT, 103) AS 'joiningDate',
-        RCT.MOBILE_RCT AS mobile,
-        RCT.EMAIL_RCT AS email,
-        TEM.NAME_TEM AS team,
-        RCT.NSM_NAME_RCT AS nsmName,
-        RCT.NSM_CODE_RCT AS nsmCode,
-        RCT.RM_NAME_RCT AS rmName,
-        RCT.RM_CODE_RCT AS rmCode,
-        RCT.AM_NAME_RCT AS amName,
-        RCT.AM_CODE_RCT AS amCode,
-        RCT.CFA_RCT AS cfa,
-        RCT.HEAD_QUARTER_RCT AS hq,
-        '' AS remarks,
-        SLV.NAME_SLV 'status'
-
-        FROM RECIPIENT_MASTER_RCT RCT
-        join #FilterTable FT on RCT.ID_TEM_RCT = FT.ID_TEM
-        JOIN TEAM_MASTER_TEM TEM ON FT.ID_TEM = TEM.ID_TEM
-        JOIN USER_LOV_ULV ULV ON RCT.ID_DESG_ULV_RCT = ULV.ID_ULV
-        JOIN SYSTEM_LOV_SLV SLV ON RCT.ID_STATUS_SLV_RCT = SLV.ID_SLV
-        WHERE RCT.ID_STATUS_SLV_RCT = #{statusId}
-        ORDER BY RCT.NAME_RCT
-
-        DROP TABLE #FilterTable
+        SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RCT AS 'employeeName',RCT.ADDRESS_RCT AS 'address',
+                RCT.CITY_RCT AS 'city',ULV.NAME_ULV AS 'designation',RCT.STATE_RCT AS 'state',RCT.ZIP_RCT AS 'zip',RCT.ZONE_RCT AS 'zone',RCT.LoginId AS 'loginId',
+                RCT.WorkId AS 'workId',RCT.Gender AS 'gender',RCT.JOINING_DATE_RCT AS 'joiningDate',RCT.MOBILE_RCT AS 'mobile',RCT.EMAIL_RCT AS 'email',
+                TEM.NAME_TEM AS 'team',RCT.NSM_NAME_RCT AS 'nsmName',RCT.NSM_CODE_RCT AS 'nsmCode',RCT.RM_NAME_RCT AS 'rmName',RCT.RM_CODE_RCT AS 'rmCode',
+                RCT.AM_NAME_RCT AS 'amName',RCT.AM_CODE_RCT AS 'amCode',RCT.CFA_RCT AS 'cfa',RCT.HEAD_QUARTER_RCT AS 'hq',SLV.NAME_SLV AS 'status' FROM RECIPIENT_MASTER_RCT RCT
+                JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM =  RCT.ID_TEM_RCT
+                JOIN USER_LOV_ULV ULV ON ULV.ID_ULV =  RCT.ID_DESG_ULV_RCT
+                JOIN BU_MASTER_BUM BUM ON BUM.ID_BUM = RCT.ID_BUM_RCT
+                join SYSTEM_LOV_SLV slv on slv.ID_SLV = RCT.ID_STATUS_SLV_RCT
+        Where RCT.ID_STATUS_SLV_RCT = #{statusId} and TEM.ID_TEM = #{team} and BUM.ID_BUM = #{businessUnit}
     </select>
 
 
