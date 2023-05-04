@@ -98,6 +98,10 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getCostCenterDropdown()
     }
 
+    override fun getItemCodeDropdown(): List<ItemDrodownDTO> {
+        return masterRepository.getItemCodeDropdown()
+    }
+
 
 
 

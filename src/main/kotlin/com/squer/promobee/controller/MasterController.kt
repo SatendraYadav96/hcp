@@ -169,6 +169,13 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getItemCodeDropdown")
+    fun getItemCodeDropdown(): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getItemCodeDropdown()
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
 
 
 

@@ -297,6 +297,11 @@ class MasterRepository
         return sqlSessionFactory.openSession().selectList("CostCenterMapper.getCostCenterDropdown")
     }
 
+    fun getItemCodeDropdown( ) : List<ItemDrodownDTO>{
+
+        return sqlSessionFactory.openSession().selectList("ItemMapper.getItemCodeDropdown")
+    }
+
 
 
 

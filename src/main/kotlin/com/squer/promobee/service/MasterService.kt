@@ -49,4 +49,6 @@ interface MasterService {
 
     fun getCostCenterDropdown(): List<CostCenter>
 
+    fun getItemCodeDropdown(): List<ItemDrodownDTO>
+
 }

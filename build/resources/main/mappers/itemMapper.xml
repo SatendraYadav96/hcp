@@ -45,4 +45,14 @@
             ,IS_ACTIVE_ITM ,CREATED_ON_ITM ,CREATED_BY_ITM ,UPDATED_ON_ITM ,UPDATED_BY_ITM, HSN_CODE_ITM)
              VALUES(#{id}, #{name}, lower(#{ciName}), #{code}, #{category.id}, #{description}, #{medicalCode}, #{ccmId.id}, #{active}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy}, #{hsnCode})
     </insert>
+
+
+    <select id="getItemCodeDropdown" resultType="com.squer.promobee.controller.dto.ItemDrodownDTO">
+        SELECT ID_ITM AS 'itemId',CODE_ITM AS 'itemCode',NAME_ITM AS 'itemName' FROM ITEM_MASTER_ITM
+        UNION
+        SELECT ID_SMP AS 'itemId',LMID_SMP AS 'itemCode',NAME_SMP AS 'itemName' FROM SAMPLE_MASTER_SMP
+    </select>
+
+
+
 </mapper>
