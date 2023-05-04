@@ -11,6 +11,8 @@ class InvoiceDetailsPrintDTO {
     var invoiceDetailsExpiryDate: String? = null
     var invoiceDetailsQuantity: Double? = null
     var invoiceDetailsHSNCode: String? = null
+    var InvoiceDetailsGSTRate: Double? = null
+    var InvoiceDetailsRatePerUnit: Double? = null
     var invoiceItemValue: Double? = null
     var invoiceItemType: String? = null
 

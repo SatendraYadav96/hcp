@@ -178,15 +178,15 @@
             <h4>Sanofi India limited</h4>
             <address>
                 SANOFI INDIA LTD
-                C/o-S K Logistics,Bldg no-4,1st floor,Gala No-1 to 7,
+                C/o-S K Logistics,Bldg no-4,2st floor,Gala No-2 to 7,
                 Citylink Warehousing Complex,Mumbai Nashik Highway,
-                S.No-120-121,Village-Vadpe,Taluka-Bhiwandi,
-                Dist.Thane-421302,Maharashtra
-                TEL-02522398014/16/17
+                S.No-220-222,Village-Vadpe,Taluka-Bhiwandi,
+                Dist.Thane-422302,Maharashtra
+                TEL-02522398024/26/27
             </address>
             <p>
                 <b>Mob</b>
-                <label class="ph_no">9619861901/8879627885</label>
+                <label class="ph_no">9629862902/8879627885</label>
             </p>
         </section>
 
@@ -201,14 +201,14 @@
                 <tr>
                     <td>D.L.No.</td>
                     <td>
-                        <label>20B-TZ5-172894</label>
-                        <label>21B-TZ5-172895</label>
+                        <label>20B-TZ5-272894</label>
+                        <label>22B-TZ5-272895</label>
                     </td>
                 </tr>
                 <tr>
                     <td>GST No.</td>
                     <td>
-                        <label>27AAACH2736F1ZU</label>
+                        <label>27AAACH2736F2ZU</label>
                     </td>
                 </tr>
             </table>
@@ -271,7 +271,7 @@
                         <td>$EmployeeTeam</td>
                     </tr>
                     <!-- <tr>
-                      <td>Sub Team 1</td>
+                      <td>Sub Team 2</td>
                       <td>Mass Therepy</td>
                       </tr>
                       <tr>
@@ -329,7 +329,7 @@
                     </tr>
                     </thead>
                     <tbody>
-              $tableRow
+                             <tr>$tableRow</tr>
                     </tbody>
                 </table>
             </div>

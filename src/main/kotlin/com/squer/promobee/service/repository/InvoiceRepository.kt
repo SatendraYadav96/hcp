@@ -160,7 +160,11 @@ class InvoiceRepository(
          context.put("PLANTYPE", printDetails?.type)
          context.put("EmployeeTotalNoOfCases", printDetails?.employeeTotalNoOfCases)
          context.put("EmployeeTotalWeight", printDetails?.employeeTotalWeight)
-         context.put("EmployeeRemark", printDetails?.employeeRemark)
+         if(printDetails?.employeeRemark !== null) {
+             context.put("EmployeeRemark", printDetails?.employeeRemark)
+         } else {
+             context.put("EmployeeRemark", "")
+         }
          context.put("TotalSampleValue", printDetails?.employeeSampleValue)
          context.put("TotalInputValue", printDetails?.employeeInputValue)
          context.put("TotalSumValue", printDetails?.employeeValue)
@@ -170,18 +174,18 @@ class InvoiceRepository(
 
 
          printDetailsBody?.forEach {
-             tableRow = tableRow + "<tr>"+
-                     "<td>" + srNo++ + "<td>"+
-             "<td>" + it.invoiceDetailsProductCode + "<td>"+
-             "<td>" + it.invoiceDetailsHSNCode + "<td>"+
-             "<td>" + it.invoiceDetailsItemDescription + "<td>"+
-             "<td>" + it.invoiceDetailsQuantity?.toInt() + "<td>"+
-             "<td>" + it.invoiceDetailsSAPCode + "<td>"+
-             "<td>" + it.invoiceDetailsBatchNo + "<td>"+
-             "<td>" + it.invoiceDetailsExpiryDate + "<td>"+
-             "<td>" +   "<td>"+
-             "<td>" + it.invoiceItemValue + "<td>"+
-                     "</tr>" + tableRow
+             tableRow =  tableRow + "<tr>"+
+                     "<td>" + srNo++  + "</td>"+
+             "<td>" + it.invoiceDetailsProductCode + "</td>"+
+             "<td>" + it.invoiceDetailsHSNCode + "</td>"+
+             "<td>" + it.invoiceDetailsItemDescription + "</td>"+
+             "<td>" + it.invoiceDetailsQuantity?.toInt() + "</td>"+
+             "<td>" + it.invoiceDetailsSAPCode + "</td>"+
+             "<td>" + it.invoiceDetailsBatchNo + "</td>"+
+             "<td>" + it.invoiceDetailsExpiryDate + "</td>"+
+             "<td>" + it.InvoiceDetailsRatePerUnit + "</td>"+
+             "<td>" + it.invoiceItemValue + "</td>"+
+                     "</tr>"
          }
 
          context.put("tableRow", tableRow)
