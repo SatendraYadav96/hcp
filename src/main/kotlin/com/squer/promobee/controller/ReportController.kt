@@ -130,4 +130,10 @@ open class ReportController @Autowired constructor(
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
+    @GetMapping("/getShiprocketReport/{fromDate}/{toDate}")
+    fun getShiprocketReport(@PathVariable fromDate: String, @PathVariable  toDate: String): ResponseEntity<*>{
+        val data = reportService.getShiprocketReport(fromDate,toDate)
+        return  ResponseEntity(data,HttpStatus.OK)
+    }
+
 }

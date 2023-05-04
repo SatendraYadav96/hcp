@@ -38,4 +38,6 @@ interface ReportService {
 
     fun getAgeingReport(userId: String,userDesgId: String,businessUnit: String,divison: String): List<AgeingReportDTO>
 
+    fun getShiprocketReport(fromDate: String,toDate: String): List<ShiprocketReportDTO>
+
 }

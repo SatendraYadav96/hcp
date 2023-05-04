@@ -85,4 +85,8 @@ class ReportServiceImpl @Autowired constructor(
         return reportRepository.getAgeingReport(userId,userDesgId,businessUnit,divison)
     }
 
+    override fun getShiprocketReport(fromDate: String,toDate: String): List<ShiprocketReportDTO>{
+        return reportRepository.getShiprocketReport(fromDate,toDate)
+    }
+
 }
