@@ -1,9 +1,12 @@
 package com.squer.promobee.service.repository
 
 
+import com.itextpdf.html2pdf.HtmlConverter
+import com.itextpdf.text.DocListener
 import com.itextpdf.text.Document
 import com.itextpdf.text.PageSize
 import com.itextpdf.text.Paragraph
+import com.itextpdf.text.html.simpleparser.HTMLWorker
 import com.itextpdf.text.pdf.PdfWriter
 import com.squer.promobee.api.v1.enums.TeamEnum
 import com.squer.promobee.controller.dto.InvoiceDetailsPrintDTO
@@ -22,9 +25,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.io.*
-import java.time.Year
 import java.time.ZoneId
 import java.util.*
+import kotlin.math.roundToLong
 
 
 @Suppress("UNREACHABLE_CODE")
@@ -127,8 +130,9 @@ class InvoiceRepository(
 //         var promoMonth = month.toString() + "-" + year
          var promoMonth = localDate.month.toString() + "-" + year
          var printDetails = inh.inhId?.let { getPrintInvoiceHeaders(it) }
-        // var printDetailsDoc = inh.inhId?.let { getVirtualPrintInvoiceHeaders(it) }
+         // var printDetailsDoc = inh.inhId?.let { getVirtualPrintInvoiceHeaders(it) }
          var printDetailsBody = inh.inhId?.let { getInvoiceDetailsForPrint(it) }
+
          var hoUser : Boolean = printDetails?.teamId?.equals(TeamEnum.DEFAULT_HO_TEAM.id) ?: true ; false
          /*  first, get and initialize an engine  */
          /*  first, get and initialize an engine  */
@@ -167,25 +171,51 @@ class InvoiceRepository(
          }
          context.put("TotalSampleValue", printDetails?.employeeSampleValue)
          context.put("TotalInputValue", printDetails?.employeeInputValue)
-         context.put("TotalSumValue", printDetails?.employeeValue)
+         context.put("TotalSumValue", printDetails?.employeeValue?.roundToLong())
          var tableRow = ""
          var srNo = 1
+         var value : Double? = 0.00
 
 
 
          printDetailsBody?.forEach {
+
+
+//             if(it.invoiceDetailsBatchNo !== null){
+//                  it.invoiceDetailsBatchNo
+//             } else {
+//                 ""
+//             }
+
+             var taxableValue =  it.InvoiceDetailsRatePerUnit?.let { it1 -> it.invoiceDetailsQuantity?.times(it1) }
+             var gstAmount = it.InvoiceDetailsGSTRate?.let { it1 -> taxableValue?.times(it1) }?.div(100)
+             var amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }
              tableRow =  tableRow + "<tr>"+
-                     "<td>" + srNo++  + "</td>"+
-             "<td>" + it.invoiceDetailsProductCode + "</td>"+
-             "<td>" + it.invoiceDetailsHSNCode + "</td>"+
-             "<td>" + it.invoiceDetailsItemDescription + "</td>"+
-             "<td>" + it.invoiceDetailsQuantity?.toInt() + "</td>"+
-             "<td>" + it.invoiceDetailsSAPCode + "</td>"+
-             "<td>" + it.invoiceDetailsBatchNo + "</td>"+
-             "<td>" + it.invoiceDetailsExpiryDate + "</td>"+
-             "<td>" + it.InvoiceDetailsRatePerUnit + "</td>"+
-             "<td>" + it.invoiceItemValue + "</td>"+
+                     "<td>" + srNo++  + "</td>"+ "\n"+"\t"+
+             "<td>" + it.invoiceDetailsProductCode + "</td>"+"\n"+"\t"+
+             "<td>" + it.invoiceDetailsHSNCode + "</td>"+"\n"+"\t"+
+             "<td>" + it.invoiceDetailsItemDescription + "</td>"+"\n"+"\t"+
+             "<td>" + it.invoiceDetailsQuantity?.toInt() + "</td>"+"\n"+"\t"+
+             "<td>" + it.invoiceDetailsSAPCode + "</td>"+"\n"+"\t"+
+                     "<td>" + if (it.invoiceDetailsBatchNo !== null) {
+                         it.invoiceDetailsBatchNo
+                     } else {
+                         ""
+                     } + "</td>"+"\n"+"\t"+
+              "<td>" + it.invoiceDetailsExpiryDate + "</td>"+"\n"+"\t"+
+             "<td>" + it.InvoiceDetailsRatePerUnit + "</td>"+"\n"+"\t"+
+             "<td>" + taxableValue + "</td>"+"\n"+"\t"+
+                     "<td>"+ value + "</td>"+"\n"+"\t"+
+             "<td>"+ value + "</td>"+"\n"+"\t"+
+             "<td>"+ value + "</td>"+"\n"+"\t"+
+             "<td>"+ value + "</td>"+"\n"+"\t"+
+             "<td>"+ it.InvoiceDetailsGSTRate + "</td>"+"\n"+"\t"+
+             "<td>"+ gstAmount + "</td>"+"\n"+"\t"+
+             "<td>"+ amount + "</td>"+"\n"+"\t"+
                      "</tr>"
+
+
+
          }
 
          context.put("tableRow", tableRow)
@@ -204,55 +234,86 @@ class InvoiceRepository(
          /* show the World */
          System.out.println(writer.toString())
 
+//         val plainText = Jsoup.parse(writer.toString()).toString()
+
+
+
+//         try {
+//             //Create Document instance.
+//             val document = Document()
+//
+//             //Create OutputStream instance.
+//             val outputStream: OutputStream = FileOutputStream(File("D:\\TestFile.pdf"))
+//
+//
+//
+//             //Create PDFWriter instance.
+//             PdfWriter.getInstance(document, outputStream)
+//
+//             //set A4 Size
+//
+//             document.pageSize = PageSize.A4
+//
+//             //Open the document.
+//             document.open()
+//
+//             //Add content to the document.
+//             document.add(
+//                 Paragraph(
+//                     "Hello world, " +
+//                             "this is a test pdf file."
+//                 )
+//             )
+//
+////             var printFile : Any= "src/main/resources/htmlPrint/promoPrintInvoice.vm"
+////
+////             document.add(printFile)
+//
+//             //Close document and outputStream.
+//             document.close()
+//             outputStream.close()
+//             println("Pdf created successfully.")
+//         } catch (e: Exception) {
+//             e.printStackTrace()
+//         }
+
+
          try {
-             //Create Document instance.
+
+             val k = writer.toString()
+//             var path = "D:\\InvoicePdf"
+             var path = "D:\\InvoicePdf\\Test.pdf";
+
              val document = Document()
+//             val file: OutputStream = FileOutputStream(File("C:\\InvoicePdf\\Test.pdf"))
+             val file: OutputStream = FileOutputStream(File(path))
 
-             //Create OutputStream instance.
-             val outputStream: OutputStream = FileOutputStream(File("D:\\TestFile.pdf"))
+//             document.addAuthor("");
+//             document.addCreationDate();
+//             document.addProducer();
+//             document.addCreator("aaa");
+//             document.addTitle("");
+//             document.setPageSize(PageSize.A4);
 
-             //Create PDFWriter instance.
-             PdfWriter.getInstance(document, outputStream)
-
-             //set A4 Size
-
-             document.pageSize = PageSize.A4
-
-             //Open the document.
+             PdfWriter.getInstance(document, file)
              document.open()
 
-             //Add content to the document.
-             document.add(
-                 Paragraph(
-                     "Hello world, " +
-                             "this is a test pdf file."
-                 )
-             )
+            val paragraph = Paragraph(k)
 
-//             var printFile : Any= "src/main/resources/htmlPrint/promoPrintInvoice.vm"
+             document.add(paragraph)
+//             val htmlWorker = HTMLWorker(document)
 //
-//             document.add(printFile)
+//             htmlWorker.parse(StringReader(k))
+             HtmlConverter.convertToPdf(k , file )
 
-             //Close document and outputStream.
              document.close()
-             outputStream.close()
-             println("Pdf created successfully.")
+             file.close()
          } catch (e: Exception) {
              e.printStackTrace()
          }
 
-         return writer.toString();
 
-
-
-
-
-
-
-
-
-
-
+        return writer.toString();
 
      }
 
