@@ -302,6 +302,11 @@ class MasterRepository
         return sqlSessionFactory.openSession().selectList("ItemMapper.getItemCodeDropdown")
     }
 
+    fun getRecipientDropdown( ) : List<RecipientDropDownDTO>{
+
+        return sqlSessionFactory.openSession().selectList("RecipientMapper.getRecipientDropdown")
+    }
+
 
 
 

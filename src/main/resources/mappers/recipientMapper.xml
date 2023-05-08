@@ -70,4 +70,11 @@
         WHERE RCT.CODE_RCT = #{code}
     </select>
 
+
+    <select id="getRecipientDropdown" resultType="com.squer.promobee.controller.dto.RecipientDropDownDTO">
+        SELECT ID_RCT As 'recipientId',NAME_RCT AS 'recipientName',CODE_RCT AS 'recipientCode' FROM RECIPIENT_MASTER_RCT
+        UNION
+        SELECT ID_DTM As 'recipientId',NAME_DTM AS 'recipientName',CODE_DTM AS 'recipientCode' FROM DOCTOR_MASTER_DTM
+    </select>
+
 </mapper>

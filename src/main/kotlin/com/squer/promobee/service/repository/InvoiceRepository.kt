@@ -9,9 +9,7 @@ import com.itextpdf.text.Paragraph
 import com.itextpdf.text.html.simpleparser.HTMLWorker
 import com.itextpdf.text.pdf.PdfWriter
 import com.squer.promobee.api.v1.enums.TeamEnum
-import com.squer.promobee.controller.dto.InvoiceDetailsPrintDTO
-import com.squer.promobee.controller.dto.InvoicePrintDetailsDTO
-import com.squer.promobee.controller.dto.PrintInvoiceDTO
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
@@ -42,143 +40,141 @@ class InvoiceRepository(
     lateinit var sqlSessionFactory: SqlSessionFactory
 
 
-    fun getInvoiceHeaderById(id:String):InvoiceHeader{
+    fun getInvoiceHeaderById(id: String): InvoiceHeader {
 //        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var data : MutableMap<String , Any> = mutableMapOf()
+        var data: MutableMap<String, Any> = mutableMapOf()
 
-        data.put("id",id)
+        data.put("id", id)
 
-        return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getInvoiceHeaderById",data)
+        return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getInvoiceHeaderById", data)
 
     }
 
-    fun getDoctorById(id:String): Doctor {
+    fun getDoctorById(id: String): Doctor {
 //        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var data : MutableMap<String , Any> = mutableMapOf()
+        var data: MutableMap<String, Any> = mutableMapOf()
 
 
-        data.put("id",id)
+        data.put("id", id)
 
-        return  sqlSessionFactory.openSession().selectOne("DoctorMapper.getDoctorById",data)
-
-
-    }
-
-    fun getPrintInvoiceHeaders(inhId:String): InvoicePrintDetailsDTO {
-       //val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var data : MutableMap<String , Any> = mutableMapOf()
-
-
-        data.put("id",inhId)
-
-        return  sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getPrintInvoiceHeaders",data)
-
-
+        return sqlSessionFactory.openSession().selectOne("DoctorMapper.getDoctorById", data)
 
 
     }
 
-    fun getVirtualPrintInvoiceHeaders(inhId:String): InvoicePrintDetailsDTO {
+    fun getPrintInvoiceHeaders(inhId: String): InvoicePrintDetailsDTO {
         //val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var data : MutableMap<String , Any> = mutableMapOf()
+        var data: MutableMap<String, Any> = mutableMapOf()
 
 
-        data.put("id",inhId)
+        data.put("id", inhId)
 
-        return  sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getVirtualPrintInvoiceHeaders",data)
+        return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getPrintInvoiceHeaders", data)
+
 
     }
 
-
-    fun getInvoiceDetailsForPrint(inhId:String): List<InvoiceDetailsPrintDTO> {
+    fun getVirtualPrintInvoiceHeaders(inhId: String): InvoicePrintDetailsDTO {
         //val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var data : MutableMap<String , Any> = mutableMapOf()
+        var data: MutableMap<String, Any> = mutableMapOf()
 
 
-        data.put("InhID",inhId)
+        data.put("id", inhId)
 
-        return  sqlSessionFactory.openSession().selectList("InvoiceHeaderMapper.getPrintInvoiceDetails",data)
+        return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getVirtualPrintInvoiceHeaders", data)
 
     }
 
 
-    fun getHsnRate(hcmCode:String): HSN{
+    fun getInvoiceDetailsForPrint(inhId: String): List<InvoiceDetailsPrintDTO> {
+        //val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        data.put("InhID", inhId)
+
+        return sqlSessionFactory.openSession().selectList("InvoiceHeaderMapper.getPrintInvoiceDetails", data)
+
+    }
+
+
+    fun getHsnRate(hcmCode: String): HSN {
 //        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var data : MutableMap<String , Any> = mutableMapOf()
+        var data: MutableMap<String, Any> = mutableMapOf()
 
-        data.put("hcmCode",hcmCode)
+        data.put("hcmCode", hcmCode)
 
-        return sqlSessionFactory.openSession().selectOne("HSNMapper.getHsnRate",data)
+        return sqlSessionFactory.openSession().selectOne("HSNMapper.getHsnRate", data)
 
     }
 
 
-
-     fun printInvoice(inh:PrintInvoiceDTO): String {
-         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-         var data: MutableMap<String, Any> = mutableMapOf()
-         inh.inhId?.let { data.put("id", it) }
-         inh.invoiceNo?.let { data.put("invoiceNo", it) }
-         var invoice = inh.inhId?.let { getInvoiceHeaderById(it) }
-         val date = Date()
-         val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-         val year = localDate.year
-         val month = localDate.monthValue
-         val day = localDate.dayOfMonth
+    fun printInvoice(inh: PrintInvoiceDTO): String {
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+        inh.inhId?.let { data.put("id", it) }
+        inh.invoiceNo?.let { data.put("invoiceNo", it) }
+        var invoice = inh.inhId?.let { getInvoiceHeaderById(it) }
+        val date = Date()
+        val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        val year = localDate.year
+        val month = localDate.monthValue
+        val day = localDate.dayOfMonth
 //         var employeePeriod = month.toString() + "-" + year
-         var employeePeriod = localDate.month.toString() + "-" + year
+        var employeePeriod = localDate.month.toString() + "-" + year
 //         var promoMonth = month.toString() + "-" + year
-         var promoMonth = localDate.month.toString() + "-" + year
-         var printDetails = inh.inhId?.let { getPrintInvoiceHeaders(it) }
-         // var printDetailsDoc = inh.inhId?.let { getVirtualPrintInvoiceHeaders(it) }
-         var printDetailsBody = inh.inhId?.let { getInvoiceDetailsForPrint(it) }
+        var promoMonth = localDate.month.toString() + "-" + year
+        var printDetails = inh.inhId?.let { getPrintInvoiceHeaders(it) }
+        // var printDetailsDoc = inh.inhId?.let { getVirtualPrintInvoiceHeaders(it) }
+        var printDetailsBody = inh.inhId?.let { getInvoiceDetailsForPrint(it) }
 
-         var hoUser : Boolean = printDetails?.teamId?.equals(TeamEnum.DEFAULT_HO_TEAM.id) ?: true ; false
-         /*  first, get and initialize an engine  */
-         /*  first, get and initialize an engine  */
-         val ve = VelocityEngine()
-         ve.init()
-         /*  next, get the Template  */
-         /*  next, get the Template  */
-         val t: Template = ve.getTemplate("src/main/resources/htmlPrint/promoPrintInvoice.vm")
-         /*  create a context and add data */
-         /*  create a context and add data */
-         val context = VelocityContext()
-         context.put("InvoiceNumber", printDetails?.invoiceNumber)
-         context.put("EmployeeCode", printDetails?.employeeCode)
-         context.put("EmployeeDesignation", printDetails?.employeeDesignation)
-         context.put("EmployeeName", printDetails?.employeeName)
-         context.put("EmployeeAddress", printDetails?.employeeAddress)
-         context.put("EmployeeCity", printDetails?.employeeCity)
-         context.put("EmployeeState", printDetails?.employeeState)
-         context.put("EmployeePinCode", printDetails?.employeePinCode)
-         context.put("EmployeeMobileNumber", printDetails?.employeeMobileNumber)
-         context.put("EmployeePeriod", employeePeriod)
-         context.put("EmployeeLRNumber", printDetails?.employeeLRNumber)
-         context.put("EmployeeDate", printDetails?.employeeDate)
-         context.put("EmployeeLRDate", printDetails?.employeeLRDate)
-         context.put("EmployeeTeam", printDetails?.employeeTeam)
-         context.put("EmployeeTransport", printDetails?.employeeTransport)
-         context.put("EmployeeCFA", printDetails?.employeeCFA)
-         context.put("PROMOMONTH", promoMonth)
-         context.put("PLANTYPE", printDetails?.type)
-         context.put("EmployeeTotalNoOfCases", printDetails?.employeeTotalNoOfCases)
-         context.put("EmployeeTotalWeight", printDetails?.employeeTotalWeight)
-         if(printDetails?.employeeRemark !== null) {
-             context.put("EmployeeRemark", printDetails?.employeeRemark)
-         } else {
-             context.put("EmployeeRemark", "")
-         }
-         context.put("TotalSampleValue", printDetails?.employeeSampleValue)
-         context.put("TotalInputValue", printDetails?.employeeInputValue)
-         context.put("TotalSumValue", printDetails?.employeeValue?.roundToLong())
-         var tableRow = ""
-         var srNo = 1
-         var value : Double? = 0.00
+        var hoUser: Boolean = printDetails?.teamId?.equals(TeamEnum.DEFAULT_HO_TEAM.id) ?: true; false
+        /*  first, get and initialize an engine  */
+        /*  first, get and initialize an engine  */
+        val ve = VelocityEngine()
+        ve.init()
+        /*  next, get the Template  */
+        /*  next, get the Template  */
+        val t: Template = ve.getTemplate("src/main/resources/htmlPrint/promoPrintInvoice.vm")
+        /*  create a context and add data */
+        /*  create a context and add data */
+        val context = VelocityContext()
+        context.put("InvoiceNumber", printDetails?.invoiceNumber)
+        context.put("EmployeeCode", printDetails?.employeeCode)
+        context.put("EmployeeDesignation", printDetails?.employeeDesignation)
+        context.put("EmployeeName", printDetails?.employeeName)
+        context.put("EmployeeAddress", printDetails?.employeeAddress)
+        context.put("EmployeeCity", printDetails?.employeeCity)
+        context.put("EmployeeState", printDetails?.employeeState)
+        context.put("EmployeePinCode", printDetails?.employeePinCode)
+        context.put("EmployeeMobileNumber", printDetails?.employeeMobileNumber)
+        context.put("EmployeePeriod", employeePeriod)
+        context.put("EmployeeLRNumber", printDetails?.employeeLRNumber)
+        context.put("EmployeeDate", printDetails?.employeeDate)
+        context.put("EmployeeLRDate", printDetails?.employeeLRDate)
+        context.put("EmployeeTeam", printDetails?.employeeTeam)
+        context.put("EmployeeTransport", printDetails?.employeeTransport)
+        context.put("EmployeeCFA", printDetails?.employeeCFA)
+        context.put("PROMOMONTH", promoMonth)
+        context.put("PLANTYPE", printDetails?.type)
+        context.put("EmployeeTotalNoOfCases", printDetails?.employeeTotalNoOfCases)
+        context.put("EmployeeTotalWeight", printDetails?.employeeTotalWeight)
+        if (printDetails?.employeeRemark !== null) {
+            context.put("EmployeeRemark", printDetails?.employeeRemark)
+        } else {
+            context.put("EmployeeRemark", "")
+        }
+        context.put("TotalSampleValue", printDetails?.employeeSampleValue)
+        context.put("TotalInputValue", printDetails?.employeeInputValue)
+        context.put("TotalSumValue", printDetails?.employeeValue?.roundToLong())
+        var tableRow = ""
+        var srNo = 1
+        var value: Double? = 0.00
 
 
 
-         printDetailsBody?.forEach {
+        printDetailsBody?.forEach {
 
 
 //             if(it.invoiceDetailsBatchNo !== null){
@@ -187,55 +183,48 @@ class InvoiceRepository(
 //                 ""
 //             }
 
-             var taxableValue =  it.InvoiceDetailsRatePerUnit?.let { it1 -> it.invoiceDetailsQuantity?.times(it1) }
-             var gstAmount = it.InvoiceDetailsGSTRate?.let { it1 -> taxableValue?.times(it1) }?.div(100)
-             var amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }
-             tableRow =  tableRow + "<tr>"+
-                     "<td>" + srNo++  + "</td>"+ "\n"+"\t"+
-             "<td>" + it.invoiceDetailsProductCode + "</td>"+"\n"+"\t"+
-             "<td>" + it.invoiceDetailsHSNCode + "</td>"+"\n"+"\t"+
-             "<td>" + it.invoiceDetailsItemDescription + "</td>"+"\n"+"\t"+
-             "<td>" + it.invoiceDetailsQuantity?.toInt() + "</td>"+"\n"+"\t"+
-             "<td>" + it.invoiceDetailsSAPCode + "</td>"+"\n"+"\t"+
-                     "<td>" + if (it.invoiceDetailsBatchNo !== null) {
-                         it.invoiceDetailsBatchNo
-                     } else {
-                         ""
-                     } + "</td>"+"\n"+"\t"+
-              "<td>" + it.invoiceDetailsExpiryDate + "</td>"+"\n"+"\t"+
-             "<td>" + it.InvoiceDetailsRatePerUnit + "</td>"+"\n"+"\t"+
-             "<td>" + taxableValue + "</td>"+"\n"+"\t"+
-                     "<td>"+ value + "</td>"+"\n"+"\t"+
-             "<td>"+ value + "</td>"+"\n"+"\t"+
-             "<td>"+ value + "</td>"+"\n"+"\t"+
-             "<td>"+ value + "</td>"+"\n"+"\t"+
-             "<td>"+ it.InvoiceDetailsGSTRate + "</td>"+"\n"+"\t"+
-             "<td>"+ gstAmount + "</td>"+"\n"+"\t"+
-             "<td>"+ amount + "</td>"+"\n"+"\t"+
-                     "</tr>"
+            var taxableValue = it.InvoiceDetailsRatePerUnit?.let { it1 -> it.invoiceDetailsQuantity?.times(it1) }
+            var gstAmount = it.InvoiceDetailsGSTRate?.let { it1 -> taxableValue?.times(it1) }?.div(100)
+            var amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }
+            tableRow = tableRow + "<tr>" +
+                    "<td>" + srNo++ + "</td>" + "\n" + "\t" +
+                    "<td>" + it.invoiceDetailsProductCode + "</td>" + "\n" + "\t" +
+                    "<td>" + it.invoiceDetailsHSNCode + "</td>" + "\n" + "\t" +
+                    "<td>" + it.invoiceDetailsItemDescription + "</td>" + "\n" + "\t" +
+                    "<td>" + it.invoiceDetailsQuantity?.toInt() + "</td>" + "\n" + "\t" +
+                    "<td>" + it.invoiceDetailsSAPCode + "</td>" + "\n" + "\t" +
+                    "<td>" + if (it.invoiceDetailsBatchNo !== null) {
+                it.invoiceDetailsBatchNo
+            } else {
+                ""
+            } + "</td>" + "\n" + "\t" +
+                    "<td>" + it.invoiceDetailsExpiryDate + "</td>" + "\n" + "\t" +
+                    "<td>" + it.InvoiceDetailsRatePerUnit + "</td>" + "\n" + "\t" +
+                    "<td>" + taxableValue + "</td>" + "\n" + "\t" +
+                    "<td>" + value + "</td>" + "\n" + "\t" +
+                    "<td>" + value + "</td>" + "\n" + "\t" +
+                    "<td>" + value + "</td>" + "\n" + "\t" +
+                    "<td>" + value + "</td>" + "\n" + "\t" +
+                    "<td>" + it.InvoiceDetailsGSTRate + "</td>" + "\n" + "\t" +
+                    "<td>" + gstAmount + "</td>" + "\n" + "\t" +
+                    "<td>" + amount + "</td>" + "\n" + "\t" +
+                    "</tr>"
 
 
+        }
 
-         }
-
-         context.put("tableRow", tableRow)
-
+        context.put("tableRow", tableRow)
 
 
-
-
-
-
-         /* now render the template into a StringWriter */
-         /* now render the template into a StringWriter */
-         val writer = StringWriter()
-         t.merge(context, writer)
-         /* show the World */
-         /* show the World */
-         System.out.println(writer.toString())
+        /* now render the template into a StringWriter */
+        /* now render the template into a StringWriter */
+        val writer = StringWriter()
+        t.merge(context, writer)
+        /* show the World */
+        /* show the World */
+        System.out.println(writer.toString())
 
 //         val plainText = Jsoup.parse(writer.toString()).toString()
-
 
 
 //         try {
@@ -278,15 +267,15 @@ class InvoiceRepository(
 //         }
 
 
-         try {
+        try {
 
-             val k = writer.toString()
+            val k = writer.toString()
 //             var path = "D:\\InvoicePdf"
-             var path = "D:\\InvoicePdf\\Test.pdf";
+            var path = "D:\\InvoicePdf\\Test.pdf";
 
-             val document = Document()
+            val document = Document()
 //             val file: OutputStream = FileOutputStream(File("C:\\InvoicePdf\\Test.pdf"))
-             val file: OutputStream = FileOutputStream(File(path))
+            val file: OutputStream = FileOutputStream(File(path))
 
 //             document.addAuthor("");
 //             document.addCreationDate();
@@ -295,27 +284,130 @@ class InvoiceRepository(
 //             document.addTitle("");
 //             document.setPageSize(PageSize.A4);
 
-             PdfWriter.getInstance(document, file)
-             document.open()
+            PdfWriter.getInstance(document, file)
+            document.open()
 
             val paragraph = Paragraph(k)
 
-             document.add(paragraph)
+            document.add(paragraph)
 //             val htmlWorker = HTMLWorker(document)
 //
 //             htmlWorker.parse(StringReader(k))
-             HtmlConverter.convertToPdf(k , file )
+            HtmlConverter.convertToPdf(k, file)
 
-             document.close()
-             file.close()
-         } catch (e: Exception) {
-             e.printStackTrace()
-         }
+            document.close()
+            file.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
 
         return writer.toString();
 
-     }
+    }
+
+
+    fun searchInvoice(searchInvoice: SearchInvoiceDTO): List<InvoiceHeaderDTO> {
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        searchInvoice.fromDate?.let { data.put("fromDate", it) }
+        searchInvoice.toDate?.let { data.put("toDate", it) }
+        searchInvoice.recipientId?.let { data.put("recipientId", it) }
+            searchInvoice.invoiceNo?.let { data.put("invoiceNo", it) }
+
+        if (searchInvoice.recipientId == "" && searchInvoice.invoiceNo == null) {
+
+
+            var invoices =
+                return sqlSessionFactory.openSession().selectList("InvoiceHeaderMapper.searchInvoiceCondition1", data)
+
+            return invoices
+
+        }
+        if (searchInvoice.recipientId !== "") {
+
+            if(searchInvoice.invoiceNo == null || searchInvoice.invoiceNo == 0){
+
+                var invoices =
+                    return sqlSessionFactory.openSession().selectList("InvoiceHeaderMapper.searchInvoiceCondition2", data)
+
+                return invoices
+
+
+            } else {
+
+                var invoices =
+                    return sqlSessionFactory.openSession().selectList("InvoiceHeaderMapper.searchInvoiceCondition3", data)
+
+                return invoices
+
+            }
+
+        } else {
+
+            var invoices =
+                return sqlSessionFactory.openSession().selectList("InvoiceHeaderMapper.searchInvoiceCondition4", data)
+
+            return invoices
+
+
+        }
+
+
+    }
+
+
+
+
+    fun getGroupInvoiceListHub(groupInvoice: GroupInvoiceParamDTO): List<GroupInvoicesListHubDTO> {
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        groupInvoice.fromDate?.let { data.put("FromDate", it) }
+        groupInvoice.toDate?.let { data.put("ToDate", it) }
+        groupInvoice.invoiceNumber?.let { data.put("InvoiceNumber", it) }
+
+
+
+
+            var groupInvoices =
+                return sqlSessionFactory.openSession().selectList("InvoiceHeaderMapper.getGroupInvoiceListHub", data)
+
+            return groupInvoices
+
+        }
+
+
+
+
+    fun getInvoicesForGrouping(groupInvoice: GroupInvoiceParamDTO): List<InvoicesForGroupingDTO> {
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        groupInvoice.fromDate?.let { data.put("FromDate", it) }
+        groupInvoice.toDate?.let { data.put("ToDate", it) }
+        groupInvoice.invoiceNumber?.let { data.put("InvoiceNumber", it) }
+
+
+
+
+        var groupInvoices =
+            return sqlSessionFactory.openSession().selectList("InvoiceHeaderMapper.getInvoicesForGrouping", data)
+
+        return groupInvoices
+
+    }
+
+
+
+
 
 
 

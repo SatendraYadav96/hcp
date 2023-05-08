@@ -255,6 +255,47 @@
 
     </select>
 
+    <select id="searchInvoiceCondition1" resultType="com.squer.promobee.controller.dto.InvoiceHeaderDTO">
+        SELECT ID_INH AS 'inhId',INVOICE_NO_INH AS 'invoiceNo' FROM INVOICE_HEADER_INH
+        WHERE CREATED_ON_INH BETWEEN #{fromDate} AND #{toDate}
+        ORDER BY INVOICE_NO_INH DESC
+    </select>
+
+    <select id="searchInvoiceCondition2" resultType="com.squer.promobee.controller.dto.InvoiceHeaderDTO">
+        SELECT ID_INH AS 'inhId',INVOICE_NO_INH AS 'invoiceNo' FROM INVOICE_HEADER_INH
+        WHERE CREATED_ON_INH BETWEEN #{fromDate} AND #{toDate} AND ID_RCT_INH = #{recipientId}
+        ORDER BY INVOICE_NO_INH DESC
+    </select>
+
+    <select id="searchInvoiceCondition3" resultType="com.squer.promobee.controller.dto.InvoiceHeaderDTO">
+        SELECT ID_INH AS 'inhId',INVOICE_NO_INH AS 'invoiceNo' FROM INVOICE_HEADER_INH
+        WHERE CREATED_ON_INH BETWEEN #{fromDate} AND #{toDate} AND ID_RCT_INH =  #{recipientId} AND INVOICE_NO_INH = #{invoiceNo}
+        ORDER BY INVOICE_NO_INH DESC
+    </select>
+
+    <select id="searchInvoiceCondition4" resultType="com.squer.promobee.controller.dto.InvoiceHeaderDTO">
+        SELECT ID_INH AS 'inhId',INVOICE_NO_INH AS 'invoiceNo' FROM INVOICE_HEADER_INH
+        WHERE CREATED_ON_INH BETWEEN #{fromDate} AND #{toDate} AND INVOICE_NO_INH = #{invoiceNo}
+        ORDER BY INVOICE_NO_INH DESC
+    </select>
+
+
+
+    <select id="getGroupInvoiceListHub" resultType="com.squer.promobee.controller.dto.GroupInvoicesListHubDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetGroupingInvoiceForHUB ( #{FromDate, jdbcType = VARCHAR , mode = IN}, #{ToDate, jdbcType = VARCHAR , mode = IN},
+                                               #{InvoiceNumber, jdbcType = VARCHAR , mode = IN}) }
+
+
+    </select>
+
+
+    <select id="getInvoicesForGrouping" resultType="com.squer.promobee.controller.dto.InvoicesForGroupingDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetInvoicesForGrouping ( #{FromDate, jdbcType = VARCHAR , mode = IN}, #{ToDate, jdbcType = VARCHAR , mode = IN},
+                                               #{InvoiceNumber, jdbcType = VARCHAR , mode = IN}) }
+
+
+    </select>
+
 
 
 

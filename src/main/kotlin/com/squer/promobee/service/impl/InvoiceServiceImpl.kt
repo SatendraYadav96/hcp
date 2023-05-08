@@ -1,10 +1,7 @@
 package com.squer.promobee.service.impl
 
 
-import com.squer.promobee.controller.dto.InvoiceDetailsPrintDTO
-import com.squer.promobee.controller.dto.InvoiceHeaderDTO
-import com.squer.promobee.controller.dto.InvoicePrintDetailsDTO
-import com.squer.promobee.controller.dto.PrintInvoiceDTO
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.InvoiceService
 import com.squer.promobee.service.repository.InvoiceRepository
 import com.squer.promobee.service.repository.domain.Doctor
@@ -58,6 +55,17 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getHsnRate(hcmCode)
     }
 
+    override fun searchInvoice(searchInvoice: SearchInvoiceDTO): List<InvoiceHeaderDTO> {
+        return invoiceRepository.searchInvoice(searchInvoice)
+    }
+
+    override fun getGroupInvoiceListHub(groupInvoice: GroupInvoiceParamDTO): List<GroupInvoicesListHubDTO> {
+        return invoiceRepository.getGroupInvoiceListHub(groupInvoice)
+    }
+
+    override fun getInvoicesForGrouping(groupInvoice: GroupInvoiceParamDTO): List<InvoicesForGroupingDTO> {
+        return invoiceRepository.getInvoicesForGrouping(groupInvoice)
+    }
 
 
 

@@ -1,7 +1,9 @@
 package com.squer.promobee.controller
 
 
+import com.squer.promobee.controller.dto.GroupInvoiceParamDTO
 import com.squer.promobee.controller.dto.PrintInvoiceDTO
+import com.squer.promobee.controller.dto.SearchInvoiceDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.InvoiceService
 import lombok.extern.slf4j.Slf4j
@@ -75,6 +77,31 @@ open class InvoiceController@Autowired constructor(
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val hsnData = invoiceService.getHsnRate(hcmCode)
         return ResponseEntity(hsnData, HttpStatus.OK)
+    }
+
+    @GetMapping("/searchInvoice")
+    open fun searchInvoice(@RequestBody searchInvoice: SearchInvoiceDTO): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val searchInvoiceData = invoiceService.searchInvoice(searchInvoice)
+
+        return ResponseEntity(searchInvoiceData, HttpStatus.OK)
+    }
+
+    @GetMapping("/getGroupInvoiceListHub")
+    open fun getGroupInvoiceListHub(@RequestBody groupInvoice: GroupInvoiceParamDTO): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val groupInvoiceData = invoiceService.getGroupInvoiceListHub(groupInvoice)
+
+        return ResponseEntity(groupInvoiceData, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/getInvoicesForGrouping")
+    open fun getInvoicesForGrouping(@RequestBody groupInvoice: GroupInvoiceParamDTO): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val groupInvoicingData = invoiceService.getInvoicesForGrouping(groupInvoice)
+
+        return ResponseEntity(groupInvoicingData, HttpStatus.OK)
     }
 
 

@@ -1,9 +1,6 @@
 package com.squer.promobee.service
 
-import com.squer.promobee.controller.dto.InvoiceDetailsPrintDTO
-import com.squer.promobee.controller.dto.InvoiceHeaderDTO
-import com.squer.promobee.controller.dto.InvoicePrintDetailsDTO
-import com.squer.promobee.controller.dto.PrintInvoiceDTO
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.repository.domain.Doctor
 import com.squer.promobee.service.repository.domain.HSN
 import com.squer.promobee.service.repository.domain.InvoiceHeader
@@ -25,6 +22,13 @@ interface InvoiceService {
     fun printInvoice(inh:PrintInvoiceDTO)
 
     fun getHsnRate(hcmCode:String): HSN
+
+    fun searchInvoice(searchInvoice: SearchInvoiceDTO): List<InvoiceHeaderDTO>
+
+    fun getGroupInvoiceListHub(groupInvoice: GroupInvoiceParamDTO): List<GroupInvoicesListHubDTO>
+
+    fun getInvoicesForGrouping(groupInvoice: GroupInvoiceParamDTO): List<InvoicesForGroupingDTO>
+
 
 
 
