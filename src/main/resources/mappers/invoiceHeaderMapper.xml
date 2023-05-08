@@ -297,6 +297,11 @@
     </select>
 
 
+    <select id="getInvoiceDropdown" resultType="com.squer.promobee.controller.dto.InvoiceDropdownDTO">
+        select id_inh as 'inhId' , invoice_no_inh as 'invoiceNo' from INVOICE_HEADER_INH
+    </select>
+
+
 
 
 

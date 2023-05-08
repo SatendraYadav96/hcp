@@ -307,6 +307,11 @@ class MasterRepository
         return sqlSessionFactory.openSession().selectList("RecipientMapper.getRecipientDropdown")
     }
 
+    fun getInvoiceDropdown( ) : List<InvoiceDropdownDTO>{
+
+        return sqlSessionFactory.openSession().selectList("InvoiceHeaderMapper.getInvoiceDropdown")
+    }
+
 
 
 

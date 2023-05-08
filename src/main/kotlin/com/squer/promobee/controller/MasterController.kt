@@ -184,6 +184,13 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getInvoiceDropdown")
+    fun getInvoiceDropdown(): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getInvoiceDropdown()
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
 
 
 

@@ -53,4 +53,6 @@ interface MasterService {
 
     fun getRecipientDropdown(): List<RecipientDropDownDTO>
 
+    fun getInvoiceDropdown(): List<InvoiceDropdownDTO>
+
 }
