@@ -2,16 +2,14 @@ package com.squer.promobee.service.repository
 
 
 import com.itextpdf.html2pdf.HtmlConverter
-import com.itextpdf.text.DocListener
 import com.itextpdf.text.Document
-import com.itextpdf.text.PageSize
 import com.itextpdf.text.Paragraph
-import com.itextpdf.text.html.simpleparser.HTMLWorker
 import com.itextpdf.text.pdf.PdfWriter
 import com.squer.promobee.api.v1.enums.TeamEnum
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
+import com.squer.promobee.security.util.DateUtils
 import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.*
 import org.apache.ibatis.session.SqlSessionFactory
@@ -23,6 +21,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.io.*
+import java.text.SimpleDateFormat
+import java.time.LocalDate.of
 import java.time.ZoneId
 import java.util.*
 import kotlin.math.roundToLong
@@ -310,11 +310,63 @@ class InvoiceRepository(
     fun searchInvoice(searchInvoice: SearchInvoiceDTO): List<InvoiceHeaderDTO> {
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val date = Date()
+        val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        val year = localDate.year
+        val month = localDate.monthValue
+        val day = localDate.dayOfMonth
+
+
+//        var fromDate = LocalDate.MIN
+//        val fromDateFormatted = SimpleDateFormat("yyyy-MM-dd").format(fromDate)
+
+        val sDate1 = "2016-01-01"
+        val date1 = SimpleDateFormat("yyyy-MM-dd").parse(sDate1)
+        val fromDateFormatted = SimpleDateFormat("yyyy-MM-dd").format(date1)
+
+
+//        var toDate = Date(Long.MAX_VALUE)
+//        val toDateFormatted = SimpleDateFormat("yyyy-MM-dd").format(toDate)
+
+        val eDate1 = date
+        val toDateFormatted = SimpleDateFormat("yyyy-MM-dd").format(eDate1)
+
+
+
+        var fromDate = "";
+        var toDate = "";
+
+        if(searchInvoice.monthIndex == ""){
+
+            if(searchInvoice.yearIndex == "") {
+
+                 fromDate = fromDateFormatted
+                 toDate = toDateFormatted
+            } else {
+                 fromDate = searchInvoice.yearIndex?.let { of(it?.toInt(),1, 1) }.toString()
+
+
+                 toDate = searchInvoice.yearIndex?.let { of(it?.toInt(),12, 31) }.toString()
+
+
+            }
+        } else {
+            fromDate = searchInvoice.yearIndex?.let { searchInvoice.monthIndex?.let { it1 ->
+                of(it?.toInt(),
+                    it1?.toInt(), 1)
+            } }.toString()
+
+            toDate = fromDate
+
+
+
+        }
+
         var data: MutableMap<String, Any> = mutableMapOf()
 
 
-        searchInvoice.fromDate?.let { data.put("fromDate", it) }
-        searchInvoice.toDate?.let { data.put("toDate", it) }
+         data.put("fromDate", fromDate)
+        data.put("toDate", toDate )
         searchInvoice.recipientId?.let { data.put("recipientId", it) }
             searchInvoice.invoiceNo?.let { data.put("invoiceNo", it) }
 
