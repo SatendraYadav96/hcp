@@ -9,7 +9,6 @@ import com.squer.promobee.api.v1.enums.TeamEnum
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
-import com.squer.promobee.security.util.DateUtils
 import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.*
 import org.apache.ibatis.session.SqlSessionFactory
@@ -22,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.io.*
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.LocalDate.of
 import java.time.ZoneId
 import java.util.*
@@ -356,7 +356,17 @@ class InvoiceRepository(
                     it1?.toInt(), 1)
             } }.toString()
 
-            toDate = fromDate
+            val sourceDate = fromDate
+            val format = SimpleDateFormat("yyyy-MM-dd")
+            val myDate = SimpleDateFormat("yyyy-MM-dd").parse(sourceDate)
+            val myDate1 = SimpleDateFormat("yyyy-MM-dd").format(myDate)
+            //var myDate = format.parse(sourceDate)
+//            myDate = DateUtil.addDays(myDate, 1)
+            val fmDate = LocalDate.parse(myDate1.toString())
+            val fmDate1 = fmDate.plusMonths(1).plusDays(-1)
+
+            toDate = fmDate1.toString()
+
 
 
 
