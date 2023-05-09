@@ -88,7 +88,7 @@ open class InvoiceController@Autowired constructor(
         return ResponseEntity(searchInvoiceData, HttpStatus.OK)
     }
 
-    @GetMapping("/getGroupInvoiceListHub")
+    @PostMapping("/getGroupInvoiceListHub")
     open fun getGroupInvoiceListHub(@RequestBody groupInvoice: GroupInvoiceParamDTO): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val groupInvoiceData = invoiceService.getGroupInvoiceListHub(groupInvoice)
@@ -97,7 +97,7 @@ open class InvoiceController@Autowired constructor(
     }
 
 
-    @GetMapping("/getInvoicesForGrouping")
+    @PostMapping("/getInvoicesForGrouping")
     open fun getInvoicesForGrouping(@RequestBody groupInvoice: GroupInvoiceParamDTO): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val groupInvoicingData = invoiceService.getInvoicesForGrouping(groupInvoice)
