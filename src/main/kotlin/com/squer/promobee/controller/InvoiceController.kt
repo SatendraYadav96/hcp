@@ -65,7 +65,7 @@ open class InvoiceController@Autowired constructor(
     }
 
 
-    @GetMapping("/printInvoice")
+    @PostMapping("/printInvoice")
     open fun printInvoice(@RequestBody inh: PrintInvoiceDTO): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val printInvoiceData = invoiceService.printInvoice(inh)
