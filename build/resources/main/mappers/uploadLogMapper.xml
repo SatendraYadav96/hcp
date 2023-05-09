@@ -28,4 +28,13 @@
         select ID_UPL ,IDTYPESLV_UPL ,START_TIME_UPL ,END_TIME_UPL ,TOTAL_RECORDS_UPL ,RECORDS_UPLOAD_UPL ,ID_STATUS_SLV_UPL
                 ,CREATED_ON_UPL ,CREATED_BY_UPL ,UPDATED_ON_UPL ,UPDATED_BY_UPL ,PARENT_ID_UPL from UPLOAD_LOG_UPL where IDTYPESLV_UPL = #{statusId}
     </select>
+
+    <select id="getGrnUploadLog" resultType="com.squer.promobee.controller.dto.UploadLogDTO">
+        SELECT UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
+        SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
+        JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
+        WHERE UPL.IDTYPESLV_UPL = '00000000-0000-0000-0000-100000000020'
+    </select>
+
+
 </mapper>

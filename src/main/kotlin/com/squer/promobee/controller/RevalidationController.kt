@@ -1,8 +1,9 @@
 package com.squer.promobee.controller
 
 
+
 import com.squer.promobee.security.domain.User
-import com.squer.promobee.service.UploadService
+import com.squer.promobee.service.RevalidationService
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,19 +16,22 @@ import org.springframework.web.bind.annotation.PathVariable
 
 
 @Slf4j
-open class UploadController@Autowired constructor(
-    private val uploadService: UploadService
+open class RevalidationController@Autowired constructor(
+    private val revalidationService: RevalidationService
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
 
-    @GetMapping("/getGrnUploadLog")
-    open fun getGrnUploadLog() : ResponseEntity<*> {
+    @GetMapping("/getItemRevalidationHub/{itemId}/{revldType}")
+    fun getItemRevalidationHub(@PathVariable itemId: String,  @PathVariable revldType:String): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var grnUpl = uploadService.getGrnUploadLog()
-        return ResponseEntity(grnUpl, HttpStatus.OK)
+        val data = revalidationService.getItemRevalidationHub(itemId,  revldType)
+        return ResponseEntity(data, HttpStatus.OK)
     }
+
+
+
 
 
 

@@ -1,8 +1,10 @@
 package com.squer.promobee.service.impl
 
 
+import com.squer.promobee.controller.dto.UploadLogDTO
 import com.squer.promobee.service.UploadService
 import com.squer.promobee.service.repository.UploadRepository
+import com.squer.promobee.service.repository.domain.UploadLog
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,6 +24,10 @@ class UploadServiceImpl @Autowired constructor(
 
 
     private val log = LoggerFactory.getLogger(javaClass)
+
+    override fun getGrnUploadLog (): List<UploadLogDTO> {
+        return uploadRepository.getGrnUploadLog()
+    }
 
 
 

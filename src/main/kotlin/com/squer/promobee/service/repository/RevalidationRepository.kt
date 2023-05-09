@@ -1,7 +1,9 @@
 package com.squer.promobee.service.repository
 
 
-import com.squer.promobee.controller.dto.UploadLogDTO
+
+import com.squer.promobee.controller.dto.ItemRevalidationDTO
+import com.squer.promobee.controller.dto.RecipientReportDTO
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-class UploadRepository(
+class RevalidationRepository(
     securityUtility: SecurityUtility
 ): BaseRepository<UploadLog>(
     securityUtility = securityUtility
@@ -23,15 +25,18 @@ class UploadRepository(
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
 
-
-    fun getGrnUploadLog (): List<UploadLogDTO> {
+    fun getItemRevalidationHub( itemId: String, revldType: String) : List<ItemRevalidationDTO>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("itemId", itemId)
+        data.put("revldType", revldType)
 
-
-        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getGrnUploadLog", data)
+        return sqlSessionFactory.openSession().selectList("InventoryExpiryUpdateMapper.getItemRevalidationHub", data)
     }
+
+
+
 
 
 

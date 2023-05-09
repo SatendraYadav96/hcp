@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.squer.promobee.mapper.InventoryExpiryUpdateMapper">
+<mapper namespace="InventoryExpiryUpdateMapper">
     <resultMap id="inventoryExpiryUpdateResultMap" type="com.squer.promobee.service.repository.domain.InventoryExpiryUpdate">
         <id property="id" column="id_ieu"/>
         <result property="expiryDate" column="expiry_date_ieu"/>
@@ -29,4 +29,26 @@
     <select id="getInventory" parameterType="map" resultType="com.squer.promobee.service.repository.domain.Inventory">
         select id_inv as id from INVENTORY_INV where id_inv=#{id_inv_ieu}
     </select>
+
+    <select id="getItemRevalidationHub" resultType="com.squer.promobee.controller.dto.ItemRevalidationDTO">
+        SELECT   ieu.ID_IEU as 'iEUID' ,
+                inv.ID_INV as 'inventoryID' ,
+                itm.NAME_ITM as 'item',
+                itm.CODE_ITM as 'itemCode',
+                itc.NAME_ITC as 'category',
+                itm.MEDICAL_CODE_ITM as 'medicalCode',
+                inv.PO_NO_INV as 'poNo',
+                inv.QTY_RECEIVED_INV - inv.QTY_DISPATCHED_INV as 'remainingQuantity',
+                inv.EXPIRY_DATE_INV as 'expiryDate',
+                usr.ID_USR as 'userID',
+                usr.NAME_USR as 'userName',
+                ieu.CREATED_ON_IEU  as 'createdDate'
+        FROM ITEM_MASTER_ITM itm
+                 JOIN ITEM_CATEGORY_MASTER_ITC itc ON itc.ID_ITC = itm.ID_ITC_ITM
+                 JOIN INVENTORY_INV inv ON INV.ID_ITM_INV = itm.ID_ITM
+                 JOIN INVENTORY_EXPIRY_UPDATE_IEU ieu ON ieu.ID_INV_IEU = inv.ID_INV
+                 JOIN USER_MASTER_USR usr ON usr.ID_USR =  ieu.ID_OWNER_USR_IEU
+        WHERE itm.ID_ITM = #{itemId} and ieu.ID_STATUS_SLV_IEU = #{revldType}
+    </select>
+
 </mapper>
