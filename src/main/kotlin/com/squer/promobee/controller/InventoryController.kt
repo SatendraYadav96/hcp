@@ -87,6 +87,22 @@ open class InventoryController@Autowired constructor(
         return ResponseEntity(switchData, HttpStatus.OK)
     }
 
+    @GetMapping("/getPickList/{teamId}/{month}/{year}/{isSpecial}")
+    fun getPickList( @PathVariable teamId: String , @PathVariable month: Int , @PathVariable year: Int, @PathVariable isSpecial: Int): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = inventoryService.getPickList(teamId, month, year, isSpecial)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getPickListVirtual/{teamId}/{month}/{year}/{isSpecial}")
+    fun getPickListVirtual( @PathVariable teamId: String , @PathVariable month: Int , @PathVariable year: Int, @PathVariable isSpecial: Int): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = inventoryService.getPickListVirtual(teamId, month, year, isSpecial)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
 
 
 

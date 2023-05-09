@@ -66,4 +66,11 @@ class InventoryServiceImpl @Autowired constructor(
         inventoryRepository.switchInventory(inv)
     }
 
+    override fun getPickList(teamId: String, month: Int, year: Int, isSpecial: Int): List<PickListDTO> {
+        return inventoryRepository.getPickList(teamId,month,year,isSpecial)
+    }
+
+    override fun getPickListVirtual(teamId: String, month: Int, year: Int, isSpecial: Int): List<PickListDTO> {
+        return inventoryRepository.getPickListVirtual(teamId,month,year,isSpecial)
+    }
 }

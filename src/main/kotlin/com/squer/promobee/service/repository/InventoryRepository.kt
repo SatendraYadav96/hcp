@@ -1,10 +1,7 @@
 package com.squer.promobee.service.repository
 
 import com.squer.promobee.api.v1.enums.*
-import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
-import com.squer.promobee.controller.dto.InventoryDTO
-import com.squer.promobee.controller.dto.InventoryReversalDTO
-import com.squer.promobee.controller.dto.SwitchInventoryDTO
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.mapper.InventoryMapper
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.NamedSquerEntity
@@ -496,6 +493,32 @@ class InventoryRepository @Autowired constructor(
 
 
 
+    }
+
+
+
+    fun getPickList(teamId: String, month: Int, year: Int, isSpecial: Int): List<PickListDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data : MutableMap<String, String> = mutableMapOf()
+        data.put("TEAM_ID", teamId)
+        data.put("MONTH", month.toString())
+        data.put("YEAR", year.toString())
+        data.put("Special", isSpecial.toString())
+
+        return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getPickList", data)
+    }
+
+
+    fun getPickListVirtual(teamId: String, month: Int, year: Int, isSpecial: Int): List<PickListDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data0 : MutableMap<String, String> = mutableMapOf()
+        data0.put("TEAM_ID", teamId)
+        data0.put("MONTH", month.toString())
+        data0.put("YEAR", year.toString())
+        data0.put("Special", isSpecial.toString())
+
+        return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getPickListVirtual", data0)
     }
 
 

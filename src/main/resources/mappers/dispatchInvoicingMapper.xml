@@ -235,6 +235,21 @@
     </select>
 
 
+    <select id="getPickList" resultType="com.squer.promobee.controller.dto.PickListDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GET_PICKLIST ( #{TEAM_ID, jdbcType = VARCHAR , mode = IN}, #{MONTH, jdbcType = INTEGER , mode = IN}, #{YEAR, jdbcType = INTEGER , mode = IN},
+                                             #{Special, jdbcType = INTEGER , mode = IN}) }
+
+
+    </select>
+
+    <select id="getPickListVirtual" resultType="com.squer.promobee.controller.dto.PickListDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GET_PICKLISTFORVIRTUL ( #{TEAM_ID, jdbcType = VARCHAR , mode = IN}, #{MONTH, jdbcType = INTEGER , mode = IN}, #{YEAR, jdbcType = INTEGER , mode = IN},
+                                   #{Special, jdbcType = INTEGER , mode = IN}) }
+
+
+    </select>
+
+
 
 
 

@@ -30,6 +30,12 @@ interface InventoryService {
 
     fun switchInventory(inv: SwitchInventoryDTO)
 
+    fun getPickList(  teamId: String ,  month: Int ,  year: Int,  isSpecial: Int): List<PickListDTO>
+
+    fun getPickListVirtual(  teamId: String ,  month: Int ,  year: Int,  isSpecial: Int): List<PickListDTO>
+
+
+
 
 
 

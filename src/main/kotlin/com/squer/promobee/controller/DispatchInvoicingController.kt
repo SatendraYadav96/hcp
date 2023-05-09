@@ -2,6 +2,7 @@ package com.squer.promobee.controller
 
 import com.squer.promobee.controller.dto.GroupingInvoiceDetailsDTO
 import com.squer.promobee.controller.dto.PickListDetailsDTO
+import com.squer.promobee.service.DispatchDetailService
 import com.squer.promobee.service.DispatchInvoicingService
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
@@ -16,7 +17,11 @@ import java.util.*
 
 @Slf4j
 open class DispatchInvoicingController @Autowired constructor(
-        private val dispatchInvoicingService: DispatchInvoicingService
+        private val dispatchInvoicingService: DispatchInvoicingService,
+
+
+
+
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -78,6 +83,8 @@ open class DispatchInvoicingController @Autowired constructor(
         val data = dispatchInvoicingService.getVirtualDispatchSearch(month, year)
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+
 
 
 
