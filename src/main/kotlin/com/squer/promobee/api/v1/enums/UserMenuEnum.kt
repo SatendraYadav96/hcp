@@ -29,7 +29,7 @@ enum class UserMenuEnum(val label: String, val key: String, val title: String, v
     ADD_HSN("Add HSN", "add_hsn", "add_hsn", "/home/hsnInvoice/addHsn", "hsn_invoice"),
     INVOICE_BOX_WEIGHT("Invoice Box & Weight", "invoice_box_weight", "invoice_box_weight", "/home/hsnInvoice/addInvoice", "hsn_invoice"),
     REPORT("Report", "report", "report", "", ""),
-    RECEIPT_REPORT("Receipt Report", "receipt_report", "receipt_report","/home/report/recipientReport", "report"),
+    FF_REPORT("Receipt Report", "receipt_report", "receipt_report","/home/report/recipientReport", "report"),
     PURCHASE_REPORT("Purchase Report", "purchase_report", "purchase_report", "/home/report/purchaseReport", "report"),
     DISPATCH_REPORT("Dispatch Report", "dispatch_report", "dispatch_report", "/home/report/dispatchReport", "report"),
     DISPATCH_REGISTERS("Dispatch Registers", "dispatch_registers", "dispatch_registers", "/home/report/dispatchRegisterReport", "report"),

@@ -52,7 +52,7 @@ open class UIController @Autowired constructor(
                         UserMenuEnum.INVENTORY_REPORT,
                         UserMenuEnum.ADD_HSN,
                         UserMenuEnum.INVOICE_BOX_WEIGHT,
-                        UserMenuEnum.RECEIPT_REPORT,
+                        UserMenuEnum.FF_REPORT,
                         UserMenuEnum.PURCHASE_REPORT,
                         UserMenuEnum.DISPATCH_REPORT,
                         UserMenuEnum.DISPATCH_REGISTERS,
@@ -67,7 +67,7 @@ open class UIController @Autowired constructor(
                         UserMenuEnum.SPECIAL_ALLOCATION,
                         UserMenuEnum.VIRTUAL_ALLOCATION,
                         UserMenuEnum.PICKING_SLIP,
-                        UserMenuEnum.RECEIPT_REPORT,
+                        UserMenuEnum.FF_REPORT,
                         UserMenuEnum.INVENTORY_REPORT,
                         UserMenuEnum.PURCHASE_REPORT,
                         UserMenuEnum.NEAR_TO_EXPIRY_REPORT,
@@ -83,10 +83,10 @@ open class UIController @Autowired constructor(
         val parentMenus = mapOf(
                 UserRoleEnum.HUB_MANAGER_ID.id to listOf<UserMenuEnum>(
                     UserMenuEnum.DASHBOARD,
-                    UserMenuEnum.GOODS_RECEIPT,
-                    UserMenuEnum.DISPATCH_AND_INVOICING,
                     UserMenuEnum.MASTERS,
+                    UserMenuEnum.GOODS_RECEIPT,
                     UserMenuEnum.INVENTORY,
+                    UserMenuEnum.DISPATCH_AND_INVOICING,
                     UserMenuEnum.ITEM_REVALIDATION,
                     UserMenuEnum.HSN_AND_INVOICE,
                     UserMenuEnum.REPORT
