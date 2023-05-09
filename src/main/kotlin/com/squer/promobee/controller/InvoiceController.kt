@@ -18,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
 
@@ -79,7 +80,7 @@ open class InvoiceController@Autowired constructor(
         return ResponseEntity(hsnData, HttpStatus.OK)
     }
 
-    @GetMapping("/searchInvoice")
+    @PostMapping("/searchInvoice")
     open fun searchInvoice(@RequestBody searchInvoice: SearchInvoiceDTO): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val searchInvoiceData = invoiceService.searchInvoice(searchInvoice)
