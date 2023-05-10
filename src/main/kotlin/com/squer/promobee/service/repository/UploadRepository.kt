@@ -34,6 +34,25 @@ class UploadRepository(
     }
 
 
+    fun getTransporterUploadLog (): List<UploadLogDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getTransporterUploadLog", data)
+    }
+
+    fun getInvoiceUploadLog (): List<UploadLogDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getInvoiceUploadLog", data)
+    }
+
+
 
 
 

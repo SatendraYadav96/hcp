@@ -29,6 +29,14 @@ class UploadServiceImpl @Autowired constructor(
         return uploadRepository.getGrnUploadLog()
     }
 
+    override fun getTransporterUploadLog(): List<UploadLogDTO> {
+        return uploadRepository.getTransporterUploadLog()
+    }
+
+    override fun getInvoiceUploadLog(): List<UploadLogDTO> {
+        return uploadRepository.getInvoiceUploadLog()
+    }
+
 
 
 }

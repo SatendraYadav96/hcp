@@ -30,10 +30,24 @@
     </select>
 
     <select id="getGrnUploadLog" resultType="com.squer.promobee.controller.dto.UploadLogDTO">
-        SELECT UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
+        SELECT TOP 25 UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
         SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
         JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
         WHERE UPL.IDTYPESLV_UPL = '00000000-0000-0000-0000-100000000020'
+    </select>
+
+    <select id="getTransporterUploadLog" resultType="com.squer.promobee.controller.dto.UploadLogDTO">
+        SELECT TOP 25 UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
+                SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
+        JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
+
+    </select>
+
+    <select id="getInvoiceUploadLog" resultType="com.squer.promobee.controller.dto.UploadLogDTO">
+        SELECT TOP 25 UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
+                SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
+        JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
+
     </select>
 
 

@@ -8,6 +8,10 @@ interface UploadService {
 
     fun getGrnUploadLog(): List<UploadLogDTO>
 
+    fun getTransporterUploadLog(): List<UploadLogDTO>
+
+    fun getInvoiceUploadLog(): List<UploadLogDTO>
+
 
 
 }

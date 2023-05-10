@@ -29,6 +29,21 @@ open class UploadController@Autowired constructor(
         return ResponseEntity(grnUpl, HttpStatus.OK)
     }
 
+    @GetMapping("/getTransporterUploadLog")
+    open fun getTransporterUploadLog() : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var trnUpl = uploadService.getTransporterUploadLog()
+        return ResponseEntity(trnUpl, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/getInvoiceUploadLog")
+    open fun getInvoiceUploadLog() : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var invUpl = uploadService.getInvoiceUploadLog()
+        return ResponseEntity(invUpl, HttpStatus.OK)
+    }
+
 
 
 
