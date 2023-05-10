@@ -58,6 +58,7 @@ open class DashboardController@Autowired constructor(
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data = dashboardService.getItemExpiredDetails()
         return ResponseEntity(data, HttpStatus.OK)
+
     }
 
 
