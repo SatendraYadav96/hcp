@@ -14,7 +14,8 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-class DashboardRepository(
+class
+DashboardRepository(
     securityUtility: SecurityUtility
 ): BaseRepository<UploadLog>(
     securityUtility = securityUtility
