@@ -9,7 +9,7 @@ import com.squer.promobee.service.DispatchPlanService
 import com.squer.promobee.service.InventoryService
 import com.squer.promobee.service.repository.domain.DispatchPlan
 import lombok.extern.slf4j.Slf4j
-import org.hibernate.loader.entity.plan.AbstractLoadPlanBasedEntityLoader
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus

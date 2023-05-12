@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.squer.promobee.service.repository.domain.LegalEntity
 import com.squer.promobee.service.repository.domain.UserDesignation
 import com.squer.promobee.service.repository.domain.UserStatus
-import org.hibernate.id.GUIDGenerator
+
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
