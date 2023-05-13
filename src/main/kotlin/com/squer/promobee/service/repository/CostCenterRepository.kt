@@ -1,6 +1,5 @@
 package com.squer.promobee.service.repository
 
-import com.squer.promobee.mapper.CostCenterMapper
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.CostCenter

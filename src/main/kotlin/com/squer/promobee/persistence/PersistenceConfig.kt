@@ -1,5 +1,6 @@
 package com.squer.promobee.persistence
 
+import com.mchange.v2.c3p0.ComboPooledDataSource
 import com.squer.promobee.security.domain.NamedSquerId
 import org.apache.ibatis.session.SqlSessionFactory
 import org.apache.ibatis.type.JdbcType
@@ -34,12 +35,17 @@ class PersistenceConfig {
 
     @Bean
     fun dataSource(): DataSource? {
-        val dataSourceBuilder = DataSourceBuilder.create()
-        //dataSourceBuilder.driverClassName("org.h2.Driver")
-        dataSourceBuilder.url(dbUrl)
-        dataSourceBuilder.username(dbUsername)
-        dataSourceBuilder.password(dbPassword)
-        return dataSourceBuilder.build()
+        val pool = ComboPooledDataSource()
+        pool.jdbcUrl = dbUrl
+        pool.user = dbUsername
+        pool.password = dbPassword
+        pool.initialPoolSize = 10
+        pool.minPoolSize = 10
+        pool.acquireIncrement = 1
+        pool.maxPoolSize = 20
+        pool.isTestConnectionOnCheckout = true
+        pool.isTestConnectionOnCheckin  = true
+        return pool
     }
 
     @Bean
