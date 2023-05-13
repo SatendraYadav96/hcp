@@ -1,7 +1,8 @@
 package com.squer.promobee.mapper
 
 import com.squer.promobee.persistence.BaseMapper
-import net.bytebuddy.implementation.bytecode.Division
+import com.squer.promobee.service.repository.domain.Division
+
 import org.apache.ibatis.annotations.Mapper
 
 @Mapper
