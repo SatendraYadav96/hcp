@@ -51,6 +51,9 @@ dependencies {
 	implementation("com.itextpdf:itextpdf:5.0.6")
 	implementation("com.itextpdf:html2pdf:4.0.5")
 	implementation("com.itextpdf:kernel:7.2.5")
+	// https://mvnrepository.com/artifact/com.mchange/c3p0
+	implementation("com.mchange:c3p0:0.9.5.5")
+
 
 
 
