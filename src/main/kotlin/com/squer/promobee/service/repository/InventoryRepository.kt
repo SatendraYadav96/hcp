@@ -521,6 +521,102 @@ class InventoryRepository @Autowired constructor(
         return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getPickListVirtual", data0)
     }
 
+    fun getPickListStatusByBM(teamId: String, month: Int, year: Int): List<BrandManagerPlanStatusDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data : MutableMap<String, String> = mutableMapOf()
+        data.put("TeamID", teamId)
+        data.put("Month", month.toString())
+        data.put("Year", year.toString())
+
+
+        return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getPickListStatusByBM", data)
+    }
+
+
+    fun getSpecialDispatchListForInvoicing(planId: String, status: String): List<DataModelInvoiceDetailsDTO> {
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, String> = mutableMapOf()
+        data.put("Plan_ID", planId)
+        data.put("StatusSLV", status)
+
+        if (status == InvoiceStatusEnum.GENERATED_PRINTED.id || status == InvoiceStatusEnum.CANCELLED.id || status == InvoiceStatusEnum.REDIRECTED.id) {
+
+            return sqlSessionFactory.openSession()
+                .selectList("DispatchInvoicingMapper.getSpecialDispatchInvoicingListForGeneratedPrinted", data)
+
+
+        } else {
+            return sqlSessionFactory.openSession()
+                .selectList("DispatchInvoicingMapper.getSpecialDispatchInvoicingListForDraft", data)
+
+        }
+
+
+    }
+
+
+
+
+        fun getVirtualDispatchListForInvoicing(planId: String, status: String): List<DataModelInvoiceDetailsDTO> {
+            val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+            var data : MutableMap<String, String> = mutableMapOf()
+            data.put("Plan_ID", planId)
+            data.put("StatusSLV", status)
+
+            if(status == InvoiceStatusEnum.GENERATED_PRINTED.id || status == InvoiceStatusEnum.CANCELLED.id || status == InvoiceStatusEnum.REDIRECTED.id){
+
+                return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getVirtualDispatchInvoicingListForGeneratedPrinted", data)
+
+
+            }else {
+                return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getVirtualDispatchInvoicingListForDraft", data)
+
+            }
+
+        }
+
+
+
+
+    fun getEmployeeInvoicePopupDetails(month: Int, year: Int, isSpecial: Int, employeeId: String, invoiceHeaderId: String): List<EmployeeInvoiceDetailsPopupDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data : MutableMap<String, String> = mutableMapOf()
+        data.put("Month", month.toString())
+        data.put("Year", year.toString())
+        data.put("IsSpecial", isSpecial.toString())
+        data.put("RecipientID", employeeId)
+        data.put("InvoiceHeaderID", invoiceHeaderId)
+
+        if(invoiceHeaderId !== null || invoiceHeaderId !== "") {
+
+            var data0 : MutableMap<String, String> = mutableMapOf()
+            data0.put("InvoiceHeaderID", invoiceHeaderId)
+
+
+            return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getEmployeeGeneratedInvoicePopupDetails",data0)
+        }else {
+
+            var data1 : MutableMap<String, String> = mutableMapOf()
+            data1.put("Month", month.toString())
+            data1.put("Year", year.toString())
+            data1.put("IsSpecial", isSpecial.toString())
+            data1.put("RecipientID", employeeId)
+
+            return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getEmployeeDraftedInvoicePopupDetails",data1)
+        }
+
+
+    }
+
+
+
+
+
 
 
 

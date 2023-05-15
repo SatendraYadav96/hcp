@@ -73,4 +73,22 @@ class InventoryServiceImpl @Autowired constructor(
     override fun getPickListVirtual(teamId: String, month: Int, year: Int, isSpecial: Int): List<PickListDTO> {
         return inventoryRepository.getPickListVirtual(teamId,month,year,isSpecial)
     }
+
+    override fun getPickListStatusByBM(teamId: String, month: Int, year: Int): List<BrandManagerPlanStatusDTO> {
+        return inventoryRepository.getPickListStatusByBM(teamId,month,year)
+    }
+
+    override fun getSpecialDispatchListForInvoicing(planId: String, status: String): List<DataModelInvoiceDetailsDTO> {
+        return inventoryRepository.getSpecialDispatchListForInvoicing(planId,status)
+    }
+
+    override fun getVirtualDispatchListForInvoicing(planId: String, status: String): List<DataModelInvoiceDetailsDTO> {
+        return inventoryRepository.getVirtualDispatchListForInvoicing(planId,status)
+    }
+
+    override fun getEmployeeInvoicePopupDetails(month: Int, year: Int, isSpecial: Int, employeeId: String, invoiceHeaderId: String): List<EmployeeInvoiceDetailsPopupDTO> {
+        return inventoryRepository.getEmployeeInvoicePopupDetails(month, year,isSpecial,employeeId,invoiceHeaderId)
+    }
+
+
 }

@@ -11,7 +11,7 @@ class EmployeeInvoiceDetailsDTO {
     var invoiceStatusID: String ?= null
     var boxes: Int ?= null
     var weight: Double ?= null
-    var transporterDetails: String ?= null
+    var transporterID: String ?= null
     var Dimension: String ?= null
     var lrNumber: String ?= null
     var state: String ?= null

@@ -101,6 +101,36 @@ open class InventoryController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getPickListStatusByBM/{teamId}/{month}/{year}")
+    fun getPickListStatusByBM( @PathVariable teamId: String , @PathVariable month: Int , @PathVariable year: Int): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = inventoryService.getPickListStatusByBM(teamId, month, year)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/getSpecialDispatchListForInvoicing/{planId}/{status}")
+    fun getSpecialDispatchListForInvoicing( @PathVariable planId: String , @PathVariable status: String ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = inventoryService.getSpecialDispatchListForInvoicing(planId, status)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getVirtualDispatchListForInvoicing/{planId}/{status}")
+    fun getVirtualDispatchListForInvoicing( @PathVariable planId: String , @PathVariable status: String ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = inventoryService.getVirtualDispatchListForInvoicing(planId, status)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/getEmployeeInvoicePopupDetails/{month}/{year}/{isSpecial}/{employeeId}/{invoiceHeaderId}")
+    fun getEmployeeInvoicePopupDetails( @PathVariable month: Int , @PathVariable year: Int , @PathVariable isSpecial: Int , @PathVariable employeeId: String , @PathVariable invoiceHeaderId: String ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = inventoryService.getEmployeeInvoicePopupDetails(month, year,isSpecial,employeeId,invoiceHeaderId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
 
 
 

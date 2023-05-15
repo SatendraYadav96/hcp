@@ -112,7 +112,7 @@ class DispatchInvoicingService @Autowired constructor(
             e.state = it.state
             e.city = it.city
             e.teamName = it.teamName
-            e.transporterDetails = it.transporterID
+            e.transporterID = it.transporterID
             e.lrNumber = it.lrNumber
             e.redirectedFrom = it.redirectedFrom
             e.redirectedTo = it.redirectedTo
@@ -170,7 +170,7 @@ class DispatchInvoicingService @Autowired constructor(
             e.state = it.state
             e.city = it.city
             e.teamName = it.teamName
-            e.transporterDetails = it.transporterID
+            e.transporterID = it.transporterID
             e.lrNumber = it.lrNumber
             e.redirectedFrom = it.redirectedFrom
             e.redirectedTo = it.redirectedTo

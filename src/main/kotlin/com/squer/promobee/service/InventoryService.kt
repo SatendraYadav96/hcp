@@ -2,7 +2,7 @@ package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.repository.domain.Inventory
-import org.springframework.web.bind.annotation.PathVariable
+
 
 interface InventoryService {
 
@@ -33,6 +33,15 @@ interface InventoryService {
     fun getPickList(  teamId: String ,  month: Int ,  year: Int,  isSpecial: Int): List<PickListDTO>
 
     fun getPickListVirtual(  teamId: String ,  month: Int ,  year: Int,  isSpecial: Int): List<PickListDTO>
+
+    fun getPickListStatusByBM(  teamId: String ,  month: Int ,  year: Int): List<BrandManagerPlanStatusDTO>
+
+    fun getSpecialDispatchListForInvoicing(  planId: String ,  status: String): List<DataModelInvoiceDetailsDTO>
+
+    fun getVirtualDispatchListForInvoicing(  planId: String ,  status: String): List<DataModelInvoiceDetailsDTO>
+
+    fun getEmployeeInvoicePopupDetails(   month: Int ,  year: Int ,  isSpecial: Int ,  employeeId: String ,  invoiceHeaderId: String): List<EmployeeInvoiceDetailsPopupDTO>
+
 
 
 

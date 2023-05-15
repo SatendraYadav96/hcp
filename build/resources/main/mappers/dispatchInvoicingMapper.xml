@@ -249,6 +249,73 @@
 
     </select>
 
+    <select id="getPickListStatusByBM" resultType="com.squer.promobee.controller.dto.BrandManagerPlanStatusDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_Get_PlanStatusByBrandManager(#{TeamID, jdbcType = VARCHAR , mode = IN},
+                                                 #{Month, jdbcType = INTEGER , mode = IN},
+                                                 #{Year, jdbcType = INTEGER , mode = IN}
+            )}
+
+
+    </select>
+
+
+    <select id="getSpecialDispatchInvoicingListForGeneratedPrinted" resultType="com.squer.promobee.controller.dto.DataModelInvoiceDetailsDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetSpecialInvoiceDetail_GP_C_R(#{Plan_ID, jdbcType = VARCHAR , mode = IN},
+                                                 #{StatusSLV, jdbcType = VARCHAR , mode = IN}
+
+            )}
+
+
+    </select>
+
+
+    <select id="getSpecialDispatchInvoicingListForDraft" resultType="com.squer.promobee.controller.dto.DataModelInvoiceDetailsDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetSpecialDispatchInvoiceDetailDraft(#{Plan_ID, jdbcType = VARCHAR , mode = IN},
+                                                   #{StatusSLV, jdbcType = VARCHAR , mode = IN}
+
+            )}
+
+
+    </select>
+
+
+    <select id="getVirtualDispatchInvoicingListForDraft" resultType="com.squer.promobee.controller.dto.DataModelInvoiceDetailsDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetVirtualDispatchInvoiceDetailDraft(#{Plan_ID, jdbcType = VARCHAR , mode = IN},
+                                                         #{StatusSLV, jdbcType = VARCHAR , mode = IN}
+
+            )}
+
+
+    </select>
+
+
+    <select id="getVirtualDispatchInvoicingListForGeneratedPrinted" resultType="com.squer.promobee.controller.dto.DataModelInvoiceDetailsDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetVirtualInvoiceDetail_GP_C_R(#{Plan_ID, jdbcType = VARCHAR , mode = IN},
+                                                         #{StatusSLV, jdbcType = VARCHAR , mode = IN}
+
+            )}
+
+
+    </select>
+
+
+
+    <select id="getEmployeeGeneratedInvoicePopupDetails" resultType="com.squer.promobee.controller.dto.EmployeeInvoiceDetailsPopupDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetGeneratedInvoiceDetails(#{InvoiceHeaderID, jdbcType = VARCHAR , mode = IN}  )}
+
+
+    </select>
+
+
+
+    <select id="getEmployeeDraftedInvoicePopupDetails" resultType="com.squer.promobee.controller.dto.EmployeeInvoiceDetailsPopupDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetDraftedInvoiceDetails(#{Month, jdbcType = INTEGER , mode = IN}, #{Year, jdbcType = INTEGER , mode = IN},
+                                             #{IsSpecial, jdbcType = INTEGER , mode = IN}, #{RecipientID, jdbcType = VARCHAR , mode = IN},
+
+            )}
+
+
+    </select>
 
 
 
