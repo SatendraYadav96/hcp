@@ -4,7 +4,7 @@ import com.squer.promobee.persistence.BaseMapper
 import com.squer.promobee.security.domain.SecurityRole
 import org.apache.ibatis.annotations.*
 
-@Mapper
+//@Mapper
 interface SecurityRoleMapper: BaseMapper<SecurityRole> {
     @Select("SELECT * from SECURITY_ROLE where id=#{id}")
     @ResultMap("securityRoleResultMap")

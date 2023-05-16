@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.ResultMap
 import org.apache.ibatis.annotations.ResultType
 import org.apache.ibatis.annotations.Select
 
-@Mapper
+//@Mapper
 interface SampleMasterMapper: BaseMapper<SampleMaster> {
     /*
     @Select("select NAME_BRD from SAMPLE_MASTER_SMP join BRAND_MASTER_BRD " +

@@ -67,7 +67,7 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getInvoicesForGrouping(groupInvoice)
     }
 
-    override fun printLabel(inh: PrintInvoiceDTO) {
+    override fun printLabel(inh: PrintInvoiceDTO): String {
         return invoiceRepository.printLabel(inh)
     }
 

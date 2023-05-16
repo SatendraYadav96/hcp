@@ -4,6 +4,6 @@ import com.squer.promobee.persistence.BaseMapper
 import com.squer.promobee.service.repository.domain.UploadLog
 import org.apache.ibatis.annotations.Mapper
 
-@Mapper
+//@Mapper
 interface UploadLogMapper: BaseMapper<UploadLog> {
 }

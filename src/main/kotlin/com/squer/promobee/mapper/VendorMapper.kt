@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.ResultMap
 import org.apache.ibatis.annotations.Select
 
-@Mapper
+//@Mapper
 interface VendorMapper : BaseMapper<VendorMapper>{
     /*
     @Select("select ID_VND from VENDOR_MASTER_VND where IS_ACTIVE_VND= 1 and CODE_VND = #{vendorCode}")

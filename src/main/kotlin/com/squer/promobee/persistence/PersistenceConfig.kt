@@ -2,11 +2,13 @@ package com.squer.promobee.persistence
 
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import com.squer.promobee.security.domain.NamedSquerId
+import org.apache.ibatis.session.ExecutorType
 import org.apache.ibatis.session.SqlSessionFactory
 import org.apache.ibatis.type.JdbcType
 import org.apache.ibatis.type.MappedTypes
 import org.apache.ibatis.type.TypeHandler
 import org.mybatis.spring.SqlSessionFactoryBean
+import org.mybatis.spring.SqlSessionTemplate
 import org.mybatis.spring.annotation.MapperScan
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.jdbc.DataSourceBuilder
@@ -21,7 +23,7 @@ import javax.sql.DataSource
 
 
 @Configuration
-@MapperScan("com.squer.promobee.mapper")
+//@MapperScan("com.squer.promobee.mapper")
 class PersistenceConfig {
 
     @Value("\${spring.datasource.url}")
@@ -46,6 +48,11 @@ class PersistenceConfig {
         pool.isTestConnectionOnCheckout = true
         pool.isTestConnectionOnCheckin  = true
         return pool
+    }
+
+    @Bean
+    fun sqlSession(): SqlSessionTemplate {
+        return SqlSessionTemplate(sqlSessionFactory());
     }
 
     @Bean

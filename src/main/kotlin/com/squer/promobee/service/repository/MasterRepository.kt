@@ -9,6 +9,7 @@ import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.*
 import org.apache.ibatis.session.SqlSession
 import org.apache.ibatis.session.SqlSessionFactory
+import org.mybatis.spring.SqlSessionTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -26,10 +27,8 @@ class MasterRepository
 ) {
 
     @Autowired
-    lateinit var sqlSessionFactory: SqlSessionFactory
+    lateinit var sqlSessionTemplate: SqlSessionTemplate
 
-
-    //VENDOR REPOSITORY
 
 
     fun getVendor( status: Int) : List<VendorDTO>{
@@ -37,7 +36,7 @@ class MasterRepository
 
         data.put("active",status)
 
-        return sqlSessionFactory.openSession().selectList("VendorMapper.getVendor",data)
+        return sqlSessionTemplate.selectList("VendorMapper.getVendor",data)
     }
 
     fun getVendorById( id: String) : Vendor {
@@ -45,7 +44,7 @@ class MasterRepository
 
         data.put("id",id)
 
-        return sqlSessionFactory.openSession().selectOne("VendorMapper.getVendorById",data)
+        return sqlSessionTemplate.selectOne("VendorMapper.getVendorById",data)
     }
 
 
@@ -67,7 +66,7 @@ class MasterRepository
         data.put("createdBy", user.id )
         data.put("updatedBy", user.id)
 
-         sqlSessionFactory.openSession().insert("VendorMapper.addVendor",data)
+         sqlSessionTemplate.insert("VendorMapper.addVendor",data)
 
 
     }
@@ -90,7 +89,7 @@ class MasterRepository
         vnd.active?.let { data.put("active", it) }
         data.put("updatedBy", user.id)
 
-         sqlSessionFactory.openSession().update("VendorMapper.editVendor",data)
+         sqlSessionTemplate.update("VendorMapper.editVendor",data)
 
 
     }
@@ -104,7 +103,7 @@ class MasterRepository
 
         data.put("active",status)
 
-        return sqlSessionFactory.openSession().selectList("CostCenterMapper.getCostCenter",data)
+        return sqlSessionTemplate.selectList("CostCenterMapper.getCostCenter",data)
     }
 
 
@@ -127,7 +126,7 @@ class MasterRepository
 
 
 
-        sqlSessionFactory.openSession().insert("CostCenterMapper.addCostCenter",data)
+        sqlSessionTemplate.insert("CostCenterMapper.addCostCenter",data)
 
 
         var cbr = CostCenterBrand()
@@ -136,7 +135,7 @@ class MasterRepository
         data.put("ccmId", ccmId5)
         data.put("brandId",NamedSquerEntity(ccm.brandId?.id.toString(),""))
 
-        sqlSessionFactory.openSession().insert("CostCenterBrandMapper.addCostCenterBrand", data)
+        sqlSessionTemplate.insert("CostCenterBrandMapper.addCostCenterBrand", data)
 
 
 
@@ -146,7 +145,6 @@ class MasterRepository
 
     fun editCostCenter(ccm: CostCenterDTO) {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-
         var data: MutableMap<String, Any> = mutableMapOf()
 
         ccm.ccmId?.let { data.put("id", it) }
@@ -156,22 +154,16 @@ class MasterRepository
         ccm.ccmActive?.let { data.put("active", it) }
         data.put("updatedBy", user.id)
 
-
-
-        sqlSessionFactory.openSession().update("CostCenterMapper.editCostCenter",data)
-
-
+        sqlSessionTemplate.update("CostCenterMapper.editCostCenter",data)
         var ccmId2 = ccm.ccmId
         var cbr = CostCenterBrand()
-
-
 
         data.put("id", UUID.randomUUID().toString())
         ccmId2?.let { data.put("ccmId", it) }
 //        data.put("brandId",NamedSquerEntity(ccm.brandId?.id.toString(),""))
         ccm.brandId?.let { data.put("brandId", it) }
 
-        sqlSessionFactory.openSession().insert("CostCenterBrandMapper.editCostCenterBrand",data)
+        sqlSessionTemplate.insert("CostCenterBrandMapper.editCostCenterBrand",data)
 
 
 
@@ -183,7 +175,7 @@ class MasterRepository
 
         data.put("id",id)
 
-         return sqlSessionFactory.openSession().selectOne("CostCenterMapper.getCostCenterById",data)
+         return sqlSessionTemplate.selectOne("CostCenterMapper.getCostCenterById",data)
     }
 
 
@@ -196,7 +188,7 @@ class MasterRepository
 
         data.put("active",status)
 
-        return sqlSessionFactory.openSession().selectList("SampleMasterMapper.getSample",data)
+        return sqlSessionTemplate.selectList("SampleMasterMapper.getSample",data)
     }
 
 
@@ -225,7 +217,7 @@ class MasterRepository
 
 
 
-        sqlSessionFactory.openSession().insert("SampleMasterMapper.addSample",data)
+        sqlSessionTemplate.insert("SampleMasterMapper.addSample",data)
 
 
     }
@@ -250,7 +242,7 @@ class MasterRepository
 
 
 
-        sqlSessionFactory.openSession().update("SampleMasterMapper.editSample",data)
+        sqlSessionTemplate.update("SampleMasterMapper.editSample",data)
 
 
     }
@@ -261,14 +253,14 @@ class MasterRepository
 
         data.put("id",id)
 
-        return sqlSessionFactory.openSession().selectOne("SampleMasterMapper.getSampleById",data)
+        return sqlSessionTemplate.selectOne("SampleMasterMapper.getSampleById",data)
     }
 
     fun getBusinessUnitDropdown( ) : List<BU>{
 //        var data: MutableMap<String, Any> = mutableMapOf()
 
 
-        return sqlSessionFactory.openSession().selectList("BUMapper.getBusinessUnitDropdown")
+        return sqlSessionTemplate.selectList("BUMapper.getBusinessUnitDropdown")
     }
 
 
@@ -276,7 +268,7 @@ class MasterRepository
 //        var data: MutableMap<String, Any> = mutableMapOf()
 
 
-        return sqlSessionFactory.openSession().selectList("BrandMasterMapper.getBrandDropdown")
+        return sqlSessionTemplate.selectList("BrandMasterMapper.getBrandDropdown")
     }
 
 
@@ -284,32 +276,32 @@ class MasterRepository
 //        var data: MutableMap<String, Any> = mutableMapOf()
 
 
-        return sqlSessionFactory.openSession().selectList("DivisionMapper.getDivisionDropdown")
+        return sqlSessionTemplate.selectList("DivisionMapper.getDivisionDropdown")
     }
 
     fun getTeamDropdown( ) : List<Team>{
 
-        return sqlSessionFactory.openSession().selectList("TeamMapper.getTeamDropdown")
+        return sqlSessionTemplate.selectList("TeamMapper.getTeamDropdown")
     }
 
     fun getCostCenterDropdown( ) : List<CostCenter>{
 
-        return sqlSessionFactory.openSession().selectList("CostCenterMapper.getCostCenterDropdown")
+        return sqlSessionTemplate.selectList("CostCenterMapper.getCostCenterDropdown")
     }
 
     fun getItemCodeDropdown( ) : List<ItemDrodownDTO>{
 
-        return sqlSessionFactory.openSession().selectList("ItemMapper.getItemCodeDropdown")
+        return sqlSessionTemplate.selectList("ItemMapper.getItemCodeDropdown")
     }
 
     fun getRecipientDropdown( ) : List<RecipientDropDownDTO>{
 
-        return sqlSessionFactory.openSession().selectList("RecipientMapper.getRecipientDropdown")
+        return sqlSessionTemplate.selectList("RecipientMapper.getRecipientDropdown")
     }
 
     fun getInvoiceDropdown( ) : List<InvoiceDropdownDTO>{
 
-        return sqlSessionFactory.openSession().selectList("InvoiceHeaderMapper.getInvoiceDropdown")
+        return sqlSessionTemplate.selectList("InvoiceHeaderMapper.getInvoiceDropdown")
     }
 
 

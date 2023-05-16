@@ -4,6 +4,6 @@ import com.squer.promobee.persistence.BaseMapper
 import com.squer.promobee.service.repository.domain.BU
 import org.apache.ibatis.annotations.Mapper
 
-@Mapper
+//@Mapper
 interface BUMapper : BaseMapper<BU>{
 }

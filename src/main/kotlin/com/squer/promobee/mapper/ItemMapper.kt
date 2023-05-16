@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.ResultMap
 import org.apache.ibatis.annotations.ResultType
 import org.apache.ibatis.annotations.Select
 
-@Mapper
+//@Mapper
 interface ItemMapper: BaseMapper<Item> {
 
 

@@ -5,7 +5,7 @@ import com.squer.promobee.security.domain.SecurityPrivilege
 import com.squer.promobee.security.domain.SecurityRole
 import org.apache.ibatis.annotations.*
 
-@Mapper
+//@Mapper
 interface SecurityPrivilegeMapper: BaseMapper<SecurityPrivilege> {
 
    /* @Select("SELECT SECURITY_PRIVILEGE.id id, name, ci_name from SECURITY_PRIVILEGE " +

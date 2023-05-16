@@ -17,7 +17,7 @@ import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration
 import org.mybatis.spring.boot.autoconfigure.MybatisProperties
 import org.springframework.beans.factory.annotation.Autowired
 
-@Mapper
+//@Mapper
 interface InventoryMapper: BaseMapper<Inventory> {
 
    /* val sqlSessionFactory: SqlSessionFactory

@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.ResultMap
 import org.apache.ibatis.annotations.Select
 
-@Mapper
+//@Mapper
 interface UserStatusMapper: BaseMapper<UserStatus> {
     /*
     @Select("SELECT * FROM SYSTEM_LOV_SLV")

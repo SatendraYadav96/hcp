@@ -320,7 +320,7 @@ class InvoiceRepository(
 //        var fromDate = LocalDate.MIN
 //        val fromDateFormatted = SimpleDateFormat("yyyy-MM-dd").format(fromDate)
 
-        val sDate1 = "2016-01-01"
+        val sDate1 = "2i16-i1-i1"
         val date1 = SimpleDateFormat("yyyy-MM-dd").parse(sDate1)
         val fromDateFormatted = SimpleDateFormat("yyyy-MM-dd").format(date1)
 
@@ -469,124 +469,105 @@ class InvoiceRepository(
 
 
 
-    fun printLabel(inh: PrintInvoiceDTO) {
+    fun printLabel(inh: PrintInvoiceDTO): String {
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
         inh.inhId?.let { data.put("id", it) }
-        inh.invoiceNo?.let { data.put("invoiceNo", it) }
-//        var invoice = inh.inhId?.let { getInvoiceHeaderById(it) }
-//        val date = Date()
-//        val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-//        val year = localDate.year
-//        val month = localDate.monthValue
-//        val day = localDate.dayOfMonth
-//        var employeePeriod = localDate.month.toString() + "-" + year
-//        var promoMonth = localDate.month.toString() + "-" + year
-//        var printDetails = inh.inhId?.let { getPrintInvoiceHeaders(it) }
-//        var printDetailsBody = inh.inhId?.let { getInvoiceDetailsForPrint(it) }
-//        var hoUser: Boolean = printDetails?.teamId?.equals(TeamEnum.DEFAULT_HO_TEAM.id) ?: true; false
-//        val ve = VelocityEngine()
-//        ve.init()
-//        val t: Template = ve.getTemplate("src/main/resources/htmlPrint/promoPrintInvoice.vm")
-//        val context = VelocityContext()
-//        context.put("InvoiceNumber", printDetails?.invoiceNumber)
-//        context.put("EmployeeCode", printDetails?.employeeCode)
-//        context.put("EmployeeDesignation", printDetails?.employeeDesignation)
-//        context.put("EmployeeName", printDetails?.employeeName)
-//        context.put("EmployeeAddress", printDetails?.employeeAddress)
-//        context.put("EmployeeCity", printDetails?.employeeCity)
-//        context.put("EmployeeState", printDetails?.employeeState)
-//        context.put("EmployeePinCode", printDetails?.employeePinCode)
-//        context.put("EmployeeMobileNumber", printDetails?.employeeMobileNumber)
-//        context.put("EmployeePeriod", employeePeriod)
-//        context.put("EmployeeLRNumber", printDetails?.employeeLRNumber)
-//        context.put("EmployeeDate", printDetails?.employeeDate)
-//        context.put("EmployeeLRDate", printDetails?.employeeLRDate)
-//        context.put("EmployeeTeam", printDetails?.employeeTeam)
-//        context.put("EmployeeTransport", printDetails?.employeeTransport)
-//        context.put("EmployeeCFA", printDetails?.employeeCFA)
-//        context.put("PROMOMONTH", promoMonth)
-//        context.put("PLANTYPE", printDetails?.type)
-//        context.put("EmployeeTotalNoOfCases", printDetails?.employeeTotalNoOfCases)
-//        context.put("EmployeeTotalWeight", printDetails?.employeeTotalWeight)
-//        if (printDetails?.employeeRemark !== null) {
-//            context.put("EmployeeRemark", printDetails?.employeeRemark)
-//        } else {
-//            context.put("EmployeeRemark", "")
-//        }
-//        context.put("TotalSampleValue", printDetails?.employeeSampleValue)
-//        context.put("TotalInputValue", printDetails?.employeeInputValue)
-//        context.put("TotalSumValue", printDetails?.employeeValue?.roundToLong())
-//        var tableRow = ""
-//        var srNo = 1
-//        var value: Double? = 0.00
-//
-//        printDetailsBody?.forEach {
-//
-//            var taxableValue = it.InvoiceDetailsRatePerUnit?.let { it1 -> it.invoiceDetailsQuantity?.times(it1) }
-//            var gstAmount = it.InvoiceDetailsGSTRate?.let { it1 -> taxableValue?.times(it1) }?.div(100)
-//            var amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }
-//            tableRow = tableRow + "<tr>" +
-//                    "<td>" + srNo++ + "</td>" + "\n" + "\t" +
-//                    "<td>" + it.invoiceDetailsProductCode + "</td>" + "\n" + "\t" +
-//                    "<td>" + it.invoiceDetailsHSNCode + "</td>" + "\n" + "\t" +
-//                    "<td>" + it.invoiceDetailsItemDescription + "</td>" + "\n" + "\t" +
-//                    "<td>" + it.invoiceDetailsQuantity?.toInt() + "</td>" + "\n" + "\t" +
-//                    "<td>" + it.invoiceDetailsSAPCode + "</td>" + "\n" + "\t" +
-//                    "<td>" + if (it.invoiceDetailsBatchNo !== null) {
-//                it.invoiceDetailsBatchNo
-//            } else {
-//                ""
-//            } + "</td>" + "\n" + "\t" +
-//                    "<td>" + it.invoiceDetailsExpiryDate + "</td>" + "\n" + "\t" +
-//                    "<td>" + it.InvoiceDetailsRatePerUnit + "</td>" + "\n" + "\t" +
-//                    "<td>" + taxableValue + "</td>" + "\n" + "\t" +
-//                    "<td>" + value + "</td>" + "\n" + "\t" +
-//                    "<td>" + value + "</td>" + "\n" + "\t" +
-//                    "<td>" + value + "</td>" + "\n" + "\t" +
-//                    "<td>" + value + "</td>" + "\n" + "\t" +
-//                    "<td>" + it.InvoiceDetailsGSTRate + "</td>" + "\n" + "\t" +
-//                    "<td>" + gstAmount + "</td>" + "\n" + "\t" +
-//                    "<td>" + amount + "</td>" + "\n" + "\t" +
-//                    "</tr>"
-//
-//
-//        }
-//
-//        context.put("tableRow", tableRow)
-//        val writer = StringWriter()
-//        t.merge(context, writer)
-//        System.out.println(writer.toString())
-//
-//        try {
-//
-//            val k = writer.toString()
-//            var path = "D:\\InvoicePdf\\Test.pdf";
-//
-//            val document = Document()
-//            val file: OutputStream = FileOutputStream(File(path))
-//            PdfWriter.getInstance(document, file)
-//            document.open()
-//
-//            val paragraph = Paragraph(k)
-//
-//            document.add(paragraph)
-//            HtmlConverter.convertToPdf(k, file)
-//            document.close()
-//            file.close()
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
+        inh.invoiceNo?.let {
+            data.put("invoiceNo", it)}
 
-//        return writer.toString();
+            var labelDetails = sqlSessionFactory.openSession()
+                .selectList<LabelPrintDetailsDTO>("InvoiceHeaderMapper.getLabelPrintDetailsByInvoices", data)
 
-    }
+
+
+
+        /*  first, get and initialize an engine  */
+        /*  first, get and initialize an engine  */
+        val ve = VelocityEngine()
+        ve.init()
+        /*  next, get the Template  */
+        /*  next, get the Template  */
+        val t: Template = ve.getTemplate("src/main/resources/htmlPrint/promoPrintLabel.vm")
+        /*  create a context and add data */
+        /*  create a context and add data */
+        val context = VelocityContext()
+
+        labelDetails.forEach {
+            var i = 0;
+            var length =  "";
+            var breadth =  "";
+            var height =  "";
+            context.put("TransporterName", labelDetails[i].transporterName)
+            context.put("InvoiceLRNo", labelDetails[i].lRNumber)
+            context.put("InvoiceCreatedDate", labelDetails[i].invoiceDate)
+            context.put("InvoiceNo", labelDetails[i].invoiceNo)
+            context.put("RecipientCode", labelDetails[i].recipientCode)
+            context.put("RecipientName", labelDetails[i].recipientName)
+            context.put("RecipientTeam", labelDetails[i].teamName)
+            context.put("RecipientDesgination", labelDetails[i].recipientDesgination)
+            context.put("RecipientAddress", labelDetails[i].recipientAddress)
+            context.put("RecipientCity", labelDetails[i].recipientCity)
+            context.put("RecipientState", labelDetails[i].recipientState)
+            context.put("RecipientPhone", labelDetails[i].recipientPhone)
+            context.put("RecipientPinCode", labelDetails[i].recipientPinCode)
+            context.put("RecipientHeadQuarter", labelDetails[i].recipientHeadQuarter)
+            context.put("InvoiceBoxes", labelDetails[i].noOfBoxes)
+            context.put("InvoiceWeight", labelDetails[i].weight)
+
+            if(labelDetails[i].dimension !== null){
+                context.put("length",length)
+                context.put("breadth",breadth)
+                context.put("height",height)
+            }else{
+                context.put("length",length)
+                context.put("breadth",breadth)
+                context.put("height",height)
+            }
+
+        }
+
+
+        val writer = StringWriter()
+        t.merge(context, writer)
+
+        System.out.println(writer.toString())
+
+        try {
+
+            val k = writer.toString()
+
+            var path = "D:\\LabelPdf\\Label.pdf";
+
+            val document = Document()
+            val file: OutputStream = FileOutputStream(File(path))
+
+            PdfWriter.getInstance(document, file)
+
+            document.open()
+
+            val paragraph = Paragraph(k)
+
+            document.add(paragraph)
+
+            HtmlConverter.convertToPdf(k, file)
+
+            document.close()
+            file.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+
+        return writer.toString();
+
 
 
 
 
 
+    }
 
 
 

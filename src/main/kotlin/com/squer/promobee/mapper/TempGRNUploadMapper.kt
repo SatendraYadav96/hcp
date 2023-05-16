@@ -4,6 +4,6 @@ import com.squer.promobee.persistence.BaseMapper
 import com.squer.promobee.service.repository.domain.TempGRNUpload
 import org.apache.ibatis.annotations.Mapper
 
-@Mapper
+//@Mapper
 interface TempGRNUploadMapper: BaseMapper<TempGRNUpload> {
 }

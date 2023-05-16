@@ -14,11 +14,11 @@ class SecurityRoleRepository(
 ): BaseRepository<User>(
     securityUtility= securityUtility,
 ) {
-    @Autowired
-    lateinit var userRoleMapper: SecurityRoleMapper
 
 
     fun findByUser(userId: String): List<SecurityRole>? {
-        return userRoleMapper.findByUserId(userId)
+        //return userRoleMapper.findByUserId(userId)
+        //TODO
+        return emptyList()
     }
 }

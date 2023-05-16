@@ -4,7 +4,7 @@ import com.squer.promobee.persistence.BaseMapper
 import com.squer.promobee.security.domain.User
 import org.apache.ibatis.annotations.*
 
-@Mapper
+//@Mapper
 interface UserMapper: BaseMapper<User> {
     /*
     @Select("select u.ID_USR, u.NAME_USR, u.CI_NAME_USR, u.EMAIL_ADDRESS_USR, u.EMPLOYEE_CODE_USR, u.ACTIVE_FROM_USR, " +

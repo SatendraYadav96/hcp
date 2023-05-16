@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.ResultMap
 import org.apache.ibatis.annotations.Select
 
-@Mapper
+//@Mapper
 interface LegalEntityMapper : BaseMapper<LegalEntity>{
 /*
     @Select("select * from LEGAL_ENTITY_MASTER_ETY where id_ety=#{id}")

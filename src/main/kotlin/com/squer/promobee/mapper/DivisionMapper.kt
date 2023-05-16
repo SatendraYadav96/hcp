@@ -5,6 +5,6 @@ import com.squer.promobee.service.repository.domain.Division
 
 import org.apache.ibatis.annotations.Mapper
 
-@Mapper
+//@Mapper
 interface DivisionMapper : BaseMapper<Division>{
 }

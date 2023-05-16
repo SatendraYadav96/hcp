@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Select
 import org.apache.ibatis.annotations.Update
 import java.util.Date
 
-@Mapper
+//@Mapper
 interface GRNAcknowledgementMapper: BaseMapper<GRNAcknowledgement>{
     /*
     @Select("select * from dbo.GRN_ACKNOWLEDGEMENT_GRN where IS_ACKNOWLEDGED_GRN = 0")

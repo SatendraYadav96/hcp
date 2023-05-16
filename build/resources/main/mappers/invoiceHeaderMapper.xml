@@ -301,6 +301,59 @@
         select id_inh as 'inhId' , invoice_no_inh as 'invoiceNo' from INVOICE_HEADER_INH
     </select>
 
+    <select id="getLabelPrintDetailsByInvoices" resultType="com.squer.promobee.controller.dto.LabelPrintDetailsDTO">
+        SELECT  trn.NAME_TRN  AS transporterName ,
+                inh.LR_NUMBER_INH AS lRNumber ,
+                inh.INVOICE_NO_INH AS invoiceNo ,
+                inh.CREATED_ON_INH AS invoiceDate ,
+                rct.CODE_RCT AS recipientCode ,
+                rct.NAME_RCT AS recipientName ,
+                ulv.NAME_ULV AS recipientDesgination ,
+                inh.ADDRESS_LINE_1_INH + inh.ADDRESS_LINE_2_INH AS recipientAddress,
+                inh.ADDRESS_CITY_INH AS recipientCity,
+                inh.ADDRESS_STATE_INH AS recipientState ,
+                inh.PHONE_INH AS recipientPhone ,
+                inh.ADDRESS_ZIP_INH AS recipientPinCode ,
+                rct.HEAD_QUARTER_RCT AS recipientHeadQuarter ,
+                tem.NAME_TEM AS teamName ,
+                inh.NO_OF_BOXES_INH AS noOfBoxes ,
+                inh.WEIGHT_INH AS 'weight' ,
+                inh.DIMENSION_INH AS dimension
+        FROM INVOICE_HEADER_INH INH
+                 join TRANSPORTER_TRN TRN on inh.ID_TRN_INH = trn.ID_TRN
+                 join RECIPIENT_MASTER_RCT RCT on inh.ID_RCT_INH = rct.ID_RCT
+                 join TEAM_MASTER_TEM TEM on rct.ID_TEM_RCT = tem.ID_TEM
+                 join USER_LOV_ULV ULV on rct.ID_DESG_ULV_RCT = ulv.ID_ULV
+        WHERE ID_INH = #{id}
+        UNION
+        SELECT trn.NAME_TRN  AS transporterName ,
+               inh.LR_NUMBER_INH AS lRNumber ,
+               inh.INVOICE_NO_INH AS invoiceNo ,
+               inh.CREATED_ON_INH AS invoiceDate ,
+               dtm.CODE_DTM AS recipientCode ,
+               dtm.NAME_DTM AS recipientName ,
+               ulv.NAME_ULV AS recipientDesgination ,
+               inh.ADDRESS_LINE_1_INH + inh.ADDRESS_LINE_2_INH AS recipientAddress,
+               inh.ADDRESS_CITY_INH AS recipientCity,
+               inh.ADDRESS_STATE_INH AS recipientState ,
+               inh.PHONE_INH AS recipientPhone ,
+               inh.ADDRESS_ZIP_INH AS recipientPinCode ,
+               inh.CFA_INH AS recipientHeadQuarter ,
+               tem.NAME_TEM AS teamName ,
+               inh.NO_OF_BOXES_INH AS noOfBoxes ,
+               inh.WEIGHT_INH AS 'weight' ,
+                inh.DIMENSION_INH AS dimension
+        FROM INVOICE_HEADER_INH INH
+                 join TRANSPORTER_TRN TRN on inh.ID_TRN_INH = trn.ID_TRN
+                 join DOCTOR_MASTER_DTM DTM on inh.ID_RCT_INH = dtm.ID_DTM
+                 join TEAM_MASTER_TEM TEM on dtm.ID_TEM_DTM = tem.ID_TEM
+                 join USER_LOV_ULV ULV on dtm.ID_DESG_ULV_DTM = ulv.ID_ULV
+        WHERE ID_INH = #{id}
+    </select>
+
+
+
+
 
 
 

@@ -18,8 +18,6 @@ class SampleMasterRepository @Autowired constructor(
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
 
-    @Autowired
-    lateinit var sampleMasterMapper: SampleMasterMapper
 
     fun getSampleName(lmid: String): Map<String, Any>{
         return sqlSessionFactory.openSession().selectOne("SampleMasterMapper.getSampleName", lmid)

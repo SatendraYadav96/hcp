@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.ResultMap
 import org.apache.ibatis.annotations.Select
 
-@Mapper
+//@Mapper
 interface DispatchPlanMapper : BaseMapper<DispatchPlan>{
 
     /*@Select("<script>SELECT ID_DIP, ID_OWNER_USR_DIP, MONTH_DIP, YEAR_DIP," +

@@ -28,8 +28,6 @@ class InventoryRepository @Autowired constructor(
         securityUtility = securityUtility
 ){
 
-    @Autowired
-    lateinit var inventoryMapper: InventoryMapper
 
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory

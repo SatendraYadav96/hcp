@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.ResultMap
 import org.apache.ibatis.annotations.ResultType
 import org.apache.ibatis.annotations.Select
 
-@Mapper
+//@Mapper
 interface ItemCategoryMasterMapper : BaseMapper<ItemCategoryMaster>{
 /*
     @Select("select * from ITEM_CATEGORY_MASTER_ITC")

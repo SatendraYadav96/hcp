@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.ResultMap
 import org.apache.ibatis.annotations.Select
 
-@Mapper
+//@Mapper
 interface UserDesignationMapper: BaseMapper<UserDesignation> {
 /*
     @Select("select * from USER_LOV_ULV where id_ulv=#{id}")
