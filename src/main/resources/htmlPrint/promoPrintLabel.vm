@@ -1,0 +1,105 @@
+<section class="allBorder labelPrint">
+    <header class="titleSection bottomBorder">
+        <section class="transporter">
+            <h4>$TransporterName</h4>
+        </section>
+        <section class="consimentNo">
+            <b>Consiment No.</b>
+            <label>$InvoiceLRNo</label>
+        </section>
+        <div class="clearfix"></div>
+    </header>
+    <section class="consignorSection bottomBorder">
+        <table>
+            <tr>
+                <td><u>Consignor</u></td>
+                <td><b>SANOFI INDIA LIMITED</b></td>
+                <td>Date:</td>
+                <td>$InvoiceCreatedDate</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Inv. No.:</td>
+                <td>$InvoiceNo</td>
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td colspan="4">
+                    <address>
+                        C/o.S.K Logistics, Bldg no.4,1st Floor Gala No. 1 to 7, CitiLink Warehousing Complex,Mumbai Nashik Highway, S.No 120-121, Village- Vadpe, Taluka BHIWANDI,DIST. THANE-421302, Maharashtra 02522398014 / 398016,8879627885 / 9619861901 hub.bhiwandi2@sanofi.com
+                    </address>
+                </td>
+            </tr>
+        </table>
+        <div class="clearfix"></div>
+    </section>
+    <section class="consigneeSection">
+        <b><u>Consignee:</u></b><br />
+        <table>
+            <tr>
+                <td>Colleague Code</td>
+                <td colspan="3">$RecipientCode</td>
+
+            </tr>
+            <tr>
+                <td>Colleague Name</td>
+                <td colspan="3">$RecipientName</td>
+
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td colspan="3">
+                    <address>
+                        $RecipientAddress
+                    </address>
+                </td>
+            </tr>
+            <tr>
+                <td>City:</td>
+                <td>$RecipientCity</td>
+                <td>State:</td>
+                <td>$RecipientState</td>
+
+            </tr>
+            <tr>
+
+                <td>Team</td>
+                <td>$RecipientTeam</td>
+                <td>Mobile No.:</td>
+                <td>$RecipientPhone</td>
+            </tr>
+            <tr />
+            <tr>
+
+                <td>Designation</td>
+                <td>$RecipientDesgination</td>
+                <td>Pin Code:</td>
+                <td>$RecipientPinCode</td>
+            </tr>
+            <tr />
+            <tr>
+
+                <td>No. of Boxes:</td>
+                <td>$InvoiceBoxes</td>
+                <td>Weight:</td>
+                <td>$InvoiceWeight</td>
+            </tr>
+            <tr />
+            <tr>
+                <td>Head Quarter:</td>
+                <td>$RecipientHeadQuarter</td>
+                <td style="font-size:small">Length</td>
+                <td style="font-size:small">$length</td>
+
+            </tr>
+            <tr>
+
+                <td style="font-size:small">Breadth:</td>
+                <td style="font-size:small">$breadth</td>
+                <td style="font-size:small">Height:</td>
+                <td style="font-size:small">$height</td>
+            </tr>
+        </table>
+    </section>
+</section>

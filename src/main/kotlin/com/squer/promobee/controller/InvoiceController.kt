@@ -106,6 +106,15 @@ open class InvoiceController@Autowired constructor(
     }
 
 
+    @PostMapping("/printLabel")
+    open fun printLabel(@RequestBody inh: PrintInvoiceDTO): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val printLabelData = invoiceService.printLabel(inh)
+
+        return ResponseEntity(printLabelData, HttpStatus.OK)
+    }
+
+
 
 
 

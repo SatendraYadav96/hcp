@@ -30,6 +30,9 @@ interface InvoiceService {
     fun getInvoicesForGrouping(groupInvoice: GroupInvoiceParamDTO): List<InvoicesForGroupingDTO>
 
 
+    fun printLabel(inh:PrintInvoiceDTO)
+
+
 
 
 
