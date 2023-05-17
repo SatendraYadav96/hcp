@@ -4,6 +4,7 @@ import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.repository.domain.Doctor
 import com.squer.promobee.service.repository.domain.HSN
 import com.squer.promobee.service.repository.domain.InvoiceHeader
+import org.springframework.web.bind.annotation.PathVariable
 
 
 interface InvoiceService {
@@ -32,7 +33,7 @@ interface InvoiceService {
 
     fun printLabel(inh:PrintInvoiceDTO): String
 
-
+    fun generateDraftedInvoice( month: Int,  year: Int,  recipientId: String): Any?
 
 
 

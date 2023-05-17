@@ -1,6 +1,7 @@
 package com.squer.promobee.controller
 
 
+import com.squer.promobee.controller.dto.GenerateInvoiceDTO
 import com.squer.promobee.controller.dto.GroupInvoiceParamDTO
 import com.squer.promobee.controller.dto.PrintInvoiceDTO
 import com.squer.promobee.controller.dto.SearchInvoiceDTO
@@ -112,6 +113,15 @@ open class InvoiceController@Autowired constructor(
         val printLabelData = invoiceService.printLabel(inh)
 
         return ResponseEntity(printLabelData, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/generateDraftedInvoice/{month}/{year}/{recipientId}")
+        open fun generateDraftedInvoice(@PathVariable month: Int, @PathVariable year: Int,@PathVariable recipientId: String ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val generateInvoiceData = invoiceService.generateDraftedInvoice(month,year,recipientId)
+
+        return ResponseEntity(generateInvoiceData, HttpStatus.OK)
     }
 
 

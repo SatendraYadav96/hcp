@@ -55,4 +55,6 @@ interface MasterService {
 
     fun getInvoiceDropdown(): List<InvoiceDropdownDTO>
 
+    fun getTransporter(): List<TransporterDropdownDTO>
+
 }

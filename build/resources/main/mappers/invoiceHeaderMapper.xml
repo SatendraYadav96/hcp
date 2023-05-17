@@ -352,6 +352,48 @@
     </select>
 
 
+    <select id="generateDraftedInvoice" resultMap="invoiceHeaderResultMap">
+        SELECT INH.*
+        FROM RECIPIENT_MASTER_RCT RCT
+        JOIN INVOICE_HEADER_INH INH ON INH.ID_RCT_INH = RCT.ID_RCT
+        JOIN INVOICE_DISPATCH_PLAN_IDP IDP ON IDP.ID_INH_IDP = INH.ID_INH
+        JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP = IDP.ID_PLAN_IDP
+        WHERE DIP.IS_SPECIAL_DIP = '0' AND DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND RCT.ID_RCT = #{recipientId}
+    </select>
+
+
+    <select id="getRecipient" resultMap="invoiceHeaderResultMap">
+        SELECT *
+        FROM RECIPIENT_MASTER_RCT RCT
+        WHERE  RCT.ID_RCT = #{recipientId}
+    </select>
+
+    <select id="getSamplesCount" resultMap="invoiceHeaderResultMap">
+        SELECT SUM((DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) + (DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) * INV.RATE_PER_INV/100)
+        FROM SAMPLE_MASTER_SMP SMP
+        JOIN INVENTORY_INV INV ON INV.ID_ITM_INV =  SMP.ID_SMP
+        JOIN DISPATCH_DETAIL_DID DID ON DID.ID_INV_DID =  INV.ID_INV
+        JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP =  DID.ID_DIP_DID
+        WHERE DID.ID_RCT_DID = #{recipientId} AND DIP.MONTH_DIP =  #{month} AND DIP.YEAR_DIP = #{year}
+          AND DIP.IS_SPECIAL_DIP =  0 AND INV.ID_ITC_INV =  '242B921C-B27A-497D-9FA1-7222AB6E6F2A'
+    </select>
+
+    <select id="getInputCount" resultMap="invoiceHeaderResultMap">
+        SELECT SUM((DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) + (DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) * INV.RATE_PER_INV/100)
+                 FROM ITEM_MASTER_ITM ITM
+                 JOIN INVENTORY_INV INV ON INV.ID_ITM_INV =  ITM.ID_ITM
+                 JOIN DISPATCH_DETAIL_DID DID ON DID.ID_INV_DID =  INV.ID_INV
+                 JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP =  DID.ID_DIP_DID
+        WHERE DID.ID_RCT_DID = #{recipientId} AND DIP.MONTH_DIP =  #{month} AND DIP.YEAR_DIP = #{year}
+          AND DIP.IS_SPECIAL_DIP =  0 AND INV.ID_ITC_INV IN ('2909F268-96DE-4485-B8E9-673FEC08C9A3','9689A910-F261-48E7-9DCC-7653B092BA7B')
+    </select>
+
+
+    <select id="getTransporter" resultType="com.squer.promobee.controller.dto.TransporterDropdownDTO">
+        SELECT ID_TRN as 'transporterId',NAME_TRN as 'transporterName' FROM TRANSPORTER_TRN
+    </select>
+
+
 
 
 

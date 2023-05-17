@@ -110,6 +110,10 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getInvoiceDropdown()
     }
 
+    override fun getTransporter(): List<TransporterDropdownDTO> {
+        return masterRepository.getTransporter()
+    }
+
 
 
 }

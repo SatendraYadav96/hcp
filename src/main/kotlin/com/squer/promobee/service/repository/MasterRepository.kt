@@ -305,6 +305,12 @@ class MasterRepository
     }
 
 
+    fun getTransporter( ): List<TransporterDropdownDTO> {
+
+        return sqlSessionTemplate.selectList("InvoiceHeaderMapper.getTransporter")
+    }
+
+
 
 
 

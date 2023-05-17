@@ -192,6 +192,14 @@ open class MasterController@Autowired constructor(
     }
 
 
+    @GetMapping("/getTransporter")
+    fun getTransporter(): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getTransporter()
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
 
 
 

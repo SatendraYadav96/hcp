@@ -571,6 +571,92 @@ class InvoiceRepository(
 
 
 
+
+    fun generateDraftedInvoice(month: Int,  year: Int,  recipientId: String): Any? {
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("month",month)
+        data.put("year",year)
+        data.put("recipientId",recipientId)
+
+        var isInvoiceAlreadyGenerated: Boolean =  sqlSessionFactory.openSession().selectOne(  "InvoiceHeaderMapper.generateDraftedInvoice",data)
+
+        if(isInvoiceAlreadyGenerated){
+            System. out. println("Invoice already Generated !")
+        } else {
+
+            System. out. println("Invoice NOT Generated !")
+        }
+        data.put("recipientId",recipientId)
+
+        var recipient  = return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getRecipient",data)
+
+        data.put("month",month)
+        data.put("year",year)
+        data.put("recipientId",recipientId)
+
+        var samplesCount : Double = return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getSamplesCount",data)
+
+        var SampleItems = 0.0
+        if(samplesCount !== null) {
+            SampleItems = samplesCount
+        } else {
+            SampleItems
+        }
+        SampleItems
+
+
+        data.put("month",month)
+        data.put("year",year)
+        data.put("recipientId",recipientId)
+
+        var inputCount: Double = return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getInputCount",data)
+
+
+        var NonSampleItems = 0.0
+        if(inputCount !== null) {
+            NonSampleItems = inputCount
+        } else {
+            NonSampleItems
+        }
+        NonSampleItems
+
+        var itcCount = ItemCategoryCountDTO()
+        itcCount.sampleItems = samplesCount
+        itcCount.nonSampleItems = inputCount
+
+        return itcCount
+
+
+        data.put("month",month)
+        data.put("year",year)
+        data.put("recipientId",recipientId)
+
+        var dispatchDetails = return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getDispatchDetails",data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
 }
 
 

@@ -71,6 +71,10 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.printLabel(inh)
     }
 
+    override fun generateDraftedInvoice(month: Int,  year: Int,  recipientId: String): Any? {
+        return invoiceRepository.generateDraftedInvoice(month,year,recipientId)
+    }
+
 
 
 }
