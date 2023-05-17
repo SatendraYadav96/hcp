@@ -77,4 +77,10 @@
         SELECT ID_DTM As 'recipientId',NAME_DTM AS 'recipientName',CODE_DTM AS 'recipientCode' FROM DOCTOR_MASTER_DTM
     </select>
 
+
+    <select id="getRecipient" resultMap="recipientResultMap">
+        SELECT * FROM RECIPIENT_MASTER_RCT WHERE ID_RCT = #{recipientId}
+
+    </select>
+
 </mapper>

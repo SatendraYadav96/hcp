@@ -368,8 +368,8 @@
         WHERE  RCT.ID_RCT = #{recipientId}
     </select>
 
-    <select id="getSamplesCount" resultMap="invoiceHeaderResultMap">
-        SELECT SUM((DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) + (DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) * INV.RATE_PER_INV/100)
+    <select id="getSamplesCount" resultType="com.squer.promobee.controller.dto.ItemCategoryCountDTO">
+        SELECT ISNULL(SUM((DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) + (DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) * INV.RATE_PER_INV/100),0) as 'sampleItems'
         FROM SAMPLE_MASTER_SMP SMP
         JOIN INVENTORY_INV INV ON INV.ID_ITM_INV =  SMP.ID_SMP
         JOIN DISPATCH_DETAIL_DID DID ON DID.ID_INV_DID =  INV.ID_INV
@@ -378,8 +378,8 @@
           AND DIP.IS_SPECIAL_DIP =  0 AND INV.ID_ITC_INV =  '242B921C-B27A-497D-9FA1-7222AB6E6F2A'
     </select>
 
-    <select id="getInputCount" resultMap="invoiceHeaderResultMap">
-        SELECT SUM((DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) + (DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) * INV.RATE_PER_INV/100)
+    <select id="getInputCount" resultType="com.squer.promobee.controller.dto.ItemCategoryCountDTO">
+        SELECT ISNULL(SUM((DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) + (DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) * INV.RATE_PER_INV/100),0) as 'nonSampleItems'
                  FROM ITEM_MASTER_ITM ITM
                  JOIN INVENTORY_INV INV ON INV.ID_ITM_INV =  ITM.ID_ITM
                  JOIN DISPATCH_DETAIL_DID DID ON DID.ID_INV_DID =  INV.ID_INV
@@ -392,6 +392,27 @@
     <select id="getTransporter" resultType="com.squer.promobee.controller.dto.TransporterDropdownDTO">
         SELECT ID_TRN as 'transporterId',NAME_TRN as 'transporterName' FROM TRANSPORTER_TRN
     </select>
+
+
+    <select id="getDispatchDetails" resultMap="invoiceHeaderResultMap">
+        SELECT DID.ID_DIP_DID AS 'planId' FROM DISPATCH_DETAIL_DID DID
+        JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP =  DID.ID_DIP_DID
+        WHERE DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND DIP.IS_SPECIAL_DIP =  '0' AND DIP.ID_STATUS_SLV_DIP =  '00000000-0000-0000-0000-000000000024' AND
+            DID.ID_RCT_DID =  #{recipientId} AND DID.ID_STATUS_SLV_DID = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7'
+
+    </select>
+
+
+    <insert id="insertGenerateInvoiceHeader" >
+        insert into INVOICE_HEADER_INH
+        (ID_INH,INVOICE_NO_INH,ID_TYPE_SLV_INH,ID_STATUS_SLV_INH,ID_TEM_INH,ID_RCT_INH,ADDRESS_LINE_1_INH,ADDRESS_STATE_INH,ADDRESS_CITY_INH,ADDRESS_ZIP_INH,NOTES_INH,
+         ID_TRN_INH,CREATED_ON_INH,CREATED_BY_INH,UPDATED_ON_INH,UPDATED_BY_INH)
+        values (
+                   NEWID(),(SELECT MAX(INVOICE_NO_INH) FROM INVOICE_HEADER_INH) + 1,#{type},#{statusId},#{teamId},#{recipientId},
+                   '','','','',#{notes},#{transporterId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy})
+    </insert>
+
+
 
 
 

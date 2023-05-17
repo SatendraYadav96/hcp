@@ -7,12 +7,12 @@ import com.squer.promobee.service.repository.InvoiceRepository
 import com.squer.promobee.service.repository.domain.Doctor
 import com.squer.promobee.service.repository.domain.HSN
 import com.squer.promobee.service.repository.domain.InvoiceHeader
+import com.squer.promobee.service.repository.domain.Recipient
 
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
 
 
 @Service
@@ -71,8 +71,16 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.printLabel(inh)
     }
 
-    override fun generateDraftedInvoice(month: Int,  year: Int,  recipientId: String): Any? {
-        return invoiceRepository.generateDraftedInvoice(month,year,recipientId)
+    override fun getRecipientToGenerateInvoice( recipientId: String):Recipient {
+        return invoiceRepository.getRecipientToGenerateInvoice(recipientId)
+    }
+
+    override fun getRecipientItemCategoryCount(month: Int, year: Int,  recipientId: String):ItemCategoryCountDTO {
+        return invoiceRepository.getRecipientItemCategoryCount(month,year,recipientId)
+    }
+
+    override fun generateDraftedInvoice(genInv : GenerateInvoiceDTO) {
+        return invoiceRepository.generateDraftedInvoice(genInv)
     }
 
 

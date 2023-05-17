@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 
 
 @Slf4j
@@ -115,11 +116,27 @@ open class InvoiceController@Autowired constructor(
         return ResponseEntity(printLabelData, HttpStatus.OK)
     }
 
-
-    @GetMapping("/generateDraftedInvoice/{month}/{year}/{recipientId}")
-        open fun generateDraftedInvoice(@PathVariable month: Int, @PathVariable year: Int,@PathVariable recipientId: String ): ResponseEntity<*> {
+    @GetMapping("/getRecipientToGenerateInvoice/{recipientId}")
+    open fun getRecipientToGenerateInvoice(@PathVariable recipientId: String): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        val generateInvoiceData = invoiceService.generateDraftedInvoice(month,year,recipientId)
+        val data = invoiceService.getRecipientToGenerateInvoice(recipientId)
+
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getRecipientItemCategoryCount/{month}/{year}/{recipientId}")
+    open fun getRecipientItemCategoryCount(@PathVariable month: Int,@PathVariable year: Int,@PathVariable recipientId: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = invoiceService.getRecipientItemCategoryCount(month,year,recipientId)
+
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @PostMapping("/generateInvoice/{month}/{year}/{recipientId}")
+        open fun generateInvoice(@RequestBody genInv : GenerateInvoiceDTO ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val generateInvoiceData = invoiceService.generateDraftedInvoice(genInv)
 
         return ResponseEntity(generateInvoiceData, HttpStatus.OK)
     }

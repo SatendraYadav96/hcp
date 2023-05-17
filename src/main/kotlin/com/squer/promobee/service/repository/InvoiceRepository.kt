@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
+import org.springframework.web.bind.annotation.RequestParam
 import java.io.*
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -570,58 +571,46 @@ class InvoiceRepository(
     }
 
 
-
-
-    fun generateDraftedInvoice(month: Int,  year: Int,  recipientId: String): Any? {
+    fun  getRecipientToGenerateInvoice(recipientId: String):Recipient{
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("recipientId",recipientId)
+
+        return sqlSessionFactory.openSession().selectOne("RecipientMapper.getRecipient",data)
+
+
+
+
+    }
+
+
+
+    fun  getRecipientItemCategoryCount(month: Int, year: Int, recipientId: String):ItemCategoryCountDTO{
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+
+
+
         var data: MutableMap<String, Any> = mutableMapOf()
 
         data.put("month",month)
         data.put("year",year)
         data.put("recipientId",recipientId)
 
-        var isInvoiceAlreadyGenerated: Boolean =  sqlSessionFactory.openSession().selectOne(  "InvoiceHeaderMapper.generateDraftedInvoice",data)
+        var samplesCount  =  return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getSamplesCount",data)
 
-        if(isInvoiceAlreadyGenerated){
-            System. out. println("Invoice already Generated !")
-        } else {
+        var data0: MutableMap<String, Any> = mutableMapOf()
+        data0.put("month",month)
+        data0.put("year",year)
+        data0.put("recipientId",recipientId)
 
-            System. out. println("Invoice NOT Generated !")
-        }
-        data.put("recipientId",recipientId)
-
-        var recipient  = return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getRecipient",data)
-
-        data.put("month",month)
-        data.put("year",year)
-        data.put("recipientId",recipientId)
-
-        var samplesCount : Double = return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getSamplesCount",data)
-
-        var SampleItems = 0.0
-        if(samplesCount !== null) {
-            SampleItems = samplesCount
-        } else {
-            SampleItems
-        }
-        SampleItems
+        var inputCount = return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getInputCount",data0)
 
 
-        data.put("month",month)
-        data.put("year",year)
-        data.put("recipientId",recipientId)
 
-        var inputCount: Double = return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getInputCount",data)
-
-
-        var NonSampleItems = 0.0
-        if(inputCount !== null) {
-            NonSampleItems = inputCount
-        } else {
-            NonSampleItems
-        }
-        NonSampleItems
 
         var itcCount = ItemCategoryCountDTO()
         itcCount.sampleItems = samplesCount
@@ -630,20 +619,21 @@ class InvoiceRepository(
         return itcCount
 
 
-        data.put("month",month)
-        data.put("year",year)
-        data.put("recipientId",recipientId)
 
-        var dispatchDetails = return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getDispatchDetails",data)
+
+    }
 
 
 
+    fun  generateDraftedInvoice(genInv : GenerateInvoiceDTO){
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
 
 
 
 
-
-
+        }
 
 
 
@@ -657,7 +647,10 @@ class InvoiceRepository(
 
 
 
-}
+
+
+
+
 
 
 
