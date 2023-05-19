@@ -62,10 +62,10 @@
         WHERE ID_SMP =  #{id}
     </select>
 
-<!--    <select id="getSampleById" resultMap="sampleMasterResultMap" >-->
-<!--        SELECT * FROM SAMPLE_MASTER_SMP smp-->
-<!--        WHERE ID_SMP =  #{id}-->
-<!--    </select>-->
+    <select id="getSampleMasterById" resultMap="sampleMasterResultMap" >
+        SELECT * FROM SAMPLE_MASTER_SMP
+        WHERE ID_SMP =  #{id}
+    </select>
 
 
 

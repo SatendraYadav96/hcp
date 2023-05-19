@@ -59,5 +59,12 @@
     </insert>
 
 
+    <insert id="insertGenerateInvoiceDetail" >
+        INSERT INTO INVOICE_DETAIL_IND (ID_IND,ID_INH_IND,ID_ITM_IND,QUANTITY_IND,ID_DID_IND,VALUE_IND,CREATED_ON_IND,
+                                        CREATED_BY_IND,UPDATED_ON_IND,UPDATED_BY_IND,ID_INV_IND,HSN_CODE_IND,RATE_PER_IND)
+        VALUES(#{id},#{headerId},#{item},#{quantity},#{didId},#{value},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{inventoryId},#{hsnCode},#{rate})
+    </insert>
+
+
 
 </mapper>

@@ -4,10 +4,7 @@ package com.squer.promobee.service.impl
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.InvoiceService
 import com.squer.promobee.service.repository.InvoiceRepository
-import com.squer.promobee.service.repository.domain.Doctor
-import com.squer.promobee.service.repository.domain.HSN
-import com.squer.promobee.service.repository.domain.InvoiceHeader
-import com.squer.promobee.service.repository.domain.Recipient
+import com.squer.promobee.service.repository.domain.*
 
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
@@ -79,8 +76,24 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getRecipientItemCategoryCount(month,year,recipientId)
     }
 
-    override fun generateDraftedInvoice(genInv : GenerateInvoiceDTO) {
-        return invoiceRepository.generateDraftedInvoice(genInv)
+    override fun getDispatchDetailsForInvoicing(month: Int, year: Int, recipientId: String): List<DispatchDetailDTO> {
+        return invoiceRepository.getDispatchDetailsForInvoicing(month,year,recipientId)
+    }
+
+    override fun getItemMasterById(id: String): Item {
+        return invoiceRepository.getItemMasterById(id)
+    }
+
+    override fun getSampleMasterById(id: String): SampleMaster {
+        return invoiceRepository.getSampleMasterById(id)
+    }
+
+    override fun getDispatchPlanById(id: String): DispatchPlan {
+        return invoiceRepository.getDispatchPlanById(id)
+    }
+
+    override fun generateInvoice(genInv : GenerateInvoiceDTO) {
+        return invoiceRepository.generateInvoice(genInv)
     }
 
 

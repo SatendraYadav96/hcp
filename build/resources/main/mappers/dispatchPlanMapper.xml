@@ -66,4 +66,25 @@
                                             )
     </insert>
 
+
+    <select id="getDispatchPlanById" resultMap="dispatchPlanResultMap" >
+        SELECT * FROM DISPATCH_PLAN_DIP
+        WHERE ID_DIP =  #{id}
+    </select>
+
+
+    <update id="generateInvoiceDispatchPlanFullyInvoiced">
+
+        UPDATE DISPATCH_PLAN_DIP SET ID_INVOICE_STATUS_SLV_DIP = #{invoiceStatus}, UPDATED_BY_DIP = #{updatedBy} , UPDATED_ON_DIP = GETDATE()
+        WHERE ID_DIP = #{id}
+
+    </update>
+
+    <update id="generateInvoiceDispatchPlanPartialInvoiced">
+
+        UPDATE DISPATCH_PLAN_DIP SET ID_INVOICE_STATUS_SLV_DIP = #{invoiceStatus}, UPDATED_BY_DIP = #{updatedBy} , UPDATED_ON_DIP = GETDATE()
+        WHERE ID_DIP = #{id}
+
+    </update>
+
 </mapper>

@@ -1,10 +1,7 @@
 package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.*
-import com.squer.promobee.service.repository.domain.Doctor
-import com.squer.promobee.service.repository.domain.HSN
-import com.squer.promobee.service.repository.domain.InvoiceHeader
-import com.squer.promobee.service.repository.domain.Recipient
+import com.squer.promobee.service.repository.domain.*
 
 
 interface InvoiceService {
@@ -37,7 +34,15 @@ interface InvoiceService {
 
     fun getRecipientItemCategoryCount( month:Int,year:Int,recipientId:String):ItemCategoryCountDTO
 
-    fun generateDraftedInvoice(genInv : GenerateInvoiceDTO)
+    fun getDispatchDetailsForInvoicing( month:Int,year:Int,recipientId:String):List<DispatchDetailDTO>
+
+    fun getItemMasterById(id: String): Item
+
+    fun getSampleMasterById(id: String): SampleMaster
+
+    fun getDispatchPlanById(id: String): DispatchPlan
+
+    fun generateInvoice(genInv : GenerateInvoiceDTO)
 
 
 

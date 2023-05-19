@@ -78,6 +78,7 @@ open class UIController @Autowired constructor(
                         UserMenuEnum.ALLOCATION_REPORT
                 )
 
+
         )
 
         val parentMenus = mapOf(
@@ -97,7 +98,22 @@ open class UIController @Autowired constructor(
                     UserMenuEnum.ITEM_REVALIDATION,
                     UserMenuEnum.MASS_REVALIDATION,
                     UserMenuEnum.REPORT
-                )
+                ),
+            UserRoleEnum.BEX_ID.id to listOf<UserMenuEnum>(
+                UserMenuEnum.DASHBOARD,
+                UserMenuEnum.MASTERS,
+                UserMenuEnum.APPROVALS,
+                UserMenuEnum.REPORT,
+                UserMenuEnum.FF_UPLOAD,
+                UserMenuEnum.VIRTUAL_SAMPLE_UPLOAD,
+                UserMenuEnum.COMPLIANCE_PROCESS,
+                UserMenuEnum.OPTIMA_MAIL_LOGS,
+                UserMenuEnum.OVERSAMPLING_DETAILS,
+                UserMenuEnum.MANAGEMENT_DASHBOARD,
+                UserMenuEnum.BATCH_RECONCILIATION,
+
+
+            )
         )
     }
 

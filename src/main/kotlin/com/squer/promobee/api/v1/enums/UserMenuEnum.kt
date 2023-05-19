@@ -43,5 +43,13 @@ enum class UserMenuEnum(val label: String, val key: String, val title: String, v
     SPECIAL_ALLOCATION("Special Allocation", "special_allocation", "special_allocation", "/home/allocations/special/create", "allocation"),
     VIRTUAL_ALLOCATION("Virtual Allocation", "virtual_allocation", "virtual_allocation", "/home/allocations/virtual/create", "allocation"),
     MASS_REVALIDATION("Mass Revalidation", "mass_revalidation", "mass_revalidation", "/home/massRevalidation", ""),
-    ALLOCATION_REPORT("Allocation Report", "allocation_report", "allocation_report", "/home/report/allocationReport", "report")
+    ALLOCATION_REPORT("Allocation Report", "allocation_report", "allocation_report", "/home/report/allocationReport", "report"),
+    APPROVALS("Approvals", "approvals", "approvals", "", ""),
+    FF_UPLOAD("FF Master ", "ff master", "ff master", "", ""),
+    VIRTUAL_SAMPLE_UPLOAD("Virtual Sample Upload", "virtual Sample Upload", "virtual Sample Upload", "", ""),
+    COMPLIANCE_PROCESS("Compliance Process", "compliance Process", "compliance Process", "", ""),
+    OPTIMA_MAIL_LOGS("Optima Mail Logs", "optima mail logs", "optima mail logs", "", ""),
+    OVERSAMPLING_DETAILS("Over Sampling Details", "over sampling details", "over sampling details", "", ""),
+    MANAGEMENT_DASHBOARD("Management Dashboard", "management dashboard", "management dashboard", "", ""),
+    BATCH_RECONCILIATION("Batch Reconciliation", "batch reconciliation", "batch reconciliation", "", ""),
 }

@@ -259,5 +259,13 @@
     </update>
 
 
+    <update id="generateInvoiceUpdate">
+
+        UPDATE INVENTORY_INV SET QTY_DISPATCHED_INV = #{qtyDispatched}, QTY_ALLOCATED_INV = #{qtyAllocated},  UPDATED_BY_INV = #{updatedBy} , UPDATED_ON_INV = GETDATE()
+        WHERE ID_INV = #{id}
+
+    </update>
+
+
 
 </mapper>

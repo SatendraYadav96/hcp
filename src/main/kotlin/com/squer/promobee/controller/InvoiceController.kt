@@ -133,10 +133,44 @@ open class InvoiceController@Autowired constructor(
     }
 
 
-    @PostMapping("/generateInvoice/{month}/{year}/{recipientId}")
+    @GetMapping("/getDispatchDetailsForInvoicing/{month}/{year}/{recipientId}")
+    open fun getDispatchDetailsForInvoicing(@PathVariable month: Int,@PathVariable year: Int,@PathVariable recipientId: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = invoiceService.getDispatchDetailsForInvoicing(month,year,recipientId)
+
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/getItemMasterById/{id}")
+    open fun getItemMasterById(@PathVariable id: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = invoiceService.getItemMasterById(id)
+
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getSampleMasterById/{id}")
+    open fun getSampleMasterById(@PathVariable id: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = invoiceService.getSampleMasterById(id)
+
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getDispatchPlanById/{id}")
+    open fun getDispatchPlanById(@PathVariable id: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = invoiceService.getDispatchPlanById(id)
+
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @PostMapping("/generateInvoice")
         open fun generateInvoice(@RequestBody genInv : GenerateInvoiceDTO ): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        val generateInvoiceData = invoiceService.generateDraftedInvoice(genInv)
+        val generateInvoiceData = invoiceService.generateInvoice(genInv)
 
         return ResponseEntity(generateInvoiceData, HttpStatus.OK)
     }

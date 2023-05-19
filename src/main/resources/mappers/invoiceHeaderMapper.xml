@@ -394,22 +394,18 @@
     </select>
 
 
-    <select id="getDispatchDetails" resultMap="invoiceHeaderResultMap">
-        SELECT DID.ID_DIP_DID AS 'planId' FROM DISPATCH_DETAIL_DID DID
-        JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP =  DID.ID_DIP_DID
-        WHERE DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND DIP.IS_SPECIAL_DIP =  '0' AND DIP.ID_STATUS_SLV_DIP =  '00000000-0000-0000-0000-000000000024' AND
-            DID.ID_RCT_DID =  #{recipientId} AND DID.ID_STATUS_SLV_DID = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7'
 
-    </select>
 
 
     <insert id="insertGenerateInvoiceHeader" >
         insert into INVOICE_HEADER_INH
-        (ID_INH,INVOICE_NO_INH,ID_TYPE_SLV_INH,ID_STATUS_SLV_INH,ID_TEM_INH,ID_RCT_INH,ADDRESS_LINE_1_INH,ADDRESS_STATE_INH,ADDRESS_CITY_INH,ADDRESS_ZIP_INH,NOTES_INH,
-         ID_TRN_INH,CREATED_ON_INH,CREATED_BY_INH,UPDATED_ON_INH,UPDATED_BY_INH)
+        (ID_INH,INVOICE_NO_INH,ID_TYPE_SLV_INH,ID_STATUS_SLV_INH,ID_TEM_INH,ID_RCT_INH,ADDRESS_LINE_1_INH,ADDRESS_LINE_2_INH,ADDRESS_STATE_INH,ADDRESS_CITY_INH,ADDRESS_ZIP_INH,
+         PHONE_INH,WEIGHT_INH,NO_OF_BOXES_INH,
+             ID_TRN_INH,SAMPLE_VALUE_INH,OTHER_ITEM_VALUE_INH,LR_NUMBER_INH,CREATED_ON_INH,CREATED_BY_INH,UPDATED_ON_INH,UPDATED_BY_INH,ID_RCT_DESG_ULV_INH,CFA_INH)
         values (
                    NEWID(),(SELECT MAX(INVOICE_NO_INH) FROM INVOICE_HEADER_INH) + 1,#{type},#{statusId},#{teamId},#{recipientId},
-                   '','','','',#{notes},#{transporterId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy})
+                   #{addressLine1},#{addressLine2},#{states},#{city},#{zip},#{phone},#{weight},#{noOfBoxes},#{transporterId},#{sampleValue},#{otherItemValue},#{lrNumber},GETDATE(),#{createdBy},GETDATE(),#{updatedBy}
+                   ,#{designationId},#{cfa})
     </insert>
 
 

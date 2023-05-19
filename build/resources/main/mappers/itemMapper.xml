@@ -53,6 +53,10 @@
         SELECT ID_SMP AS 'itemId',LMID_SMP AS 'itemCode',NAME_SMP AS 'itemName' FROM SAMPLE_MASTER_SMP
     </select>
 
+    <select id="getItemMasterById" resultMap="itemResultMap">
+        SELECT * FROM ITEM_MASTER_ITM WHERE ID_ITM = #{id}
+    </select>
+
 
 
 </mapper>
