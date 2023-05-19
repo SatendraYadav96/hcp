@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.time.ZoneId
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -127,7 +128,7 @@ class InventoryRepository @Autowired constructor(
 
 
 
-    fun reverseInventory(inv: InventoryReversalDTO) {
+    fun reverseInventory(inv: InventoryReversalDTO)  {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var data: MutableMap<String, Any> = mutableMapOf()
@@ -197,7 +198,7 @@ class InventoryRepository @Autowired constructor(
 
         var data1: MutableMap<String, Any> = mutableMapOf()
 
-        var planId1 = UUID.randomUUID().toString()
+        val planId1 = UUID.randomUUID().toString()
 
         data1.put("id",planId1)
         data1.put("owner",user.id)
@@ -223,7 +224,7 @@ class InventoryRepository @Autowired constructor(
 
         var data2: MutableMap<String, Any> = mutableMapOf()
 
-        var planDetailId1 = UUID.randomUUID().toString()
+        val planDetailId1 = UUID.randomUUID().toString()
 
         data2.put("id",planDetailId1)
         data2.put("planId",planId1)
@@ -243,7 +244,7 @@ class InventoryRepository @Autowired constructor(
 
         var data3: MutableMap<String, Any> = mutableMapOf()
 
-        var inhId1 = UUID.randomUUID().toString()
+        val inhId1 = UUID.randomUUID().toString()
 
 //        var invNo = getMaxInvoiceNo()
 //        var invNo1 = 1.plus(invNo)
@@ -272,7 +273,7 @@ class InventoryRepository @Autowired constructor(
 
         var data4: MutableMap<String, Any> = mutableMapOf()
 
-        var indId1 = UUID.randomUUID().toString()
+        val indId1 = UUID.randomUUID().toString()
 
 //        var inQNTY : String? = inv.quantity
 //        var inRPU : Double? = inv1.ratePerUnit
@@ -288,6 +289,7 @@ class InventoryRepository @Autowired constructor(
 
 
 
+        inhId1
 
         data4.put("id",indId1)
         data4.put("headerId",inhId1)
@@ -306,14 +308,14 @@ class InventoryRepository @Autowired constructor(
 
         var data6: MutableMap<String, Any> = mutableMapOf()
 
+        inhId1
+
 
         data6.put("id", UUID.randomUUID().toString())
         data6.put("headerId",inhId1)
         data6.put("planId",planId1)
 
         sqlSessionFactory.openSession().insert("InvoiceDetailPlanMapper.insertReversalIDP",data6)
-
-
 
 
     }

@@ -1,6 +1,7 @@
 package com.squer.promobee.service.repository
 
 
+
 import com.itextpdf.html2pdf.HtmlConverter
 import com.itextpdf.text.Document
 import com.itextpdf.text.Paragraph
@@ -15,6 +16,7 @@ import org.apache.ibatis.session.SqlSessionFactory
 import org.apache.velocity.Template
 import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.VelocityEngine
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -28,7 +30,9 @@ import java.util.*
 import kotlin.math.roundToLong
 
 
-@Suppress("UNREACHABLE_CODE")
+
+
+
 @Repository
 class InvoiceRepository(
     securityUtility: SecurityUtility
@@ -544,11 +548,11 @@ class InvoiceRepository(
             var path = "D:\\LabelPdf\\Label.pdf";
 
             val document = Document()
-            val byteArrayOutputStream = ByteArrayOutputStream()
-            //val file: OutputStream = FileOutputStream(File(path))
+            //val outputStream = ByteArrayOutputStream(k.toInt())
+            val file: OutputStream = FileOutputStream(File(path))
 
-//            PdfWriter.getInstance(document, file)
-            PdfWriter.getInstance(document, byteArrayOutputStream)
+           PdfWriter.getInstance(document, file)
+            //PdfWriter.getInstance(document, outputStream)
 
             document.open()
 
@@ -556,16 +560,25 @@ class InvoiceRepository(
 
             document.add(paragraph)
 
-//            HtmlConverter.convertToPdf(k, file)
+        HtmlConverter.convertToPdf(k, file)
+
 
             document.close()
-            //file.close()
+            file.close()
+            //outputStream.close();
+            //return outputStream.toByteArray();
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
+        return writer.toString()
 
-        return writer.toString();
+
+
+//        val json = JSONObject(writer)
+//        System.out.println(json.toString());
+//
+//        return json.toJSONString()
 
 
 
@@ -573,6 +586,13 @@ class InvoiceRepository(
 
 
     }
+
+
+
+//    private fun JSONObject(writer: StringWriter): JSONObject {
+//
+//         return JSONObject()
+//    }
 
 
     fun  getRecipientToGenerateInvoice(recipientId: String):Recipient{
