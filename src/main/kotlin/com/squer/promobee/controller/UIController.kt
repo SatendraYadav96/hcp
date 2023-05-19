@@ -76,7 +76,26 @@ open class UIController @Autowired constructor(
                         UserMenuEnum.ITEM_CONSUMPTION_REPORT,
                         UserMenuEnum.INVENTORY_REVERSAL_REPORT,
                         UserMenuEnum.ALLOCATION_REPORT
-                )
+                ),
+            UserRoleEnum.BEX_ID.id to listOf<UserMenuEnum>(
+                UserMenuEnum.BUSINESS_UNITS,
+                UserMenuEnum.TEAM,
+                UserMenuEnum.USER,
+                UserMenuEnum.COST_CENTER,
+                UserMenuEnum.BRAND,
+                UserMenuEnum.SAMPLE,
+                UserMenuEnum.FF_MASTER,
+                UserMenuEnum.MONTHLY_INPUT_PLAN,
+                UserMenuEnum.SPECIAL_DISPATCHES,
+                UserMenuEnum.VIRTUAL_DISPATCHES,
+                UserMenuEnum.FF_REPORT,
+                UserMenuEnum.INVENTORY_REPORT,
+                UserMenuEnum.DISPATCH_REGISTERS,
+                UserMenuEnum.VIRTUAL_RECONCILIATION,
+
+
+            )
+
 
 
         )
@@ -88,7 +107,7 @@ open class UIController @Autowired constructor(
                     UserMenuEnum.GOODS_RECEIPT,
                     UserMenuEnum.INVENTORY,
                     UserMenuEnum.DISPATCH_AND_INVOICING,
-                    UserMenuEnum.ITEM_REVALIDATION,
+//                    UserMenuEnum.ITEM_REVALIDATION,
                     UserMenuEnum.HSN_AND_INVOICE,
                     UserMenuEnum.REPORT
                 ),
