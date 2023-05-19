@@ -94,6 +94,16 @@ open class UIController @Autowired constructor(
                 UserMenuEnum.VIRTUAL_RECONCILIATION,
 
 
+            ),
+
+            UserRoleEnum.BU_HEAD_ID.id to listOf<UserMenuEnum>(
+                UserMenuEnum.SPECIAL_DISPATCHES,
+                UserMenuEnum.FF_REPORT,
+                UserMenuEnum.PURCHASE_REPORT,
+                UserMenuEnum.NEAR_TO_EXPIRY_REPORT,
+                UserMenuEnum.DISPATCH_REPORT,
+                UserMenuEnum.DISPATCH_REGISTERS,
+
             )
 
 
@@ -114,8 +124,8 @@ open class UIController @Autowired constructor(
                 UserRoleEnum.PRODUCT_MANAGER_ID.id to listOf<UserMenuEnum>(
                     UserMenuEnum.DASHBOARD,
                     UserMenuEnum.ALLOCATION,
-                    UserMenuEnum.ITEM_REVALIDATION,
-                    UserMenuEnum.MASS_REVALIDATION,
+//                    UserMenuEnum.ITEM_REVALIDATION,
+//                    UserMenuEnum.MASS_REVALIDATION,
                     UserMenuEnum.REPORT
                 ),
             UserRoleEnum.BEX_ID.id to listOf<UserMenuEnum>(
@@ -131,7 +141,27 @@ open class UIController @Autowired constructor(
                 UserMenuEnum.MANAGEMENT_DASHBOARD,
                 UserMenuEnum.BATCH_RECONCILIATION,
 
+                ),
 
+            UserRoleEnum.BU_HEAD_ID.id to listOf<UserMenuEnum>(
+                UserMenuEnum.DASHBOARD,
+                UserMenuEnum.APPROVALS,
+                UserMenuEnum.REPORT,
+                UserMenuEnum.RECIPIENT_BLOCKED,
+                UserMenuEnum.COMPLIANCE_DETAILS,
+
+            ),
+
+            UserRoleEnum.ADMIN_ID.id to listOf<UserMenuEnum>(
+                UserMenuEnum.DASHBOARD,
+                UserMenuEnum.MASTER_BLOCKED_LIST,
+                UserMenuEnum.NON_COMPLIANCE_UNBLOCK,
+                UserMenuEnum.NON_COMPLIANCE_UPLOAD,
+                UserMenuEnum.OVER_SAMPLING_UPLOAD,
+                UserMenuEnum.OVER_SAMPLING_DETAILS_UPLOAD,
+                UserMenuEnum.OVERSAMPLING_DETAILS,
+                UserMenuEnum.MATERIAL_EXPIRY_UPLOAD,
+                UserMenuEnum.OPTIMA_MAIL_LOGS,
             )
         )
     }

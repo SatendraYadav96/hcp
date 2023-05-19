@@ -60,4 +60,13 @@ enum class UserMenuEnum(val label: String, val key: String, val title: String, v
     OVERSAMPLING_DETAILS("Over Sampling Details", "over_sampling_details", "over_sampling_details", "/home/compliance/complianceDetailsList", ""),
     MANAGEMENT_DASHBOARD("Management Dashboard", "management_dashboard", "management_dashboard", "/home/managementDashboard", ""),
     BATCH_RECONCILIATION("Batch Reconciliation", "batch_reconciliation", "batch_reconciliation", "/home/managementDashboard/reconciliation", ""),
+    RECIPIENT_BLOCKED("FF Blocked", "ff_blocked", "ff_blocked", "/home/optimaMi/recommendedListOfBlocking", ""),
+    COMPLIANCE_DETAILS("Compliance Details", "compliance_details", "compliance_details", "/home/compliance/complianceDetailsList", ""),
+    NON_COMPLIANCE_UNBLOCK("Non Compliance Unblock", "non_compliance_unblock", "non_compliance_unblock", "/home/master/ffUnBlockList", ""),
+    MASTER_BLOCKED_LIST("Master Blocked List", "master_blocked_list", "master_blocked_list", "/home/master/ffBlockList", ""),
+    NON_COMPLIANCE_UPLOAD("Non Compliance Upload", "non_compliance_upload", "non_compliance_upload", "/home/optimaMi/upload", ""),
+    OVER_SAMPLING_UPLOAD("Over Sampling Upload", "over_sampling_upload", "over_sampling_upload", "/home/compliance/upload", ""),
+    OVER_SAMPLING_DETAILS_UPLOAD("Over Sampling Details Upload", "over_sampling_details_upload", "over_sampling_details_upload", "/home/complianceDetails/upload", ""),
+    MATERIAL_EXPIRY_UPLOAD("Material Expiry Upload", "material_expiry_upload", "material_expiry_upload", "/home/optimaMaterial/upload", ""),
+
 }
