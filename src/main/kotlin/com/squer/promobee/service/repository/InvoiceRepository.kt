@@ -544,9 +544,11 @@ class InvoiceRepository(
             var path = "D:\\LabelPdf\\Label.pdf";
 
             val document = Document()
-            val file: OutputStream = FileOutputStream(File(path))
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            //val file: OutputStream = FileOutputStream(File(path))
 
-            PdfWriter.getInstance(document, file)
+//            PdfWriter.getInstance(document, file)
+            PdfWriter.getInstance(document, byteArrayOutputStream)
 
             document.open()
 
@@ -554,10 +556,10 @@ class InvoiceRepository(
 
             document.add(paragraph)
 
-            HtmlConverter.convertToPdf(k, file)
+//            HtmlConverter.convertToPdf(k, file)
 
             document.close()
-            file.close()
+            //file.close()
         } catch (e: Exception) {
             e.printStackTrace()
         }
