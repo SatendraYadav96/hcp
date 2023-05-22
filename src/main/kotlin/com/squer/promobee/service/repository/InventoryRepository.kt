@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository
 import java.time.ZoneId
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -162,9 +163,13 @@ class InventoryRepository @Autowired constructor(
 
 //        var inv2 =  InventoryService.getInventoryById(inv.invId)
 
+        var qtyDisp = inv1.qtyDispatched?.absoluteValue
 
 
-         var inqd = inv1.qtyDispatched?.plus(inv.quantity?.toInt()!!)
+
+         var inqd = qtyDisp?.plus(inv.quantity?.toInt()!!)
+
+
 
 
 
@@ -268,6 +273,9 @@ class InventoryRepository @Autowired constructor(
         data3.put("designationId",ReversalRemarkEnum.PRUNED.id)
 
         sqlSessionFactory.openSession().insert("InvoiceHeaderMapper.insertReversalInvoiceHeader",data3)
+
+
+
 
         var invoiceDetail = InvoiceDetail()
 
@@ -482,6 +490,7 @@ class InventoryRepository @Autowired constructor(
         inv.toInvId?.let { data5.put("inventoryId", it) }
 
         sqlSessionFactory.openSession().insert("InvoiceDetailMapper.insertSwitchInvoiceDetail1",data5)
+
 
 
 

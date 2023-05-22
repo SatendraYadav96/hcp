@@ -1,17 +1,12 @@
 package com.squer.promobee.controller
 
 
-import com.squer.promobee.controller.dto.GenerateInvoiceDTO
-import com.squer.promobee.controller.dto.GroupInvoiceParamDTO
-import com.squer.promobee.controller.dto.PrintInvoiceDTO
-import com.squer.promobee.controller.dto.SearchInvoiceDTO
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.InvoiceService
+
 import lombok.extern.slf4j.Slf4j
-import org.apache.velocity.Template
-import org.apache.velocity.VelocityContext
-import org.apache.velocity.app.VelocityEngine
-import org.json.simple.JSONArray
+import org.bouncycastle.util.encoders.Base64Encoder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -22,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
+import java.util.*
 
 
 @Slf4j
@@ -113,8 +108,7 @@ open class InvoiceController@Autowired constructor(
     open fun printLabel(@RequestBody inh: PrintInvoiceDTO): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val printLabelData = invoiceService.printLabel(inh)
-
-        return ResponseEntity(printLabelData, HttpStatus.OK)
+        return ResponseEntity(FileContentPOJO(fileName = "label_${System.currentTimeMillis()}", String(Base64.getEncoder().encode(printLabelData))), HttpStatus.OK)
     }
 
     @GetMapping("/getRecipientToGenerateInvoice/{recipientId}")

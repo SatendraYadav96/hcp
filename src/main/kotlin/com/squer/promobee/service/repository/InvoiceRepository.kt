@@ -12,11 +12,11 @@ import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.*
+import org.apache.commons.lang.CharSet
 import org.apache.ibatis.session.SqlSessionFactory
 import org.apache.velocity.Template
 import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.VelocityEngine
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -28,9 +28,6 @@ import java.time.LocalDate.of
 import java.time.ZoneId
 import java.util.*
 import kotlin.math.roundToLong
-
-
-
 
 
 @Repository
@@ -476,7 +473,7 @@ class InvoiceRepository(
 
 
 
-    fun printLabel(inh: PrintInvoiceDTO): String {
+    fun printLabel(inh: PrintInvoiceDTO): ByteArray? {
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
@@ -540,19 +537,30 @@ class InvoiceRepository(
         t.merge(context, writer)
 
         System.out.println(writer.toString())
+        val byteArrayOutputStream = ByteArrayOutputStream()
 
         try {
 
             val k = writer.toString()
 
-            var path = "D:\\LabelPdf\\Label.pdf";
 
             val document = Document()
             //val outputStream = ByteArrayOutputStream(k.toInt())
-            val file: OutputStream = FileOutputStream(File(path))
+         // val file: OutputStream = FileOutputStream(File(path))
+            //byteArrayOutputStream.write(k.toByteArray())
+            //PdfWriter.getInstance(document, byteArrayOutputStream)
 
-           PdfWriter.getInstance(document, file)
+          //  val writer: PdfWriter = PdfWriter(byteArrayOutputStream)
+//            val pdfDocument = PdfDocument(writer)
+//            val document = Document(pdfDocument)
+
+
+
+          // PdfWriter.getInstance(document,file)
             //PdfWriter.getInstance(document, outputStream)
+
+//            var doc =  Jsoup.parse(file.toString())
+//            return doc.toString()
 
             document.open()
 
@@ -560,18 +568,39 @@ class InvoiceRepository(
 
             document.add(paragraph)
 
-        HtmlConverter.convertToPdf(k, file)
+            HtmlConverter.convertToPdf(k, byteArrayOutputStream)
+//            val workbook = Workbook("input.html")
+//            workbook.save("Output.json")
 
+
+
+//            val fis = FileInputStream(document)
+//            var data = ByteArray(document as Int)
+//            fis.run { data }
+//            val bos = ByteArrayOutputStream()
+//            data = bos.toByteArray()
 
             document.close()
-            file.close()
-            //outputStream.close();
+            return byteArrayOutputStream.toByteArray();
+            //file.close()
+
+           // outputStream.close();
             //return outputStream.toByteArray();
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
-        return writer.toString()
+
+
+
+        //return data.toString()
+        return byteArrayOutputStream.toByteArray();
+
+
+
+
+
+
 
 
 
@@ -588,11 +617,6 @@ class InvoiceRepository(
     }
 
 
-
-//    private fun JSONObject(writer: StringWriter): JSONObject {
-//
-//         return JSONObject()
-//    }
 
 
     fun  getRecipientToGenerateInvoice(recipientId: String):Recipient{

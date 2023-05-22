@@ -200,6 +200,37 @@ open class MasterController@Autowired constructor(
     }
 
 
+    @GetMapping("/getLegalEntity")
+    fun getLegalEntityDropdown(): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getLegalEntityDropdown()
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/getRecipientDesignationDropdown")
+    fun getRecipientDesignationDropdown(): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getRecipientDesignationDropdown()
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getUserDesignationDropdown")
+    fun getUserDesignationDropdown(): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getUserDesignationDropdown()
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getUserDropdown")
+    fun getUserDropdown(): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getUserDropdown()
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
 
 
 

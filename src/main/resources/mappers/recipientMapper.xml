@@ -86,4 +86,10 @@
 
     </select>
 
+    <select id="getRecipientDesignationDropdown" resultType="com.squer.promobee.controller.dto.RecipientDesignationDropdownDTO">
+
+        SELECT ID_ULV as 'recipientDesignationId',NAME_ULV as 'recipientDesignationName' FROM USER_LOV_ULV WHERE TYPE_ULV = 'DESIGNATION'
+
+    </select>
+
 </mapper>

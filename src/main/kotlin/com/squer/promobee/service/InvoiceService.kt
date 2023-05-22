@@ -2,6 +2,8 @@ package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.repository.domain.*
+import java.io.ByteArrayOutputStream
+import java.io.Serializable
 
 
 interface InvoiceService {
@@ -28,7 +30,7 @@ interface InvoiceService {
     fun getInvoicesForGrouping(groupInvoice: GroupInvoiceParamDTO): List<InvoicesForGroupingDTO>
 
 
-    fun printLabel(inh:PrintInvoiceDTO): String
+    fun printLabel(inh:PrintInvoiceDTO): ByteArray?
 
     fun getRecipientToGenerateInvoice( recipientId: String):Recipient
 

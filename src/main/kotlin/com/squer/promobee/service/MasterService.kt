@@ -1,6 +1,7 @@
 package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.*
+import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.repository.domain.*
 import java.util.*
 
@@ -56,5 +57,13 @@ interface MasterService {
     fun getInvoiceDropdown(): List<InvoiceDropdownDTO>
 
     fun getTransporter(): List<TransporterDropdownDTO>
+
+    fun getLegalEntityDropdown(): List<LegalEntity>
+
+    fun getRecipientDesignationDropdown(): List<RecipientDesignationDropdownDTO>
+
+    fun getUserDesignationDropdown(): List<UserDesignationDropdownDTO>
+
+    fun getUserDropdown(): List<UserDropdownDTO>
 
 }

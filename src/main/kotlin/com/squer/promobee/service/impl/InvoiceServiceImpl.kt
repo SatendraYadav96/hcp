@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.io.ByteArrayOutputStream
+import java.io.Serializable
 
 
 @Service
@@ -64,7 +66,7 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getInvoicesForGrouping(groupInvoice)
     }
 
-    override fun printLabel(inh: PrintInvoiceDTO): String {
+    override fun printLabel(inh: PrintInvoiceDTO): ByteArray? {
         return invoiceRepository.printLabel(inh)
     }
 

@@ -114,6 +114,22 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getTransporter()
     }
 
+    override fun getLegalEntityDropdown(): List<LegalEntity> {
+        return masterRepository.getLegalEntityDropdown()
+    }
+
+    override fun getRecipientDesignationDropdown(): List<RecipientDesignationDropdownDTO> {
+        return masterRepository.getRecipientDesignationDropdown()
+    }
+
+    override fun getUserDesignationDropdown(): List<UserDesignationDropdownDTO> {
+        return masterRepository.getUserDesignationDropdown()
+    }
+
+    override fun getUserDropdown(): List<UserDropdownDTO> {
+        return masterRepository.getUserDropdown()
+    }
+
 
 
 }

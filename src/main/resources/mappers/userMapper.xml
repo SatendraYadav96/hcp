@@ -58,4 +58,20 @@
             id_desg_ulv_usr=#{userDesignation.id}, active_from_usr=#{activeFrom}, active_to_usr=#{activeTo}, id_ety_usr=#{legalEntity.id},
             email_address_usr=#{email}, last_loggd_in_usr=#{lastLoggedIn}, id_status_slv_usr=#{status.id}, updated_on_usr=#{updatedAt}, updated_by_usr=#{updatedBy} where id_usr=#{id}
     </update>
+
+
+    <select id="getUserDesignationDropdown" resultType="com.squer.promobee.controller.dto.UserDesignationDropdownDTO">
+
+        SELECT ID_ULV as 'userDesignationId',NAME_ULV as 'userDesignationName' FROM USER_LOV_ULV WHERE TYPE_ULV = 'USER_DESIGNATION'
+
+    </select>
+
+    <select id="getUserDropdown" resultType="com.squer.promobee.controller.dto.UserDropdownDTO">
+
+        SELECT ID_USR AS 'userId',NAME_USR AS 'userName' FROM USER_MASTER_USR WHERE ID_STATUS_SLV_USR = '1D2F12F3-F84A-4200-9590-70680528779B'
+
+    </select>
+
+
+
 </mapper>

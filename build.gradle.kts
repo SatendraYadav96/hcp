@@ -23,7 +23,7 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	//implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -53,6 +53,13 @@ dependencies {
 	implementation("com.itextpdf:kernel:7.2.5")
 	// https://mvnrepository.com/artifact/com.mchange/c3p0
 	implementation("com.mchange:c3p0:0.9.5.5")
+
+	// https://mvnrepository.com/artifact/org.json/json
+	implementation("org.json:json:20201115")
+
+
+
+
 
 
 

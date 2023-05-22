@@ -14,7 +14,7 @@
         <result property="ratePerUnit" column="rate_per_unit_inv" />
         <result property="qtyReceived" column="qty_received_inv" />
         <result property="qtyAllocated" column="qty_allocated_inv" />
-        <result property="qtyDispatched" column="qty_allocated_inv" />
+        <result property="qtyDispatched" column="qty_dispatched_inv" />
         <result property="numBoxes" column="num_boxes_inv" />
         <result property="isUnitAllocation" column="is_unit_allocation_inv" />
         <result property="batchNo" column="batch_no_inv" />

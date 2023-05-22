@@ -22,5 +22,10 @@
     </select>
 
 
+    <select id="getLegalEntity" resultMap="legalEntityResultMap">
+        SELECT * FROM LEGAL_ENTITY_MASTER_ETY
+        WHERE IS_ACTIVE_ETY = '1'
+    </select>
+
 
 </mapper>

@@ -310,6 +310,26 @@ class MasterRepository
         return sqlSessionTemplate.selectList("InvoiceHeaderMapper.getTransporter")
     }
 
+    fun getLegalEntityDropdown( ): List<LegalEntity> {
+
+        return sqlSessionTemplate.selectList("LegalEntityMapper.getLegalEntity")
+    }
+
+    fun getRecipientDesignationDropdown( ): List<RecipientDesignationDropdownDTO> {
+
+        return sqlSessionTemplate.selectList("RecipientMapper.getRecipientDesignationDropdown")
+    }
+
+    fun getUserDesignationDropdown( ): List<UserDesignationDropdownDTO> {
+
+        return sqlSessionTemplate.selectList("UserMapper.getUserDesignationDropdown")
+    }
+
+    fun getUserDropdown( ): List<UserDropdownDTO> {
+
+        return sqlSessionTemplate.selectList("UserMapper.getUserDropdown")
+    }
+
 
 
 
