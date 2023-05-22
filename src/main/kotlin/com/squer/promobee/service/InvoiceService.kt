@@ -19,7 +19,7 @@ interface InvoiceService {
 
     fun getInvoiceDetailsForPrint(inhId:String): List<InvoiceDetailsPrintDTO>
 
-    fun printInvoice(inh:PrintInvoiceDTO)
+    fun printInvoice(inh:PrintInvoiceDTO): ByteArray?
 
     fun getHsnRate(hcmCode:String): HSN
 

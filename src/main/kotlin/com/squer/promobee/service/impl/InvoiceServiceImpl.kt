@@ -47,8 +47,8 @@ class InvoiceServiceImpl @Autowired constructor(
     }
 
 
-    override fun printInvoice(inh: PrintInvoiceDTO) {
-         invoiceRepository.printInvoice(inh)
+    override fun printInvoice(inh: PrintInvoiceDTO) : ByteArray?{
+         return invoiceRepository.printInvoice(inh)
     }
     override fun getHsnRate(hcmCode:String): HSN {
         return invoiceRepository.getHsnRate(hcmCode)

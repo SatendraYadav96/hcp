@@ -113,7 +113,7 @@ class InvoiceRepository(
     }
 
 
-    fun printInvoice(inh: PrintInvoiceDTO): String {
+    fun printInvoice(inh: PrintInvoiceDTO):  ByteArray? {
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
@@ -219,94 +219,38 @@ class InvoiceRepository(
 
         context.put("tableRow", tableRow)
 
-
-        /* now render the template into a StringWriter */
-        /* now render the template into a StringWriter */
         val writer = StringWriter()
         t.merge(context, writer)
-        /* show the World */
-        /* show the World */
+
         System.out.println(writer.toString())
-
-//         val plainText = Jsoup.parse(writer.toString()).toString()
-
-
-//         try {
-//             //Create Document instance.
-//             val document = Document()
-//
-//             //Create OutputStream instance.
-//             val outputStream: OutputStream = FileOutputStream(File("D:\\TestFile.pdf"))
-//
-//
-//
-//             //Create PDFWriter instance.
-//             PdfWriter.getInstance(document, outputStream)
-//
-//             //set A4 Size
-//
-//             document.pageSize = PageSize.A4
-//
-//             //Open the document.
-//             document.open()
-//
-//             //Add content to the document.
-//             document.add(
-//                 Paragraph(
-//                     "Hello world, " +
-//                             "this is a test pdf file."
-//                 )
-//             )
-//
-////             var printFile : Any= "src/main/resources/htmlPrint/promoPrintInvoice.vm"
-////
-////             document.add(printFile)
-//
-//             //Close document and outputStream.
-//             document.close()
-//             outputStream.close()
-//             println("Pdf created successfully.")
-//         } catch (e: Exception) {
-//             e.printStackTrace()
-//         }
-
+        val byteArrayOutputStream = ByteArrayOutputStream()
 
         try {
 
             val k = writer.toString()
-//             var path = "D:\\InvoicePdf"
-            var path = "D:\\InvoicePdf\\Test.pdf";
+
 
             val document = Document()
-//             val file: OutputStream = FileOutputStream(File("C:\\InvoicePdf\\Test.pdf"))
-            val file: OutputStream = FileOutputStream(File(path))
 
-//             document.addAuthor("");
-//             document.addCreationDate();
-//             document.addProducer();
-//             document.addCreator("aaa");
-//             document.addTitle("");
-//             document.setPageSize(PageSize.A4);
-
-            PdfWriter.getInstance(document, file)
             document.open()
 
             val paragraph = Paragraph(k)
 
             document.add(paragraph)
-//             val htmlWorker = HTMLWorker(document)
-//
-//             htmlWorker.parse(StringReader(k))
-            HtmlConverter.convertToPdf(k, file)
+
+            HtmlConverter.convertToPdf(k, byteArrayOutputStream)
+
 
             document.close()
-            file.close()
+            return byteArrayOutputStream.toByteArray();
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
 
-        return writer.toString();
+        return byteArrayOutputStream.toByteArray();
+
 
     }
 

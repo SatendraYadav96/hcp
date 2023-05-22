@@ -68,7 +68,7 @@ open class InvoiceController@Autowired constructor(
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val printInvoiceData = invoiceService.printInvoice(inh)
 
-        return ResponseEntity(printInvoiceData, HttpStatus.OK)
+        return ResponseEntity(FileContentPOJO(fileName = "label_${System.currentTimeMillis()}", String(Base64.getEncoder().encode(printInvoiceData))), HttpStatus.OK)
     }
 
     @GetMapping("/getHsnRate/{hcmCode}")
