@@ -5,14 +5,12 @@ package com.squer.promobee.service.repository
 import com.itextpdf.html2pdf.HtmlConverter
 import com.itextpdf.text.Document
 import com.itextpdf.text.Paragraph
-import com.itextpdf.text.pdf.PdfWriter
 import com.squer.promobee.api.v1.enums.*
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.*
-import org.apache.commons.lang.CharSet
 import org.apache.ibatis.session.SqlSessionFactory
 import org.apache.velocity.Template
 import org.apache.velocity.VelocityContext
@@ -27,6 +25,7 @@ import java.time.LocalDate
 import java.time.LocalDate.of
 import java.time.ZoneId
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.roundToLong
 
 

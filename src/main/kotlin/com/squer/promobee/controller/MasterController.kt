@@ -230,6 +230,49 @@ open class MasterController@Autowired constructor(
     }
 
 
+    // BUSINESS UNIT CONTROLLER
+
+    @GetMapping("/getBusinessUnit/{status}")
+    fun getBusinessUnit(@PathVariable status: Int): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getBusinessUnit(status)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getBusinessUnitById/{id}")
+    fun getBusinessUnitById(@PathVariable id: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getBusinessUnitById(id)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PutMapping("/editBusinessUnit")
+    open fun editBusinessUnit(@RequestBody bu: BU): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.editBusinessUnit(bu)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @PostMapping("/addBusinessUnit")
+    open fun addBusinessUnit(@RequestBody bu: BU): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.addBusinessUnit(bu)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    // TEAM CONTROLLER
+
+    @GetMapping("/getTeam/{status}")
+    fun getTeam(@PathVariable status: Int): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getTeam(status)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
 
 
 

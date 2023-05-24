@@ -66,4 +66,25 @@ interface MasterService {
 
     fun getUserDropdown(): List<UserDropdownDTO>
 
+
+    // BUSINESS UNIT SERVICES
+
+    fun getBusinessUnit(status: Int): List<BU>
+
+    fun getBusinessUnitById (id: String): BU
+
+    fun editBusinessUnit(bu: BU)
+
+    fun addBusinessUnit(bu: BU)
+
+    //TEAM SERVICES
+
+    fun getTeam(status: Int): List<Team>
+
+
+
+
+
+
+
 }

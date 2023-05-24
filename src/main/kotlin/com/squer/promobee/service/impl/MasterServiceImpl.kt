@@ -131,5 +131,32 @@ class MasterServiceImpl @Autowired constructor(
     }
 
 
+    // BUSINESS UNIT IMPL
+
+    override fun getBusinessUnit(status: Int): List<BU> {
+        return masterRepository.getBusinessUnit(status)
+    }
+
+    override fun getBusinessUnitById(id: String): BU {
+        return masterRepository.getBusinessUnitById(id)
+    }
+
+    override fun editBusinessUnit(bu: BU) {
+        return masterRepository.editBusinessUnit(bu)
+    }
+
+    override fun addBusinessUnit(bu: BU) {
+        return masterRepository.addBusinessUnit(bu)
+    }
+
+    // TEAM IMPL
+
+    override fun getTeam(status: Int): List<Team> {
+        return masterRepository.getTeam(status)
+    }
+
+
+
+
 
 }

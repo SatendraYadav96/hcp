@@ -21,6 +21,11 @@
         where IS_ACTIVE_BUM = #{active}
     </select>
 
+    <select id="getBusinessUnitById" resultMap="buResultMap" >
+        select * from BU_MASTER_BUM
+        WHERE ID_BUM =  #{id}
+    </select>
+
 
     <insert id="addBusinessUnit">
         insert into BU_MASTER_BUM (ID_BUM, NAME_BUM, CI_NAME_BUM, CODE_BUM, IS_ACTIVE_BUM, CREATED_ON_BUM, CREATED_BY_BUM,
@@ -31,7 +36,7 @@
 
     <update id="editBusinessUnit">
 
-        UPDATE BU_MASTER_BUM SET NAME_BUM = #{name},CI_NAME_BUM = #{ciName},CODE_BUM = #{code},IS_ACTIVE_BUM = #{active},  UPDATED_BY_BUM = #{updatedBy} , UPDATED_ON_BUM = GETDATE()
+        UPDATE BU_MASTER_BUM SET NAME_BUM = #{name},CI_NAME_BUM = #{ciName},IS_ACTIVE_BUM = #{active},  UPDATED_BY_BUM = #{updatedBy} , UPDATED_ON_BUM = GETDATE()
         WHERE ID_BUM = #{id}
 
     </update>
@@ -40,5 +45,7 @@
         select * from BU_MASTER_BUM WHERE IS_ACTIVE_BUM = 1
 
     </select>
+
+
 
 </mapper>

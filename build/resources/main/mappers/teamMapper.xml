@@ -84,6 +84,11 @@
         WHERE IS_ACTIVE_TEM = 1
     </select>
 
+    <select id="getTeams" resultMap="teamResultMap" >
+        SELECT * FROM TEAM_MASTER_TEM
+        WHERE IS_ACTIVE_TEM = #{active}
+    </select>
+
 
 
 

@@ -7,11 +7,8 @@ import com.squer.promobee.security.domain.NamedSquerEntity
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.*
-import org.apache.ibatis.session.SqlSession
-import org.apache.ibatis.session.SqlSessionFactory
 import org.mybatis.spring.SqlSessionTemplate
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
@@ -329,6 +326,87 @@ class MasterRepository
 
         return sqlSessionTemplate.selectList("UserMapper.getUserDropdown")
     }
+
+
+    //BU REPOSITORY
+
+    fun getBusinessUnit( status: Int) : List<BU>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("active",status)
+
+        return sqlSessionTemplate.selectList("BUMapper.getBusinessUnit",data)
+    }
+
+    fun getBusinessUnitById( id: String) : BU {
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",id)
+
+        return sqlSessionTemplate.selectOne("BUMapper.getBusinessUnitById",data)
+    }
+
+
+    fun editBusinessUnit(bu: BU) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        data.put("id", bu.id)
+        bu.name?.let { data.put("name", it.uppercase()) }
+        bu.name?.let { data.put("ciName", it.lowercase()) }
+        bu.active?.let { data.put("active", it) }
+        data.put("updatedBy",user.id)
+
+
+
+
+        sqlSessionTemplate.update("BUMapper.editBusinessUnit",data)
+
+
+    }
+
+
+    fun addBusinessUnit(bu: BU) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+        var buId = UUID.randomUUID().toString()
+
+
+        data.put("id",buId)
+        bu.name?.let { data.put("name", it.uppercase()) }
+        bu.name?.let { data.put("ciName", it.lowercase()) }
+        bu.code?.let { data.put("code", it) }
+        bu.active?.let { data.put("active", it) }
+        data.put("createdBy",user.id)
+        data.put("updatedBy",user.id)
+
+
+        sqlSessionTemplate.insert("BUMapper.addBusinessUnit",data)
+
+
+    }
+
+
+
+    // TEAM REPOSITORY
+
+    fun getTeam( status: Int) : List<Team>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("active",status)
+
+        return sqlSessionTemplate.selectList("TeamMapper.getTeams",data)
+    }
+
+
+
+
 
 
 
