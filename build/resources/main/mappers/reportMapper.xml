@@ -66,7 +66,8 @@
                 RCT.AM_NAME_RCT AS 'amName',RCT.AM_CODE_RCT AS 'amCode',RCT.CFA_RCT AS 'cfa',RCT.HEAD_QUARTER_RCT AS 'hq',SLV.NAME_SLV AS 'status' FROM RECIPIENT_MASTER_RCT RCT
                 JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM =  RCT.ID_TEM_RCT
                 JOIN USER_LOV_ULV ULV ON ULV.ID_ULV =  RCT.ID_DESG_ULV_RCT
-                JOIN BU_MASTER_BUM BUM ON BUM.ID_BUM = RCT.ID_BUM_RCT
+                join DIVISION_MASTER_DIM dim on dim.ID_DIM = tem.ID_DIM_TEM
+                JOIN BU_MASTER_BUM BUM ON BUM.ID_BUM = dim.ID_BUM_DIM
                 join SYSTEM_LOV_SLV slv on slv.ID_SLV = RCT.ID_STATUS_SLV_RCT
         Where RCT.ID_STATUS_SLV_RCT = #{statusId} and TEM.ID_TEM = #{team} and BUM.ID_BUM = #{businessUnit}
     </select>
@@ -159,17 +160,17 @@
 
 
     <select id="getReportDispatches" resultType="com.squer.promobee.controller.dto.DispatchesReportDTO" parameterType = "map" statementType = "CALLABLE">
-        {call PROC_ReportDispatch (#{Filter, jdbcType = VARCHAR, mode = IN},#{StartDate, jdbcType = VARCHAR, mode = IN}, #{EndDate, jdbcType = VARCHAR, mode = IN}, #{UserID, jdbcType = VARCHAR, mode = IN},
+        {call PROC_ReportDispatch (#{Filter, jdbcType = INTEGER , mode = IN},#{StartDate, jdbcType = VARCHAR, mode = IN}, #{EndDate, jdbcType = VARCHAR, mode = IN}, #{UserID, jdbcType = VARCHAR, mode = IN},
         #{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN},#{Division, jdbcType = VARCHAR, mode = IN},
-        #{filterplan, jdbcType = VARCHAR, mode = IN} )}
+        #{filterplan, jdbcType = INTEGER , mode = IN} )}
     </select>
 
 
 
     <select id="getReportDispatchRegister" resultType="com.squer.promobee.controller.dto.DispatchRegisterReportDTO" parameterType = "map" statementType = "CALLABLE">
-        { call PROC_ReportDispatchRegisterNewPlatform (#{StartDate, jdbcType = VARCHAR, mode = IN}, #{EndDate, jdbcType = VARCHAR, mode = IN}, #{UserID, jdbcType = VARCHAR, mode = IN},
-        #{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN},
-        #{Team, jdbcType = VARCHAR, mode = IN},#{Filterplan, jdbcType = VARCHAR, mode = IN}) }
+        { call PROC_ReportDispatchRegister (#{StartDate, jdbcType = VARCHAR, mode = IN}, #{EndDate, jdbcType = VARCHAR, mode = IN}, #{UserID, jdbcType = VARCHAR, mode = IN},
+        #{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN}, #{Division, jdbcType = VARCHAR, mode = IN},
+        #{Team, jdbcType = VARCHAR, mode = IN},#{StatusID, jdbcType = VARCHAR, mode = IN}, #{Filterplan, jdbcType = INTEGER, mode = IN}) }
     </select>
 
 

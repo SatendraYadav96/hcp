@@ -57,7 +57,7 @@ class ReportRepository
     }
 
 
-    fun getReportDispatches( startDate: String,endDate: String,filter:String,filterPlan:String,userId:String,userDesgId:String, businessUnit: String, divison: String) : List<DispatchesReportDTO>{
+    fun getReportDispatches( startDate: String,endDate: String,filter:Int,filterPlan:Int,userId:String,userDesgId:String, businessUnit: String, division: String) : List<DispatchesReportDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
         data.put("StartDate", startDate)
         data.put("EndDate", endDate)
@@ -66,20 +66,22 @@ class ReportRepository
         data.put("UserID", userId)
         data.put("UserDesgID", userDesgId)
         data.put("BusinessUnit", businessUnit)
-        data.put("Division", divison)
+        data.put("Division", division)
 
         return sqlSessionFactory.openSession().selectList("ReportMapper.getReportDispatches", data)
     }
 
 
-    fun getReportDispatchRegister( startDate: String,endDate: String,userId:String,userDesgId:String, businessUnit: String,team:String,filterPlan:Int) : List<DispatchRegisterReportDTO>{
+    fun getReportDispatchRegister( startDate: String,endDate: String,userId:String,userDesgId:String, businessUnit: String,division: String ,team:String,statusId: String ,filterPlan:Int) : List<DispatchRegisterReportDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
         data.put("StartDate", startDate)
         data.put("EndDate", endDate)
         data.put("UserID", userId)
         data.put("UserDesgID", userDesgId)
         data.put("BusinessUnit", businessUnit)
+        data.put("Division", division)
         data.put("Team", team)
+        data.put("StatusID", statusId)
         data.put("Filterplan", filterPlan)
 
         return sqlSessionFactory.openSession().selectList("ReportMapper.getReportDispatchRegister", data)

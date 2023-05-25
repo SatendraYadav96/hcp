@@ -31,12 +31,12 @@ class ReportServiceImpl @Autowired constructor(
         return reportRepository.getReportPurchase(startDate,endDate,userId,userDesgId,businessUnit,divison)
     }
 
-    override fun getReportDispatches(startDate: String,endDate: String,filter:String,filterPlan:String,userId:String,userDesgId:String,businessUnit: String, divison: String): List<DispatchesReportDTO>{
-        return reportRepository.getReportDispatches(startDate,endDate,filter,filterPlan,userId,userDesgId,businessUnit,divison)
+    override fun getReportDispatches(startDate: String,endDate: String,filter:Int,filterPlan:Int,userId:String,userDesgId:String,businessUnit: String, division: String): List<DispatchesReportDTO>{
+        return reportRepository.getReportDispatches(startDate,endDate,filter,filterPlan,userId,userDesgId,businessUnit,division)
     }
 
-    override fun getReportDispatchRegister(startDate: String,endDate: String,userId:String,userDesgId:String, businessUnit: String,team:String,filterPlan:Int): List<DispatchRegisterReportDTO>{
-        return reportRepository.getReportDispatchRegister(startDate,endDate,userId,userDesgId,businessUnit,team,filterPlan)
+    override fun getReportDispatchRegister(startDate: String,endDate: String,userId:String,userDesgId:String, businessUnit: String,division: String ,team:String,statusId: String ,filterPlan:Int): List<DispatchRegisterReportDTO>{
+        return reportRepository.getReportDispatchRegister(startDate,endDate,userId,userDesgId,businessUnit,division,team,statusId,filterPlan)
     }
 
     override fun getReportDeviation(quarterName:String,fromDate: String,toDate: String,userId:String,userDesgId:String): List<DeviationReportDTO>{

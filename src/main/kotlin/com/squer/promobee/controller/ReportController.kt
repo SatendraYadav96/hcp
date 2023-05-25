@@ -44,16 +44,16 @@ open class ReportController @Autowired constructor(
     }
 
 
-    @GetMapping("/getReportDispatches/{startDate}/{endDate}/{filter}/{filterPlan}/{userId}/{userDesgId}/{businessUnit}/{divison}")
-    fun getReportDispatches(@PathVariable startDate: String, @PathVariable  endDate: String,@PathVariable filter:String,@PathVariable filterPlan:String,@PathVariable userId:String,@PathVariable userDesgId:String,@PathVariable businessUnit: String,@PathVariable divison: String): ResponseEntity<*>{
-        val data = reportService.getReportDispatches(startDate,endDate,filter,filterPlan,userId,userDesgId,businessUnit,divison)
+    @GetMapping("/getReportDispatches/{startDate}/{endDate}/{filter}/{filterPlan}/{userId}/{userDesgId}/{businessUnit}/{division}")
+    fun getReportDispatches(@PathVariable startDate: String, @PathVariable  endDate: String,@PathVariable filter:Int,@PathVariable filterPlan:Int,@PathVariable userId:String,@PathVariable userDesgId:String,@PathVariable businessUnit: String,@PathVariable division: String): ResponseEntity<*>{
+        val data = reportService.getReportDispatches(startDate,endDate,filter,filterPlan,userId,userDesgId,businessUnit,division)
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
 
-    @GetMapping("/getReportDispatchRegister/{startDate}/{endDate}/{userId}/{userDesgId}/{businessUnit}/{team}/{filterPlan}")
-    fun getReportDispatchRegister(@PathVariable  startDate: String, @PathVariable  endDate: String, @PathVariable userId:String, @PathVariable userDesgId:String, @PathVariable businessUnit: String,  @PathVariable team:String,  @PathVariable filterPlan:Int): ResponseEntity<*>{
-        val data = reportService.getReportDispatchRegister(startDate,endDate,userId,userDesgId,businessUnit,team,filterPlan)
+    @GetMapping("/getReportDispatchRegister/{startDate}/{endDate}/{userId}/{userDesgId}/{businessUnit}/{division}/{team}/{statusId}/{filterPlan}")
+    fun getReportDispatchRegister(@PathVariable  startDate: String, @PathVariable  endDate: String, @PathVariable userId:String, @PathVariable userDesgId:String, @PathVariable businessUnit: String, @PathVariable division: String, @PathVariable team:String,  @PathVariable statusId: String, @PathVariable filterPlan:Int): ResponseEntity<*>{
+        val data = reportService.getReportDispatchRegister(startDate,endDate,userId,userDesgId,businessUnit,division,team,statusId,filterPlan)
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
