@@ -7,6 +7,7 @@
         <id property="id" column="id_cbr"/>
         <result property="ccmId" column="id_ccm_cbr"/>
         <result property="brandId.id" column="id_brd_cbr"/>
+<!--        <result property="brandId" column="id_brd_cbr"/>-->
 
 
 
@@ -21,10 +22,7 @@
 <!--        </association>-->
     </resultMap>
 
-    <insert id="editCostCenterBrand">
-        insert into COSTCENTER_BRAND_CBR (ID_CBR, ID_CCM_CBR, ID_BRD_CBR)
-        values( #{id}, #{ccmId}, #{brandId.id})
-    </insert>
+
 
 
 <!--    <insert id="addCostCenterBrand" parameterType="map">-->
@@ -37,6 +35,11 @@
         values( #{id}, #{ccmId}, #{brandId.id})
     </insert>
 
+
+    <insert id="editCostCenterBrand">
+        insert into COSTCENTER_BRAND_CBR (ID_CBR, ID_CCM_CBR, ID_BRD_CBR)
+        values( #{id}, #{ccmId}, #{brandId.id})
+    </insert>
 
 
 

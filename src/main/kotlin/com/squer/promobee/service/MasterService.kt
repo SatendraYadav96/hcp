@@ -24,7 +24,7 @@ interface MasterService {
 
     fun addCostCenter(ccm: CostCenter)
 
-    fun editCostCenter (ccm: CostCenterDTO)
+    fun editCostCenter (ccm: CostCenter)
 
     fun getCostCenterById (id: String): CostCenter
 

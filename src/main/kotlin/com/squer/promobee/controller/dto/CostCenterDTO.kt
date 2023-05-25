@@ -10,7 +10,7 @@ class CostCenterDTO {
     var ccmCode: String? = null
     var ccmActive: Int?= null
     var brandId: String? = null
-    var brandName: String? = null
+   // var brandName: String? = null
 
 
 

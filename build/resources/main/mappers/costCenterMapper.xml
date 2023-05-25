@@ -15,6 +15,7 @@
         <result property="updatedBy" column="updated_by_ccm"/>
         <result property="brandId.id" column="id_brd"/>
         <result property="brandId.name" column="name_brd"/>
+
     </resultMap>
 
     <select id="getCostCenterNameById" resultType="Map">
@@ -66,6 +67,7 @@
         JOIN BRAND_MASTER_BRD BRD ON BRD.ID_BRD = CBR.ID_BRD_CBR
         WHERE CCM.IS_ACTIVE_CCM = 1
     </select>
+
 
 
 
