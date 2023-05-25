@@ -45,18 +45,18 @@
 
     </update>
 
-<!--    <select id="getCostCenterById" resultMap="costCenterResultMap" >-->
-<!--        select ccm.id_ccm,ccm.name_ccm,ccm.code_ccm,ccm.is_active_ccm,brd.id_brd,brd.name_brd-->
-<!--        from COST_CENTER_MASTER_CCM ccm-->
-<!--        join COSTCENTER_BRAND_CBR cbr on cbr.ID_CCM_CBR = ccm.ID_CCM-->
-<!--        join BRAND_MASTER_BRD brd on brd.ID_BRD = cbr.ID_BRD_CBR-->
-<!--        where ID_CCM = #{id}-->
-<!--    </select>-->
-
     <select id="getCostCenterById" resultMap="costCenterResultMap" >
-        select * from COST_CENTER_MASTER_CCM
+        select ccm.*,brd.id_brd,brd.name_brd
+        from COST_CENTER_MASTER_CCM ccm
+        join COSTCENTER_BRAND_CBR cbr on cbr.ID_CCM_CBR = ccm.ID_CCM
+        join BRAND_MASTER_BRD brd on brd.ID_BRD = cbr.ID_BRD_CBR
         where ID_CCM = #{id}
     </select>
+
+<!--    <select id="getCostCenterById" resultMap="costCenterResultMap" >-->
+<!--        select * from COST_CENTER_MASTER_CCM-->
+<!--        where ID_CCM = #{id}-->
+<!--    </select>-->
 
 
 
