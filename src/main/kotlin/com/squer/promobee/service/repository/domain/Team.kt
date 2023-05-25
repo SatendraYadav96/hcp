@@ -9,4 +9,6 @@ open class Team: AuditableEntity() {
     var code: String?= null
     var active: Int?= null
     var division: NamedSquerEntity?= null
+    var brand: NamedSquerEntity?= null
+    var ety: NamedSquerEntity?= null
 }

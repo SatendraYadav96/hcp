@@ -81,6 +81,8 @@ interface MasterService {
 
     fun getTeam(status: Int): List<Team>
 
+    fun getTeamById (id: String): List<Team>
+
 
 
 

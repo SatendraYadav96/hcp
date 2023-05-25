@@ -17,6 +17,14 @@
             <id property="id" column="id_dim_tem"/>
             <result property="name" column="name_dim"/>
         </association>
+        <association property="brand" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_brd"/>
+            <result property="name" column="name_brd"/>
+        </association>
+        <association property="ety" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_ety"/>
+            <result property="name" column="name_ety"/>
+        </association>
     </resultMap>
 
     <select id="usersTeamSelect" resultMap="teamDTOResultMap">
@@ -87,6 +95,16 @@
     <select id="getTeams" resultMap="teamResultMap" >
         SELECT * FROM TEAM_MASTER_TEM
         WHERE IS_ACTIVE_TEM = #{active}
+    </select>
+
+    <select id="getTeamById" resultMap="teamResultMap" >
+        SELECT  TEM.*,DIM.NAME_DIM,BRD.ID_BRD,BRD.NAME_BRD,ETY.ID_ETY,ETY.NAME_ETY FROM TEAM_MASTER_TEM TEM
+        JOIN DIVISION_MASTER_DIM DIM ON DIM.ID_DIM =  TEM.ID_DIM_TEM
+        JOIN DIVISION_BRAND_DBR DBR ON DBR.ID_DIM_DBR = DIM.ID_DIM
+        JOIN BRAND_MASTER_BRD BRD ON BRD.ID_BRD = DBR.ID_BRD_DBR
+        JOIN TEAM_LEGAL_ENTITY_TET TET ON TET.ID_TEM_TET = TEM.ID_TEM
+        JOIN LEGAL_ENTITY_MASTER_ETY ETY ON ETY.ID_ETY = TET.ID_ETY_TET
+        WHERE ID_TEM = #{id}
     </select>
 
 

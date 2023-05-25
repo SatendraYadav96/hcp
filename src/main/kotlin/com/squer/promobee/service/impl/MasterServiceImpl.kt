@@ -155,6 +155,10 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getTeam(status)
     }
 
+    override fun getTeamById(id: String): List<Team> {
+        return masterRepository.getTeamById(id)
+    }
+
 
 
 
