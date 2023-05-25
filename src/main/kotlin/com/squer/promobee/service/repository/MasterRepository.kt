@@ -126,6 +126,8 @@ class MasterRepository
         sqlSessionTemplate.insert("CostCenterMapper.addCostCenter",data)
 
 
+
+
         var cbr = CostCenterBrand()
 
         data.put("id", UUID.randomUUID().toString())
