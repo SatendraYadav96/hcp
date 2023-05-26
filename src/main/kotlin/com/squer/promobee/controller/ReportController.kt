@@ -115,6 +115,7 @@ open class ReportController @Autowired constructor(
     fun getItemWiseReport(@PathVariable fromDate: String, @PathVariable  toDate: String,@PathVariable businessUnit: String,@PathVariable divison: String): ResponseEntity<*>{
         val data = reportService.getItemWiseReport(fromDate,toDate,businessUnit,divison)
         return  ResponseEntity(data,HttpStatus.OK)
+
     }
 
 
