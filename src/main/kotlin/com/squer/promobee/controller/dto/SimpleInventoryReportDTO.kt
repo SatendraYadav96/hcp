@@ -5,6 +5,7 @@ class SimpleInventoryReportDTO {
     val businessUnit:String ?= null
     val division:String ?= null
     val costCenter:String ?= null
+    val costCenterId:String ?= null
     val category:String ?= null
     val productCode:String ?= null
     val productName:String ?= null
