@@ -84,7 +84,7 @@ class InventoryRepository @Autowired constructor(
     }
 
 
-    fun searchInventory(  isExhausted: Boolean, isPopup:Int) : List<Inventory>{
+    fun searchInventory(  isExhausted: Int, isPopup:Int) : List<Inventory>{
         var data: MutableMap<String, Any> = mutableMapOf()
 //        data.put("name", name)
         data.put("isExhausted", isExhausted)

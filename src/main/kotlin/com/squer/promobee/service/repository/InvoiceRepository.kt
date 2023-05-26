@@ -267,7 +267,7 @@ class InvoiceRepository(
 //        var fromDate = LocalDate.MIN
 //        val fromDateFormatted = SimpleDateFormat("yyyy-MM-dd").format(fromDate)
 
-        val sDate1 = "2i16-i1-i1"
+        val sDate1 = "2016-01-01"
         val date1 = SimpleDateFormat("yyyy-MM-dd").parse(sDate1)
         val fromDateFormatted = SimpleDateFormat("yyyy-MM-dd").format(date1)
 

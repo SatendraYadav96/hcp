@@ -118,8 +118,8 @@
     </update>
 
 
-    <select id="searchInventory" resultType="com.squer.promobee.controller.dto.InventoryDTO" parameterType = "map" statementType = "CALLABLE">
-        { call PROC_GET_INVENTORY_ITEMS ( #{isExhausted, jdbcType = BOOLEAN , mode = IN},
+    <select id="searchInventory" resultType="com.squer.promobee.service.repository.domain.Inventory" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GET_INVENTORY_ITEMS ( #{isExhausted, jdbcType = BIT  , mode = IN},
                                            #{isPopup, jdbcType = INTEGER, mode = IN}) }
 
     </select>
