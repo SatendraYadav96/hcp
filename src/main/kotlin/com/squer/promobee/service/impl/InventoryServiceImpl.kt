@@ -36,9 +36,10 @@ class InventoryServiceImpl @Autowired constructor(
     }
 
 
-    override fun searchInventory( isExhausted: Int, isPopup:Int) : List<Inventory>{
-        return inventoryRepository.searchInventory( isExhausted, isPopup)
+    override fun searchInventory( isExhausted: Int) : List<InventoryDTO>{
+        return inventoryRepository.searchInventory( isExhausted)
     }
+
 
     override fun getInventoryReversalHistory( invId: String) : List<InventoryReversalDTO> {
         return inventoryRepository.getInventoryReversalHistory(invId )

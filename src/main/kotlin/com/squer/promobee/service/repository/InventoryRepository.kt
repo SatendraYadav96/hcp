@@ -84,11 +84,11 @@ class InventoryRepository @Autowired constructor(
     }
 
 
-    fun searchInventory(  isExhausted: Int, isPopup:Int) : List<Inventory>{
+    fun searchInventory(  isExhausted: Int) : List<InventoryDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
 //        data.put("name", name)
         data.put("isExhausted", isExhausted)
-        data.put("isPopup", isPopup)
+//        data.put("isPopup", isPopup)
         return sqlSessionFactory.openSession().selectList("InventoryMapper.searchInventory", data)
     }
 

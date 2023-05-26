@@ -30,7 +30,7 @@ class InventoryDTO {
     var isExhausted: String ?= null
     var isPopup: Int ?= null
     var packSize: Int?= null
-    var categoryId: NamedSquerEntity?= null
+    var categoryId: String?= null
     var qtyAllocated: Int?= null
     var qtyDispatched: Int?= null
     var categoryName: String ? =  null

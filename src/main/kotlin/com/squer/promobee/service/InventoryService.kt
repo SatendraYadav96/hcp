@@ -16,7 +16,7 @@ interface InventoryService {
 
     fun blockItem(inv:InventoryDTO)
 
-    fun searchInventory( isExhausted: Int, isPopup:Int) : List<Inventory>
+    fun searchInventory( isExhausted: Int) : List<InventoryDTO>
 
     fun getInventoryReversalHistory( invId: String) : List<InventoryReversalDTO>
 
