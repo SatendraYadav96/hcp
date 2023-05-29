@@ -108,7 +108,11 @@ open class InvoiceController@Autowired constructor(
     open fun printLabel(@RequestBody inh: PrintInvoiceDTO): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val printLabelData = invoiceService.printLabel(inh)
-        return ResponseEntity(FileContentPOJO(fileName = "label_${System.currentTimeMillis()}", String(Base64.getEncoder().encode(printLabelData))), HttpStatus.OK)
+        var fileContentList = mutableListOf<FileContentPOJO>()
+        printLabelData?.forEach {
+            fileContentList.add(FileContentPOJO(fileName = "label_${System.currentTimeMillis()}" , String(Base64.getEncoder().encode(it))))
+        }
+        return ResponseEntity(fileContentList, HttpStatus.OK)
     }
 
     @GetMapping("/getRecipientToGenerateInvoice/{recipientId}")
@@ -177,3 +181,7 @@ open class InvoiceController@Autowired constructor(
 
 
 }
+
+
+
+

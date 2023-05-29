@@ -64,7 +64,7 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getInvoicesForGrouping(groupInvoice)
     }
 
-    override fun printLabel(inh: PrintInvoiceDTO): ByteArray? {
+    override fun printLabel(inh: PrintInvoiceDTO): MutableList<ByteArray>? {
         return invoiceRepository.printLabel(inh)
     }
 

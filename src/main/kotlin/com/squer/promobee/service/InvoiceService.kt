@@ -30,7 +30,7 @@ interface InvoiceService {
     fun getInvoicesForGrouping(groupInvoice: GroupInvoiceParamDTO): List<InvoicesForGroupingDTO>
 
 
-    fun printLabel(inh:PrintInvoiceDTO): ByteArray?
+    fun printLabel(inh:PrintInvoiceDTO): MutableList<ByteArray>?
 
     fun getRecipientToGenerateInvoice( recipientId: String):Recipient
 
