@@ -32,7 +32,7 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getDoctorById(id)
     }
 
-    override fun getPrintInvoiceHeaders(inhId:String): InvoicePrintDetailsDTO {
+    override fun getPrintInvoiceHeaders(inhId:String): MutableList<InvoicePrintDetailsDTO> {
         return invoiceRepository.getPrintInvoiceHeaders(inhId)
     }
 
@@ -40,12 +40,12 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getVirtualPrintInvoiceHeaders(inhId)
     }
 
-    override fun getInvoiceDetailsForPrint(inhId:String): List<InvoiceDetailsPrintDTO> {
+    override fun getInvoiceDetailsForPrint(inhId:String): MutableList<InvoiceDetailsPrintDTO> {
         return invoiceRepository.getInvoiceDetailsForPrint(inhId)
     }
 
 
-    override fun printInvoice(inh: PrintInvoiceDTO) : ByteArray?{
+    override fun printInvoice(inh: List<PrintInvoiceDTO>) : MutableList<ByteArray>?{
          return invoiceRepository.printInvoice(inh)
     }
     override fun getHsnRate(hcmCode:String): HSN {
@@ -64,7 +64,7 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getInvoicesForGrouping(groupInvoice)
     }
 
-    override fun printLabel(inh: PrintInvoiceDTO): MutableList<ByteArray>? {
+    override fun printLabel(inh: List<PrintInvoiceDTO>): MutableList<ByteArray>? {
         return invoiceRepository.printLabel(inh)
     }
 

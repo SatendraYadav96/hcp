@@ -2,16 +2,6 @@ package com.squer.promobee.controller.dto
 
 class LabelPrintDetailsDTO  {
 
-//    fun forEach(function: () -> Any) {
-//
-//    }
-//
-//    operator fun get(i: Int): Any {
-//
-//        return i
-//
-//    }
-
     var  transporterName : String? = null
     var  lRNumber : String? = null
     var  invoiceDate : String? = null

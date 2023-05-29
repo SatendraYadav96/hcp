@@ -64,11 +64,15 @@ open class InvoiceController@Autowired constructor(
 
 
     @PostMapping("/printInvoice")
-    open fun printInvoice(@RequestBody inh: PrintInvoiceDTO): ResponseEntity<*> {
+    open fun printInvoice(@RequestBody inh: List<PrintInvoiceDTO>): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val printInvoiceData = invoiceService.printInvoice(inh)
 
-        return ResponseEntity(FileContentPOJO(fileName = "label_${System.currentTimeMillis()}", String(Base64.getEncoder().encode(printInvoiceData))), HttpStatus.OK)
+        var fileContentList = mutableListOf<FileContentPOJO>()
+        printInvoiceData?.forEach {
+            fileContentList.add(FileContentPOJO(fileName = "label_${System.currentTimeMillis()}" , String(Base64.getEncoder().encode(it))))
+        }
+        return ResponseEntity(fileContentList, HttpStatus.OK)
     }
 
     @GetMapping("/getHsnRate/{hcmCode}")
@@ -105,7 +109,7 @@ open class InvoiceController@Autowired constructor(
 
 
     @PostMapping("/printLabel")
-    open fun printLabel(@RequestBody inh: PrintInvoiceDTO): ResponseEntity<*> {
+    open fun printLabel(@RequestBody inh: List<PrintInvoiceDTO>): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val printLabelData = invoiceService.printLabel(inh)
         var fileContentList = mutableListOf<FileContentPOJO>()

@@ -13,13 +13,13 @@ interface InvoiceService {
 
     fun getDoctorById(id:String): Doctor
 
-    fun getPrintInvoiceHeaders(inhId:String): InvoicePrintDetailsDTO
+    fun getPrintInvoiceHeaders(inhId:String): MutableList<InvoicePrintDetailsDTO>
 
     fun getVirtualPrintInvoiceHeaders(inhId:String): InvoicePrintDetailsDTO
 
-    fun getInvoiceDetailsForPrint(inhId:String): List<InvoiceDetailsPrintDTO>
+    fun getInvoiceDetailsForPrint(inhId:String): MutableList<InvoiceDetailsPrintDTO>
 
-    fun printInvoice(inh:PrintInvoiceDTO): ByteArray?
+    fun printInvoice(inh: List<PrintInvoiceDTO>): MutableList<ByteArray>?
 
     fun getHsnRate(hcmCode:String): HSN
 
@@ -30,7 +30,7 @@ interface InvoiceService {
     fun getInvoicesForGrouping(groupInvoice: GroupInvoiceParamDTO): List<InvoicesForGroupingDTO>
 
 
-    fun printLabel(inh:PrintInvoiceDTO): MutableList<ByteArray>?
+    fun printLabel(inh: List<PrintInvoiceDTO>): MutableList<ByteArray>?
 
     fun getRecipientToGenerateInvoice( recipientId: String):Recipient
 
