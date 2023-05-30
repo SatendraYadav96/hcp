@@ -4,6 +4,7 @@ import com.squer.promobee.controller.dto.*
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.repository.domain.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 interface MasterService {
@@ -81,7 +82,9 @@ interface MasterService {
 
     fun getTeam(status: Int): List<Team>
 
-    fun getTeamById (id: String): List<Team>
+    fun getBrandByTeamId (teamId: String): MutableList<TeamBrand>
+
+    fun getTeamById (id: String): MutableList<Team>
 
 
 

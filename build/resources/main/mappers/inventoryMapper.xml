@@ -265,6 +265,10 @@
 
     </update>
 
+    <select id="getInventoryByIdForInvoicing" resultMap="inventoryResultMap">
+        select * from INVENTORY_INV where ID_INV = #{id}
+    </select>
+
 
 
 </mapper>

@@ -407,11 +407,19 @@ class MasterRepository
         return sqlSessionTemplate.selectList("TeamMapper.getTeams",data)
     }
 
-    fun getTeamById(id: String):List<Team>{
+
+    fun getBrandByTeamId(teamId: String):MutableList<TeamBrand>{
+        var data: MutableMap<String,Any> = mutableMapOf()
+        data.put("id",teamId)
+
+        return sqlSessionTemplate.selectList<TeamBrand>("TeamBrandMapper.getBrandByTeamId",data).toMutableList()
+    }
+
+    fun getTeamById(id: String):MutableList<Team>{
         var data: MutableMap<String,Any> = mutableMapOf()
         data.put("id",id)
 
-        return sqlSessionTemplate.selectList("TeamMapper.getTeamById",data)
+        return sqlSessionTemplate.selectList<Team>("TeamMapper.getTeamById",data).toMutableList()
     }
 
 

@@ -16,4 +16,10 @@
     </resultMap>
 
 
+    <select id="getBrandByTeamId" resultMap="teamBrandResultMap" >
+        select * from TEAM_BRAND_TBR
+                 where ID_TEM_TBR = #{id}
+    </select>
+
+
 </mapper>

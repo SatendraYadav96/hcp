@@ -32,11 +32,13 @@ interface InvoiceService {
 
     fun printLabel(inh: List<PrintInvoiceDTO>): MutableList<ByteArray>?
 
-    fun getRecipientToGenerateInvoice( recipientId: String):Recipient
+    fun getRecipientToGenerateInvoice( recipientId: String):MutableList<Recipient>
 
-    fun getRecipientItemCategoryCount( month:Int,year:Int,recipientId:String):ItemCategoryCountDTO
+    fun getInventoryByIdForInvoicing( invId: String):MutableList<Inventory>
 
-    fun getDispatchDetailsForInvoicing( month:Int,year:Int,recipientId:String):List<DispatchDetailDTO>
+    fun getRecipientItemCategoryCount( month:Int,year:Int,recipientId:String):MutableList<ItemCategoryCountDTO>
+
+    fun getDispatchDetailsForInvoicing( month:Int,year:Int,recipientId:String):MutableList<DispatchDetailDTO>
 
     fun getItemMasterById(id: String): Item
 
@@ -44,7 +46,7 @@ interface InvoiceService {
 
     fun getDispatchPlanById(id: String): DispatchPlan
 
-    fun generateInvoice(genInv : GenerateInvoiceDTO)
+    fun generateInvoice(genInv : List<GenerateInvoiceDTO>)
 
 
 

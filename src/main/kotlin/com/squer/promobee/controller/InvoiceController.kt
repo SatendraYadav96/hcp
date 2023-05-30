@@ -127,6 +127,14 @@ open class InvoiceController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getInventoryByIdForInvoicing/{id}")
+    open fun getInventoryByIdForInvoicing(@PathVariable invId: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = invoiceService.getInventoryByIdForInvoicing(invId)
+
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
     @GetMapping("/getRecipientItemCategoryCount/{month}/{year}/{recipientId}")
     open fun getRecipientItemCategoryCount(@PathVariable month: Int,@PathVariable year: Int,@PathVariable recipientId: String): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -171,7 +179,7 @@ open class InvoiceController@Autowired constructor(
 
 
     @PostMapping("/generateInvoice")
-        open fun generateInvoice(@RequestBody genInv : GenerateInvoiceDTO ): ResponseEntity<*> {
+        open fun generateInvoice(@RequestBody genInv : List<GenerateInvoiceDTO> ): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val generateInvoiceData = invoiceService.generateInvoice(genInv)
 

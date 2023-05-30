@@ -68,15 +68,19 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.printLabel(inh)
     }
 
-    override fun getRecipientToGenerateInvoice( recipientId: String):Recipient {
+    override fun getRecipientToGenerateInvoice( recipientId: String):MutableList<Recipient> {
         return invoiceRepository.getRecipientToGenerateInvoice(recipientId)
     }
 
-    override fun getRecipientItemCategoryCount(month: Int, year: Int,  recipientId: String):ItemCategoryCountDTO {
+    override fun getInventoryByIdForInvoicing(invId: String): MutableList<Inventory> {
+        return invoiceRepository.getInventoryByIdForInvoicing(invId)
+    }
+
+    override fun getRecipientItemCategoryCount(month: Int, year: Int,  recipientId: String):MutableList<ItemCategoryCountDTO> {
         return invoiceRepository.getRecipientItemCategoryCount(month,year,recipientId)
     }
 
-    override fun getDispatchDetailsForInvoicing(month: Int, year: Int, recipientId: String): List<DispatchDetailDTO> {
+    override fun getDispatchDetailsForInvoicing(month: Int, year: Int, recipientId: String): MutableList<DispatchDetailDTO> {
         return invoiceRepository.getDispatchDetailsForInvoicing(month,year,recipientId)
     }
 
@@ -92,7 +96,7 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getDispatchPlanById(id)
     }
 
-    override fun generateInvoice(genInv : GenerateInvoiceDTO) {
+    override fun generateInvoice(genInv : List<GenerateInvoiceDTO>) {
         return invoiceRepository.generateInvoice(genInv)
     }
 

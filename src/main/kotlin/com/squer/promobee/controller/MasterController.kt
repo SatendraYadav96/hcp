@@ -271,6 +271,13 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getBrandByTeamId/{teamId}")
+    fun getBrandByTeamId(@PathVariable teamId: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getBrandByTeamId(teamId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
     @GetMapping("/getTeamById/{id}")
     fun getTeamById(@PathVariable id: String): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User

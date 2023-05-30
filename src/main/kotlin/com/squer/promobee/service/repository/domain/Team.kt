@@ -11,4 +11,6 @@ open class Team: AuditableEntity() {
     var division: NamedSquerEntity?= null
     var brand: NamedSquerEntity?= null
     var ety: NamedSquerEntity?= null
+//    var division: List<NamedSquerEntity?>?= null
+
 }
