@@ -1,1 +1,3 @@
-rootProject.name = "hcp"
+rootProject.name = "promobee"
+include ("src")
+include ("web1")
