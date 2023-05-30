@@ -419,8 +419,10 @@ class MasterRepository
         var data: MutableMap<String,Any> = mutableMapOf()
         data.put("id",id)
 
-        return sqlSessionTemplate.selectList<Team>("TeamMapper.getTeamById",data).toMutableList()
+        return sqlSessionTemplate.selectList<Team>("TeamMapper.getTeamById",data)
     }
+
+
 
 
 

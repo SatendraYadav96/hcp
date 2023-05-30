@@ -8,9 +8,9 @@ open class Team: AuditableEntity() {
     var ciName: String?= null
     var code: String?= null
     var active: Int?= null
-    var division: NamedSquerEntity?= null
-    var brand: NamedSquerEntity?= null
-    var ety: NamedSquerEntity?= null
-//    var division: List<NamedSquerEntity?>?= null
+    var division: ArrayList<NamedSquerEntity> = ArrayList<NamedSquerEntity>()
+    var brand: ArrayList<NamedSquerEntity> = ArrayList<NamedSquerEntity>()
+    var ety: ArrayList<NamedSquerEntity> = ArrayList<NamedSquerEntity>()
+
 
 }
