@@ -2,16 +2,12 @@ package com.squer.promobee.controller
 
 
 
-import com.squer.promobee.controller.dto.CostCenterDTO
-import com.squer.promobee.controller.dto.VendorDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.MasterService
 import com.squer.promobee.service.repository.domain.*
-import liquibase.pro.packaged.bu
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import lombok.extern.slf4j.Slf4j
-import org.apache.coyote.Response
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -200,7 +196,7 @@ open class MasterController@Autowired constructor(
     }
 
 
-    @GetMapping("/getLegalEntity")
+    @GetMapping("/getLegalEntityDropdown")
     fun getLegalEntityDropdown(): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = masterService.getLegalEntityDropdown()
@@ -228,6 +224,8 @@ open class MasterController@Autowired constructor(
         val data = masterService.getUserDropdown()
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+
 
 
     // BUSINESS UNIT CONTROLLER
@@ -282,6 +280,13 @@ open class MasterController@Autowired constructor(
     fun getTeamById(@PathVariable id: String): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = masterService.getTeamById(id)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PutMapping("/editTeam")
+    open fun editTeam(@RequestBody tem: Team): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.editTeam(tem)
         return ResponseEntity(data, HttpStatus.OK)
     }
 

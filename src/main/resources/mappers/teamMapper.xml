@@ -109,6 +109,21 @@
     </select>
 
 
+    <insert id="addTeam">
+        insert into BU_MASTER_BUM (ID_BUM, NAME_BUM, CI_NAME_BUM, CODE_BUM, IS_ACTIVE_BUM, CREATED_ON_BUM, CREATED_BY_BUM,
+                                   UPDATED_ON_BUM,UPDATED_BY_BUM)
+        values( #{id}, #{name}, #{ciName}, #{code}, #{active}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy} )
+    </insert>
+
+
+    <update id="editTeam">
+
+        UPDATE TEAM_MASTER_TEM SET ID_DIM_TEM = #{division} , NAME_TEM = #{name},CI_NAME_TEM = #{ciName}, IS_ACTIVE_TEM = #{active}, CODE_TEM = #{code}, UPDATED_BY_TEM = #{updatedBy}, UPDATED_ON_TEM = GETDATE()
+                                   WHERE ID_TEM = #{id}
+
+    </update>
+
+
 
 
 </mapper>

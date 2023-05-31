@@ -423,6 +423,91 @@ class MasterRepository
     }
 
 
+    fun editTeam(tem: Team) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+
+        // add team
+
+
+        data.put("id",tem.id)
+        tem.name?.let { data.put("name", it) }
+        tem.name?.let { data.put("ciName", it.lowercase()) }
+        tem.code?.let { data.put("code", it) }
+        tem.active?.let { data.put("active", it) }
+        tem.division?.let { data.put("division", it.id) }
+        data.put("updatedBy",user.id)
+
+        sqlSessionTemplate.update("TeamMapper.editTeam",data)
+
+        //delete existing brand mapped to team
+
+        data.put("id",tem.id)
+
+        sqlSessionTemplate.delete("TeamBrandMapper.deleteBrandByTeamId",data)
+
+
+        // mapped requested brand to team
+
+        var tbr =  mutableListOf<MutableList<TeamBrand>>()
+
+        var i = 0
+
+        tem.brand.forEach {
+
+
+
+            var tbrId = UUID.randomUUID().toString()
+
+            data.put("id",tbrId)
+            data.put("teamId",tem.id)
+            data.put("brandId",tem.brand.get(i).id)
+
+            sqlSessionTemplate.insert("TeamBrandMapper.addBrandByTeamId",data)
+
+            i++
+        }
+
+        //delete existing entity mapped to team
+
+        data.put("id",tem.id)
+
+        sqlSessionTemplate.delete("TeamLegalEntityMapper.deleteEntityByTeamId",data)
+
+        //mapped requested entity to team
+
+        var tet = TeamLegalEntity()
+
+        i = 0
+
+        tem.ety.forEach {
+
+
+            var tetId = UUID.randomUUID().toString()
+
+            data.put("id",tetId)
+            data.put("team",tem.id)
+            data.put("legalEntity",tem.ety.get(i).id)
+
+            sqlSessionTemplate.insert("TeamLegalEntityMapper.addEntityByTeamId",data)
+
+            i++
+
+        }
+
+
+        println("Team Updated Successfully !")
+
+
+
+    }
+
+
+
+
 
 
 
