@@ -90,6 +90,8 @@ interface MasterService {
 
     fun editTeam(tem: MasterTeam)
 
+    fun addTeam(tem: MasterTeam)
+
 
 
 

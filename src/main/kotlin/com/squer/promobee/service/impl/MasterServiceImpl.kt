@@ -167,6 +167,10 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.editTeam(tem)
     }
 
+    override fun addTeam(tem: MasterTeam) {
+        return masterRepository.addTeam(tem)
+    }
+
 
 
 

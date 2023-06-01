@@ -290,6 +290,13 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @PostMapping("/addTeam")
+    open fun addTeam(@RequestBody tem: MasterTeam): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.addTeam(tem)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
 
 
 

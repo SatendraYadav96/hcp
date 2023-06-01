@@ -509,6 +509,86 @@ class MasterRepository
 
 
 
+    fun addTeam(tem: MasterTeam) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+
+        // add team
+
+        var temId = UUID.randomUUID().toString()
+
+        data.put("id",temId)
+        tem.name?.let { data.put("name", it) }
+        tem.name?.let { data.put("ciName", it.lowercase()) }
+        tem.code?.let { data.put("code", it) }
+        tem.active?.let { data.put("active", it) }
+        data.put("createdBy",user.id)
+        data.put("updatedBy",user.id)
+        tem.division?.id.let { it?.let { it1 -> data.put("division", it1) } }
+
+        sqlSessionTemplate.insert("TeamMapper.addTeam",data)
+
+
+
+        // mapped requested brand to team
+
+        var tbr =  TeamBrand()
+
+        var i = 0
+
+        tem.brand.forEach {
+
+
+
+            var tbrId = UUID.randomUUID().toString()
+
+            data.put("id",tbrId)
+            data.put("teamId",temId)
+            data.put("brandId",tem.brand.get(i))
+
+            sqlSessionTemplate.insert("TeamBrandMapper.addBrandByTeamId",data)
+
+            i++
+
+        }
+
+
+
+        //mapped requested entity to team
+
+        var tet = TeamLegalEntity()
+
+        i = 0
+
+        tem.ety.forEach {
+
+
+            var tetId = UUID.randomUUID().toString()
+
+            data.put("id",tetId)
+            data.put("team",temId)
+            data.put("legalEntity",tem.ety.get(i))
+
+            sqlSessionTemplate.insert("TeamLegalEntityMapper.addEntityByTeamId",data)
+
+            i++
+
+        }
+
+
+        println("Team Added Successfully !")
+
+
+
+    }
+
+
+
+
+
 
 
 

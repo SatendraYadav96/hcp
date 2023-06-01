@@ -110,9 +110,9 @@
 
 
     <insert id="addTeam">
-        insert into BU_MASTER_BUM (ID_BUM, NAME_BUM, CI_NAME_BUM, CODE_BUM, IS_ACTIVE_BUM, CREATED_ON_BUM, CREATED_BY_BUM,
-                                   UPDATED_ON_BUM,UPDATED_BY_BUM)
-        values( #{id}, #{name}, #{ciName}, #{code}, #{active}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy} )
+        insert into TEAM_MASTER_TEM (ID_TEM, NAME_TEM, CI_NAME_TEM, CODE_TEM, IS_ACTIVE_TEM, CREATED_ON_TEM  , CREATED_BY_TEM  ,
+                                   UPDATED_ON_TEM,UPDATED_BY_TEM,ID_DIM_TEM)
+        values( #{id}, #{name}, #{ciName}, #{code}, #{active}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy},#{division} )
     </insert>
 
 
