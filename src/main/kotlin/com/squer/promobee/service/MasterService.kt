@@ -88,7 +88,7 @@ interface MasterService {
 
     fun getTeamById (id: String): MutableList<Team>
 
-    fun editTeam(tem: Team)
+    fun editTeam(tem: MasterTeam)
 
 
 

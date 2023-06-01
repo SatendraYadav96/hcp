@@ -284,7 +284,7 @@ open class MasterController@Autowired constructor(
     }
 
     @PutMapping("/editTeam")
-    open fun editTeam(@RequestBody tem: Team): ResponseEntity<*>{
+    open fun editTeam(@RequestBody tem: MasterTeam): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = masterService.editTeam(tem)
         return ResponseEntity(data, HttpStatus.OK)

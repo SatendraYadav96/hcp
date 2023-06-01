@@ -163,7 +163,7 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getTeamById(id)
     }
 
-    override fun editTeam(tem: Team) {
+    override fun editTeam(tem: MasterTeam) {
         return masterRepository.editTeam(tem)
     }
 

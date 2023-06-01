@@ -18,4 +18,19 @@
     <select id="getUserLegalTeam" resultMap="teamLegalEntityResultMap">
         select distinct ID_TEM_TET , ID_TET, ID_ETY_TET from TEAM_LEGAL_ENTITY_TET where ID_ETY_TET = #{entityId}
     </select>
+
+
+    <delete id="deleteEntityByTeamId">
+
+        delete  from TEAM_LEGAL_ENTITY_TET
+        where ID_TEM_TET = #{id}
+
+    </delete>
+
+    <insert id="addEntityByTeamId">
+        INSERT INTO TEAM_LEGAL_ENTITY_TET (ID_TET,ID_TEM_TET,ID_ETY_TET)
+        VALUES(#{id},#{team},#{legalEntity})
+    </insert>
+
+
 </mapper>

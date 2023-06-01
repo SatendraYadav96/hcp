@@ -423,7 +423,7 @@ class MasterRepository
     }
 
 
-    fun editTeam(tem: Team) {
+    fun editTeam(tem: MasterTeam) {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
 
@@ -464,7 +464,7 @@ class MasterRepository
 
             data.put("id",tbrId)
             data.put("teamId",tem.id)
-            data.put("brandId",tem.brand.get(i).id)
+            data.put("brandId",tem.brand.get(i))
 
             sqlSessionTemplate.insert("TeamBrandMapper.addBrandByTeamId",data)
 
@@ -490,7 +490,7 @@ class MasterRepository
 
             data.put("id",tetId)
             data.put("team",tem.id)
-            data.put("legalEntity",tem.ety.get(i).id)
+            data.put("legalEntity",tem.ety.get(i))
 
             sqlSessionTemplate.insert("TeamLegalEntityMapper.addEntityByTeamId",data)
 
