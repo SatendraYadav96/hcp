@@ -298,6 +298,32 @@ open class MasterController@Autowired constructor(
     }
 
 
+    //USER CONTROLLER
+
+    @GetMapping("/getUser/{status}")
+    fun getUser(@PathVariable status: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getUser(status)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getUserById/{id}")
+    fun getUserById(@PathVariable id: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getUserById(id)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PutMapping("/editUser")
+    open fun editUser(@RequestBody usr: MasterUsers): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.editUser(usr)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
+
 
 
 

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="UsersMasterMapper">
+    <resultMap id="usersMasterResultMap" type="com.squer.promobee.service.repository.domain.Users">
+        <id property="id" column="id_usr" />
+        <result property="name" column="name_usr"/>
+        <result property="ciName" column="ci_name_usr" />
+        <result property="username" column="login_name_usr"/>
+        <result property="employeeCode" column="employee_code_usr"/>
+        <result property="activeFrom" column="active_from_usr"/>
+        <result property="activeTo" column="active_to_usr"/>
+        <result property="email" column="email_address_usr"/>
+        <result property="lastLoggedIn" column="last_logged_in_usr"/>
+        <result property="createdAt" column="created_on_usr"/>
+        <result property="createdBy" column="created_by_usr"/>
+        <result property="updatedAt" column="updated_on_usr"/>
+        <result property="updatedBy" column="updated_by_usr"/>
+        <result property="userRecipientId" column="id_rct_usr"/>
+        <result property="approver" column="email_buh_usr"/>
+        <association property="userDesignation" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_desg_ulv_usr"/>
+            <result property="name" column="name_ulv"/>
+        </association>
+        <association property="userStatus" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_status_slv_usr"/>
+            <result property="name" column="name_slv" />
+        </association>
+        <association property="legalEntity" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_ety_usr"/>
+            <result property="name" column="name_ety" />
+        </association>
+        <association property="appBu" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_app_bum_usr"/>
+            <result property="name" column="name_bum" />
+        </association>
+        <association property="brand" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_brd"/>
+            <result property="name" column="name_brd"/>
+        </association>
+    </resultMap>
+
+
+
+    <select id="getUser" resultMap="usersMasterResultMap" >
+
+        select * from USER_MASTER_USR usr
+                          join USER_LOV_ULV ulv on ulv.ID_ULV = usr.ID_DESG_ULV_USR
+                          join SYSTEM_LOV_SLV slv on slv.ID_SLV = usr.ID_STATUS_SLV_USR
+        where usr.ID_STATUS_SLV_USR = #{userStatus}
+    </select>
+
+    <select id="getUserById" resultMap="usersMasterResultMap" >
+        select usr.*,ulv.ID_ULV,ulv.NAME_ULV,slv.ID_SLV,slv.NAME_SLV,ety.ID_ETY,ety.NAME_ETY,brd.ID_BRD,brd.NAME_BRD,bum.ID_BUM,bum.NAME_BUM from USER_MASTER_USR usr
+        join USER_LOV_ULV ulv on ulv.ID_ULV = usr.ID_DESG_ULV_USR
+        join SYSTEM_LOV_SLV slv on slv.ID_SLV = usr.ID_STATUS_SLV_USR
+        join LEGAL_ENTITY_MASTER_ETY ety on ety.ID_ETY = usr.ID_ETY_USR
+        join BRANDMANAGER_BRAND_BBR bbr on bbr.ID_USR_BBR = usr.ID_USR
+        join BRAND_MASTER_BRD brd on brd.ID_BRD = bbr.ID_BRD_BBR
+        join BU_MASTER_BUM bum on bum.ID_BUM = usr.ID_APP_BUM_USR
+        where usr.ID_USR = #{id}
+    </select>
+
+    <update id="editUser">
+
+        UPDATE USER_MASTER_USR SET EMAIL_ADDRESS_USR = #{email}, ID_ETY_USR = #{legalEntity}, ID_DESG_ULV_USR = #{userDesignation}, ID_STATUS_SLV_USR = #{userStatus} , EMAIL_BUH_USR = #{approver}
+        WHERE ID_USR = #{id}
+
+    </update>
+
+
+
+</mapper>

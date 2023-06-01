@@ -172,6 +172,19 @@ class MasterServiceImpl @Autowired constructor(
     }
 
 
+    //USER IMPL
+
+    override fun getUser(status: String): List<Users> {
+        return masterRepository.getUser(status)
+    }
+
+    override fun getUserById(id: String): MutableList<Users> {
+        return masterRepository.getUserById(id)
+    }
+
+    override fun editUser(usr: MasterUsers) {
+        return masterRepository.editUser(usr)
+    }
 
 
 

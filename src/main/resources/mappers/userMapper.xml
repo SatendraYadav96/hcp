@@ -29,6 +29,7 @@
             <id property="id" column="id_ety_usr"/>
             <result property="name" column="name_ety" />
         </association>
+
     </resultMap>
 
     <select id="findUserById" resultMap="usersResultMap">
@@ -71,6 +72,8 @@
         SELECT ID_USR AS 'userId',NAME_USR AS 'userName' FROM USER_MASTER_USR WHERE ID_STATUS_SLV_USR = '1D2F12F3-F84A-4200-9590-70680528779B'
 
     </select>
+
+
 
 
 

@@ -586,6 +586,85 @@ class MasterRepository
     }
 
 
+    //USER REPOSITORY
+
+    fun getUser( status: String) : List<Users>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("userStatus",status)
+
+        return sqlSessionTemplate.selectList("UsersMasterMapper.getUser",data)
+    }
+
+    fun getUserById(id: String):MutableList<Users>{
+        var data: MutableMap<String,Any> = mutableMapOf()
+        data.put("id",id)
+
+        return sqlSessionTemplate.selectList<Users>("UsersMasterMapper.getUserById",data)
+    }
+
+
+
+    fun editUser(usr: MasterUsers) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+
+        // update user
+
+        usr.email?.let { data.put("email", it) }
+        usr.legalEntity?.let { data.put("legalEntity", it.id) }
+        usr.userDesignation?.let { data.put("userDesignation", it.id) }
+        usr.userStatus?.let { data.put("userStatus", it.id) }
+        usr.approver?.let { data.put("approver", it) }
+
+        sqlSessionTemplate.update("UsersMasterMapper.editUser",data)
+
+
+        var bbr = BrandManager()
+
+        // delete existing brand mapped to user
+
+
+        data.put("id",usr.id)
+
+        sqlSessionTemplate.delete("BrandManagerMapper.deleteBrandByUserId",data)
+
+        var i = 0
+
+        usr.brand.forEach {
+
+            var bbrId = UUID.randomUUID().toString()
+
+            data.put("id",bbrId)
+            data.put("userId",usr.id)
+            data.put("brandId",usr.brand.get(i))
+
+            sqlSessionTemplate.insert("BrandManagerMapper.addBrandByUserId",data)
+
+            i++
+
+        }
+
+
+
+
+
+
+
+
+
+        println("User Updated Successfully !")
+
+
+
+    }
+
+
+
+
 
 
 

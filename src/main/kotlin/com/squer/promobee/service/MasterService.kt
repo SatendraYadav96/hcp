@@ -3,6 +3,7 @@ package com.squer.promobee.service
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.repository.domain.*
+import org.springframework.web.bind.annotation.RequestBody
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -91,6 +92,16 @@ interface MasterService {
     fun editTeam(tem: MasterTeam)
 
     fun addTeam(tem: MasterTeam)
+
+
+    //USER SERVICES
+
+    fun getUser(status: String): List<Users>
+
+    fun getUserById (id: String): MutableList<Users>
+
+    fun editUser(usr: MasterUsers)
+
 
 
 
