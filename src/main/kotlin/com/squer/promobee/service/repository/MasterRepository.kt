@@ -614,6 +614,7 @@ class MasterRepository
 
         // update user
 
+        data.put("id",usr.id)
         usr.email?.let { data.put("email", it) }
         usr.legalEntity?.let { data.put("legalEntity", it.id) }
         usr.userDesignation?.let { data.put("userDesignation", it.id) }
@@ -647,13 +648,6 @@ class MasterRepository
             i++
 
         }
-
-
-
-
-
-
-
 
 
         println("User Updated Successfully !")
