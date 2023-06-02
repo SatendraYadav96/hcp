@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -328,6 +330,12 @@ class MasterRepository
     fun getUserDropdown( ): List<UserDropdownDTO> {
 
         return sqlSessionTemplate.selectList("UserMapper.getUserDropdown")
+    }
+
+
+    fun getApproverDropdown( ): List<UserDropdownDTO> {
+
+        return sqlSessionTemplate.selectList("UsersMasterMapper.getApproverDropdown")
     }
 
 
@@ -651,6 +659,72 @@ class MasterRepository
 
 
         println("User Updated Successfully !")
+
+
+
+    }
+
+
+
+
+    fun addUser(usr: MasterUsers) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+
+        // add user
+
+        var usrId = UUID.randomUUID().toString()
+
+        val ldt: LocalDateTime = LocalDateTime.now()
+        var actFrm = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH).format(ldt)
+        System.out.println(ldt)
+
+        data.put("id",usrId)
+        usr.name?.let { data.put("name", it.uppercase()) }
+        usr.name?.let { data.put("ciName", it.lowercase()) }
+        usr.username?.let { data.put("username", it) }
+        usr.employeeCode?.let { data.put("employeeCode", it) }
+        usr.userDesignation?.let { data.put("userDesignation", it.id) }
+       data.put("activeFrom", actFrm)
+//        usr.activeTo?.let { data.put("activeTo", it) }
+        usr.userStatus?.let { data.put("userStatus", it.id) }
+        usr.legalEntity?.let { data.put("legalEntity", it.id) }
+        usr.email?.let { data.put("email", it) }
+       // usr.lastLoggedIn?.let { data.put("lastLoggedIn", it) }
+        data.put("createdBy",user.id)
+        data.put("updatedBy",user.id)
+        usr.appBu?.let { data.put("appBu", it.id) }
+        //usr.userRecipientId?.let { data.put("userRecipientId", it) }
+        usr.approver?.let { data.put("approver", it) }
+
+        sqlSessionTemplate.insert("UsersMasterMapper.addUser",data)
+
+
+        //map brand to new user
+
+        var bbr = BrandManager()
+
+        var i = 0
+
+        usr.brand.forEach {
+
+            var bbrId = UUID.randomUUID().toString()
+
+            data.put("id",bbrId)
+            data.put("userId",usrId)
+            data.put("brandId",usr.brand.get(i))
+
+            sqlSessionTemplate.insert("BrandManagerMapper.addBrandByUserId",data)
+
+            i++
+
+        }
+
+
+        println("User Added Successfully !")
 
 
 

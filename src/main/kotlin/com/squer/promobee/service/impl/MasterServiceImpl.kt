@@ -130,6 +130,10 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getUserDropdown()
     }
 
+    override fun getApproverDropdown(): List<UserDropdownDTO> {
+        return masterRepository.getApproverDropdown()
+    }
+
 
     // BUSINESS UNIT IMPL
 
@@ -186,6 +190,9 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.editUser(usr)
     }
 
+    override fun addUser(usr: MasterUsers) {
+        return masterRepository.addUser(usr)
+    }
 
 
 }

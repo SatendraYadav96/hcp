@@ -68,6 +68,8 @@ interface MasterService {
 
     fun getUserDropdown(): List<UserDropdownDTO>
 
+    fun getApproverDropdown(): List<UserDropdownDTO>
+
 
 
 
@@ -101,6 +103,8 @@ interface MasterService {
     fun getUserById (id: String): MutableList<Users>
 
     fun editUser(usr: MasterUsers)
+
+    fun addUser(usr: MasterUsers)
 
 
 

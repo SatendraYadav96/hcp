@@ -226,6 +226,14 @@ open class MasterController@Autowired constructor(
     }
 
 
+    @GetMapping("/getApproverDropdown")
+    fun getApproverDropdown(): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getApproverDropdown()
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
 
 
     // BUSINESS UNIT CONTROLLER
@@ -318,6 +326,13 @@ open class MasterController@Autowired constructor(
     open fun editUser(@RequestBody usr: MasterUsers): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = masterService.editUser(usr)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PostMapping("/addUser")
+    open fun addUser(@RequestBody usr: MasterUsers): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.addUser(usr)
         return ResponseEntity(data, HttpStatus.OK)
     }
 

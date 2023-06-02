@@ -70,5 +70,21 @@
     </update>
 
 
+    <select id="getApproverDropdown" resultType="com.squer.promobee.controller.dto.UserDropdownDTO">
+
+        SELECT ID_USR AS 'userId',NAME_USR AS 'userName',EMAIL_BUH_USR AS 'approver' FROM USER_MASTER_USR WHERE ID_DESG_ULV_USR = '6B1C8B6D-C38E-4B4D-8C73-25ADF30CE474'
+
+    </select>
+
+
+
+    <insert id="addUser">
+        INSERT INTO USER_MASTER_USR (ID_USR,NAME_USR,CI_NAME_USR,LOGIN_NAME_USR,EMPLOYEE_CODE_USR,ID_DESG_ULV_USR,ACTIVE_FROM_USR,ACTIVE_TO_USR,ID_STATUS_SLV_USR,ID_ETY_USR,EMAIL_ADDRESS_USR,
+                                     LAST_LOGGED_IN_USR,CREATED_ON_USR,CREATED_BY_USR,UPDATED_ON_USR,UPDATED_BY_USR,ID_APP_BUM_USR,ID_RCT_USR,EMAIL_BUH_USR)
+        values( #{id}, #{name}, #{ciName}, #{username}, #{employeeCode},#{userDesignation} ,#{activeFrom} ,NULL ,#{userStatus} ,#{legalEntity} ,#{email}
+        ,GETDATE() ,GETDATE(), #{createdBy}, GETDATE(), #{updatedBy},#{appBu},NULL,#{approver} )
+    </insert>
+
+
 
 </mapper>
