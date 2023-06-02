@@ -28,4 +28,17 @@
     </insert>
 
 
+    <delete id="deleteBrandByBrandId">
+
+        delete  from BRANDMANAGER_BRAND_BBR
+        where ID_BRD_BBR = #{id}
+
+    </delete>
+
+    <insert id="addBrandByBrandId">
+        INSERT INTO BRANDMANAGER_BRAND_BBR (ID_BBR,ID_USR_BBR,ID_BRD_BBR)
+        VALUES(#{id},#{userId},#{brandId})
+    </insert>
+
+
 </mapper>

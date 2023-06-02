@@ -195,4 +195,23 @@ class MasterServiceImpl @Autowired constructor(
     }
 
 
+    //BRAND IMPL
+
+    override fun getBrand(status: Int): List<BrandMaster> {
+        return masterRepository.getBrand(status)
+    }
+
+    override fun getBrandById(id: String): MutableList<BrandMaster> {
+        return masterRepository.getBrandById(id)
+    }
+
+    override fun editBrand(brd: MasterBrand) {
+        return masterRepository.editBrand(brd)
+    }
+
+    override fun addBrand(brd: MasterBrand) {
+        return masterRepository.addBrand(brd)
+    }
+
+
 }

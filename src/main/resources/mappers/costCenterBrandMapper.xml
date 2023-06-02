@@ -6,20 +6,20 @@
     <resultMap id="costCenterBrandResultMap" type="com.squer.promobee.service.repository.domain.CostCenterBrand">
         <id property="id" column="id_cbr"/>
         <result property="ccmId" column="id_ccm_cbr"/>
-        <result property="brandId.id" column="id_brd_cbr"/>
+        <result property="brandId" column="id_brd_cbr"/>
 <!--        <result property="brandId" column="id_brd_cbr"/>-->
 
 
 
-<!--        <association property="ccmId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">-->
-<!--            <id property="id" column="id_ccm_cbr"/>-->
-<!--            <result property="name" column="name_ccm"/>-->
-<!--        </association>-->
-<!--        <association property="brandId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">-->
-<!--            <id property="id" column="id_brd_cbr"/>-->
-<!--            <result property="name" column="name_brd"/>-->
-<!--            <result property="brandId" column="id_brd_cbr"/>-->
-<!--        </association>-->
+        <association property="costCenter" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_ccm"/>
+            <result property="name" column="name_ccm"/>
+        </association>
+        <association property="brand" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_brd"/>
+            <result property="name" column="name_brd"/>
+
+        </association>
     </resultMap>
 
 
@@ -39,6 +39,20 @@
     <insert id="editCostCenterBrand">
         insert into COSTCENTER_BRAND_CBR (ID_CBR, ID_CCM_CBR, ID_BRD_CBR)
         values( #{id}, #{ccmId}, #{brandId.id})
+    </insert>
+
+
+
+    <delete id="deleteBrandByBrandId">
+
+        delete  from COSTCENTER_BRAND_CBR
+        where ID_BRD_CBR = #{id}
+
+    </delete>
+
+    <insert id="addBrandByBrandId">
+        INSERT INTO COSTCENTER_BRAND_CBR (ID_CBR,ID_CCM_CBR,ID_BRD_CBR)
+        VALUES(#{id},#{costCenter},#{brand})
     </insert>
 
 

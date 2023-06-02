@@ -337,6 +337,42 @@ open class MasterController@Autowired constructor(
     }
 
 
+    //BRAND CONTROLLER
+
+    @GetMapping("/getBrand/{status}")
+    fun getBrand(@PathVariable status: Int): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getBrand(status)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getBrandById/{id}")
+    fun getBrandById(@PathVariable id: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getBrandById(id)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @PutMapping("/editBrand")
+    open fun editBrand(@RequestBody brd: MasterBrand): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.editBrand(brd)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PostMapping("/addBrand")
+    open fun addBrand(@RequestBody brd: MasterBrand): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.addBrand(brd)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
+
+
+
 
 
 

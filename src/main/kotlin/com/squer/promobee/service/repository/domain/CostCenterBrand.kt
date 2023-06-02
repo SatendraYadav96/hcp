@@ -4,6 +4,6 @@ import com.squer.promobee.security.domain.NamedSquerEntity
 
 class CostCenterBrand {
     var id: String?= null
-    var ccmId: String?= null
-    var brandId: NamedSquerEntity? = null
+    var costCenter: NamedSquerEntity?= null
+    var brand: NamedSquerEntity? = null
 }

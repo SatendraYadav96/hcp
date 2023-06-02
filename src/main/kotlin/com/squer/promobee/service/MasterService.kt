@@ -106,6 +106,16 @@ interface MasterService {
 
     fun addUser(usr: MasterUsers)
 
+    //BRAND SERVICES
+
+    fun getBrand(status: Int): List<BrandMaster>
+
+    fun getBrandById (id: String): MutableList<BrandMaster>
+
+    fun editBrand(brd: MasterBrand)
+
+    fun addBrand(brd: MasterBrand)
+
 
 
 

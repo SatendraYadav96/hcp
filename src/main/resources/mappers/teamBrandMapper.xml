@@ -34,6 +34,18 @@
     </insert>
 
 
+    <delete id="deleteBrandByBrandId">
+
+        delete  from TEAM_BRAND_TBR
+        where ID_BRD_TBR = #{id}
+
+    </delete>
+
+    <insert id="addBrandByBrandId">
+        INSERT INTO TEAM_BRAND_TBR (ID_TBR,ID_TEM_TBR,ID_BRD_TBR)
+        VALUES(#{id},#{teamId},#{brandId})
+    </insert>
+
 
 
 

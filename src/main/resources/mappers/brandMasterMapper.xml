@@ -13,6 +13,22 @@
         <result property="createdBy" column="created_by_brd"/>
         <result property="updatedAt" column="updated_on_brd"/>
         <result property="updatedBy" column="updated_by_brd"/>
+        <association property="division" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_dim"/>
+            <result property="name" column="name_dim"/>
+        </association>
+        <association property="user" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_usr"/>
+            <result property="name" column="name_usr"/>
+        </association>
+        <association property="team" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_tem"/>
+            <result property="name" column="name_tem"/>
+        </association>
+        <association property="costCenter" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_ccm"/>
+            <result property="name" column="name_ccm"/>
+        </association>
     </resultMap>
 
 
@@ -20,6 +36,41 @@
         select * from BRAND_MASTER_BRD WHERE IS_ACTIVE_BRD = 1
 
     </select>
+
+
+    <select id="getBrand" resultMap="brandMasterResultMap" >
+        select * from BRAND_MASTER_BRD WHERE IS_ACTIVE_BRD = #{active}
+
+    </select>
+
+
+    <select id="getBrandById" resultMap="brandMasterResultMap" >
+        select BRD.*,DIM.ID_DIM,DIM.NAME_DIM,USR.ID_USR,USR.NAME_USR,TEM.ID_TEM,TEM.NAME_TEM,CCM.ID_CCM,CCM.NAME_CCM from BRAND_MASTER_BRD BRD
+        JOIN DIVISION_BRAND_DBR DBR ON DBR.ID_BRD_DBR = BRD.ID_BRD
+        JOIN DIVISION_MASTER_DIM DIM ON DIM.ID_DIM = DBR.ID_DIM_DBR
+        JOIN BRANDMANAGER_BRAND_BBR BBR ON BBR.ID_BRD_BBR = BRD.ID_BRD
+        JOIN USER_MASTER_USR USR ON USR.ID_USR = BBR.ID_USR_BBR
+        JOIN TEAM_BRAND_TBR TBR ON TBR.ID_BRD_TBR = BRD.ID_BRD
+        JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = TBR.ID_TEM_TBR
+        JOIN COSTCENTER_BRAND_CBR CBR ON CBR.ID_BRD_CBR = BRD.ID_BRD
+        JOIN COST_CENTER_MASTER_CCM CCM ON CCM.ID_CCM = CBR.ID_CCM_CBR
+        WHERE BRD.ID_BRD = #{id}
+
+    </select>
+
+
+    <update id="editBrand">
+
+        update BRAND_MASTER_BRD set NAME_BRD = #{name} , CI_NAME_BRD = #{ciName} ,IS_ACTIVE_BRD = #{active} , UPDATED_BY_BRD = #{updatedBy}, UPDATED_ON_BRD = GETDATE()
+        where ID_BRD = #{id}
+
+    </update>
+
+
+    <insert id="addBrand">
+        insert into BRAND_MASTER_BRD (ID_BRD,NAME_BRD,CI_NAME_BRD,CODE_BRD,IS_ACTIVE_BRD,CREATED_ON_BRD,CREATED_BY_BRD,UPDATED_ON_BRD,UPDATED_BY_BRD)
+        values( #{id}, #{name}, #{ciName}, #{code}, #{active}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy} )
+    </insert>
 
 
 

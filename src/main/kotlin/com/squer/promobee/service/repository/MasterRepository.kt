@@ -732,12 +732,278 @@ class MasterRepository
 
 
 
+    //BRAND REPOSITORY
+
+    fun getBrand( status: Int) : List<BrandMaster>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("active",status)
+
+        return sqlSessionTemplate.selectList("BrandMasterMapper.getBrand",data)
+    }
+
+
+    fun getBrandById(id: String):MutableList<BrandMaster>{
+        var data: MutableMap<String,Any> = mutableMapOf()
+        data.put("id",id)
+
+        return sqlSessionTemplate.selectList<BrandMaster>("BrandMasterMapper.getBrandById",data)
+    }
 
 
 
 
 
+    fun editBrand(brd: MasterBrand) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
 
+
+
+
+        // update brand
+
+        data.put("id",brd.id)
+        brd.name?.let { data.put("name", it.uppercase()) }
+        brd.name?.let { data.put("ciName", it.lowercase()) }
+        brd.active?.let { data.put("active", it) }
+        data.put("updatedBy",user.id)
+
+        sqlSessionTemplate.update("BrandMasterMapper.editBrand",data)
+
+        // delete existing division mapped to brand
+
+        data.put("id",brd.id)
+
+        sqlSessionTemplate.delete("DivisionBrandMapper.deleteBrandByBrandId",data)
+
+        //map selected division to brand
+
+        var dbr = DivisionBrand()
+
+        var dbrId = UUID.randomUUID().toString()
+
+        data.put("id",dbrId)
+        brd.division?.let { data.put("divisionId", it.id) }
+        data.put("brandId", brd.id)
+
+        sqlSessionTemplate.insert("DivisionBrandMapper.addBrandByBrandId",data)
+
+
+        // delete existing user mapped to brand
+
+        data.put("id",brd.id)
+
+        sqlSessionTemplate.delete("BrandManagerMapper.deleteBrandByBrandId",data)
+
+        // map selected user to brand
+
+        var bbr = BrandManager()
+
+        var i = 0
+
+        brd.user.forEach {
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var bbrId = UUID.randomUUID().toString()
+
+            data.put("id",bbrId)
+            data.put("userId",brd.user.get(i))
+            data.put("brandId",brd.id)
+
+            sqlSessionTemplate.insert("BrandManagerMapper.addBrandByBrandId",data)
+
+            i++
+
+
+        }
+
+
+        // delete existing team mapped to brand
+
+        data.put("id",brd.id)
+
+        sqlSessionTemplate.delete("TeamBrandMapper.deleteBrandByBrandId",data)
+
+        // map requested team to brand
+
+        var tbr = TeamBrand()
+
+        i = 0
+
+        brd.team.forEach {
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var tbrId = UUID.randomUUID().toString()
+
+            data.put("id",tbrId)
+            data.put("teamId",brd.team.get(i))
+            data.put("brandId",brd.id)
+
+            sqlSessionTemplate.insert("TeamBrandMapper.addBrandByBrandId",data)
+
+            i++
+
+
+
+        }
+
+        // delete existing cost center mapped to brand
+
+        data.put("id",brd.id)
+
+        sqlSessionTemplate.delete("CostCenterBrandMapper.deleteBrandByBrandId",data)
+
+
+        // map requested cost center  to brand
+
+        var cbr = CostCenterBrand()
+
+        i = 0
+
+        brd.costCenter.forEach {
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var cbrId = UUID.randomUUID().toString()
+
+            data.put("id",cbrId)
+            data.put("costCenter",brd.costCenter.get(i))
+            data.put("brand",brd.id)
+
+            sqlSessionTemplate.insert("CostCenterBrandMapper.addBrandByBrandId",data)
+
+            i++
+
+        }
+
+
+        println("Brand Updated Successfully !")
+
+
+
+    }
+
+
+
+    fun addBrand(brd: MasterBrand) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+
+        // add brand
+
+        var brdId = UUID.randomUUID().toString()
+
+        data.put("id",brdId)
+        brd.name?.let { data.put("name", it.uppercase()) }
+        brd.name?.let { data.put("ciName", it.lowercase()) }
+        brd.code?.let { data.put("code", it) }
+        brd.active?.let { data.put("active", it) }
+        data.put("createdBy",user.id)
+        data.put("updatedBy",user.id)
+
+        sqlSessionTemplate.insert("BrandMasterMapper.addBrand",data)
+
+
+
+
+        //map selected division to brand
+
+        var dbr = DivisionBrand()
+
+        var dbrId = UUID.randomUUID().toString()
+
+        data.put("id",dbrId)
+        brd.division?.let { data.put("divisionId", it.id) }
+        data.put("brandId", brdId)
+
+        sqlSessionTemplate.insert("DivisionBrandMapper.addBrandByBrandId",data)
+
+
+
+
+        // map selected user to brand
+
+        var bbr = BrandManager()
+
+        var i = 0
+
+        brd.user.forEach {
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var bbrId = UUID.randomUUID().toString()
+
+            data.put("id",bbrId)
+            data.put("userId",brd.user.get(i))
+            data.put("brandId",brdId)
+
+            sqlSessionTemplate.insert("BrandManagerMapper.addBrandByBrandId",data)
+
+            i++
+
+
+        }
+
+
+
+
+        // map requested team to brand
+
+        var tbr = TeamBrand()
+
+        i = 0
+
+        brd.team.forEach {
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var tbrId = UUID.randomUUID().toString()
+
+            data.put("id",tbrId)
+            data.put("teamId",brd.team.get(i))
+            data.put("brandId",brdId)
+
+            sqlSessionTemplate.insert("TeamBrandMapper.addBrandByBrandId",data)
+
+            i++
+
+
+
+        }
+
+
+
+
+        // map requested cost center  to brand
+
+        var cbr = CostCenterBrand()
+
+        i = 0
+
+        brd.costCenter.forEach {
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var cbrId = UUID.randomUUID().toString()
+
+            data.put("id",cbrId)
+            data.put("costCenter",brd.costCenter.get(i))
+            data.put("brand",brdId)
+
+            sqlSessionTemplate.insert("CostCenterBrandMapper.addBrandByBrandId",data)
+
+            i++
+
+        }
+
+
+        println("Brand Added Successfully !")
+
+
+
+    }
 
 
 
