@@ -100,7 +100,7 @@ interface MasterService {
 
     fun getUser(status: String): List<Users>
 
-    fun getUserById (id: String): List<Users>
+    fun getUserById (id: String): Users
 
     fun editUser(usr: MasterUsers)
 
@@ -110,7 +110,7 @@ interface MasterService {
 
     fun getBrand(status: Int): List<BrandMaster>
 
-    fun getBrandById (id: String): List<BrandMaster>
+    fun getBrandById (id: String): BrandMaster
 
     fun editBrand(brd: MasterBrand)
 
