@@ -754,7 +754,7 @@ class MasterRepository
 
 
 
-    fun editBrand(brd: MasterBrand) {
+    fun editBrand(brd: MasterBrand)  {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
 
