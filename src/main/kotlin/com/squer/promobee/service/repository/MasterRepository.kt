@@ -608,7 +608,7 @@ class MasterRepository
         var data: MutableMap<String,Any> = mutableMapOf()
         data.put("id",id)
 
-        return sqlSessionTemplate.selectList("UsersMasterMapper.getUserById",data)
+        return sqlSessionTemplate.selectOne("UsersMasterMapper.getUserById",data)
     }
 
 
@@ -747,7 +747,7 @@ class MasterRepository
         var data: MutableMap<String,Any> = mutableMapOf()
         data.put("id",id)
 
-        return sqlSessionTemplate.selectList("BrandMasterMapper.getBrandById",data)
+        return sqlSessionTemplate.selectOne("BrandMasterMapper.getBrandById",data)
     }
 
 
