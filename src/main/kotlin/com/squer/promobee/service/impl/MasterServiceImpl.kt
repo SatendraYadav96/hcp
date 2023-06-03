@@ -182,7 +182,7 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getUser(status)
     }
 
-    override fun getUserById(id: String): MutableList<Users> {
+    override fun getUserById(id: String): List<Users> {
         return masterRepository.getUserById(id)
     }
 
@@ -201,7 +201,7 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getBrand(status)
     }
 
-    override fun getBrandById(id: String): MutableList<BrandMaster> {
+    override fun getBrandById(id: String): List<BrandMaster> {
         return masterRepository.getBrandById(id)
     }
 

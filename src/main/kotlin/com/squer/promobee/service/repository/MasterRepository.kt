@@ -604,11 +604,11 @@ class MasterRepository
         return sqlSessionTemplate.selectList("UsersMasterMapper.getUser",data)
     }
 
-    fun getUserById(id: String):MutableList<Users>{
+    fun getUserById(id: String):List<Users>{
         var data: MutableMap<String,Any> = mutableMapOf()
         data.put("id",id)
 
-        return sqlSessionTemplate.selectList<Users>("UsersMasterMapper.getUserById",data)
+        return sqlSessionTemplate.selectList("UsersMasterMapper.getUserById",data)
     }
 
 
@@ -743,11 +743,11 @@ class MasterRepository
     }
 
 
-    fun getBrandById(id: String):MutableList<BrandMaster>{
+    fun getBrandById(id: String):List<BrandMaster>{
         var data: MutableMap<String,Any> = mutableMapOf()
         data.put("id",id)
 
-        return sqlSessionTemplate.selectList<BrandMaster>("BrandMasterMapper.getBrandById",data)
+        return sqlSessionTemplate.selectList("BrandMasterMapper.getBrandById",data)
     }
 
 
