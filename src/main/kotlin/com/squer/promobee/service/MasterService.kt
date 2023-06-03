@@ -3,6 +3,7 @@ package com.squer.promobee.service
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.repository.domain.*
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import java.util.*
 import kotlin.collections.ArrayList
@@ -115,6 +116,12 @@ interface MasterService {
     fun editBrand(brd: MasterBrand)
 
     fun addBrand(brd: MasterBrand)
+
+    //RECIPIENT SERVICES
+
+    fun getFieldForce( ff : FieldForceDTO): List<FF>
+
+
 
 
 

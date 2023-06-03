@@ -1007,6 +1007,59 @@ class MasterRepository
 
 
 
+    //RECIPIENT REPOSITORY
+
+    fun getFieldForce( ff : FieldForceDTO) : List<FF> {
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        ff.status?.let { data.put("recipientStatus", it) }
+        ff.ffCode?.let { data.put("code", it) }
+        ff.ffName?.let { data.put("name", it) }
+
+        var rec =  FF()
+
+
+
+        if((ff.ffCode == "" ) && (ff.ffName == "" )) {
+
+            ff.status?.let { data.put("recipientStatus", it) }
+
+            rec =  return sqlSessionTemplate.selectList<FF>("FieldForceMapper.getFieldForceByStatus",data)
+
+        }
+
+        else if((ff.status !=  "" ) && (ff.ffCode != "")  ){
+
+            ff.ffCode?.let { data.put("code", it) }
+
+            rec =  return sqlSessionTemplate.selectList<FF>("FieldForceMapper.getFieldForceByCode",data)
+
+
+
+        }
+
+        else if((ff.status !=  "" ) && (ff.ffName != "")){
+
+            data.put("name", ff.ffName!!)
+
+            rec = return sqlSessionTemplate.selectList<FF>("FieldForceMapper.getFieldForceByName",data)
+
+
+        }
+
+
+
+
+        return listOf(rec)
+
+
+
+
+
+    }
+
+
+
 
 
 

@@ -2,6 +2,7 @@ package com.squer.promobee.controller
 
 
 
+import com.squer.promobee.controller.dto.FieldForceDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.MasterService
 import com.squer.promobee.service.repository.domain.*
@@ -365,6 +366,16 @@ open class MasterController@Autowired constructor(
     open fun addBrand(@RequestBody brd: MasterBrand): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = masterService.addBrand(brd)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    // RECIPIENT CONTROLLER
+
+    @PostMapping("/getFieldForce")
+    fun getFieldForce(@RequestBody ff : FieldForceDTO): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getFieldForce(ff)
         return ResponseEntity(data, HttpStatus.OK)
     }
 

@@ -214,4 +214,11 @@ class MasterServiceImpl @Autowired constructor(
     }
 
 
+    //RECIPIENT IMPL
+
+    override fun getFieldForce(ff : FieldForceDTO): List<FF> {
+        return masterRepository.getFieldForce(ff)
+    }
+
+
 }
