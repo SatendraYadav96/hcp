@@ -220,5 +220,17 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getFieldForce(ff)
     }
 
+    override fun getFieldForceHistory(id: String): List<RecipientHistoryDTO> {
+        return masterRepository.getFieldForceHistory(id)
+    }
+
+    override fun getFieldForceById(id: String): FF {
+        return masterRepository.getFieldForceById(id)
+    }
+
+    override fun editFieldForce(ff: MasterFF) {
+        return masterRepository.editFieldForce(ff)
+    }
+
 
 }

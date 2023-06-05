@@ -379,6 +379,28 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getFieldForceHistory/{id}")
+    fun getFieldForceHistory(@PathVariable id: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getFieldForceHistory(id)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getFieldForceById/{id}")
+    fun getFieldForceById(@PathVariable id: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getFieldForceById(id)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @PutMapping("/editFieldForce")
+    open fun editFieldForce(@RequestBody ff: MasterFF): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.editFieldForce(ff)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
 
 
 

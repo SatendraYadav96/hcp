@@ -86,14 +86,62 @@
 
     <select id="getFieldForceByName" resultMap="fieldForceResultMap">
         SELECT RCT.*,ULV.ID_ULV,ULV.NAME_ULV,SLV.ID_SLV,SLV.NAME_SLV,TEM.ID_TEM,TEM.NAME_TEM,BUM.ID_BUM,BUM.NAME_BUM FROM RECIPIENT_MASTER_RCT RCT
-                                                                                                                              JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
-                                                                                                                              JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV =  RCT.ID_STATUS_SLV_RCT
-                                                                                                                              JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM =  RCT.ID_TEM_RCT
-                                                                                                                              JOIN BU_MASTER_BUM BUM ON BUM.ID_BUM = RCT.ID_BUM_RCT
+        JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
+        JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV =  RCT.ID_STATUS_SLV_RCT
+        JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM =  RCT.ID_TEM_RCT
+        JOIN BU_MASTER_BUM BUM ON BUM.ID_BUM = RCT.ID_BUM_RCT
         WHERE RCT.NAME_RCT = #{name}
 
     </select>
 
+
+    <select id="getFieldForceHistory" resultType="com.squer.promobee.controller.dto.RecipientHistoryDTO">
+        select ID_RHT as 'id',ID_RCT_RHT as 'recipientId',NAME_RHT as 'name',CODE_RHT as 'code',
+                ADDRESS_RHT as 'address',CITY_RHT as 'city',STATE_RHT as 'state',ZIP_RHT as 'zip',CFA_RHT as 'cfa',
+                MOBILE_RHT as 'contact',ID_STATUS_SLV_RHT as 'status',REMARKS_RHT as 'remarks',
+                STATUS_CHANGE_DATE_RHT as 'changedOnDate',UPDATED_BY_RHT as 'changedBy' from RECIPIENT_MASTER_HISTORY_RHT RHT
+             JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM =  RHT.ID_TEM_RHT
+             JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RHT.ID_DESG_ULV_RHT
+             JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = RHT.ID_STATUS_SLV_RHT
+        WHERE ID_RCT_RHT = #{id}
+
+
+
+
+    </select>
+
+
+    <select id="getFieldForceById" resultMap="fieldForceResultMap">
+        SELECT RCT.*,ULV.ID_ULV,ULV.NAME_ULV,SLV.ID_SLV,SLV.NAME_SLV,TEM.ID_TEM,TEM.NAME_TEM,BUM.ID_BUM,BUM.NAME_BUM FROM RECIPIENT_MASTER_RCT RCT
+        JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
+        JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV =  RCT.ID_STATUS_SLV_RCT
+        JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM =  RCT.ID_TEM_RCT
+        JOIN BU_MASTER_BUM BUM ON BUM.ID_BUM = RCT.ID_BUM_RCT
+        WHERE RCT.ID_RCT = #{id}
+
+    </select>
+
+
+
+    <insert id="insertFieldForceHistory">
+        INSERT INTO RECIPIENT_MASTER_HISTORY_RHT (ID_RHT,ID_RCT_RHT,NAME_RHT,CI_NAME_RHT,CODE_RHT,ADDRESS_RHT,CITY_RHT,STATE_RHT,ZIP_RHT,EMAIL_RHT,MOBILE_RHT,
+        ID_DESG_ULV_RHT,HEAD_QUARTER_RHT,ZONE_RHT,JOINING_DATE_RHT,ID_TEM_RHT,CFA_RHT,ID_STATUS_SLV_RHT,STATUS_CHANGE_DATE_RHT,CREATED_ON_RHT,CREATED_BY_RHT,
+        UPDATED_ON_RHT,UPDATED_BY_RHT,REMARKS_RHT,EMAIL_RM_RHT,EMAIL_AM_RHT,ID_BUM_RHT)
+        VALUES(#{id},#{recipientId},#{name},#{ciName},#{code},#{address},#{city},#{state},#{zip},#{email},#{mobile},
+               #{designation},#{headQuarter},#{zone},#{joiningDate},#{team},#{cfa},#{status},#{changedOnDate},GETDATE(),#{createdBy},
+               GETDATE(),#{updatedBy},#{remarks},#{emailRBM},#{emailAM},#{businessUnit})
+    </insert>
+
+
+    <update id="editFieldForce">
+
+        UPDATE RECIPIENT_MASTER_RCT SET NAME_RCT = #{name} , CI_NAME_RCT =  #{ciName}, CODE_RCT = #{code}, ADDRESS_RCT = #{address},
+        CITY_RCT = #{city}, STATE_RCT = #{state}, ZIP_RCT = #{zip}, EMAIL_RCT = #{email}, MOBILE_RCT = #{mobile},ID_DESG_ULV_RCT = #{designation}, HEAD_QUARTER_RCT = #{headQuarter},
+        ZONE_RCT = #{zone}, JOINING_DATE_RCT = #{joiningDate}, ID_TEM_RCT = #{team}, CFA_RCT = #{cfa}, ID_STATUS_SLV_RCT = #{recipientStatus}, STATUS_CHANGE_DATE_RCT = GETDATE(),
+        UPDATED_ON_RCT = GETDATE() , UPDATED_BY_RCT = #{updatedBy} , LoginId = #{loginId} , Gender = #{gender},WorkId = #{workId}, EMAIL_RM = #{emailRBM} , EMAIL_AM = #{emailAM}, ID_BUM_RCT = #{businessUnit}
+        WHERE ID_RCT = #{id}
+
+    </update>
 
 
 </mapper>
