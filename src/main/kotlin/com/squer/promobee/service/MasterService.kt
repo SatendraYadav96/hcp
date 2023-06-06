@@ -127,6 +127,8 @@ interface MasterService {
 
     fun editFieldForce(ff: MasterFF)
 
+    fun addFieldForce(ff: MasterFF)
+
 
 
 

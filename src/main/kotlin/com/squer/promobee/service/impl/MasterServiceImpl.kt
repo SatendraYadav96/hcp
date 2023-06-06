@@ -232,5 +232,9 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.editFieldForce(ff)
     }
 
+    override fun addFieldForce(ff: MasterFF) {
+        return masterRepository.addFieldForce(ff)
+    }
+
 
 }

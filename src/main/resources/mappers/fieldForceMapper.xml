@@ -128,7 +128,7 @@
         ID_DESG_ULV_RHT,HEAD_QUARTER_RHT,ZONE_RHT,JOINING_DATE_RHT,ID_TEM_RHT,CFA_RHT,ID_STATUS_SLV_RHT,STATUS_CHANGE_DATE_RHT,CREATED_ON_RHT,CREATED_BY_RHT,
         UPDATED_ON_RHT,UPDATED_BY_RHT,REMARKS_RHT,EMAIL_RM_RHT,EMAIL_AM_RHT,ID_BUM_RHT)
         VALUES(#{id},#{recipientId},#{name},#{ciName},#{code},#{address},#{city},#{state},#{zip},#{email},#{mobile},
-               #{designation},#{headQuarter},#{zone},#{joiningDate},#{team},#{cfa},#{status},#{changedOnDate},GETDATE(),#{createdBy},
+               #{designation},#{headQuarter},#{zone},#{joiningDate},#{team},#{cfa},#{status},GETDATE(),GETDATE(),#{createdBy},
                GETDATE(),#{updatedBy},#{remarks},#{emailRBM},#{emailAM},#{businessUnit})
     </insert>
 
@@ -142,6 +142,15 @@
         WHERE ID_RCT = #{id}
 
     </update>
+
+
+    <insert id="addFieldForce">
+        INSERT INTO RECIPIENT_MASTER_RCT (ID_RCT,NAME_RCT,CI_NAME_RCT,CODE_RCT,ADDRESS_RCT,CITY_RCT,STATE_RCT,ZIP_RCT,EMAIL_RCT,MOBILE_RCT,ID_DESG_ULV_RCT,HEAD_QUARTER_RCT,ZONE_RCT,JOINING_DATE_RCT,
+                                          ID_TEM_RCT,CFA_RCT,ID_STATUS_SLV_RCT,STATUS_CHANGE_DATE_RCT,CREATED_ON_RCT,CREATED_BY_RCT,UPDATED_ON_RCT,UPDATED_BY_RCT,LoginId,Gender,WorkId,EMAIL_RM,EMAIL_AM,ID_BUM_RCT)
+        VALUES ( #{id},#{name},#{ciName},#{code},#{address},#{city},#{state},#{zip},#{email},#{mobile},#{designation},#{headQuarter},#{zone},#{joiningDate},
+               #{team},#{cfa},#{recipientStatus},GETDATE(),GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{loginId},#{gender},#{workId},#{emailRBM},
+               #{emailAM},#{businessUnit} )
+    </insert>
 
 
 </mapper>

@@ -1144,6 +1144,80 @@ class MasterRepository
 
 
 
+    fun addFieldForce(ff: MasterFF) {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        // insert ff
+
+        var recId = UUID.randomUUID().toString()
+
+        data.put("id", recId)
+        ff.name?.let { data.put("name", it.uppercase()) }
+        ff.name?.let { data.put("ciName", it.lowercase()) }
+        ff.code?.let { data.put("code", it) }
+        ff.address?.let { data.put("address", it) }
+        ff.city?.let { data.put("city", it) }
+        ff.state?.let { data.put("state", it) }
+        ff.zip?.let { data.put("zip", it) }
+        ff.email?.let { data.put("email", it) }
+        ff.mobile?.let { data.put("mobile", it) }
+        ff.designation?.let { data.put("designation", it.id) }
+        ff.headQuarter?.let { data.put("headQuarter", it) }
+        ff.zone?.let { data.put("zone", it) }
+        ff.joiningDate?.let { data.put("joiningDate", it) }
+        ff.team?.let { data.put("team", it.id) }
+        ff.cfa?.let { data.put("cfa", it) }
+        ff.recipientStatus?.let { data.put("recipientStatus", it.id) }
+        data.put("createdBy",user.id)
+        data.put("updatedBy",user.id)
+        ff.loginId?.let { data.put("loginId", it) }
+        ff.gender?.let { data.put("gender", it) }
+        ff.workId?.let { data.put("workId", it) }
+        ff.emailRBM?.let { data.put("emailRBM", it) }
+        ff.emailAM?.let { data.put("emailAM", it) }
+        ff.businessUnit?.let { data.put("businessUnit", it.id) }
+
+        sqlSessionTemplate.insert("FieldForceMapper.addFieldForce",data)
+
+
+        //insert ff history
+
+        var recpHist =  RecipientHistory()
+        var repHisId =  UUID.randomUUID().toString()
+
+        data.put("id",repHisId)
+        data.put("recipientId",recId)
+        ff.name?.let { data.put("name", it.uppercase()) }
+        ff.name?.let { data.put("ciName", it.lowercase()) }
+        ff.code?.let { data.put("code", it) }
+        ff.address?.let { data.put("address", it) }
+        ff.city?.let { data.put("city", it) }
+        ff.state?.let { data.put("state", it) }
+        ff.zip?.let { data.put("zip", it) }
+        ff.email?.let { data.put("email", it) }
+        ff.mobile?.let { data.put("mobile", it) }
+        ff.designation?.let { data.put("designation", it.id) }
+        ff.headQuarter?.let { data.put("headQuarter", it) }
+        ff.zone?.let { data.put("zone", it) }
+        ff.joiningDate?.let { data.put("joiningDate", it) }
+        ff.team?.let { data.put("team", it.id) }
+        ff.cfa?.let { data.put("cfa", it) }
+        ff.recipientStatus?.let { data.put("status", it.id) }
+        ff.statusChangeDate?.let { data.put("changedOnDate", it) }
+        data.put("createdBy", user.id)
+        data.put("updatedBy", user.id)
+        ff.remarks?.let { data.put("remarks", it) }
+        ff.emailRBM?.let { data.put("emailRBM", it) }
+        ff.emailAM?.let { data.put("emailAM", it) }
+        ff.businessUnit?.let { data.put("businessUnit", it.id) }
+
+        sqlSessionTemplate.insert("FieldForceMapper.insertFieldForceHistory",data)
+
+    }
+
 
 
 

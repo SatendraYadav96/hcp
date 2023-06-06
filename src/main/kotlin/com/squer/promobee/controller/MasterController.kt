@@ -401,6 +401,13 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @PostMapping("/addFieldForce")
+    open fun addFieldForce(@RequestBody ff: MasterFF): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.addFieldForce(ff)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
 
 
 
