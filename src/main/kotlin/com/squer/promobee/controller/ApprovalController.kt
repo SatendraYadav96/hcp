@@ -31,6 +31,20 @@ open class ApprovalController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getDispatchPlanById/{id}")
+    fun getDispatchPlanById(@PathVariable id : String  ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = approvalService.getDispatchPlanById(id)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getMonthlyApprovalDetails/{userId}/{planId}")
+    fun getMonthlyApprovalDetails(@PathVariable userId : String ,@PathVariable planId : String  ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = approvalService.getMonthlyApprovalDetails(userId,planId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
 
 
 
