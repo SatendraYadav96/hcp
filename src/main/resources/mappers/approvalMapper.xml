@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ApprovalMapper">
+
+
+    <select id="getMonthlyApprovalForBex" resultType="com.squer.promobee.controller.dto.MontlyApprovalBexDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetPlanForApprovalForBEX (#{Month, jdbcType = INTEGER, mode = IN}, #{Year, jdbcType = INTEGER, mode = IN},
+            #{UserID, jdbcType = VARCHAR, mode = IN}, #{UserDesignation, jdbcType = VARCHAR, mode = IN}
+                                   ) }
+
+    </select>
+
+
+
+
+
+
+
+</mapper>

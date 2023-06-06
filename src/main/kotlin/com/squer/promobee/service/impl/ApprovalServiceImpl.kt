@@ -1,6 +1,7 @@
 package com.squer.promobee.service.impl
 
 
+import com.squer.promobee.controller.dto.MontlyApprovalBexDTO
 import com.squer.promobee.service.ApprovalService
 import com.squer.promobee.service.repository.ApprovalRepository
 import lombok.extern.slf4j.Slf4j
@@ -21,6 +22,10 @@ class ApprovalServiceImpl @Autowired constructor(
 
 
     private val log = LoggerFactory.getLogger(javaClass)
+
+    override fun getMonthlyApprovalForBex(month: Int, year: Int, userId: String, userDesgId: String): List<MontlyApprovalBexDTO> {
+        return approvalRepository.getMonthlyApprovalForBex(month,year,userId,userDesgId)
+    }
 
 
 }
