@@ -14,11 +14,11 @@ open class FF: AuditableEntity() {
     var zip: String?= null
     var email: String?= null
     var mobile: String?= null
-    var designation: ArrayList<NamedSquerEntity> = ArrayList<NamedSquerEntity>()
+    var designation:NamedSquerEntity?= null
     var headQuarter: String?= null
     var zone: String?= null
     var joiningDate: Date?= null
-    var team: ArrayList<NamedSquerEntity> = ArrayList<NamedSquerEntity>()
+    var team: NamedSquerEntity?= null
     var amName: String?= null
     var amCode: String?= null
     var rmName: String?= null
@@ -26,13 +26,13 @@ open class FF: AuditableEntity() {
     var nsmName: String?= null
     var nsmCode: String?= null
     var cfa: String?= null
-    var recipientStatus: ArrayList<NamedSquerEntity> = ArrayList<NamedSquerEntity>()
-    var statusChangeDate: Date?= null
+    var recipientStatus: NamedSquerEntity?= null
+    var statusChangeDate: String?= null
     var loginId: String?= null
     var gender: String?= null
     var workId: String?= null
     var emailAM: String?= null
     var emailRBM: String?= null
-    var businessUnit: ArrayList<NamedSquerEntity> = ArrayList<NamedSquerEntity>()
+    var businessUnit: NamedSquerEntity?= null
 
 }
