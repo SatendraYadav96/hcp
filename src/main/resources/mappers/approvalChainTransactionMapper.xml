@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.squer.promobee.mapper.ApprovalChainTransactionMapper">
+<mapper namespace="ApprovalChainTransactionMapper">
     <resultMap id="approvalChainTransactionResultMap" type="com.squer.promobee.service.repository.domain.ApprovalChainTransaction">
         <id property="id" column="id_api"/>
         <result property="owner" column="id_owner_api"/>
@@ -35,5 +35,36 @@
             <if test="ownerId!= null">ID_OWNER_API = #{ownerId}</if>
         </where>
     </select>
+
+    <select id="getApprovalChainById" resultMap="approvalChainTransactionResultMap">
+        select * from APPROVAL_CHAIN_TRANSACTION_API
+        where ID_API = #{id}
+    </select>
+
+
+    <update id="updateApprovalChainTransaction">
+
+        UPDATE APPROVAL_CHAIN_TRANSACTION_API SET ID_APPROVED_BY_USR_API = #{approvedByUser} , ID_STATUS_SLV_API = #{apiStatus} , COMMENT_API = #{comments},UPDATED_ON_API = GETDATE() , UPDATED_BY_API = #{updatedBy}
+        WHERE ID_API = #{id}
+    </update>
+
+
+    <select id="getApprovalChainForSpecialPlanConvert" resultMap="approvalChainTransactionResultMap">
+        select * from APPROVAL_CHAIN_TRANSACTION_API
+        where ID_OWNER_API = #{id}  and ID_DESG_ULV_API = #{designation}
+    </select>
+
+
+    <update id="updateSaveMonthlyToSpecial">
+
+        UPDATE APPROVAL_CHAIN_TRANSACTION_API SET ID_STATUS_SLV_API = #{apiStatus},UPDATED_ON_API = GETDATE() , UPDATED_BY_API = #{updatedBy}
+        WHERE ID_OWNER_API = #{owner}
+    </update>
+
+
+    <insert id="insertSaveMonthlyToSpecial">
+        INSERT INTO APPROVAL_CHAIN_TRANSACTION_API (ID_API,ID_OWNER_API,ID_DESG_ULV_API,ID_STATUS_SLV_API,CREATED_ON_API,CREATED_BY_API,UPDATED_ON_API,UPDATED_BY_API)
+        VALUES (#{id},#{owner},#{designation},#{apiStatus},GETDATE(),#{createdBy},GETDATE(),#{updatedBy})
+    </insert>
 
 </mapper>

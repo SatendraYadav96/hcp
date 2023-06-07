@@ -87,4 +87,57 @@
 
     </update>
 
+
+    <insert id="insertUnlockPlan">
+        INSERT INTO DISPATCH_PLAN_DIP(ID_DIP, ID_OWNER_USR_DIP, MONTH_DIP, YEAR_DIP,ID_STATUS_SLV_DIP,
+                                      IS_SPECIAL_DIP, CREATED_ON_DIP, CREATED_BY_DIP,
+                                      UPDATED_ON_DIP, UPDATED_BY_DIP, ID_INVOICE_STATUS_SLV_DIP
+                                       ) VALUES( #{id}, #{owner}, #{month}, #{year}, #{planStatus}, #{isSpecial},
+                                                                        GETDATE(), #{createdBy}, GETDATE(), #{updatedBy}, #{invoiceStatus} )
+    </insert>
+
+    <update id="updateUnlockPlan">
+
+        UPDATE DISPATCH_PLAN_DIP SET ID_STATUS_SLV_DIP = #{planStatus}, UPDATED_BY_DIP = #{updatedBy} , UPDATED_ON_DIP = GETDATE()
+        WHERE ID_DIP = #{id}
+    </update>
+
+
+
+    <select id="resetDraftPlan"  parameterType = "map" statementType = "CALLABLE">
+        {call PROC_REVERSE_ALLOCATION_OF_DRAFT (#{ID_DIP, jdbcType = VARCHAR , mode = IN} )}
+    </select>
+
+
+    <update id="approvePlan">
+
+        UPDATE DISPATCH_PLAN_DIP SET APPROVAL_DATE_DIP = GETDATE() , ID_STATUS_SLV_DIP = #{planStatus}, UPDATED_ON_DIP = GETDATE(), UPDATED_BY_DIP = #{updatedBy}
+        WHERE ID_DIP = #{id}
+    </update>
+
+    <update id="rejectPlan">
+
+        UPDATE DISPATCH_PLAN_DIP SET APPROVAL_DATE_DIP = GETDATE() , ID_STATUS_SLV_DIP = #{planStatus}, UPDATED_ON_DIP = GETDATE(), UPDATED_BY_DIP = #{updatedBy} , ID_INVOICE_STATUS_SLV_DIP = #{invoiceStatus}
+        WHERE ID_DIP = #{id}
+    </update>
+
+    <update id="saveMonthlyToSpecial">
+
+        UPDATE DISPATCH_PLAN_DIP SET SUBMISSION_DATE_DIP = GETDATE() , ID_STATUS_SLV_DIP = #{planStatus}, UPDATED_ON_DIP = GETDATE(), UPDATED_BY_DIP = #{updatedBy} , MONTH_DIP = #{month}, YEAR_DIP = #{year},
+                                     IS_SPECIAL_DIP = #{isSpecial}, REMARKS_DIP = #{remarks}
+        WHERE ID_DIP = #{id}
+    </update>
+
+
+    <select id="getDispatchPlanCount" resultMap="dispatchPlanResultMap" >
+        SELECT * FROM DISPATCH_PLAN_DIP WHERE ID_DIP = #{id}
+    </select>
+
+    <update id="saveMonthlyToMonthly">
+
+        UPDATE DISPATCH_PLAN_DIP SET   UPDATED_ON_DIP = GETDATE(), UPDATED_BY_DIP = #{updatedBy} , MONTH_DIP = #{month}, YEAR_DIP = #{year},
+                                     IS_SPECIAL_DIP = #{isSpecial}
+        WHERE ID_DIP = #{id}
+    </update>
+
 </mapper>

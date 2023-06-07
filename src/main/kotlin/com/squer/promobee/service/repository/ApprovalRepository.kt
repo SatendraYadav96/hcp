@@ -1,12 +1,13 @@
 package com.squer.promobee.service.repository
 
 
-import com.squer.promobee.api.v1.enums.UserLovEnum
-import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
-import com.squer.promobee.controller.dto.MontlyApprovalBexDTO
+import com.squer.promobee.api.v1.enums.*
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
+import com.squer.promobee.service.repository.domain.ApprovalChainTransaction
+import com.squer.promobee.service.repository.domain.DispatchDetail
 import com.squer.promobee.service.repository.domain.DispatchPlan
 import com.squer.promobee.service.repository.domain.Users
 import org.apache.ibatis.session.SqlSessionFactory
@@ -16,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 
 import org.springframework.stereotype.Repository
 import java.util.*
+import kotlin.reflect.jvm.internal.impl.load.java.lazy.descriptors.DeclaredMemberIndex.Empty
 
 @Repository
 class ApprovalRepository(
@@ -26,6 +28,15 @@ class ApprovalRepository(
 
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
+
+
+    @Autowired
+    lateinit var masterRepository: MasterRepository
+
+
+    @Autowired
+    lateinit var invoiceRepository: InvoiceRepository
+
 
     fun getMonthlyApprovalForBex(month: Int, year: Int, userId: String, userDesgId: String): List<MontlyApprovalBexDTO> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -54,7 +65,13 @@ class ApprovalRepository(
 
         var plan = getDispatchPlanById(planId)
 
-        var isuserRbm = (plan.owner!!.id == UserLovEnum.REGIONAL_BUSINESS_MANAGER.id  || plan.owner!!.id == UserLovEnum.NATIONAL_SALES_MANAGER.id)
+        var usr = masterRepository.getUserById(userId)
+
+        var isuserRbm = (usr.userDesignation!!.id == UserLovEnum.REGIONAL_BUSINESS_MANAGER.id || usr.userDesignation!!.id == UserLovEnum.NATIONAL_SALES_MANAGER.id)
+
+
+
+        //var isuserRbm = (plan.owner!!.id == UserLovEnum.REGIONAL_BUSINESS_MANAGER.id  || plan.owner!!.id == UserLovEnum.NATIONAL_SALES_MANAGER.id)
 
         var allocationDetails = AllocationInventoryDetailsWithCostCenterDTO()
 
@@ -82,11 +99,377 @@ class ApprovalRepository(
     }
 
 
+    fun unlockPlanForUserByMonthAndYear(plan: UnlockPlanDto) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        var dipId = plan.dispatchPlanId
+
+        var dip = DispatchPlan()
+
+        var planId = UUID.randomUUID().toString()
+
+        if(dipId!!.isEmpty()){
+
+            data.put("id", planId)
+            plan.userId?.let { data.put("owner", it) }
+            plan.month?.let { data.put("month", it) }
+            plan.year?.let { data.put("year", it) }
+           data.put("planStatus", AllocationEnum.UNLOCK.id)
+            data.put("isSpecial", 0)
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            data.put("invoiceStatus",DispatchPlanInvoiceStatus.NOT_INITIATED.id)
+
+            sqlSessionFactory.openSession().insert("DispatchPlanMapper.insertUnlockPlan",data)
+
+        }else{
+            //var existingDip = plan.dispatchPlanId?.let { invoiceRepository.getDispatchPlanById(it) }
+
+
+            data.put("id", dipId)
+            data.put("planStatus", AllocationEnum.UNLOCK.id)
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+
+            sqlSessionFactory.openSession().update("DispatchPlanMapper.updateUnlockPlan",data)
+
+
+        }
+
+
+    }
+
+
+
+    fun resetDraftPlan(planId: String) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("ID_DIP",planId)
+
+        sqlSessionFactory.openSession().update("DispatchPlanMapper.resetDraftPlan",data)
+
+
+    }
+
+
+    fun getApprovalChainById(id: String): ApprovalChainTransaction {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",id)
+
+       return sqlSessionFactory.openSession().selectOne<ApprovalChainTransaction>("ApprovalChainTransactionMapper.getApprovalChainById",data)
+
+
+    }
+
+    fun getApprovalChainForSpecialPlanConvert(id: String, desgId: String): ApprovalChainTransaction {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",id)
+        data.put("designation",desgId)
+
+        return sqlSessionFactory.openSession().selectOne<ApprovalChainTransaction>("ApprovalChainTransactionMapper.getApprovalChainForSpecialPlanConvert",data)
+
+
+    }
+
+
+    fun approvePlan(plan: ApproveRejectPlanDto) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        var isSpecial : Int =  plan.approvalType!!.toInt()
+
+        var approvalTransaction = plan.apiId?.let { getApprovalChainById(it) }
+
+        var dispatchPlan = plan.planId?.let { getDispatchPlanById(it) }
+
+        plan.apiId?.let { data.put("id", it) }
+        data.put("approvedByUser",user.id)
+        data.put("apiStatus",ApprovalStatusEnum.APPROVED.id)
+        plan.comment?.let { data.put("comments", it) }
+        data.put("updatedBy",user.id)
+
+
+        sqlSessionFactory.openSession().update("ApprovalChainTransactionMapper.updateApprovalChainTransaction",data)
+
+        if(user.userDesignation!!.id == UserLovEnum.BUH.id && isSpecial == 1 ){
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            plan.planId?.let { data.put("id", it) }
+            data.put("planStatus", AllocationStatusEnum.APPROVED_BY_BUH.id)
+            data.put("updatedBy",user.id)
+
+            sqlSessionFactory.openSession().update("DispatchPlanMapper.approvePlan",data)
+
+        }
+        if (user.userDesignation!!.id == UserLovEnum.BEX.id && isSpecial == 1){
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            plan.planId?.let { data.put("id", it) }
+            data.put("planStatus", AllocationStatusEnum.APPROVED.id)
+            data.put("updatedBy",user.id)
+
+            sqlSessionFactory.openSession().update("DispatchPlanMapper.approvePlan",data)
+        }
+        if(user.userDesignation!!.id == UserLovEnum.BEX.id && isSpecial == 0){
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            plan.planId?.let { data.put("id", it) }
+            data.put("planStatus", AllocationStatusEnum.APPROVED.id)
+            data.put("updatedBy",user.id)
+
+            sqlSessionFactory.openSession().update("DispatchPlanMapper.approvePlan",data)
+
+        }
+
+    }
+
+    fun getDispatchDetails(planId: String): List<DispatchDetail> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("planId",planId)
+
+        return  sqlSessionFactory.openSession().selectList("DispatchDetailMapper.getDispatchDetailsRejectPlan",data)
+
+
+    }
+
+
+    fun getDispatchPlanCount(id: String): DispatchPlan {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",id)
+
+        return  sqlSessionFactory.openSession().selectOne("DispatchPlanMapper.getDispatchPlanCount",data)
+
+
+    }
+
+
+
+    fun rejectPlan(plan: ApproveRejectPlanDto) {
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        var isSpecial: Int = plan.approvalType!!.toInt()
+
+        var approvalTransaction = plan.apiId?.let { getApprovalChainById(it) }
+
+        var dispatchPlan = plan.planId?.let { getDispatchPlanById(it) }
+
+       var dispatchDetails = plan.planId?.let { getDispatchDetails(it) }
+
+        plan.apiId?.let { data.put("id", it) }
+        data.put("approvedByUser", user.id)
+        data.put("apiStatus", ApprovalStatusEnum.REJECTED.id)
+        plan.comment?.let { data.put("comments", it) }
+        data.put("updatedBy", user.id)
+
+
+        sqlSessionFactory.openSession().update("ApprovalChainTransactionMapper.updateApprovalChainTransaction", data)
+
+
+        if(user.userDesignation!!.id == UserLovEnum.BUH.id && isSpecial == 1 ){
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            plan.planId?.let { data.put("id", it) }
+            data.put("planStatus", AllocationStatusEnum.DRAFT.id)
+            data.put("updatedBy",user.id)
+
+            sqlSessionFactory.openSession().update("DispatchPlanMapper.approvePlan",data)
+
+
+            var i = 0
+            dispatchDetails!!.forEach {
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                data.put("id", dispatchDetails.get(i).id)
+                data.put("detailStatus",DispatchDetailStatusEnum.ALLOCATED.id)
+                data.put("updatedBy",user.id)
+
+                sqlSessionFactory.openSession().update("DispatchDetailMapper.rejectPlanDispatchDetails",data)
+
+                i++
+
+            }
+
+
+        }
+
+        if(user.userDesignation!!.id == UserLovEnum.BEX.id || isSpecial == 0){
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            plan.planId?.let { data.put("id", it) }
+            data.put("planStatus", AllocationStatusEnum.DRAFT.id)
+            data.put("updatedBy",user.id)
+            data.put("invoiceStatus",DispatchPlanInvoiceStatus.NOT_INITIATED.id)
+
+
+            sqlSessionFactory.openSession().update("DispatchPlanMapper.rejectPlan",data)
+
+            var i = 0
+
+            dispatchDetails!!.forEach {
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                data.put("id", dispatchDetails.get(i).id)
+                data.put("detailStatus",DispatchDetailStatusEnum.ALLOCATED.id)
+                data.put("updatedBy",user.id)
+
+                sqlSessionFactory.openSession().update("DispatchDetailMapper.rejectPlanDispatchDetails",data)
+
+                i++
+            }
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+    fun saveMonthlyToSpecial(plan: SaveMonthlyToSpecialDTO) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        var isSaved = false
+        var ErrorMsg = ""
+
+        if(plan.isSpecialChange == true) {
+            var dip = plan.planId?.let { getDispatchPlanById(it) }
+            if(dip!!.planStatus!!.id == AllocationStatusEnum.DRAFT.id ) {
+
+                plan.planId?.let { data.put("id", it) }
+                plan.month?.let { data.put("month", it) }
+                plan.year?.let { data.put("year", it) }
+                data.put("isSpecial",1)
+                plan.planPurpose?.let { data.put("remarks", it) }
+                data.put("planStatus",AllocationStatusEnum.DRAFT.id)
+                data.put("updatedBy", user.id)
+
+                sqlSessionFactory.openSession().update("DispatchPlanMapper.saveMonthlyToSpecial",data)
+
+                isSaved = true;
+                ErrorMsg = "Plan changed from Monthly to Special Successfully...";
+
+            } else{
+
+                plan.planId?.let { data.put("id", it) }
+                plan.month?.let { data.put("month", it) }
+                plan.year?.let { data.put("year", it) }
+                data.put("isSpecial",1)
+                plan.planPurpose?.let { data.put("remarks", it) }
+                data.put("planStatus",AllocationStatusEnum.SUBMIT.id)
+                data.put("updatedBy", user.id)
+
+                sqlSessionFactory.openSession().update("DispatchPlanMapper.saveMonthlyToSpecial",data)
+
+
+//                var approvalChainTransaction  = ApprovalChainTransaction()
+
+                var approvalChainTransaction = plan.planId?.let { getApprovalChainById(it) }!!
+
+                if(approvalChainTransaction != null && approvalChainTransaction.designation!!.id == UserLovEnum.BEX.id) {
+
+                    var data: MutableMap<String, Any> = mutableMapOf()
+                    data.put("owner", plan.planId!!)
+                    data.put("apiStatus", ApprovalStatusEnum.PENDING_APPROVAL.id)
+                    data.put("updatedBy",user.id)
+
+                    sqlSessionFactory.openSession().update("ApprovalChainTransactionMapper.updateSaveMonthlyToSpecial",data)
+
+                } else {
+                    var apiId = UUID.randomUUID().toString()
+
+                    data.put("id",apiId)
+                    data.put("owner", plan.planId!!)
+                    data.put("designation", UserLovEnum.BEX.id)
+                    data.put("apiStatus", ApprovalStatusEnum.PENDING_APPROVAL.id)
+                    data.put("createdBy",user.id)
+                    data.put("updatedBy",user.id)
+
+                    sqlSessionFactory.openSession().insert("ApprovalChainTransactionMapper.insertSaveMonthlyToSpecial",data)
+                }
+
+                var approvalChainTransactionBUH = plan.planId?.let { getApprovalChainById(it) }!!
+
+                if(approvalChainTransactionBUH != null && approvalChainTransactionBUH.designation!!.id == UserLovEnum.BUH.id) {
+
+                    var data: MutableMap<String, Any> = mutableMapOf()
+                    data.put("owner", plan.planId!!)
+                    data.put("apiStatus", ApprovalStatusEnum.PENDING_APPROVAL.id)
+                    data.put("updatedBy",user.id)
+
+                    sqlSessionFactory.openSession().update("ApprovalChainTransactionMapper.updateSaveMonthlyToSpecial",data)
+
+                } else {
+
+                    var apiId1 = UUID.randomUUID().toString()
+
+                    data.put("id",apiId1)
+                    data.put("owner", plan.planId!!)
+                    data.put("designation", UserLovEnum.BEX.id)
+                    data.put("apiStatus", ApprovalStatusEnum.PENDING_APPROVAL.id)
+                    data.put("createdBy",user.id)
+                    data.put("updatedBy",user.id)
+
+                    sqlSessionFactory.openSession().insert("ApprovalChainTransactionMapper.insertSaveMonthlyToSpecial",data)
+
+                }
+
+                isSaved = true;
+                ErrorMsg = "Plan changed from Monthly to Special Successfully...";
 
 
 
 
 
+            }
+
+        } else{
+
+            var month1 = plan.month?.toInt()
+            var year1 = plan.year?.toInt()
+
+            var dip = plan.planId?.let { getDispatchPlanById(it) }
+
+            if(dip != null ){
+                var data: MutableMap<String, Any> = mutableMapOf()
+                month1?.let { data.put("month", it.toInt()) }
+                year1?.let { data.put("year", it.toInt()) }
+                data.put("isSpecial", 0)
+                data.put("updatedBy",user.id)
+
+                sqlSessionFactory.openSession().update("DispatchPlanMapper.saveMonthlyToMonthly",data)
+
+            } else {
+                isSaved = false;
+                ErrorMsg = "Error occured as Already Have Plan for the Month..";
+            }
+
+
+        }
+
+
+
+
+
+
+    }
 
 
 

@@ -1,0 +1,8 @@
+package com.squer.promobee.api.v1.enums
+
+enum class ApprovalStatusEnum(val id: String) {
+
+     PENDING_APPROVAL("B1D0D302-9D86-4A49-A9BE-A57EA3A6B276"),
+     APPROVED("BF12B5B5-2923-4A6F-BE33-27B417D5158E"),
+     REJECTED("3D43AF7D-EA34-49F5-B356-BBA223D14876")
+}

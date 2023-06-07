@@ -11,6 +11,12 @@
         <result property="createdBy" column="created_by_did"/>
         <result property="updatedAt" column="updated_on_did"/>
         <result property="updatedBy" column="updated_by_did"/>
+<!--        <result property="planId" column="id_dip_did"/>-->
+<!--        <result property="inventoryId" column="id_inv_did"/>-->
+<!--        <result property="recipientId" column="id_rct_did"/>-->
+<!--        <result property="quarterlyPlanId" column="id_qtp_did"/>-->
+<!--        <result property="detailStatus" column="id_status_slv_did"/>-->
+<!--        <result property="categoryId" column="id_itc_did"/>-->
         <association property="planId" column="id_dip_did" select="getDispatchPlan" javaType="com.squer.promobee.service.repository.domain.DispatchPlan">
             <id property="id" column="id_dip"/>
         </association>
@@ -32,6 +38,31 @@
             <id property="id" column="id_itc_did"/>
             <result property="name" column="name_itc"/>
         </association>
+
+<!--        <association property="planId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">-->
+<!--            <id property="id" column="id_dip_did"/>-->
+<!--            <result property="name" column="name_usr"/>-->
+<!--        </association>-->
+<!--        <association property="inventoryId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">-->
+<!--            <id property="id" column="id_inv_did"/>-->
+<!--&lt;!&ndash;            <result property="name" column="name_usr"/>&ndash;&gt;-->
+<!--        </association>-->
+<!--        <association property="recipientId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">-->
+<!--            <id property="id" column="id_rct_did"/>-->
+<!--            <result property="name" column="name_rct"/>-->
+<!--        </association>-->
+<!--        <association property="quarterlyPlanId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">-->
+<!--            <id property="id" column="id_qtp_did"/>-->
+<!--&lt;!&ndash;            <result property="name" column="name_usr"/>&ndash;&gt;-->
+<!--        </association>-->
+<!--        <association property="detailStatus" javaType="com.squer.promobee.security.domain.NamedSquerEntity">-->
+<!--            <id property="id" column="id_status_slv_did"/>-->
+<!--            <result property="name" column="name_slv"/>-->
+<!--        </association>-->
+<!--        <association property="categoryId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">-->
+<!--            <id property="id" column="id_itc_did"/>-->
+<!--            <result property="name" column="name_itc"/>-->
+<!--        </association>-->
     </resultMap>
 
 
@@ -44,7 +75,7 @@
     </select>
 
     <select id="getQuarterlyPlan" parameterType="map" resultType="com.squer.promobee.service.repository.domain.QuarterlyPlan" >
-        select id_qtp as id from QUARTERLY_PLAN_QTP where id_rct=#{id_qtp_did}
+        select id_qtp as id from QUARTERLY_PLAN_QTP where ID_QTP=#{id_qtp_did}
     </select>
 
     <insert id="dispatchDetailInsert" >
@@ -77,6 +108,19 @@
 
     </update>
 
+
+    <select id="getDispatchDetailsRejectPlan" resultMap="dispatchDetailResultMap" >
+        SELECT * FROM DISPATCH_DETAIL_DID
+        WHERE ID_DIP_DID =  #{planId}
+    </select>
+
+    <update id="rejectPlanDispatchDetails">
+
+
+        UPDATE DISPATCH_DETAIL_DID SET ID_STATUS_SLV_DID =  #{detailStatus} , UPDATED_BY_DID = #{updatedBy} , UPDATED_ON_DID = GETDATE()
+        WHERE ID_DID = #{id}
+
+    </update>
 
 
 

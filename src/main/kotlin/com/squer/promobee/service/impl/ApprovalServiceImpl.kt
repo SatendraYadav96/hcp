@@ -1,10 +1,11 @@
 package com.squer.promobee.service.impl
 
 
-import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
-import com.squer.promobee.controller.dto.MontlyApprovalBexDTO
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.ApprovalService
 import com.squer.promobee.service.repository.ApprovalRepository
+import com.squer.promobee.service.repository.domain.ApprovalChainTransaction
+import com.squer.promobee.service.repository.domain.DispatchDetail
 import com.squer.promobee.service.repository.domain.DispatchPlan
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
@@ -40,5 +41,40 @@ class ApprovalServiceImpl @Autowired constructor(
         return approvalRepository.getMonthlyApprovalDetails(userId,planId)
     }
 
+    override fun unlockPlanForUserByMonthAndYear(plan: UnlockPlanDto) {
+        return approvalRepository.unlockPlanForUserByMonthAndYear(plan)
+    }
+
+    override fun resetDraftPlan(planId: String) {
+        return approvalRepository.resetDraftPlan(planId)
+    }
+
+    override fun getApprovalChainById(id: String): ApprovalChainTransaction {
+        return approvalRepository.getApprovalChainById(id)
+    }
+
+    override fun getApprovalChainForSpecialPlanConvert(id: String, desgId: String): ApprovalChainTransaction {
+        return approvalRepository.getApprovalChainForSpecialPlanConvert(id,desgId)
+    }
+
+    override fun approvePlan(plan: ApproveRejectPlanDto) {
+        return approvalRepository.approvePlan(plan)
+    }
+
+    override fun getDispatchDetails(planId: String): List<DispatchDetail> {
+        return approvalRepository.getDispatchDetails(planId)
+    }
+
+    override fun getDispatchPlanCount(id: String): DispatchPlan {
+        return approvalRepository.getDispatchPlanCount(id)
+    }
+
+    override fun rejectPlan(plan: ApproveRejectPlanDto) {
+        return approvalRepository.rejectPlan(plan)
+    }
+
+    override fun saveMonthlyToSpecial(plan: SaveMonthlyToSpecialDTO) {
+        return approvalRepository.saveMonthlyToSpecial(plan)
+    }
 
 }
