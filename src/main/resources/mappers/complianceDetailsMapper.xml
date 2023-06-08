@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.squer.promobee.mapper.ComplianceDetailsMapper">
+<mapper namespace="ComplianceDetailsMapper">
     <resultMap id="complianceDetailsResultMap" type="com.squer.promobee.service.repository.domain.ComplianceDetails">
         <id property="id" column="id_cm"/>
         <result property="ff" column="ff_cm"/>
@@ -20,4 +20,41 @@
         <result property="teamId" column="team_id_cd"/>
         <result property="teamName" column="team_name"/>
     </resultMap>
+
+
+    <select id="recipientBlocked" resultType="com.squer.promobee.controller.dto.RecipientUnblockingPartialDTO">
+        SELECT rlff.ID_RLFF as 'IdRlf',rct.CODE_RCT as 'EmployeeCode',rct.NAME_RCT as 'EmployeeName',rlff.MONTH as 'Month',rlff.YEAR as 'Year',tem.NAME_TEM as 'Team',rct.HEAD_QUARTER_RCT as 'Headquarter',
+                rct.EMAIL_AM as 'EmailAM',rct.EMAIL_RM as 'EmailRM',rlff.ISBLOCK as  'IsBockedFF', rlff.ISVALIDATED as 'IsValidated',rlff.ISEXPIRED as 'IsExpired',rlff.ISREJECTED as 'IsRejected',rlff.REASON as 'Reason',
+                rlff.REMARK as 'Remark',rlff.ADMIN_REMARK_RLFF as 'RemarkByAdmin',rlff.BATCH_NO_RLFF as 'BatchNo',rlff.MATERIAL_CODE_RLFF as 'MaterialCode'
+        FROM RECOMMENDED_LIST_FORBLOCK_FF_RLFF rlff
+        join RECIPIENT_MASTER_RCT rct on rlff.EMPLOYEE_CODE_RLFF = rct.CODE_RCT
+        join TEAM_MASTER_TEM tem on rct.ID_TEM_RCT = tem.ID_TEM
+        join TEAM_LEGAL_ENTITY_TET  tet on tem.ID_TEM = tet.ID_TEM_TET
+        where  rlff.MONTH = #{month} and rlff.YEAR = #{year} and rlff.ISBLOCK = 1
+    </select>
+
+    <select id="recipientUnblocked" resultType="com.squer.promobee.controller.dto.RecipientUnblockingPartialDTO">
+        SELECT rlff.ID_RLFF as 'IdRlf',rct.CODE_RCT as 'EmployeeCode',rct.NAME_RCT as 'EmployeeName',rlff.MONTH as 'Month',rlff.YEAR as 'Year',tem.NAME_TEM as 'Team',rct.HEAD_QUARTER_RCT as 'Headquarter',
+                rct.EMAIL_AM as 'EmailAM',rct.EMAIL_RM as 'EmailRM',rlff.ISBLOCK as  'IsBockedFF', rlff.ISVALIDATED as 'IsValidated',rlff.ISEXPIRED as 'IsExpired',rlff.ISREJECTED as 'IsRejected',rlff.REASON as 'Reason',
+                rlff.REMARK as 'Remark',rlff.ADMIN_REMARK_RLFF as 'RemarkByAdmin',rlff.BATCH_NO_RLFF as 'BatchNo',rlff.MATERIAL_CODE_RLFF as 'MaterialCode'
+        FROM RECOMMENDED_LIST_FORBLOCK_FF_RLFF rlff
+                 join RECIPIENT_MASTER_RCT rct on rlff.EMPLOYEE_CODE_RLFF = rct.CODE_RCT
+                 join TEAM_MASTER_TEM tem on rct.ID_TEM_RCT = tem.ID_TEM
+                 join TEAM_LEGAL_ENTITY_TET  tet on tem.ID_TEM = tet.ID_TEM_TET
+        where  rlff.MONTH = #{month} and rlff.YEAR = #{year} and rlff.ISBLOCK = 0
+    </select>
+
+    <select id="recipientRejected" resultType="com.squer.promobee.controller.dto.RecipientUnblockingPartialDTO">
+        SELECT rlff.ID_RLFF as 'IdRlf',rct.CODE_RCT as 'EmployeeCode',rct.NAME_RCT as 'EmployeeName',rlff.MONTH as 'Month',rlff.YEAR as 'Year',tem.NAME_TEM as 'Team',rct.HEAD_QUARTER_RCT as 'Headquarter',
+                rct.EMAIL_AM as 'EmailAM',rct.EMAIL_RM as 'EmailRM',rlff.ISBLOCK as  'IsBockedFF', rlff.ISVALIDATED as 'IsValidated',rlff.ISEXPIRED as 'IsExpired',rlff.ISREJECTED as 'IsRejected',rlff.REASON as 'Reason',
+                rlff.REMARK as 'Remark',rlff.ADMIN_REMARK_RLFF as 'RemarkByAdmin',rlff.BATCH_NO_RLFF as 'BatchNo',rlff.MATERIAL_CODE_RLFF as 'MaterialCode'
+        FROM RECOMMENDED_LIST_FORBLOCK_FF_RLFF rlff
+                 join RECIPIENT_MASTER_RCT rct on rlff.EMPLOYEE_CODE_RLFF = rct.CODE_RCT
+                 join TEAM_MASTER_TEM tem on rct.ID_TEM_RCT = tem.ID_TEM
+                 join TEAM_LEGAL_ENTITY_TET  tet on tem.ID_TEM = tet.ID_TEM_TET
+        where  rlff.MONTH = #{month} and rlff.YEAR = #{year} and rlff.ISREJECTED = 1
+    </select>
+
+
+
 </mapper>
