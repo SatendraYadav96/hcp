@@ -2,7 +2,10 @@ package com.squer.promobee.service.repository
 
 
 
-import com.squer.promobee.controller.dto.MontlyApprovalBexDTO
+
+
+import com.squer.promobee.controller.dto.OptimaDataLogsDTO
+import com.squer.promobee.controller.dto.OverSamplingDetaislDTO
 import com.squer.promobee.controller.dto.RecipientUnblockingPartialDTO
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
@@ -56,6 +59,70 @@ class ComplianceRepository(
 
     }
 
+
+
+
+
+    fun optimaMailLogs(type: String, month: String, year: String): List<OptimaDataLogsDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("type", type)
+        data.put("month", month)
+        data.put("year", year)
+
+        var optima : List<OptimaDataLogsDTO> = ArrayList<OptimaDataLogsDTO>()
+
+        if(type == "1"){
+            data.put("month", month)
+            data.put("year", year)
+
+            optima =  sqlSessionFactory.openSession().selectList("ComplianceDetailsMapper.sampleExpireInThirtyDays", data)
+        }
+
+        if(type == "2"){
+            data.put("month", month)
+            data.put("year", year)
+
+            optima =  sqlSessionFactory.openSession().selectList("ComplianceDetailsMapper.inputExpiring", data)
+
+        }
+
+        if(type == "Sample"){
+            data.put("type", type)
+            data.put("month", month)
+            data.put("year", year)
+            optima =  sqlSessionFactory.openSession().selectList("ComplianceDetailsMapper.materialExpiring", data)
+        }
+
+        if(type == "Input"){
+            data.put("type", type)
+            data.put("month", month)
+            data.put("year", year)
+            optima =  sqlSessionFactory.openSession().selectList("ComplianceDetailsMapper.materialExpiring", data)
+        }
+
+
+            return optima
+
+
+    }
+
+
+
+
+
+    fun overSamplingDetails(month: String, year: String): List<OverSamplingDetaislDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("month", month)
+        data.put("year", year)
+
+            return  sqlSessionFactory.openSession().selectList("ComplianceDetailsMapper.overSamplingDetails", data)
+
+
+
+    }
 
 
 

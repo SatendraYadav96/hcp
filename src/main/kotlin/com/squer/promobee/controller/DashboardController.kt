@@ -23,6 +23,8 @@ open class DashboardController@Autowired constructor(
     private val log = LoggerFactory.getLogger(javaClass)
 
 
+    // HUB
+
     @GetMapping("/getPendingDispatch")
     open fun getPendingDispatch() : ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -60,6 +62,19 @@ open class DashboardController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
 
     }
+
+
+    //BEX
+
+    @GetMapping("/batchReconciliation")
+    open fun batchReconciliation() : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data = dashboardService.batchReconciliation()
+        return ResponseEntity(data, HttpStatus.OK)
+
+    }
+
+
 
 
 

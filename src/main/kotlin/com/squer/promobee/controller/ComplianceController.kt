@@ -34,6 +34,22 @@ open class ComplianceController@Autowired constructor(
     }
 
 
+    @GetMapping("/optimaMailLogs/{type}/{month}/{year}")
+    fun optimaMailLogs(@PathVariable type : String , @PathVariable month : String ,@PathVariable year : String   ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = complianceService.optimaMailLogs(type,month,year)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/overSamplingDetails/{month}/{year}")
+    fun overSamplingDetails(@PathVariable month : String ,@PathVariable year : String   ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = complianceService.overSamplingDetails(month,year)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
 
 
 

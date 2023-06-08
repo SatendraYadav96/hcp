@@ -25,6 +25,8 @@ class DashboardServiceImpl @Autowired constructor(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+    //HUB
+
     override fun getPendingDispatch (): List<PendingDispacthDashboardDTO> {
         return dashboardRepository.getPendingDispatch()
     }
@@ -43,6 +45,12 @@ class DashboardServiceImpl @Autowired constructor(
 
     override fun getItemExpiredDetails(): List<ItemExpiredDetailsDashboardDTO> {
         return dashboardRepository.getItemExpiredDetails()
+    }
+
+    //BEX
+
+    override fun batchReconciliation(): List<BatchReconciliationDTO> {
+        return dashboardRepository.batchReconciliation()
     }
 
 

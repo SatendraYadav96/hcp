@@ -56,5 +56,27 @@
     </select>
 
 
+    <select id="sampleExpireInThirtyDays" resultType="com.squer.promobee.controller.dto.OptimaDataLogsDTO" parameterType = "map" statementType = "CALLABLE">
+        { call Get_SampleNearExpiryCount (#{month, jdbcType = VARCHAR, mode = IN}, #{year, jdbcType = VARCHAR, mode = IN}    ) }
+
+    </select>
+
+    <select id="inputExpiring" resultType="com.squer.promobee.controller.dto.OptimaDataLogsDTO" parameterType = "map" statementType = "CALLABLE">
+        { call Get_InputsNearExpiryCount (#{month, jdbcType = VARCHAR, mode = IN}, #{year, jdbcType = VARCHAR, mode = IN}    ) }
+
+    </select>
+
+    <select id="materialExpiring" resultType="com.squer.promobee.controller.dto.OptimaDataLogsDTO" parameterType = "map" statementType = "CALLABLE">
+        { call Get_OptimaLogsdata (#{month, jdbcType = VARCHAR, mode = IN}, #{year, jdbcType = VARCHAR, mode = IN} , #{type, jdbcType = VARCHAR, mode = IN}   ) }
+
+    </select>
+
+    <select id="overSamplingDetails" resultType="com.squer.promobee.controller.dto.OverSamplingDetaislDTO">
+        SELECT ID_CM 'comId',FF_CODE 'ffCode',START_DATE 'startDate',END_DATE 'endDate',TEAM_NAME 'teamName', DR_ID 'doctorId',
+                DR_NAME 'doctorName',BU 'bu', AM 'am', RBM 'rbm',TOT_SAMPLE_GIVEN 'totalSampleGiven',REMARKS 'remarks',REASON 'reason' FROM COMPLIANCE_DETAILS_CD
+        WHERE START_DATE = #{month} AND END_DATE = #{year}
+    </select>
+
+
 
 </mapper>

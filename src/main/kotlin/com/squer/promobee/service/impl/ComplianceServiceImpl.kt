@@ -1,6 +1,7 @@
 package com.squer.promobee.service.impl
 
 
+
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.ComplianceService
 import com.squer.promobee.service.repository.ComplianceRepository
@@ -26,6 +27,14 @@ class ComplianceServiceImpl @Autowired constructor(
 
     override fun recipientUnblockingPartial(statusType: String, month: String, year: String): List<RecipientUnblockingPartialDTO> {
         return complianceRepository.recipientUnblockingPartial(statusType,month,year)
+    }
+
+    override fun optimaMailLogs(type: String, month: String, year: String): List<OptimaDataLogsDTO> {
+        return complianceRepository.optimaMailLogs(type,month,year)
+    }
+
+    override fun overSamplingDetails(month: String, year: String): List<OverSamplingDetaislDTO> {
+        return complianceRepository.overSamplingDetails(month,year)
     }
 
 

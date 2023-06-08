@@ -25,6 +25,8 @@ DashboardRepository(
     lateinit var sqlSessionFactory: SqlSessionFactory
 
 
+    //HUB
+
     fun getPendingDispatch (): List<PendingDispacthDashboardDTO> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
@@ -72,6 +74,18 @@ DashboardRepository(
         return sqlSessionFactory.openSession().selectList("DashboardMapper.getItemExpiredDetails", data)
     }
 
+    //BEX
+
+
+
+    fun batchReconciliation (): List<BatchReconciliationDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        return sqlSessionFactory.openSession().selectList("DashboardMapper.batchReconciliation", data)
+    }
 
 
 

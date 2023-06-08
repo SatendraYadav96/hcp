@@ -29,6 +29,11 @@
 
     </select>
 
+    <select id="batchReconciliation" resultType="com.squer.promobee.controller.dto.BatchReconciliationDTO" parameterType = "map" statementType = "CALLABLE">
+        { call Get_ReconciliationReport () }
+
+    </select>
+
 
 
 </mapper>
