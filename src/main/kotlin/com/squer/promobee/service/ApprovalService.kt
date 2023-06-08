@@ -8,6 +8,9 @@ import com.squer.promobee.service.repository.domain.DispatchPlan
 
 interface ApprovalService {
 
+
+    // MONTHLY APPROVAL
+
     fun getMonthlyApprovalForBex(month : Int,  year : Int,  userId : String,  userDesgId : String) : List<MontlyApprovalBexDTO>
 
     fun getDispatchPlanById(id : String) : DispatchPlan
@@ -33,6 +36,21 @@ interface ApprovalService {
     fun rejectPlan(plan : ApproveRejectPlanDto)
 
     fun saveMonthlyToSpecial(plan : SaveMonthlyToSpecialDTO)
+
+
+    // SPECIAL APPROVAL
+
+    fun getSpecialPlanForApproval(month : Int,  year : Int,  userId : String,  userDesgId : String) : List<MontlyApprovalBexDTO>
+
+    fun getSpecialPlanApprovalDetails(planId : String) : List<SpecialAllocationDetailsForApprovalDTO>
+
+
+    // VIRTUAL APPROVAL
+
+    fun getVirtualPlanForApproval(month : Int,  year : Int,  userId : String,  userDesgId : String) : List<MontlyApprovalBexDTO>
+
+    fun getVirtualPlanApprovalDetails(planId : String , teamId : String) : List<SpecialAllocationDetailsForApprovalDTO>
+
 
 
 

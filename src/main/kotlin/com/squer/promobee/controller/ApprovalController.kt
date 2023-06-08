@@ -28,6 +28,8 @@ open class ApprovalController@Autowired constructor(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+    // MONTHLY APPROVAL
+
     @GetMapping("/getMonthlyApprovalForBex/{month}/{year}/{userId}/{userDesgId}")
     fun getMonthlyApprovalForBex(@PathVariable month : Int ,@PathVariable year : Int ,@PathVariable userId : String ,@PathVariable userDesgId : String ): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -119,6 +121,43 @@ open class ApprovalController@Autowired constructor(
         val data = approvalService.saveMonthlyToSpecial(plan)
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+
+    //SPECIAL APPROVAL
+
+    @GetMapping("/getSpecialPlanForApproval/{month}/{year}/{userId}/{userDesgId}")
+    fun getSpecialPlanForApproval(@PathVariable month : Int ,@PathVariable year : Int ,@PathVariable userId : String ,@PathVariable userDesgId : String ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = approvalService.getSpecialPlanForApproval(month,year,userId,userDesgId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getSpecialPlanApprovalDetails/{planId}")
+    fun getSpecialPlanApprovalDetails(@PathVariable planId : String  ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = approvalService.getSpecialPlanApprovalDetails(planId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    // VIRTUAL APPROVAL
+
+
+    @GetMapping("/getVirtualPlanForApproval/{month}/{year}/{userId}/{userDesgId}")
+    fun getVirtualPlanForApproval(@PathVariable month : Int ,@PathVariable year : Int ,@PathVariable userId : String ,@PathVariable userDesgId : String ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = approvalService.getVirtualPlanForApproval(month,year,userId,userDesgId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getVirtualPlanApprovalDetails/{planId}/{teamId}")
+    fun getVirtualPlanApprovalDetails(@PathVariable planId : String , @PathVariable teamId : String ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = approvalService.getVirtualPlanApprovalDetails(planId,teamId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
 
 
 

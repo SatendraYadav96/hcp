@@ -14,10 +14,8 @@ import org.apache.ibatis.session.SqlSessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
-
 import org.springframework.stereotype.Repository
 import java.util.*
-import kotlin.reflect.jvm.internal.impl.load.java.lazy.descriptors.DeclaredMemberIndex.Empty
 
 @Repository
 class ApprovalRepository(
@@ -36,6 +34,9 @@ class ApprovalRepository(
 
     @Autowired
     lateinit var invoiceRepository: InvoiceRepository
+
+
+    // MONTHLY APPROVAL
 
 
     fun getMonthlyApprovalForBex(month: Int, year: Int, userId: String, userDesgId: String): List<MontlyApprovalBexDTO> {
@@ -470,6 +471,79 @@ class ApprovalRepository(
 
 
     }
+
+
+
+
+    // SPECIAL APPROVAL
+
+
+
+    fun getSpecialPlanForApproval(month: Int, year: Int, userId: String, userDesgId: String): List<MontlyApprovalBexDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("Month", month)
+        data.put("Year", year)
+        data.put("UserID", userId)
+        data.put("UserDesignation", userDesgId)
+
+        var plans: List<MontlyApprovalBexDTO> = ArrayList<MontlyApprovalBexDTO>()
+        if(userDesgId == UserLovEnum.BEX.id){
+             plans =  sqlSessionFactory.openSession().selectList<MontlyApprovalBexDTO?>("ApprovalMapper.getSpecialApprovalForBex", data).toList()
+        }
+        if(userDesgId == UserLovEnum.BUH.id){
+            plans =  sqlSessionFactory.openSession().selectList<MontlyApprovalBexDTO?>("ApprovalMapper.getSpecialApprovalForBuh", data).toList()
+        }
+
+        return plans
+
+
+    }
+
+
+    fun getSpecialPlanApprovalDetails(planId: String): List<SpecialAllocationDetailsForApprovalDTO> {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("DipID", planId)
+
+        return sqlSessionFactory.openSession().selectList("ApprovalMapper.getSpecialPlanApprovalDetails",data)
+    }
+
+
+    // VIRTUAL APPROVAL
+
+
+    fun getVirtualPlanForApproval(month: Int, year: Int, userId: String, userDesgId: String): List<MontlyApprovalBexDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("Month", month)
+        data.put("Year", year)
+        data.put("UserID", userId)
+        data.put("UserDesignation", userDesgId)
+
+
+
+            return sqlSessionFactory.openSession().selectList<MontlyApprovalBexDTO?>("ApprovalMapper.getVirtualApprovalForBex", data).toList()
+
+
+    }
+
+
+    fun getVirtualPlanApprovalDetails(planId: String , teamId : String): List<SpecialAllocationDetailsForApprovalDTO> {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("planid", planId)
+        data.put("teamid", teamId)
+
+        return sqlSessionFactory.openSession().selectList("ApprovalMapper.getVirtualPlanApprovalDetails",data)
+    }
+
+
+
+
+
 
 
 

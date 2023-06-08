@@ -24,6 +24,41 @@
     </select>
 
 
+    <select id="getSpecialApprovalForBex" resultType="com.squer.promobee.controller.dto.MontlyApprovalBexDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetSpecialPlanForApprovalForBEX (#{Month, jdbcType = INTEGER, mode = IN}, #{Year, jdbcType = INTEGER, mode = IN},
+                                              #{UserID, jdbcType = VARCHAR, mode = IN}, #{UserDesignation, jdbcType = VARCHAR, mode = IN}
+            ) }
+
+    </select>
+
+
+    <select id="getSpecialApprovalForBuh" resultType="com.squer.promobee.controller.dto.MontlyApprovalBexDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetPlanForApprovalForBUH (#{Month, jdbcType = INTEGER, mode = IN}, #{Year, jdbcType = INTEGER, mode = IN},
+                                              #{UserID, jdbcType = VARCHAR, mode = IN}, #{UserDesignation, jdbcType = VARCHAR, mode = IN}
+            ) }
+
+    </select>
+
+
+    <select id="getSpecialPlanApprovalDetails" resultType="com.squer.promobee.controller.dto.SpecialAllocationDetailsForApprovalDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetSpecialAllocationDetailsForApproval ( #{DipID, jdbcType = VARCHAR, mode = IN} ) }
+
+    </select>
+
+
+    <select id="getVirtualApprovalForBex" resultType="com.squer.promobee.controller.dto.MontlyApprovalBexDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetvIRTUALPlanForApprovalForBEX (#{Month, jdbcType = INTEGER, mode = IN}, #{Year, jdbcType = INTEGER, mode = IN},
+                                                     #{UserID, jdbcType = VARCHAR, mode = IN}, #{UserDesignation, jdbcType = VARCHAR, mode = IN}
+            ) }
+
+    </select>
+
+    <select id="getVirtualPlanApprovalDetails" resultType="com.squer.promobee.controller.dto.SpecialAllocationDetailsForApprovalDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetSpecialAllocationDetailsForApproval ( #{planid, jdbcType = VARCHAR, mode = IN} , #{teamid, jdbcType = VARCHAR, mode = IN} ) }
+
+    </select>
+
+
 
 
 

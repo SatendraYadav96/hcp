@@ -26,6 +26,9 @@ class ApprovalServiceImpl @Autowired constructor(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+
+    // MONTHLY APPROVAL
+
     override fun getMonthlyApprovalForBex(month: Int, year: Int, userId: String, userDesgId: String): List<MontlyApprovalBexDTO> {
         return approvalRepository.getMonthlyApprovalForBex(month,year,userId,userDesgId)
     }
@@ -75,6 +78,27 @@ class ApprovalServiceImpl @Autowired constructor(
 
     override fun saveMonthlyToSpecial(plan: SaveMonthlyToSpecialDTO) {
         return approvalRepository.saveMonthlyToSpecial(plan)
+    }
+
+
+    // SPECIAL APPROVAL
+
+    override fun getSpecialPlanForApproval(month: Int, year: Int, userId: String, userDesgId: String): List<MontlyApprovalBexDTO> {
+        return approvalRepository.getSpecialPlanForApproval(month,year,userId,userDesgId)
+    }
+
+    override fun getSpecialPlanApprovalDetails(planId: String): List<SpecialAllocationDetailsForApprovalDTO> {
+        return approvalRepository.getSpecialPlanApprovalDetails(planId)
+    }
+
+    // VIRTUAL APPROVAL
+
+    override fun getVirtualPlanForApproval(month: Int, year: Int, userId: String, userDesgId: String): List<MontlyApprovalBexDTO> {
+        return approvalRepository.getVirtualPlanForApproval(month,year,userId,userDesgId)
+    }
+
+    override fun getVirtualPlanApprovalDetails(planId: String, teamId: String): List<SpecialAllocationDetailsForApprovalDTO> {
+        return approvalRepository.getVirtualPlanApprovalDetails(planId,teamId)
     }
 
 }
