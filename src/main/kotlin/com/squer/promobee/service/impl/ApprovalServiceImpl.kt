@@ -53,8 +53,8 @@ class ApprovalServiceImpl @Autowired constructor(
         return approvalRepository.getApprovalChainById(id)
     }
 
-    override fun getApprovalChainForSpecialPlanConvert(id: String, desgId: String): ApprovalChainTransaction {
-        return approvalRepository.getApprovalChainForSpecialPlanConvert(id,desgId)
+    override fun getApprovalChainForSpecialPlanConvert(id: String): ApprovalChainTransaction {
+        return approvalRepository.getApprovalChainForSpecialPlanConvert(id)
     }
 
     override fun approvePlan(plan: ApproveRejectPlanDto) {

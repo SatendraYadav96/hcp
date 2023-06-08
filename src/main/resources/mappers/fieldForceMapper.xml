@@ -96,13 +96,15 @@
 
 
     <select id="getFieldForceHistory" resultType="com.squer.promobee.controller.dto.RecipientHistoryDTO">
-        select ID_RHT as 'id',ID_RCT_RHT as 'recipientId',NAME_RHT as 'name',CODE_RHT as 'code',
-                ADDRESS_RHT as 'address',CITY_RHT as 'city',STATE_RHT as 'state',ZIP_RHT as 'zip',CFA_RHT as 'cfa',
-                MOBILE_RHT as 'contact',ID_STATUS_SLV_RHT as 'status',REMARKS_RHT as 'remarks',
-                STATUS_CHANGE_DATE_RHT as 'changedOnDate',UPDATED_BY_RHT as 'changedBy' from RECIPIENT_MASTER_HISTORY_RHT RHT
-             JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM =  RHT.ID_TEM_RHT
-             JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RHT.ID_DESG_ULV_RHT
-             JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = RHT.ID_STATUS_SLV_RHT
+        select RHT.ID_RHT as 'id',RHT.ID_RCT_RHT as 'recipientId',RCT.NAME_RCT as 'name',RCT.CODE_RCT as 'code',
+                RHT.ADDRESS_RHT as 'address',RHT.CITY_RHT as 'city',RHT.STATE_RHT as 'state',RHT.ZIP_RHT as 'zip',RHT.CFA_RHT as 'cfa',
+                RHT.MOBILE_RHT as 'contact',SLV.NAME_SLV as 'status',RHT.REMARKS_RHT as 'remarks',
+                RHT.STATUS_CHANGE_DATE_RHT as 'changedOnDate',RHT.UPDATED_BY_RHT as 'UserId',USR.NAME_USR as 'changedBy',RHT.ID_TEM_RHT as 'TeamId',TEM.NAME_TEM as 'Team',RHT.ID_DESG_ULV_RHT as 'DesignationId',ulv.NAME_ULV as 'Designaton' from RECIPIENT_MASTER_HISTORY_RHT RHT
+        JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = RHT.ID_RCT_RHT
+        JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM =  RHT.ID_TEM_RHT
+        JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RHT.ID_DESG_ULV_RHT
+        JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = RHT.ID_STATUS_SLV_RHT
+        JOIN USER_MASTER_USR USR ON USR.ID_USR = RHT.UPDATED_BY_RHT
         WHERE ID_RCT_RHT = #{id}
 
 

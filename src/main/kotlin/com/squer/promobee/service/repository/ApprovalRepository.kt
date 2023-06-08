@@ -165,12 +165,12 @@ class ApprovalRepository(
 
     }
 
-    fun getApprovalChainForSpecialPlanConvert(id: String, desgId: String): ApprovalChainTransaction {
+    fun getApprovalChainForSpecialPlanConvert(id: String): ApprovalChainTransaction {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
 
         data.put("id",id)
-        data.put("designation",desgId)
+
 
         return sqlSessionFactory.openSession().selectOne<ApprovalChainTransaction>("ApprovalChainTransactionMapper.getApprovalChainForSpecialPlanConvert",data)
 
@@ -381,7 +381,7 @@ class ApprovalRepository(
 
 //                var approvalChainTransaction  = ApprovalChainTransaction()
 
-                var approvalChainTransaction = plan.planId?.let { getApprovalChainById(it) }!!
+                var approvalChainTransaction = plan.planId?.let { getApprovalChainForSpecialPlanConvert(it) }!!
 
                 if(approvalChainTransaction != null && approvalChainTransaction.designation!!.id == UserLovEnum.BEX.id) {
 
@@ -405,7 +405,7 @@ class ApprovalRepository(
                     sqlSessionFactory.openSession().insert("ApprovalChainTransactionMapper.insertSaveMonthlyToSpecial",data)
                 }
 
-                var approvalChainTransactionBUH = plan.planId?.let { getApprovalChainById(it) }!!
+                var approvalChainTransactionBUH = plan.planId?.let { getApprovalChainForSpecialPlanConvert(it) }!!
 
                 if(approvalChainTransactionBUH != null && approvalChainTransactionBUH.designation!!.id == UserLovEnum.BUH.id) {
 
@@ -447,7 +447,7 @@ class ApprovalRepository(
 
             var dip = plan.planId?.let { getDispatchPlanById(it) }
 
-            if(dip != null ){
+            if(dip == null ){
                 var data: MutableMap<String, Any> = mutableMapOf()
                 month1?.let { data.put("month", it.toInt()) }
                 year1?.let { data.put("year", it.toInt()) }

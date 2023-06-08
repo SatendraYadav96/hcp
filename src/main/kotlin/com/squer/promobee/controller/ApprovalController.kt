@@ -72,10 +72,10 @@ open class ApprovalController@Autowired constructor(
     }
 
 
-    @GetMapping("/getApprovalChainForSpecialPlanConvert/{id}/{desgId}")
-    fun getApprovalChainForSpecialPlanConvert(@PathVariable id : String , @PathVariable desgId : String  ): ResponseEntity<*> {
+    @GetMapping("/getApprovalChainForSpecialPlanConvert/{id}")
+    fun getApprovalChainForSpecialPlanConvert(@PathVariable id : String  ): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        val data = approvalService.getApprovalChainForSpecialPlanConvert(id,desgId)
+        val data = approvalService.getApprovalChainForSpecialPlanConvert(id)
         return ResponseEntity(data, HttpStatus.OK)
     }
 
@@ -119,6 +119,8 @@ open class ApprovalController@Autowired constructor(
         val data = approvalService.saveMonthlyToSpecial(plan)
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+
 
 
 

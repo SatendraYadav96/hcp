@@ -21,7 +21,7 @@ interface ApprovalService {
 
     fun getApprovalChainById(id : String): ApprovalChainTransaction
 
-    fun getApprovalChainForSpecialPlanConvert(id : String, desgId : String): ApprovalChainTransaction
+    fun getApprovalChainForSpecialPlanConvert(id : String): ApprovalChainTransaction
 
 
     fun approvePlan(plan : ApproveRejectPlanDto)
