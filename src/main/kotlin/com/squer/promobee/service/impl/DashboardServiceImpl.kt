@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import java.time.Year
 import java.util.*
 
 
@@ -51,6 +52,10 @@ class DashboardServiceImpl @Autowired constructor(
 
     override fun batchReconciliation(): List<BatchReconciliationDTO> {
         return dashboardRepository.batchReconciliation()
+    }
+
+    override fun bexManagementDashboard(month: Int, year: Int, toMonth: Int, toYear: Int, type: String): Any? {
+        return dashboardRepository.bexManagementDashboard(month,year,toMonth,toYear,type)
     }
 
 

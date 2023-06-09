@@ -12,7 +12,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
-
+import org.springframework.web.bind.annotation.PathVariable
+import java.time.Year
 
 
 @Slf4j
@@ -73,6 +74,17 @@ open class DashboardController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
 
     }
+
+
+    @GetMapping("/bexManagementDashboard/{month}/{year}/{toMonth}/{toYear}/{type}")
+    open fun bexManagementDashboard(@PathVariable month:Int ,@PathVariable year:Int ,@PathVariable toMonth:Int ,@PathVariable toYear: Int ,@PathVariable type:String ) : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data = dashboardService.bexManagementDashboard(month,year,toMonth,toYear,type)
+        return ResponseEntity(data, HttpStatus.OK)
+
+    }
+
+
 
 
 

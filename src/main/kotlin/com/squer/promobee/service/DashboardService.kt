@@ -1,6 +1,7 @@
 package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.*
+import java.time.Year
 
 
 interface DashboardService {
@@ -21,6 +22,7 @@ interface DashboardService {
 
     fun batchReconciliation(): List<BatchReconciliationDTO>
 
+    fun bexManagementDashboard( month:Int,  year:Int,  toMonth:Int,  toYear: Int,  type:String): Any?
 
 
 }

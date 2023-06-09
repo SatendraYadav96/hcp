@@ -35,5 +35,33 @@
     </select>
 
 
+    <select id="buWiseMonthlyPlans" resultType="com.squer.promobee.controller.dto.BuWiseMonthlyPlansDTO" parameterType = "map" statementType = "CALLABLE">
+        { call Get_BUWiseMonthlyPlans (#{fromdate, jdbcType = VARCHAR, mode = IN}, #{enddate, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+    <select id="buWiseSpecialDispatch" resultType="com.squer.promobee.controller.dto.BUSpecialDisatchDTO" parameterType = "map" statementType = "CALLABLE">
+        { call GetBuWiseSpecialDispatch (#{fromdate, jdbcType = VARCHAR, mode = IN}, #{enddate, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+    <select id="blockUnblockFFDetails" resultType="com.squer.promobee.controller.dto.blockUnblockDetailsDTO" parameterType = "map" statementType = "CALLABLE">
+        { call Get_FFblockedbuwise (#{MONTH, jdbcType = VARCHAR, mode = IN}, #{YEAR, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+    <select id="sampleInputExpired" resultType="com.squer.promobee.controller.dto.SampleInputExpiredDTO" parameterType = "map" statementType = "CALLABLE">
+        { call Get_ItemExpired (#{startdate, jdbcType = VARCHAR, mode = IN}, #{enddate, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+    <select id="hoDispatchDetails" resultType="com.squer.promobee.controller.dto.HoDispatchDetailsDTO" parameterType = "map" statementType = "CALLABLE">
+        { call Get_HODispacthDetails (#{@fromdate, jdbcType = VARCHAR, mode = IN}, #{@enddate, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+
+
+
 
 </mapper>
