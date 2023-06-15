@@ -4,9 +4,7 @@ package com.squer.promobee.controller
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.InvoiceService
-
 import lombok.extern.slf4j.Slf4j
-import org.bouncycastle.util.encoders.Base64Encoder
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -187,6 +185,30 @@ open class InvoiceController@Autowired constructor(
     }
 
 
+    @GetMapping("/getInvoice/{invoiceNo}")
+    open fun getInvoice(@PathVariable invoiceNo: Int): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = invoiceService.getInvoice(invoiceNo)
+
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getTransporter/{name}")
+    open fun getTransporter(@PathVariable name: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = invoiceService.getTransporter(name)
+
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/getDocket/{docketName}")
+    open fun getDocket(@PathVariable docketName: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = invoiceService.getDocket(docketName)
+
+        return ResponseEntity(data, HttpStatus.OK)
+    }
 
 
 

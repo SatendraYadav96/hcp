@@ -409,6 +409,14 @@
     </insert>
 
 
+    <select id="getInvoice" resultMap="invoiceHeaderResultMap">
+        SELECT * FROM INVOICE_HEADER_INH WHERE INVOICE_NO_INH = #{invoiceNo}
+
+    </select>
+
+
+
+
 
 
 

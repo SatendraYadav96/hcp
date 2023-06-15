@@ -11,7 +11,6 @@ import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.*
-
 import org.apache.ibatis.session.SqlSessionFactory
 import org.apache.velocity.Template
 import org.apache.velocity.VelocityContext
@@ -20,13 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
-import java.io.*
+import java.io.ByteArrayOutputStream
+import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDate.of
 import java.time.ZoneId
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.roundToLong
 
 
@@ -1008,6 +1007,43 @@ class InvoiceRepository(
             return System.out.println("Invoice Generated successfully !")
 
         }
+
+
+
+    fun getInvoice(invoiceNo : Int): InvoiceHeader {
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("invoiceNo", invoiceNo)
+
+        return sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getInvoice", data)
+    }
+
+    fun getTransporter(name : String): Transporter {
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("name", name)
+
+        return sqlSessionFactory.openSession().selectOne("TransporterMapper.getTransporterByName", data)
+    }
+
+
+    fun getDocket(docketName : String): DocketDTO {
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("docketName", docketName)
+
+        return sqlSessionFactory.openSession().selectOne("TransporterMapper.getDocket", data)
+    }
+
+
+
+
 
 
 

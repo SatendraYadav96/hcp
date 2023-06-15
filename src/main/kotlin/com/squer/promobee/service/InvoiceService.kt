@@ -2,8 +2,6 @@ package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.repository.domain.*
-import java.io.ByteArrayOutputStream
-import java.io.Serializable
 
 
 interface InvoiceService {
@@ -47,6 +45,12 @@ interface InvoiceService {
     fun getDispatchPlanById(id: String): DispatchPlan
 
     fun generateInvoice(genInv : List<GenerateInvoiceDTO>)
+
+    fun getInvoice(invoiceNo: Int): InvoiceHeader
+
+    fun getTransporter(name: String): Transporter
+
+    fun getDocket(docketName: String): DocketDTO
 
 
 

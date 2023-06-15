@@ -22,4 +22,14 @@
     <select id="getTransporter" resultMap="transporterResultMap">
         select * from TRANSPORTER_TRN
     </select>
+
+    <select id="getTransporterByName" resultMap="transporterResultMap">
+        select * from TRANSPORTER_TRN where NAME_TRN = #{name}
+
+    </select>
+
+    <select id="getDocket" resultType="com.squer.promobee.controller.dto.DocketDTO">
+        select ID_ULV as 'docketId', NAME_ULV as 'docketName' from USER_LOV_ULV where NAME_ULV = #{docketName}
+
+    </select>
 </mapper>

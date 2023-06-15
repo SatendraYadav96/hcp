@@ -1,6 +1,7 @@
 package com.squer.promobee.controller
 
 
+import com.squer.promobee.controller.dto.FileUploadDto
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.UploadService
 import lombok.extern.slf4j.Slf4j
@@ -11,7 +12,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 
 
 @Slf4j
@@ -29,6 +31,7 @@ open class UploadController@Autowired constructor(
         return ResponseEntity(grnUpl, HttpStatus.OK)
     }
 
+
     @GetMapping("/getTransporterUploadLog")
     open fun getTransporterUploadLog() : ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -43,6 +46,12 @@ open class UploadController@Autowired constructor(
         var invUpl = uploadService.getInvoiceUploadLog()
         return ResponseEntity(invUpl, HttpStatus.OK)
     }
+
+    @PostMapping("/transporterUpload")
+    fun transporterUpload(@RequestBody dto: FileUploadDto) {
+        return uploadService.transporterUpload(dto)
+    }
+
 
 
 

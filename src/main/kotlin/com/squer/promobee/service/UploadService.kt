@@ -1,7 +1,7 @@
 package com.squer.promobee.service
 
+import com.squer.promobee.controller.dto.FileUploadDto
 import com.squer.promobee.controller.dto.UploadLogDTO
-import com.squer.promobee.service.repository.domain.UploadLog
 
 
 interface UploadService {
@@ -11,6 +11,8 @@ interface UploadService {
     fun getTransporterUploadLog(): List<UploadLogDTO>
 
     fun getInvoiceUploadLog(): List<UploadLogDTO>
+
+    fun transporterUpload(dto: FileUploadDto)
 
 
 

@@ -50,5 +50,28 @@
 
     </select>
 
+    <insert id="insertUploadLogQueued">
+        INSERT INTO UPLOAD_LOG_UPL (ID_UPL,IDTYPESLV_UPL,START_TIME_UPL,END_TIME_UPL,TOTAL_RECORDS_UPL,RECORDS_UPLOAD_UPL,ID_STATUS_SLV_UPL,CREATED_ON_UPL,CREATED_BY_UPL,UPDATED_ON_UPL,UPDATED_BY_UPL,PARENT_ID_UPL)
+        VALUES(#{id},#{type},GETDATE(),GETDATE(),NULL,#{recordUpload},#{statusId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{parentId})
+    </insert>
+
+    <insert id="insertUploadLogFileNotFound">
+        INSERT INTO UPLOAD_LOG_UPL (ID_UPL,IDTYPESLV_UPL,START_TIME_UPL,END_TIME_UPL,TOTAL_RECORDS_UPL,RECORDS_UPLOAD_UPL,ID_STATUS_SLV_UPL,CREATED_ON_UPL,CREATED_BY_UPL,UPDATED_ON_UPL,UPDATED_BY_UPL,PARENT_ID_UPL)
+        VALUES(#{id},#{type},GETDATE(),GETDATE(),#{totalRecord},#{recordUpload},#{statusId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{parentId})
+    </insert>
+
+    <update id="uploadTransportDetails"  parameterType = "map" statementType = "CALLABLE">
+        { call PROC_UPLOAD_TRANSPORTER (#{uploadId, jdbcType = VARCHAR, mode = IN}, #{createdBy, jdbcType = VARCHAR, mode = IN}) }
+
+    </update>
+
+    <insert id="insertTempTransportDetails">
+        INSERT INTO TEMP_TRANSPORT_DETAIL_TRT (ID_TRT,ID_UPLOAD_UPL_TRT,INVOICE_NO,ID_INH_TRT,LR_NO_TRT,DISPATCH_DATE_TRT,EXPECTED_DELIVERY_DATE_TRT,ACTUAL_DELIVERY_DATE_TRT,ID_TRN_TRT,NAME_TRN_TRT,
+                                               DELIVERED_TO_NAME_TRT,COST_OF_DELIVERY_TRT,ID_DOCET_ULV_TRT,STATE_DOCET_TRT,ERROR_TEXT,BOX_NO_TRT,WEIGHT_TRT)
+        VALUES(#{transportId},#{transportUploadId},#{invoiceNo},NULL,#{lrNo},#{dispatchDate},#{expectedDeliveryDate},#{actuallyDeliveryDate},NULL,#{trnName},
+               #{deliveredToName},#{deliveryCost},NULL,#{docketState},NULL,#{boxNo},#{weight})
+    </insert>
+
+
 
 </mapper>

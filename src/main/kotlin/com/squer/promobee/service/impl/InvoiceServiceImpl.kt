@@ -100,6 +100,17 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.generateInvoice(genInv)
     }
 
+    override fun getInvoice(invoiceNo: Int): InvoiceHeader {
+        return invoiceRepository.getInvoice(invoiceNo)
+    }
 
+
+    override fun getTransporter(name: String): Transporter {
+        return invoiceRepository.getTransporter(name)
+    }
+
+    override fun getDocket(docketName: String): DocketDTO {
+        return invoiceRepository.getDocket(docketName)
+    }
 
 }
