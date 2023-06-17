@@ -1,8 +1,7 @@
 package com.squer.promobee.service.impl
 
 
-import com.squer.promobee.controller.dto.FileUploadDto
-import com.squer.promobee.controller.dto.UploadLogDTO
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.UploadService
 import com.squer.promobee.service.repository.UploadRepository
 import lombok.extern.slf4j.Slf4j
@@ -36,6 +35,26 @@ class UploadServiceImpl @Autowired constructor(
 
     override fun transporterUpload(dto: FileUploadDto) {
         return uploadRepository.transporterUpload(dto)
+    }
+
+    override fun transportExcelData(uplId : String): List<TransporterUploadDto> {
+        return uploadRepository.transportExcelData(uplId)
+    }
+
+    override fun grnUpload(dto: FileUploadDto) {
+        return uploadRepository.grnUpload(dto)
+    }
+
+    override fun grnExcelData(uplId: String): List<GrnUploadDTO> {
+        return uploadRepository.grnExcelData(uplId)
+    }
+
+    override fun recipientUpload(dto: FileUploadDto) {
+        return uploadRepository.recipientUpload(dto)
+    }
+
+    override fun recipientExcelData(uplId: String): List<RecipientUploadDTO> {
+        return uploadRepository.recipientExcelData(uplId)
     }
 
 

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
@@ -51,6 +52,40 @@ open class UploadController@Autowired constructor(
     fun transporterUpload(@RequestBody dto: FileUploadDto) {
         return uploadService.transporterUpload(dto)
     }
+
+    @GetMapping("/transportExcelData/{uplId}")
+    open fun transportExcelData(@PathVariable uplId : String) : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var invUpl = uploadService.transportExcelData(uplId)
+        return ResponseEntity(invUpl, HttpStatus.OK)
+    }
+
+    @PostMapping("/grnUpload")
+    fun grnUpload(@RequestBody dto: FileUploadDto) {
+        return uploadService.grnUpload(dto)
+    }
+
+    @GetMapping("/grnExcelData/{uplId}")
+    open fun grnExcelData(@PathVariable uplId : String) : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var invUpl = uploadService.grnExcelData(uplId)
+        return ResponseEntity(invUpl, HttpStatus.OK)
+    }
+
+
+    @PostMapping("/recipientUpload")
+    fun recipientUpload(@RequestBody dto: FileUploadDto) {
+        return uploadService.recipientUpload(dto)
+    }
+
+
+    @GetMapping("/recipientExcelData/{uplId}")
+    open fun recipientExcelData(@PathVariable uplId : String) : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var invUpl = uploadService.recipientExcelData(uplId)
+        return ResponseEntity(invUpl, HttpStatus.OK)
+    }
+
 
 
 

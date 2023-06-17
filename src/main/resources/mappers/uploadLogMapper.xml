@@ -73,5 +73,62 @@
     </insert>
 
 
+    <select id="transportExcelData" resultType="com.squer.promobee.controller.dto.TransporterUploadDto">
+        select INVOICE_NO as 'invoiceNo',LR_NO_TRT as 'lrNo',BOX_NO_TRT as 'boxNo',WEIGHT_TRT as 'weight', DISPATCH_DATE_TRT as 'dispatchDate',
+                EXPECTED_DELIVERY_DATE_TRT as 'expectedDeliveryDate',ACTUAL_DELIVERY_DATE_TRT as 'actuallyDeliveryDate',NAME_TRN_TRT as 'trnName',
+                DELIVERED_TO_NAME_TRT as 'deliveredToName',COST_OF_DELIVERY_TRT as 'deliveryCost',STATE_DOCET_TRT as 'docketState',ERROR_TEXT as 'errorText'
+        from TEMP_TRANSPORT_DETAIL_TRT where ID_UPLOAD_UPL_TRT = #{id}
+
+    </select>
+
+    <insert id="insertTempGrnDetails">
+        INSERT INTO TEMP_GRN_UPLOAD_GRT (ID_GRT,ID_UPLOAD_UPL_GRT,PO_NO_GRT,COST_CENTER_GRT,ID_CCM_GRT,MATERIAL_GRT,BATCH_NO_GRT,MATERIAL_DESCRIPTION_GRT,
+                                         POSTING_DATE_GRT,QTY_IN_GRN,AMOUNT_GRT,
+                                         VENDOR_CODE_GRT,VENDOR_NAME_GRT,ID_VND_GRT,RATE_PER_UNIT_GRT,MEDICAL_CODE_GRT,MAT_DOC_GRT,
+                                         ITEM_NAME_GRT,SAMPLE_EXPIRY_GRT,ERROR_TEXT,EXPIRY_DATE_GRT,HSN_CODE_GRT)
+        VALUES(#{grnId},#{grnUploadId},#{poNo},#{costCenter},NULL,#{material},#{batchNo},#{materialDescription},#{postingDate},#{quantity},#{amount},
+               #{vendorCode},#{vendorName},NULL,#{ratePerUnit},#{medicalCode},
+               NULL,#{itemNo},#{sampleExpiry},NULL,#{expiryDate},NULL)
+    </insert>
+
+
+    <update  id="uploadGrnDetails" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_VALIDATE_GRN_UPLOAD (#{uploadid, jdbcType = VARCHAR, mode = IN}, #{createdBy, jdbcType = VARCHAR, mode = IN}) }
+
+    </update>
+
+
+    <select id="grnExcelData" resultType="com.squer.promobee.controller.dto.GrnUploadDTO">
+        select PO_NO_GRT as 'poNo',COST_CENTER_GRT as 'costCenter', MATERIAL_GRT as 'material',BATCH_NO_GRT as 'batchNo', MATERIAL_DESCRIPTION_GRT as 'materialDescription',
+                POSTING_DATE_GRT as 'postingDate', QTY_IN_GRN as 'quantity',AMOUNT_GRT as 'amount',VENDOR_CODE_GRT as 'vendorCode',VENDOR_NAME_GRT as 'vendorName',RATE_PER_UNIT_GRT as 'ratePerUnit',
+                MEDICAL_CODE_GRT as 'medicalCode', MAT_DOC_GRT as 'materialDoc',ITEM_NAME_GRT as 'itemNo',SAMPLE_EXPIRY_GRT as 'sampleExpiry',ERROR_TEXT as 'errorText',EXPIRY_DATE_GRT as 'expiryDate'
+        from TEMP_GRN_UPLOAD_GRT where ID_UPLOAD_UPL_GRT =  #{id}
+
+    </select>
+
+
+    <insert id="insertTempRecipientDetails">
+        INSERT INTO TEMP_RECIPIENT_RTT (ID_RTT,ID_UPLOAD_UPL_RTT,NAME_RTT,CODE_RTT,ADDRESS_RTT,CITY_RTT,STATE_RTT,ZIP_RTT,
+                                        EMAIL_RTT,MOBILE_RTT,DESIGNATION_RTT,HQ_RTT,ZONE_RTT,JOINING_DATE_RTT,TEAM_RTT,STATUS_RTT,ERROR_TEXT_RTT,REMARKS_RTT,
+                                        WORKID_RTT,GENDER_RTT,EMAIL_RM_RTT,EMAIL_AM_RTT,BUM_RTT)
+        VALUES(#{recipientId},#{recipientUploadId},#{name},#{code},#{address},#{city},#{state},#{zip},#{email},#{mobile},#{designation},
+               #{headquarter},#{zone},#{joiningDate},#{team},#{status},
+               NULL,#{remarks},#{workId},#{gender},#{emailRM},#{emailAM},#{bu})
+    </insert>
+
+
+    <update  id="uploadRecipientDetails" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_RECIPIENT_UPLOAD (#{uploadid, jdbcType = VARCHAR, mode = IN}, #{createdBy, jdbcType = VARCHAR, mode = IN}) }
+
+    </update>
+
+    <select id="recipientExcelData" resultType="com.squer.promobee.controller.dto.RecipientUploadDTO">
+        select NAME_RTT as 'name',CODE_RTT as 'code',ADDRESS_RTT as 'address', CITY_RTT as 'city', STATE_RTT as 'state',ZIP_RTT as 'zip',EMAIL_RTT as 'email',
+                MOBILE_RTT as 'mobile',DESIGNATION_RTT as 'designation',HQ_RTT as 'headquarter',ZONE_RTT as 'zone', JOINING_DATE_RTT as 'joiningDate',TEAM_RTT as 'team',
+                STATUS_RTT as 'status',REMARKS_RTT as 'remarks',WORKID_RTT as 'workId',GENDER_RTT as 'gender',EMAIL_RM_RTT as 'emailRM', EMAIL_AM_RTT as 'emailAM',BUM_RTT as 'bu'
+        from TEMP_RECIPIENT_RTT where ID_UPLOAD_UPL_RTT = #{id}
+
+
+    </select>
 
 </mapper>
