@@ -60,7 +60,7 @@
         VALUES(#{id},#{type},GETDATE(),GETDATE(),#{totalRecord},#{recordUpload},#{statusId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{parentId})
     </insert>
 
-    <update id="uploadTransportDetails"  parameterType = "map" statementType = "CALLABLE">
+    <update  id="uploadTransportDetails" parameterType = "map" statementType = "CALLABLE">
         { call PROC_UPLOAD_TRANSPORTER (#{uploadId, jdbcType = VARCHAR, mode = IN}, #{createdBy, jdbcType = VARCHAR, mode = IN}) }
 
     </update>
