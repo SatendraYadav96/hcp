@@ -57,6 +57,11 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.json/json
 	implementation("org.json:json:20201115")
 
+// https://mvnrepository.com/artifact/com.github.doyaaaaaken/kotlin-csv-jvm
+	implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.0")
+
+
+
 
 
 
