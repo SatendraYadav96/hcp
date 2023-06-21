@@ -100,7 +100,13 @@ open class UIController @Autowired constructor(
                 UserMenuEnum.DISPATCH_REPORT,
                 UserMenuEnum.DISPATCH_REGISTERS,
 
-            )
+            ),
+
+
+                UserRoleEnum.COMPLIANCE_ADMIN_ID.id to listOf<UserMenuEnum>(
+
+
+                )
 
 
 
