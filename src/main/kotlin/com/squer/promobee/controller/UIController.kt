@@ -1,15 +1,13 @@
 package com.squer.promobee.controller
 
+import com.squer.promobee.api.v1.enums.UserMenuEnum
+import com.squer.promobee.api.v1.enums.UserRoleEnum
 import com.squer.promobee.controller.dto.MenuPojo
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.jwt.JwtTokenProvider
 import com.squer.promobee.service.MenuActionService
-import com.squer.promobee.api.v1.enums.UserMenuEnum
-import com.squer.promobee.api.v1.enums.UserRoleEnum
 import com.squer.promobee.service.ui.FormService
 import lombok.extern.slf4j.Slf4j
-import netscape.javascript.JSObject
-import org.json.simple.JSONObject
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -17,8 +15,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
-import java.security.Principal
-import javax.servlet.http.HttpServletRequest
 
 
 @Slf4j
@@ -124,8 +120,8 @@ open class UIController @Autowired constructor(
                 UserRoleEnum.PRODUCT_MANAGER_ID.id to listOf<UserMenuEnum>(
                     UserMenuEnum.DASHBOARD,
                     UserMenuEnum.ALLOCATION,
-//                    UserMenuEnum.ITEM_REVALIDATION,
-//                    UserMenuEnum.MASS_REVALIDATION,
+                    UserMenuEnum.ITEM_REVALIDATION,
+                    UserMenuEnum.MASS_REVALIDATION,
                     UserMenuEnum.REPORT
                 ),
             UserRoleEnum.BEX_ID.id to listOf<UserMenuEnum>(
