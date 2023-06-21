@@ -57,6 +57,14 @@ class UploadServiceImpl @Autowired constructor(
         return uploadRepository.recipientExcelData(uplId)
     }
 
+    override fun virtualUpload(dto: FileUploadDto) {
+        return uploadRepository.virtualUpload(dto)
+    }
+
+    override fun virtualSampleExcelData(uplId: String): List<VirtualSampleUploadDTO> {
+        return uploadRepository.virtualSampleExcelData(uplId)
+    }
+
 
 
 }

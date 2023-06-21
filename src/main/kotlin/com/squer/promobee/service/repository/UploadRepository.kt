@@ -17,8 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.io.File
 import java.lang.constant.ConstantDescs.NULL
+import java.time.LocalDate
 import java.util.*
-
 
 
 @Repository
@@ -431,6 +431,164 @@ class UploadRepository(
 
 
         return sqlSessionFactory.openSession().selectList("UploadLogMapper.recipientExcelData", data)
+    }
+
+
+    fun virtualUpload(dto: FileUploadDto) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        val filePath = "${configPath}/virtualUpload/${dto.fileName}"
+        File(filePath).writeBytes(Base64.getDecoder().decode(dto.byteCode.toString()))
+
+        var counter = 0
+
+        val validHeader: Boolean = true
+
+        var upl = UploadLog()
+
+        var uplId =  UUID.randomUUID().toString()
+
+        if(dto.byteCode.isEmpty() || dto.byteCode.isBlank()){
+            data.put("id",uplId)
+            data.put("type",UploadTypeEnum.VIRTUAL_SAMPLES.id)
+            data.put("totalRecord",counter)
+            data.put("recordUpload",counter)
+            data.put("statusId",UploadStatusEnum.FILE_NOT_FOUND.id)
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            data.put("parentId",uplId)
+
+            sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogFileNotFound", data)
+        }
+
+        else{
+            data.put("id",uplId)
+            data.put("type",UploadTypeEnum.VIRTUAL_SAMPLES.id)
+            data.put("recordUpload",counter)
+            data.put("statusId",UploadStatusEnum.QUEUED.id)
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            data.put("parentId",uplId)
+
+
+            sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogQueued", data)
+        }
+
+
+
+
+
+
+        var headers = mutableListOf<String>("Created By","User Email","User Position","Territory","Emp ID","SKU","Lot","External Id",
+            "Customer","Mobile Phone","Quantity","Date Created","Request Completed","Request Started","Request Status","Team","Sub Team","Address","Street 1",
+            "Street 2","Street 3","City","State/Province","Postal Code")
+
+        var csvReader = CsvReader()
+        csvReader.autoRenameDuplicateHeaders
+        var rows = CsvReader().readAllWithHeader(File(filePath))
+
+
+
+        var i = 0
+
+        rows.forEach {
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var dto = VirtualSampleUploadDTO()
+
+            var empty = NULL
+
+            data.put("virtualId",UUID.randomUUID().toString())
+            data.put("virtualUploadId",uplId)
+            data.put("createdBy",it.get(headers[0]).toString().trim())
+            data.put("userEmail",it.get(headers[1]).toString().trim())
+            data.put("userPosition",it.get(headers[2]).toString().trim())
+            data.put("territory",it.get(headers[3]).toString().trim())
+            data.put("empId",it.get(headers[4]).toString().trim())
+            data.put("sku",it.get(headers[5]).toString().trim())
+            data.put("lot",it.get(headers[6]).toString().trim())
+            data.put("externalId",it.get(headers[7]).toString().trim())
+            data.put("customer",it.get(headers[8]).toString().trim())
+            data.put("mobile",it.get(headers[9]).toString().trim())
+            data.put("quantity",it.get(headers[10]).toString().trim())
+            data.put("dateCreated",it.get(headers[11]).toString().trim())
+            data.put("requestCompleted",it.get(headers[12]).toString().trim())
+            data.put("requestStarted",it.get(headers[13]).toString().trim())
+            data.put("requestStatus",it.get(headers[14]).toString().trim())
+            data.put("team",it.get(headers[15]).toString().trim())
+            data.put("subTeam",it.get(headers[16]).toString().trim())
+            data.put("address",it.get(headers[17]).toString().trim())
+            data.put("street1",it.get(headers[18]).toString().trim())
+            data.put("street2",it.get(headers[19]).toString().trim())
+            data.put("street3",it.get(headers[20]).toString().trim())
+            data.put("city",it.get(headers[21]).toString().trim())
+            data.put("state",it.get(headers[22]).toString().trim())
+            data.put("postalCode",it.get(headers[23]).toString().trim())
+
+
+
+
+            sqlSessionFactory.openSession().insert("UploadLogMapper.insertTempVirtualSampleDetails", data)
+
+
+        }
+
+        val currentDate: LocalDate = LocalDate.now()
+
+        var month: Int = currentDate.getMonth().value
+
+        var fromMonth: Int = currentDate.getMonth().value
+        var toMonth: Int = currentDate.getMonth().value
+
+        if(month == 1 || month == 2 || month == 3) {
+            fromMonth = 1
+            toMonth =  3
+
+        }
+
+        if(month == 4 || month == 5 || month == 6) {
+            fromMonth = 4
+            toMonth =  6
+
+        }
+
+        if(month == 7 || month == 8 || month == 9) {
+            fromMonth = 7
+            toMonth =  9
+
+        }
+
+        if(month == 10 || month == 11 || month == 12) {
+            fromMonth = 10
+            toMonth =  12
+
+        }
+
+
+        data.put("uploadid",uplId)
+        data.put("createdBy",user.id)
+        data.put("frommonth",fromMonth)
+        data.put("tomonth",toMonth)
+
+        sqlSessionFactory.openSession().update("UploadLogMapper.uploadVirtualSampleDetails", data)
+
+
+    }
+
+
+
+
+    fun virtualSampleExcelData(uplId: String): List<VirtualSampleUploadDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",uplId)
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.virtualSampleExcelData", data)
     }
 
 

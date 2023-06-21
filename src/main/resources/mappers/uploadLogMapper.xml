@@ -131,4 +131,36 @@
 
     </select>
 
+
+
+    <insert id="insertTempVirtualSampleDetails">
+
+        INSERT INTO TEMP_VIRTUALUPLOAD_VLS (ID_VLS,UPLOAD_ID_VLS,CREATEDBY_VLS,USER_EMAIL_VLS,EMP_ID_VLS,SKU_VLS,LOT_VLS,EXTERNAL_VLS,CUSTOMER_VLS,MOBILE_VLS,
+                                            QUANTITY_VLS,REQUEST_STATUS_VLS,TEAM_VLS,SUB_TEAM_VLS,
+                                            ADDRESS_VLS,STREET1_VLS,STREET2_VLS,STREET3_VLS,CITY_VLS,STATE_VLS,POSTAL_CODE_VLS,
+                                            DATE_CREATED_VLS,REQUEST_COMPLETED_VLS,REQUEST_STARTED_VLS,ERROR_TEXT,IS_HCP,ID_TEM_VLS,TERRITORY_VLS)
+        VALUES(#{virtualId},#{virtualUploadId},#{createdBy},#{userEmail},#{empId},#{sku},#{lot},#{externalId},#{customer},#{mobile},#{quantity},
+               #{requestStatus},#{team},#{subTeam},#{address},#{street1},#{street2},#{street3},#{city},#{state},#{postalCode},
+               #{dateCreated},#{requestCompleted},#{requestStarted},#{errorText},NULL,NULL,#{territory})
+    </insert>
+
+
+    <update  id="uploadVirtualSampleDetails" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_VIRTUAL_UPLOAD (#{uploadid, jdbcType = VARCHAR, mode = IN}, #{createdBy, jdbcType = VARCHAR, mode = IN})
+            , #{frommonth, jdbcType = INTEGER, mode = IN}) , #{tomonth, jdbcType = INTEGER, mode = IN})}
+
+    </update>
+
+
+
+    <select id="virtualSampleExcelData" resultType="com.squer.promobee.controller.dto.VirtualSampleUploadDTO">
+        select CREATEDBY_VLS as 'createdBy', USER_EMAIL_VLS as 'userEmail', EMP_ID_VLS as 'empId', SKU_VLS as 'sku', LOT_VLS as 'lot', EXTERNAL_VLS as 'externalId', CUSTOMER_VLS as 'customer', MOBILE_VLS as 'mobile',
+                QUANTITY_VLS as 'quantity' , REQUEST_STATUS_VLS as 'requestStatus', TEAM_VLS as 'team', SUB_TEAM_VLS as 'subTeam', ADDRESS_VLS as 'address', STREET1_VLS as 'street1', STREET2_VLS as 'street2', STREET3_VLS as 'street3',
+                CITY_VLS as 'city', STATE_VLS as 'state', POSTAL_CODE_VLS as 'postalCode', DATE_CREATED_VLS as 'dateCreated', REQUEST_COMPLETED_VLS as 'requestCompleted', REQUEST_STARTED_VLS as 'requestStarted',
+                ERROR_TEXT as 'errorText' from TEMP_VIRTUALUPLOAD_VLS
+        where UPLOAD_ID_VLS = #{id}
+
+
+    </select>
+
 </mapper>

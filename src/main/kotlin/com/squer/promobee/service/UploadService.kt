@@ -23,5 +23,9 @@ interface UploadService {
 
     fun recipientExcelData(uplId : String): List<RecipientUploadDTO>
 
+    fun virtualUpload(dto: FileUploadDto)
+
+    fun virtualSampleExcelData(uplId : String): List<VirtualSampleUploadDTO>
+
 
 }

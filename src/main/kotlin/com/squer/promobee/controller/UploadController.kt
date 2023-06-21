@@ -87,6 +87,20 @@ open class UploadController@Autowired constructor(
     }
 
 
+    @PostMapping("/virtualUpload")
+    fun virtualUpload(@RequestBody dto: FileUploadDto) {
+        return uploadService.virtualUpload(dto)
+    }
+
+    @GetMapping("/virtualSampleExcelData/{uplId}")
+    open fun virtualSampleExcelData(@PathVariable uplId : String) : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var invUpl = uploadService.virtualSampleExcelData(uplId)
+        return ResponseEntity(invUpl, HttpStatus.OK)
+    }
+
+
+
 
 
 
