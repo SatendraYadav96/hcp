@@ -148,7 +148,7 @@ open class UIController @Autowired constructor(
 
             ),
 
-            UserRoleEnum.ADMIN_ID.id to listOf<UserMenuEnum>(
+            UserRoleEnum.COMPLIANCE_ADMIN_ID.id to listOf<UserMenuEnum>(
                 UserMenuEnum.DASHBOARD,
                 UserMenuEnum.MASTER_BLOCKED_LIST,
                 UserMenuEnum.NON_COMPLIANCE_UNBLOCK,
