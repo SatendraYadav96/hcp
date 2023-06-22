@@ -103,10 +103,19 @@ open class UIController @Autowired constructor(
             ),
 
 
-                UserRoleEnum.COMPLIANCE_ADMIN_ID.id to listOf<UserMenuEnum>(
+            UserRoleEnum.COMPLIANCE_ADMIN_ID.id to listOf<UserMenuEnum>(
 
 
-                )
+                ),
+
+            UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id to listOf<UserMenuEnum>(
+
+                UserMenuEnum.MONTHLY_ALLOCATION,
+                UserMenuEnum.SPECIAL_ALLOCATION,
+                UserMenuEnum.VIRTUAL_ALLOCATION
+
+
+            )
 
 
 
@@ -164,6 +173,14 @@ open class UIController @Autowired constructor(
                 UserMenuEnum.OVERSAMPLING_DETAILS,
                 UserMenuEnum.MATERIAL_EXPIRY_UPLOAD,
                 UserMenuEnum.OPTIMA_MAIL_LOGS,
+            ),
+
+            UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id to listOf<UserMenuEnum>(
+                UserMenuEnum.DASHBOARD,
+                UserMenuEnum.ALLOCATION,
+                UserMenuEnum.COMPLIANCE_PROCESS,
+                UserMenuEnum.OVERSAMPLING_DETAILS
+
             )
         )
     }
