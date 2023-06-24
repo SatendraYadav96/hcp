@@ -129,14 +129,22 @@ class MasterRepository
 
 
 
+        var i = 0
 
-        var cbr = CostCenterBrand()
+        ccm.brandId.forEach {
+            var cbr = CostCenterBrand()
+            var cbrId = UUID.randomUUID().toString()
 
-        data.put("id", UUID.randomUUID().toString())
-        data.put("ccmId", ccmId5)
-        data.put("brandId",NamedSquerEntity(ccm.brandId?.id.toString(),""))
+            data.put("id", cbrId)
+            data.put("ccmId", ccmId5)
+            data.put("brandId",ccm.brandId)
 
-        sqlSessionTemplate.insert("CostCenterBrandMapper.addCostCenterBrand", data)
+            sqlSessionTemplate.insert("CostCenterBrandMapper.addCostCenterBrand", data)
+
+            i++
+        }
+
+
 
 
 
@@ -159,13 +167,22 @@ class MasterRepository
         var ccmId2 = ccm.id
         var cbr = CostCenterBrand()
 
-        data.put("id", UUID.randomUUID().toString())
-        ccmId2?.let { data.put("ccmId", it) }
-//        data.put("brandId",NamedSquerEntity(ccm.brandId?.id.toString(),""))
-       // ccm.brandId?.let { data.put("brandId", it) }
-        data.put("brandId",NamedSquerEntity(ccm.brandId?.id.toString(),""))
+        var i = 0
+        ccm.brandId.forEach {
 
-        sqlSessionTemplate.insert("CostCenterBrandMapper.editCostCenterBrand",data)
+            var cbrId = UUID.randomUUID().toString()
+
+            data.put("id", cbrId)
+            ccmId2?.let { data.put("ccmId", it) }
+//        data.put("brandId",NamedSquerEntity(ccm.brandId?.id.toString(),""))
+            // ccm.brandId?.let { data.put("brandId", it) }
+            //data.put("brandId",NamedSquerEntity(ccm.brandId?id.toString(),""))
+            data.put("brandId", ccm.brandId.get(i))
+
+            sqlSessionTemplate.insert("CostCenterBrandMapper.editCostCenterBrand",data)
+
+            i++
+        }
 
 
 

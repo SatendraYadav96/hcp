@@ -32,13 +32,13 @@
 
     <insert id="addCostCenterBrand" >
         insert into COSTCENTER_BRAND_CBR (ID_CBR, ID_CCM_CBR, ID_BRD_CBR)
-        values( #{id}, #{ccmId}, #{brandId.id})
+        values( #{id}, #{ccmId}, #{brandId})
     </insert>
 
 
     <insert id="editCostCenterBrand">
         insert into COSTCENTER_BRAND_CBR (ID_CBR, ID_CCM_CBR, ID_BRD_CBR)
-        values( #{id}, #{ccmId}, #{brandId.id})
+        values( #{id}, #{ccmId}, #{brandId})
     </insert>
 
 
