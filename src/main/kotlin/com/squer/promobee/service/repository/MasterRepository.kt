@@ -137,7 +137,7 @@ class MasterRepository
 
             data.put("id", cbrId)
             data.put("ccmId", ccmId5)
-            data.put("brandId",ccm.brandId)
+            data.put("brandId",ccm.brandId.get(i))
 
             sqlSessionTemplate.insert("CostCenterBrandMapper.addCostCenterBrand", data)
 
