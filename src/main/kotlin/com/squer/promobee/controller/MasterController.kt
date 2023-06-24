@@ -70,7 +70,7 @@ open class MasterController@Autowired constructor(
     }
 
     @PostMapping("/addCostCenter")
-    open fun addCostCenter(@RequestBody ccm: CostCenter): ResponseEntity<*>{
+    open fun addCostCenter(@RequestBody ccm: MasterCostCenter): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val insertCostCenter = masterService.addCostCenter(ccm)
         return ResponseEntity(insertCostCenter, HttpStatus.OK)
@@ -78,7 +78,7 @@ open class MasterController@Autowired constructor(
 
 
     @PutMapping("/editCostCenter/{id}")
-    open fun editCostCenter(@PathVariable id: String,@RequestBody ccm: CostCenter): ResponseEntity<*>{
+    open fun editCostCenter(@PathVariable id: String,@RequestBody ccm: MasterCostCenter): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = masterService.editCostCenter(ccm)
         return ResponseEntity(data, HttpStatus.OK)

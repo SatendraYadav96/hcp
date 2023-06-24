@@ -13,8 +13,12 @@
         <result property="createdBy" column="created_by_ccm"/>
         <result property="updatedAt" column="updated_on_ccm"/>
         <result property="updatedBy" column="updated_by_ccm"/>
-        <result property="brandId.id" column="id_brd"/>
-        <result property="brandId.name" column="name_brd"/>
+<!--        <result property="brandId.id" column="id_brd"/>-->
+<!--        <result property="brandId.name" column="name_brd"/>-->
+        <association property="brandId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_brd"/>
+            <result property="name" column="name_brd"/>
+        </association>
 
     </resultMap>
 
@@ -51,7 +55,7 @@
         from COST_CENTER_MASTER_CCM ccm
         join COSTCENTER_BRAND_CBR cbr on cbr.ID_CCM_CBR = ccm.ID_CCM
         join BRAND_MASTER_BRD brd on brd.ID_BRD = cbr.ID_BRD_CBR
-        where ID_CCM = #{id}
+        where ccm.ID_CCM = #{id}
     </select>
 
 <!--    <select id="getCostCenterById" resultMap="costCenterResultMap" >-->

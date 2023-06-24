@@ -106,7 +106,7 @@ class MasterRepository
     }
 
 
-    fun addCostCenter(ccm: CostCenter) {
+    fun addCostCenter(ccm: MasterCostCenter) {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var data: MutableMap<String, Any> = mutableMapOf()
@@ -152,7 +152,7 @@ class MasterRepository
 
 
 
-    fun editCostCenter(ccm: CostCenter) {
+    fun editCostCenter(ccm: MasterCostCenter) {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
 

@@ -7,7 +7,6 @@ import com.squer.promobee.service.repository.domain.*
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
 
 
 @Service
@@ -43,11 +42,11 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getCostCenter(status)
     }
 
-    override fun addCostCenter(ccm: CostCenter) {
+    override fun addCostCenter(ccm: MasterCostCenter) {
         return masterRepository.addCostCenter(ccm)
     }
 
-    override fun editCostCenter(ccm: CostCenter) {
+    override fun editCostCenter(ccm: MasterCostCenter) {
         return masterRepository.editCostCenter(ccm)
     }
 
