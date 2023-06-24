@@ -9,7 +9,7 @@ class SampleMaster: AuditableEntity() {
     var ciName: String ?= null
     var lmid: String ?= null
     var description: String?= null
-    var brandId: NamedSquerEntity?= null
+    var brandId: ArrayList<NamedSquerEntity> = ArrayList<NamedSquerEntity>()
     var packSize: Int ?= null
     var active: Int ?= null
     var hsnCode: String?= null
