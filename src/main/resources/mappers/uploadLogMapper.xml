@@ -163,4 +163,68 @@
 
     </select>
 
+
+    <select id="getRecipientByCode" resultType="com.squer.promobee.controller.dto.RecipientDTO">
+        SELECT ID_RCT as 'recipientId',NAME_RCT as 'recipientName',CODE_RCT as 'recipientCode',ID_DESG_ULV_RCT as 'recipientDesignationId' FROM RECIPIENT_MASTER_RCT RCT
+        WHERE CODE_RCT = #{code}
+        UNION
+        SELECT ID_DTM as 'recipientId',NAME_DTM as 'recipientName',CODE_DTM as 'recipientCode',ID_DESG_ULV_DTM as 'recipientDesignationId' FROM DOCTOR_MASTER_DTM
+        WHERE CODE_DTM = #{code}
+    </select>
+
+
+    <select id="getTransporterByName" resultType="com.squer.promobee.controller.dto.TransporterDropdownDTO">
+        select ID_TRN as 'transporterId',NAME_TRN as 'transporterName' from TRANSPORTER_TRN
+        where NAME_TRN = #{name}
+    </select>
+
+    <select id="getDoctorsByCode" resultType="com.squer.promobee.controller.dto.RecipientDTO">
+
+        SELECT ID_DTM as 'recipientId',NAME_DTM as 'recipientName',CODE_DTM as 'recipientCode',ID_DESG_ULV_DTM as 'recipientDesignationId' FROM DOCTOR_MASTER_DTM
+        WHERE CODE_DTM = #{code}
+    </select>
+
+    <select id="isInvoiceGeneratedForTheRecipient" >
+
+        select count(inh.INVOICE_NO_INH) from RECIPIENT_MASTER_RCT rct
+        join INVOICE_HEADER_INH inh on rct.ID_RCT = inh.ID_RCT_INH
+        join INVOICE_DISPATCH_PLAN_IDP idp on inh.ID_INH = idp.ID_INH_IDP
+        join DISPATCH_PLAN_DIP dip on idp.ID_PLAN_IDP = dip.ID_DIP
+        where dip.IS_SPECIAL_DIP = 0 and dip.MONTH_DIP = #{month} and  dip.YEAR_DIP = #{year} and  rct.ID_RCT = #{employeeId}
+    </select>
+
+
+    <select id="isInvoiceGeneratedForTheRecipientvirtual" >
+
+        select count(inh.INVOICE_NO_INH) from VIRTUAL_UPLOAD_VRL vrl
+        join INVOICE_HEADER_INH inh on vrl.ID_DTM_VRL = inh.ID_RCT_INH
+        join INVOICE_DISPATCH_PLAN_IDP idp on inh.ID_INH = idp.ID_INH_IDP
+        join DISPATCH_PLAN_DIP dip on idp.ID_PLAN_IDP = dip.ID_DIP
+        join DISPATCH_DETAIL_DID did on vrl.ID_DID_VRL = did.ID_DID
+        where dip.IS_SPECIAL_DIP = 1 and dip.IS_VIRTUAL_DIP = 1 and dip.MONTH_DIP = #{month} and dip.YEAR_DIP = #{year}
+          and vrl.ID_DTM_VRL = #{employeeId} and idp.ID_PLAN_IDP = #{planId} and vrl.FF_CODE_VRL = #{ffCode}
+          and did.ID_STATUS_SLV_DID = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7'
+    </select>
+
+    <select id="isInvoiceGeneratedForTheRecipientspecial" >
+
+        select * from RECIPIENT_MASTER_RCT rct
+        join INVOICE_HEADER_INH inh on rct.ID_RCT = inh.ID_RCT_INH
+        join INVOICE_DISPATCH_PLAN_IDP idp on inh.ID_INH = idp.ID_INH_IDP
+        join DISPATCH_PLAN_DIP dip on idp.ID_PLAN_IDP = dip.ID_DIP
+        where dip.IS_SPECIAL_DIP = 1 and dip.MONTH_DIP = #{month} and dip.YEAR_DIP = #{year}
+          and rct.ID_RCT = #{employeeId} and dip.ID_DIP = #{planId}
+    </select>
+
+
+
+
+    <insert id="insertTempInvoiceDetails">
+
+        INSERT INTO TEMP_INVOICE_UPLOAD_IVT (ID_IVT,ID_UPLOAD_UPL_IVT,MONTH_IVT,YEAR_IVT,STATE_IVT,EMPLOYEE_NAME_IVT,EMPLOYEE_CODE_IVT,
+                                             BOXES_IVT,WEIGHT_IVT,TRANPORTER_NAME_IVT,LR_NO_IVT,NAME_PLAN_IVT,ERROR_TEXT_IVT,EMPLOYEE_DESG_IVT,DIMENSION_IVT,FFCODE_IVT,ID_PLAN_IVT,ID_EMPLOYEE_IVT,ID_TRANSPORTER_IVT)
+        VALUES(#{invoiceId},#{invoiceUploadId},#{month},#{year},#{state},#{employeeName},#{employeeCode},#{boxes},#{weight},#{transporterName},#{lrNo},
+               #{planName},#{errorText},#{employeeDesignation},#{dimension},#{ffCode},#{planId},#{employeeId},#{transporterId})
+    </insert>
+
 </mapper>

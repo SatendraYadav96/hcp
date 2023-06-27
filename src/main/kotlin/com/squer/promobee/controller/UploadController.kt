@@ -100,6 +100,38 @@ open class UploadController@Autowired constructor(
     }
 
 
+    @GetMapping("/getRecipientByCode/{code}")
+    fun getRecipientByCode(@PathVariable code: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = uploadService.getRecipientByCode(code)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getTransporterByName/{name}")
+    fun getTransporterByName(@PathVariable name: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = uploadService.getTransporterByName(name)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getDoctorsByCode/{code}")
+    fun getDoctorsByCode(@PathVariable code: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = uploadService.getDoctorsByCode(code)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
+
+
+
+    @PostMapping("/invoiceUpload")
+    fun invoiceUpload(@RequestBody dto: FileUploadDto) {
+        return uploadService.invoiceUpload(dto)
+    }
+
+
 
 
 

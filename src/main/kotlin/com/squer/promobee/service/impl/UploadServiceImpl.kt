@@ -65,6 +65,22 @@ class UploadServiceImpl @Autowired constructor(
         return uploadRepository.virtualSampleExcelData(uplId)
     }
 
+    override fun getRecipientByCode(code: String): RecipientDTO {
+        return uploadRepository.getRecipientByCode(code)
+    }
+
+    override fun getTransporterByName(name: String): TransporterDropdownDTO {
+        return uploadRepository.getTransporterByName(name)
+    }
+
+    override fun getDoctorsByCode(code: String): RecipientDTO {
+        return uploadRepository.getDoctorsByCode(code)
+    }
+
+    override fun invoiceUpload(dto: FileUploadDto) {
+        return uploadRepository.invoiceUpload(dto)
+    }
+
 
 
 }
