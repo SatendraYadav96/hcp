@@ -8,13 +8,9 @@ import com.squer.promobee.controller.dto.InventoryReversalDTO
 import com.squer.promobee.controller.dto.SwitchInventoryDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.InventoryService
-
 import com.squer.promobee.service.repository.domain.*
-import liquibase.pro.packaged.bu
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import lombok.extern.slf4j.Slf4j
-import org.apache.coyote.Response
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -130,6 +126,16 @@ open class InventoryController@Autowired constructor(
         val data = inventoryService.getEmployeeInvoicePopupDetails(month, year,isSpecial,employeeId,invoiceHeaderId)
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+    @GetMapping("/exportAllocation/{year}/{month}/{teamId}/{status}/{planId}/{isVirtual}/{isSpecial}")
+    fun exportAllocation( @PathVariable year: Int , @PathVariable month: Int , @PathVariable teamId: String , @PathVariable status: String ,
+                          @PathVariable isSpecial: Int , @PathVariable planId: String , @PathVariable isVirtual: Int ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = inventoryService.exportAllocation(year, month , teamId,status,isSpecial,planId,isVirtual)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
 
 
 

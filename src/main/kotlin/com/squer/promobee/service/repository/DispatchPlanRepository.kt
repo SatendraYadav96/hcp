@@ -122,7 +122,7 @@ class DispatchPlanRepository(
 
     fun getVirtualDispatchSearch( month: Int, year: Int) : List<TeamPlanInvoiceDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
-        data.put("month", month)
+        data.put("Month", month)
         data.put("year", year)
        // data.put("isSpecial", 1)
        // data.put("isVirtual", 1)

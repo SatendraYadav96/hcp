@@ -2,14 +2,10 @@ package com.squer.promobee.service.repository
 
 import com.squer.promobee.api.v1.enums.*
 import com.squer.promobee.controller.dto.*
-import com.squer.promobee.mapper.InventoryMapper
 import com.squer.promobee.persistence.BaseRepository
-import com.squer.promobee.security.domain.NamedSquerEntity
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
-import com.squer.promobee.service.InventoryService
 import com.squer.promobee.service.repository.domain.*
-import org.apache.ibatis.jdbc.SQL
 import org.apache.ibatis.session.SqlSessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -17,15 +13,13 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.time.ZoneId
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
-import kotlin.math.max
 import kotlin.math.roundToInt
 
 
 @Repository
 class InventoryRepository @Autowired constructor(
-        securityUtility: SecurityUtility
+    securityUtility: SecurityUtility,
 ): BaseRepository<Inventory>(
         securityUtility = securityUtility
 ){
@@ -33,6 +27,9 @@ class InventoryRepository @Autowired constructor(
 
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
+
+    @Autowired
+    lateinit var dispatchPlanRepository:DispatchPlanRepository
 
 
     fun insertInventory(inventory: Inventory){
@@ -623,8 +620,75 @@ class InventoryRepository @Autowired constructor(
     }
 
 
+    fun exportAllocation(year: Int, month: Int, teamId: String, status: String, isSpecial: Int, planId: String, isVirtual: Int): List<DataModelInvoiceDetailsDTO>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data : MutableMap<String, String> = mutableMapOf()
 
 
+        val exportData: List<DataModelInvoiceDetailsDTO> = ArrayList()
+
+
+
+       if(isSpecial == 0){
+           data.put("year", year.toString())
+           data.put("month", month.toString())
+           data.put("isSpecialDisp", isSpecial.toString())
+           data.put("teamId",teamId)
+           data.put("status","00000000-0000-0000-0000-000000000024")
+
+           if(status == InvoiceStatusEnum.GENERATED_PRINTED.id || status == InvoiceStatusEnum.CANCELLED.id || status == InvoiceStatusEnum.REDIRECTED.id){
+        exportData =        return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.GetEmployeeInvoiceDetail_GP_C_R", data)
+           }else{
+               exportData =    return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getEmployeeInvoiceDetailDraft", data)
+           }
+       }
+        else if (isVirtual == 1){
+
+           data.put("Plan_ID", planId)
+           data.put("StatusSLV", "00000000-0000-0000-0000-000000000024")
+
+           if(status == InvoiceStatusEnum.GENERATED_PRINTED.id || status == InvoiceStatusEnum.CANCELLED.id || status == InvoiceStatusEnum.REDIRECTED.id){
+
+               exportData =     return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getVirtualDispatchInvoicingListForGeneratedPrinted", data)
+
+
+           }else {
+               exportData =  return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getVirtualDispatchInvoicingListForDraft", data)
+
+           }
+
+
+        }
+
+        else{
+
+           data.put("Plan_ID", planId)
+           data.put("StatusSLV", "00000000-0000-0000-0000-000000000024")
+
+           if (status == InvoiceStatusEnum.GENERATED_PRINTED.id || status == InvoiceStatusEnum.CANCELLED.id || status == InvoiceStatusEnum.REDIRECTED.id) {
+
+               exportData = return sqlSessionFactory.openSession()
+                   .selectList("DispatchInvoicingMapper.getSpecialDispatchInvoicingListForGeneratedPrinted", data)
+
+
+           } else {
+               exportData =   return sqlSessionFactory.openSession()
+                   .selectList("DispatchInvoicingMapper.getSpecialDispatchInvoicingListForDraft", data)
+
+           }
+
+        }
+
+
+
+
+
+
+
+
+
+    }
 
 
 

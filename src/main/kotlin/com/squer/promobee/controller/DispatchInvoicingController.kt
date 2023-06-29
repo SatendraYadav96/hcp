@@ -1,8 +1,5 @@
 package com.squer.promobee.controller
 
-import com.squer.promobee.controller.dto.GroupingInvoiceDetailsDTO
-import com.squer.promobee.controller.dto.PickListDetailsDTO
-import com.squer.promobee.service.DispatchDetailService
 import com.squer.promobee.service.DispatchInvoicingService
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
@@ -12,7 +9,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import java.time.LocalDate
 import java.util.*
 
 @Slf4j
@@ -83,6 +79,8 @@ open class DispatchInvoicingController @Autowired constructor(
         val data = dispatchInvoicingService.getVirtualDispatchSearch(month, year)
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+
 
 
 

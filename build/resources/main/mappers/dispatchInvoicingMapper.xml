@@ -193,45 +193,9 @@
         AND INH.ID_STATUS_SLV_INH = #{status}
     </select>
 
-    <select id="getVirtualDispatchListing" resultType="com.squer.promobee.controller.dto.TeamPlanInvoiceDTO" >
-        select idDip, isSpecialDip,idStatusDip,nameStatusDip,namePlan,
-        idBmRec,nameBmRec,invoiceStatus,convert(varchar(10),ApprovalDate,103) 'approvalDate' from (
-        select * from(
-        select idDip, isSpecialDip,dip.id_status_slv_dip idStatusDip, lov.NAME_SLV nameStatusDip,dip.REMARKS_DIP namePlan,
-        dip.ID_OWNER_USR_DIP  idBmRec, USR.NAME_USR nameBmRec,SLV.NAME_SLV 'invoiceStatus',max(api.UPDATED_ON_API) 'approvalDate'
-        from DISPATCH_PLAN_DIP dip
-        inner join DISPATCH_DETAIL_DID did on did.ID_DIP_DID=dip.ID_DIP
-        inner join USER_MASTER_USR USR on dip.ID_OWNER_USR_DIP = usr.ID_USR
-        inner join SYSTEM_LOV_SLV lov on lov.ID_SLV = dip.ID_STATUS_SLV_DIP
-        INNER JOIN SYSTEM_LOV_SLV SLV ON DIP.ID_INVOICE_STATUS_SLV_DIP = SLV.ID_SLV
-        inner join APPROVAL_CHAIN_TRANSACTION_API api on dip.ID_DIP = api.ID_OWNER_API and api.ID_STATUS_SLV_API = 'BF12B5B5-2923-4A6F-BE33-27B417D5158E'
-        where dip.MONTH_DIP = #{month} and dip.YEAR_DIP = #{year}
-        and dip.IS_SPECIAL_DIP =1 and IS_VIRTUAL_DIP=1
-        and dip.ID_STATUS_SLV_DIP = '00000000-0000-0000-0000-000000000024'
-        GROUP BY ID_DIP,IS_SPECIAL_DIP,dip.id_status_slv_dip,lov.NAME_SLV,dip.REMARKS_DIP,
-        dip.ID_OWNER_USR_DIP,USR.NAME_USR,SLV.NAME_SLV
-        ) as Temp1
-        union
-        select * from(
-        select idDip, isSpecialDip,dip.id_status_slv_dip idStatusDip, lov.NAME_SLV nameStatusDip,dip.REMARKS_DIP namePlan,
-        dip.ID_OWNER_USR_DIP  idBmRec, USR.NAME_USR nameBmRec,SLV.NAME_SLV 'invoiceStatus',max(api.UPDATED_ON_API) 'approvalDate'
-        from DISPATCH_PLAN_DIP dip
-        inner join DISPATCH_DETAIL_DID did on did.ID_DIP_DID=dip.ID_DIP
-        inner join USER_MASTER_USR USR on dip.ID_OWNER_USR_DIP = usr.ID_USR
-        inner join SYSTEM_LOV_SLV lov on lov.ID_SLV = dip.ID_STATUS_SLV_DIP
-        INNER JOIN SYSTEM_LOV_SLV SLV ON DIP.ID_INVOICE_STATUS_SLV_DIP = SLV.ID_SLV
-        inner join APPROVAL_CHAIN_TRANSACTION_API api on dip.ID_DIP = api.ID_OWNER_API and api.ID_STATUS_SLV_API = 'BF12B5B5-2923-4A6F-BE33-27B417D5158E'
-        where
-        dip.MONTH_DIP = month(dateadd(MONTH, -1,convert(datetime, (concat(#{year},'-',#{month},'-01')))))
-        and dip.YEAR_DIP = year(dateadd(month, -1,convert(datetime, (concat(#{year},'-',#{month},'-01')))))
-        and dip.IS_SPECIAL_DIP =1 and IS_VIRTUAL_DIP=1
-        and dip.ID_STATUS_SLV_DIP = '00000000-0000-0000-0000-000000000024'
-
-        GROUP BY ID_DIP,IS_SPECIAL_DIP,dip.id_status_slv_dip,lov.NAME_SLV,dip.REMARKS_DIP,
-        dip.ID_OWNER_USR_DIP,USR.NAME_USR,SLV.NAME_SLV
-        ) as Temp3
-        ) temp2
-        order by approvalDate desc
+    <select id="getVirtualDispatchListing" resultType="com.squer.promobee.controller.dto.TeamPlanInvoiceDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetVirtualDispatchListing(#{Month, jdbcType = INTEGER , mode = IN}, #{year, jdbcType = INTEGER , mode = IN}
+            )}
     </select>
 
 

@@ -4,7 +4,6 @@ import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.InventoryService
 import com.squer.promobee.service.repository.InventoryRepository
 import com.squer.promobee.service.repository.domain.Inventory
-import com.squer.promobee.service.repository.domain.Vendor
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -89,6 +88,10 @@ class InventoryServiceImpl @Autowired constructor(
 
     override fun getEmployeeInvoicePopupDetails(month: Int, year: Int, isSpecial: Int, employeeId: String, invoiceHeaderId: String): List<EmployeeInvoiceDetailsPopupDTO> {
         return inventoryRepository.getEmployeeInvoicePopupDetails(month, year,isSpecial,employeeId,invoiceHeaderId)
+    }
+
+    override fun exportAllocation(year: Int, month: Int, teamId: String, status: String, isSpecial: Int, planId: String, isVirtual: Int): List<DataModelInvoiceDetailsDTO> {
+        return inventoryRepository.exportAllocation(year, month , teamId,status,isSpecial,planId,isVirtual)
     }
 
 
