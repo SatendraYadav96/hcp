@@ -859,7 +859,7 @@ class UploadRepository(
                 dto.transporterName?.let { it1 -> genInv.get(i).transporter?.let { it2 -> data.put(it2, it1) } }
                 dto.lrNo?.let { it1 -> genInv.get(i).lrNo?.let { it2 -> data.put(it2, it1) } }
                 dto.dimension?.let { it1 -> genInv.get(i).dimension?.let { it2 -> data.put(it2, it1) } }
-                
+
 
 
 

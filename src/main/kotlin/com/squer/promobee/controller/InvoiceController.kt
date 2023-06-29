@@ -68,7 +68,7 @@ open class InvoiceController@Autowired constructor(
 
         var fileContentList = mutableListOf<FileContentPOJO>()
         printInvoiceData?.forEach {
-            fileContentList.add(FileContentPOJO(fileName = "label_${System.currentTimeMillis()}" , String(Base64.getEncoder().encode(it))))
+            fileContentList.add(FileContentPOJO(fileName = "invoice_${System.currentTimeMillis()}" , String(Base64.getEncoder().encode(it))))
         }
         return ResponseEntity(fileContentList, HttpStatus.OK)
     }
