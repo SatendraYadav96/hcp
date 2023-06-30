@@ -118,10 +118,6 @@ class InvoiceRepository(
         var data: MutableMap<String, Any> = mutableMapOf()
 
 
-
-
-
-
         var printDetails =  mutableListOf<MutableList<InvoicePrintDetailsDTO>>()
 
         var printDetailsBody =  mutableListOf<MutableList<InvoiceDetailsPrintDTO>>()
@@ -139,6 +135,7 @@ class InvoiceRepository(
 
 
         var finalArray = mutableListOf<ByteArray>()
+
 
       inh.forEach { i ->
 
@@ -215,40 +212,50 @@ class InvoiceRepository(
 
           i = 0
 
-
-          printDetailsBody?.forEach {
-
-
-              var taxableValue =
-                  it[i].InvoiceDetailsRatePerUnit?.let { it1 -> it[i].invoiceDetailsQuantity?.times(it1) }
-              var gstAmount = it[i].InvoiceDetailsGSTRate?.let { it1 -> taxableValue?.times(it1) }?.div(100)
-              var amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }
-              tableRow = tableRow + "<tr>" +
-                      "<td>" + srNo++ + "</td>" + "\n" + "\t" +
-                      "<td>" + it[i].invoiceDetailsProductCode + "</td>" + "\n" + "\t" +
-                      "<td>" + it[i].invoiceDetailsHSNCode + "</td>" + "\n" + "\t" +
-                      "<td>" + it[i].invoiceDetailsItemDescription + "</td>" + "\n" + "\t" +
-                      "<td>" + it[i].invoiceDetailsQuantity?.toInt() + "</td>" + "\n" + "\t" +
-                      "<td>" + it[i].invoiceDetailsSAPCode + "</td>" + "\n" + "\t" +
-                      "<td>" + if (it[i].invoiceDetailsBatchNo !== null) {
-                  it[i].invoiceDetailsBatchNo
-              } else {
-                  ""
-              } + "</td>" + "\n" + "\t" +
-                      "<td>" + it[i].invoiceDetailsExpiryDate + "</td>" + "\n" + "\t" +
-                      "<td>" + it[i].InvoiceDetailsRatePerUnit + "</td>" + "\n" + "\t" +
-                      "<td>" + taxableValue + "</td>" + "\n" + "\t" +
-                      "<td>" + value + "</td>" + "\n" + "\t" +
-                      "<td>" + value + "</td>" + "\n" + "\t" +
-                      "<td>" + value + "</td>" + "\n" + "\t" +
-                      "<td>" + value + "</td>" + "\n" + "\t" +
-                      "<td>" + it[i].InvoiceDetailsGSTRate + "</td>" + "\n" + "\t" +
-                      "<td>" + gstAmount + "</td>" + "\n" + "\t" +
-                      "<td>" + amount + "</td>" + "\n" + "\t" +
-                      "</tr>"
+          n = 0
 
 
-              i++
+          printDetailsBody.forEach {pb ->
+              pb.forEach {
+
+                  var taxableValue =
+                      it.InvoiceDetailsRatePerUnit?.let { it1 -> it.invoiceDetailsQuantity?.times(it1) }?.roundToLong()
+                  var gstAmount = it.InvoiceDetailsGSTRate?.let { it1 -> taxableValue?.times(it1) }?.div(100)?.roundToLong()
+                  var amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }
+
+                  tableRow = tableRow + "<tr>" +
+                          "<td>" + srNo++ + "</td>" + "\n" + "\t" +
+                          "<td >" + it.invoiceDetailsProductCode + "</td>" + "\n" + "\t" +
+
+
+
+
+                          "<td colspan=\"2\">" + it.invoiceDetailsHSNCode + "</td>" + "\n" + "\t" +
+                          "<td colspan=\"2\">" + it.invoiceDetailsItemDescription + "</td>" + "\n" + "\t" +
+                          "<td>" + it.invoiceDetailsQuantity?.toInt() + "</td>" + "\n" + "\t" +
+                          "<td colspan=\"2\">" + it.invoiceDetailsSAPCode + "</td>" + "\n" + "\t" +
+                          "<td colspan=\"2\">" + if (it.invoiceDetailsBatchNo !== null) {
+                      it.invoiceDetailsBatchNo
+                  } else {
+                      ""
+                  } + "</td>" + "\n" + "\t" +
+                          //                      "<td>" + it[i].invoiceDetailsExpiryDate + "</td>" + "\n" + "\t" +
+                          "<td colspan=\"2\">" + it.invoiceDetailsExpiryDate + "</td>" + "\n" + "\t" +
+                          "<td>" + it.InvoiceDetailsRatePerUnit + "</td>" + "\n" + "\t" +
+                          "<td>" + taxableValue + "</td>" + "\n" + "\t" +
+                          "<td>" + value + "</td>" + "\n" + "\t" +
+                          "<td>" + value + "</td>" + "\n" + "\t" +
+                          "<td>" + value + "</td>" + "\n" + "\t" +
+                          "<td>" + value + "</td>" + "\n" + "\t" +
+                          "<td>" + it.InvoiceDetailsGSTRate + "</td>" + "\n" + "\t" +
+                          "<td>" + gstAmount + "</td>" + "\n" + "\t" +
+                          "<td>" + amount + "</td>" + "\n" + "\t" +
+                          "</tr>"
+
+
+              }
+
+
           }
 
           context.put("tableRow", tableRow)
@@ -278,9 +285,11 @@ class InvoiceRepository(
               document.close()
               finalArray.add(byteArrayOutputStream.toByteArray());
 
+
           } catch (e: Exception) {
               e.printStackTrace()
           }
+
 
       }
         return finalArray;

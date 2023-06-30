@@ -45,7 +45,7 @@ header .leftSection h4 {
 
 header .leftSection address {
     font-style: normal;
-    font-size: 14px;
+    font-size: 12px;
     margin-top: -15px
 }
 
@@ -59,14 +59,14 @@ header .rightSection label {
     font-weight: bold;
 }
 .tblRecipientRightSection {
-    font-size:13px;
+    font-size:12px;
 }
 .tblRecipientLeftSection {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .ph_no {
-    font-size: 14px;
+    font-size: 12px;
     padding-left: 20px;
 }
 

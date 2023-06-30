@@ -40,8 +40,8 @@
                 </tr>
                 <tr>
                     <td>D.L.No.</td>
-                    <td>
-                        <label>20B-TZ5-272894 / 22B-TZ5-272895</label>
+                    <td >
+                        <label >20B-TZ5-272894 / 22B-TZ5-272895</label>
 ##                        <label>22B-TZ5-272895</label>
                     </td>
                 </tr>
@@ -96,15 +96,15 @@
                 <table class="tblRecipientRightSection">
                     <tr>
                         <td>Period</td>
-                        <td>$EmployeePeriod</td>
+                        <td colspan="2">$EmployeePeriod</td>
                         <td>LR No.</td>
                         <td>$EmployeeLRNumber</td>
                     </tr>
                     <tr>
-                        <td>Date</td>
-                        <td>$EmployeeDate</td>
+                        <td> Date</td>
+                        <td colspan="2">$EmployeeDate</td>
                         <td>LR Date</td>
-                        <td>$EmployeeLRDate</td>
+                        <td colspan="2">$EmployeeLRDate</td>
                     </tr>
                     <tr>
                         <td>Team</td>
@@ -120,7 +120,7 @@
                     </tr> -->
                     <tr>
                         <td>Transport</td>
-                        <td>$EmployeeTransport</td>
+                        <td colspan="2">$EmployeeTransport</td>
                     </tr>
                     <tr>
                         <td>CFA</td>
@@ -128,11 +128,11 @@
                     </tr>
                     <tr>
                         <td>PROMO MONTH</td>
-                        <td>$PROMOMONTH</td>
+                        <td colspan="2">$PROMOMONTH</td>
                     </tr>
                     <tr>
                         <td>TYPE</td>
-                        <td>$PLANTYPE</td>
+                        <td colspan="2">$PLANTYPE</td>
                     </tr>
                 </table>
                 <div class="clearfix"></div>
@@ -145,13 +145,13 @@
                     <thead>
                     <tr>
                         <th rowspan="2">Sr. No.</th>
-                        <th rowspan="2">Product Code</th>
-                        <th rowspan="2">HSN Code</th>
-                        <th rowspan="2">Product Description</th>
+                        <th rowspan="2" >Product Code</th>
+                        <th rowspan="2" colspan="2">HSN Code</th>
+                        <th rowspan="2" colspan="2">Product Description</th>
                         <th rowspan="2">Quantity</th>
-                        <th rowspan="2">PO No.</th>
-                        <th rowspan="2">Batch No</th>
-                        <th rowspan="2">EXP Date</th>
+                        <th rowspan="2" colspan="2">PO No.</th>
+                        <th rowspan="2" colspan="2">Batch No</th>
+                        <th rowspan="2" colspan="2">EXP Date</th>
                         <th rowspan="2">Rate Rs.</th>
                         <th rowspan="2">Taxable Value Rs.</th>
                         <th colspan="2">CGST</th>
