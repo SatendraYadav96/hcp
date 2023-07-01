@@ -2,12 +2,10 @@ package com.squer.promobee.service.impl
 
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.ReportService
-import com.squer.promobee.service.repository.DispatchPlanRepository
 import com.squer.promobee.service.repository.ReportRepository
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
 
 
 @Service
@@ -87,6 +85,10 @@ class ReportServiceImpl @Autowired constructor(
 
     override fun getShiprocketReport(fromDate: String,toDate: String): List<ShiprocketReportDTO>{
         return reportRepository.getShiprocketReport(fromDate,toDate)
+    }
+
+    override fun getVirtualReconciliationReport(fromDate: String, toDate: String, businessUnit: String): List<VirtualReconciliationDTO> {
+        return reportRepository.getVirtualReconciliationReport(fromDate,toDate,businessUnit)
     }
 
 }

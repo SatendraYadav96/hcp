@@ -33,6 +33,10 @@ class UploadServiceImpl @Autowired constructor(
         return uploadRepository.getInvoiceUploadLog()
     }
 
+    override fun getAllUploadLog(typeId: String): List<UploadLogDTO> {
+        return uploadRepository.getAllUploadLog(typeId)
+    }
+
     override fun transporterUpload(dto: FileUploadDto) {
         return uploadRepository.transporterUpload(dto)
     }

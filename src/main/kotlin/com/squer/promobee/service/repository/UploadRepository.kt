@@ -46,6 +46,8 @@ class UploadRepository(
         var data: MutableMap<String, Any> = mutableMapOf()
 
 
+
+
         return sqlSessionFactory.openSession().selectList("UploadLogMapper.getGrnUploadLog", data)
     }
 
@@ -66,6 +68,17 @@ class UploadRepository(
 
 
         return sqlSessionFactory.openSession().selectList("UploadLogMapper.getInvoiceUploadLog", data)
+    }
+
+    fun getAllUploadLog(typeId: String): List<UploadLogDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("typeId",typeId)
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getAllUploadLog", data)
     }
 
 
@@ -687,11 +700,7 @@ class UploadRepository(
         csvReader.autoRenameDuplicateHeaders
         var rows = CsvReader().readAllWithHeader(File(filePath))
 
-
-
         var i = 0
-
-
 
         rows.forEach {
             var data: MutableMap<String, Any> = mutableMapOf()
@@ -702,25 +711,26 @@ class UploadRepository(
 
             var recipient = it.get(headers[6].toString().trim())?.let { it1 -> getRecipientByCode(it1) }
 
+            dto.invoiceId = UUID.randomUUID().toString()
+            dto.invoiceUploadId = uplId
+            dto.month = it.get(headers[0]).toString().trim()
+            dto.year = it.get(headers[1]).toString().trim()
+            dto.planName = it.get(headers[2]).toString().trim()
+           dto.state = it.get(headers[3]).toString().trim()
+           dto.employeeName = it.get(headers[4]).toString().trim()
+          dto.employeeDesignation  = it.get(headers[5]).toString().trim()
+           dto.employeeCode = it.get(headers[6]).toString().trim()
+          dto.boxes = it.get(headers[7]).toString().trim()
+         dto.weight  = it.get(headers[8]).toString().trim()
+          dto.dimension  = it.get(headers[9]).toString().trim()
+          dto.transporterName  = it.get(headers[10]).toString().trim()
+          dto.lrNo  = it.get(headers[11]).toString().trim()
+        dto.planId  = it.get(headers[12]).toString().trim()
+        dto.planType  = it.get(headers[13]).toString().trim()
+        dto.ffCode  = it.get(headers[14]).toString().trim()
 
-            data.put("invoiceId",UUID.randomUUID().toString())
-            data.put("invoiceUploadId",uplId)
-            data.put("month",it.get(headers[0]).toString().trim())
-            data.put("year",it.get(headers[1]).toString().trim())
-            data.put("planName",it.get(headers[2]).toString().trim())
-            data.put("state",it.get(headers[3]).toString().trim())
-            data.put("employeeName",it.get(headers[4]).toString().trim())
-            data.put("employeeDesignation",it.get(headers[5]).toString().trim())
-            data.put("employeeCode",it.get(headers[6]).toString().trim())
-            data.put("boxes",it.get(headers[7]).toString().trim())
-            data.put("weight",it.get(headers[8]).toString().trim())
-            data.put("dimension",it.get(headers[9]).toString().trim())
-            data.put("transporterName",it.get(headers[10]).toString().trim())
-            data.put("lrNo",it.get(headers[11]).toString().trim())
-            data.put("planId",it.get(headers[12]).toString().trim())
-            data.put("planType",it.get(headers[13]).toString().trim())
-            data.put("ffCode",it.get(headers[14]).toString().trim())
-//            transporter.transporterId?.let { it1 -> data.put("transporterId", it1) }
+
+
 
             if(dto.month.isNullOrEmpty()){
                 dto.errorText =  "Month field cannot be empty."
@@ -795,7 +805,7 @@ class UploadRepository(
             }
             else if(dto.planType == "VIRTUAL") {
 
-                isSpecial = 0
+                isSpecial = 1
 
                 var data: MutableMap<String, Any> = mutableMapOf()
 
@@ -830,11 +840,42 @@ class UploadRepository(
                 if(invoiceCount > 0){
                     isInvoiceAlreadyGenerated = true
                     dto.errorText = "Invoice already generated"
+
+
                 }
+
 
             }
 
-            if(dto.errorText != "" || dto.errorText != null ){
+            if(dto.errorText.isNullOrEmpty()){
+
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                data.put("invoiceId", dto.invoiceId!!)
+                data.put("invoiceUploadId", dto.invoiceUploadId!!)
+                data.put("month", dto.month!!)
+                data.put("year", dto.year!!)
+                data.put("state", dto.state!!)
+                data.put("employeeName", dto.employeeName!!)
+                data.put("employeeCode", dto.employeeCode!!)
+                data.put("boxes", dto.boxes!!)
+                data.put("weight", dto.weight!!)
+                data.put("transporterName", dto.transporterName!!)
+                data.put("lrNo", dto.lrNo!!)
+                data.put("employeeId", dto.employeeId!!)
+                data.put("transporterId", dto.transporterId!!)
+                data.put("planName", dto.planName!!)
+                data.put("planId", dto.planId!!)
+                if(dto.errorText.isNullOrEmpty()){
+                    data.put("errorText", "")
+                }else {
+                    data.put("errorText", dto.errorText!!)
+                }
+
+                data.put("employeeDesignation", dto.employeeDesignation!!)
+                data.put("dimension", dto.dimension!!)
+                data.put("ffCode", dto.ffCode!!)
+
 
                 sqlSessionFactory.openSession().insert("UploadLogMapper.insertTempInvoiceDetails", data)
 
@@ -842,39 +883,255 @@ class UploadRepository(
             }
 
             var i = 0
-            if(dto.errorText == "" || dto.errorText == null){
+            if(dto.errorText.isNullOrEmpty()){
+
+//                var data: MutableMap<String, Any> = mutableMapOf()
+//
+              // var genInv = List<GenerateInvoiceDTO>()
+
+
+//
+//
+//
+//
+//
+//                dto.employeeId?.let { it1 -> genInv.get(i).recipientId?.let { it2 -> data.put(it2, it1) } }
+//                dto.month?.let { it1 -> data.put(genInv.get(i).month.toString(), it1) }
+//                dto.year?.let { it1 -> data.put(genInv.get(i).year.toString(), it1) }
+//                data.put(genInv.get(i).isSpecial.toString(), isSpecial)
+//                data.put(genInv.get(i).boxes.toString(), dto.boxes!!)
+//                data.put(genInv.get(i).weight.toString(), dto.weight!!)
+//                dto.transporterName?.let { it1 -> genInv.get(i).transporter?.let { it2 -> data.put(it2, it1) } }
+//                dto.lrNo?.let { it1 -> genInv.get(i).lrNo?.let { it2 -> data.put(it2, it1) } }
+//                dto.dimension?.let { it1 -> genInv.get(i).dimension?.let { it2 -> data.put(it2, it1) } }
+//
+//
+//
+//
+//
+//                   invoiceRepository.generateInvoice(genInv)
+
+                var itcCount =  ItemCategoryCountDTO()
+
+               // var dispatchDetails = MutableList<DispatchDetailDTO>()
+
+                var samplesCount : Double?
+
+                var inputsCount : Double?
+
+
+                    if(dto.planType == "MONTHLY"){
+
+                    var data: MutableMap<String, Any> = mutableMapOf()
+
+
+                    data.put("month", dto.month!!)
+                    data.put("year", dto.year!!)
+                    data.put("recipientId", dto.employeeId!!)
+                    data.put("IsSpecialDispatch", 0)
+
+
+                        samplesCount = sqlSessionFactory.openSession().selectOne("UploadLogMapper.getSamplesCount",data)
+
+                    data.put("month", dto.month!!)
+                    data.put("year", dto.year!!)
+                    data.put("recipientId", dto.employeeId!!)
+                    data.put("IsSpecialDispatch", 0)
+
+
+                        inputsCount = sqlSessionFactory.openSession().selectOne("UploadLogMapper.getInputCount",data)
+
+
+                         itcCount.sampleItems = samplesCount
+                         itcCount.nonSampleItems =  inputsCount
+
+                          itcCount;
+
+
+
+                        data.put("month", dto.month!!)
+                        data.put("year", dto.year!!)
+                        data.put("recipientId", dto.employeeId!!)
+                        data.put("IsSpecialDispatch", 0)
+
+                        //dispatchDetails = sqlSessionFactory.openSession().selectList<DispatchDetailDTO>("DispatchDetailMapper.getDispatchDetails", data).toMutableList()
+
+
+                        //dispatchDetails;
+
+                        if (itcCount.sampleItems == null)
+                        {
+                            itcCount.sampleItems = 0.0;
+                        }
+                        if (itcCount.nonSampleItems == null)
+                        {
+                            itcCount.nonSampleItems = 0.0;
+                        }
+
+
+
+                } else{
+
+
+                        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+                        data.put("month", dto.month!!)
+                        data.put("year", dto.year!!)
+                        data.put("recipientId", dto.employeeId!!)
+                        data.put("IsSpecialDispatch", 1)
+
+
+                        samplesCount = sqlSessionFactory.openSession().selectOne("UploadLogMapper.getSamplesCount",data)
+
+                        data.put("month", dto.month!!)
+                        data.put("year", dto.year!!)
+                        data.put("recipientId", dto.employeeId!!)
+                        data.put("IsSpecialDispatch", 1)
+
+
+                        inputsCount = sqlSessionFactory.openSession().selectOne("UploadLogMapper.getInputCount",data)
+
+
+                        itcCount.sampleItems = samplesCount
+                        itcCount.nonSampleItems =  inputsCount
+
+                        itcCount;
+
+
+
+                        data.put("month", dto.month!!)
+                        data.put("year", dto.year!!)
+                        data.put("recipientId", dto.employeeId!!)
+                        data.put("IsSpecialDispatch", 0)
+
+                       // dispatchDetails = sqlSessionFactory.openSession().selectList<DispatchDetailDTO>("DispatchDetailMapper.getDispatchDetails", data).toMutableList()
+
+
+                       // dispatchDetails;
+
+                        if (itcCount.sampleItems == null)
+                        {
+                            itcCount.sampleItems = 0.0;
+                        }
+                        if (itcCount.nonSampleItems == null)
+                        {
+                            itcCount.nonSampleItems = 0.0;
+                        }
+
+
+                }
+
+
+                try{
+                    if(dto.planType == "MONTHLY"){
+
+                        var data: MutableMap<String, Any> = mutableMapOf()
+
+                        data.put("ID_USR", user.id)
+                        data.put("month",dto.month!!)
+                        data.put("year",dto.year!!)
+                        data.put("ID_EMPLOYEE_IVT",dto.employeeId!!)
+                        data.put("EMPLOYEE_CODE_IVT",dto.employeeCode!!)
+                        data.put("WEIGHT_IVT",dto.weight!!)
+                        data.put("LrNo",dto.lrNo!!)
+                        data.put("Boxes",dto.boxes!!)
+                        data.put("Transporter",dto.transporterId!!)
+                        data.put("SampleItems", itcCount.sampleItems!!)
+                        data.put("NonSampleItems",itcCount.nonSampleItems!!)
+                        data.put("ID_GROUP_INVOICE_INH",UUID.randomUUID().toString())
+                        data.put("PLANID",dto.planId!!)
+
+                        sqlSessionFactory.openSession().update("UploadLogMapper.saveGenerateInvoice",data)
+                    }
+                    else if(dto.planType == "VIRTUAL"){
+
+
+                        var data: MutableMap<String, Any> = mutableMapOf()
+
+                        data.put("ID_USR", user.id)
+                        data.put("month",dto.month!!)
+                        data.put("year",dto.year!!)
+                        data.put("ID_EMPLOYEE_IVT",dto.employeeId!!)
+                        data.put("EMPLOYEE_CODE_IVT",dto.employeeCode!!)
+                        data.put("WEIGHT_IVT",dto.weight!!)
+                        data.put("LrNo",dto.lrNo!!)
+                        data.put("Boxes",dto.boxes!!)
+                        data.put("Dimension",dto.dimension!!)
+                        data.put("Transporter",dto.transporterId!!)
+                        data.put("SampleItems", itcCount.sampleItems!!)
+                        data.put("NonSampleItems",itcCount.nonSampleItems!!)
+                        data.put("ID_GROUP_INVOICE_INH",UUID.randomUUID().toString())
+                        data.put("PLANID",dto.planId!!)
+                        data.put("FFCODE",dto.ffCode!!)
+
+                        sqlSessionFactory.openSession().update("UploadLogMapper.saveGenerateInvoiceVirtual",data)
+
+                    }
+
+                    else{
+
+                        var data: MutableMap<String, Any> = mutableMapOf()
+
+                        data.put("ID_USR", user.id)
+                        data.put("month",dto.month!!)
+                        data.put("year",dto.year!!)
+                        data.put("ID_EMPLOYEE_IVT",dto.employeeId!!)
+                        data.put("EMPLOYEE_CODE_IVT",dto.employeeCode!!)
+                        data.put("WEIGHT_IVT",dto.weight!!)
+                        data.put("LrNo",dto.lrNo!!)
+                        data.put("Boxes",dto.boxes!!)
+                        data.put("Transporter",dto.transporterId!!)
+                        data.put("SampleItems", itcCount.sampleItems!!)
+                        data.put("NonSampleItems",itcCount.nonSampleItems!!)
+                        data.put("ID_GROUP_INVOICE_INH",UUID.randomUUID().toString())
+                        data.put("PLANID",dto.planId!!)
+
+                        sqlSessionFactory.openSession().update("UploadLogMapper.saveGenerateInvoiceSpecial",data)
+                    }
+                }
+                catch(e:Exception){
+
+                    println("Can not generate Invoice !!")
+
+
+                }
+
+
+
+            }
+
+            if(dto.errorText.isNullOrEmpty()){
 
                 var data: MutableMap<String, Any> = mutableMapOf()
 
-                var genInv = List<GenerateInvoiceDTO>()
+                data.put("id",uplId)
+                data.put("type",UploadTypeEnum.INVOICE_DETAILS.id)
+                data.put("totalRecord",rows.count())
+                data.put("recordUpload",rows.count())
+                data.put("statusId",UploadStatusEnum.COMPLETED_SUCCESSFULLY.id)
+                data.put("createdBy",user.id)
+                data.put("updatedBy",user.id)
+                data.put("parentId",uplId)
 
 
+                sqlSessionFactory.openSession().update("UploadLogMapper.insertUploadLogCompletedSuccessFully", data)
 
-                dto.employeeId?.let { it1 -> genInv.get(i).recipientId?.let { it2 -> data.put(it2, it1) } }
-                dto.month?.let { it1 -> data.put(genInv.get(i).month.toString(), it1) }
-                dto.year?.let { it1 -> data.put(genInv.get(i).year.toString(), it1) }
-                data.put(genInv.get(i).isSpecial.toString(), isSpecial)
-                data.put(genInv.get(i).boxes.toString(), dto.boxes!!)
-                data.put(genInv.get(i).weight.toString(), dto.weight!!)
-                dto.transporterName?.let { it1 -> genInv.get(i).transporter?.let { it2 -> data.put(it2, it1) } }
-                dto.lrNo?.let { it1 -> genInv.get(i).lrNo?.let { it2 -> data.put(it2, it1) } }
-                dto.dimension?.let { it1 -> genInv.get(i).dimension?.let { it2 -> data.put(it2, it1) } }
+            } else {
 
+                var data: MutableMap<String, Any> = mutableMapOf()
 
-
-
-
-                   invoiceRepository.generateInvoice(genInv)
+                data.put("id",uplId)
+                data.put("type",UploadTypeEnum.INVOICE_DETAILS.id)
+                data.put("totalRecord",rows.count())
+                data.put("recordUpload",0)
+                data.put("statusId",UploadStatusEnum.COMPLETED_ERRORS.id)
+                data.put("createdBy",user.id)
+                data.put("updatedBy",user.id)
+                data.put("parentId",uplId)
 
 
-
-
-
-
-
-
-
-
+                sqlSessionFactory.openSession().update("UploadLogMapper.insertUploadLogCompletedWithErrors", data)
             }
 
 
@@ -883,9 +1140,17 @@ class UploadRepository(
         }
 
 
+
+
+
+
         return System.out.println("Invoice Generated successfully !")
 
 
+    }
+
+    private fun <T> MutableList(): MutableList<T> {
+        return MutableList<T>()
     }
 
     private fun <T> List(): List<T> {

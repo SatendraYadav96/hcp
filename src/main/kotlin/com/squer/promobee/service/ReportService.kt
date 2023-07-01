@@ -1,7 +1,6 @@
 package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.*
-import java.util.*
 
 
 interface ReportService {
@@ -40,4 +39,5 @@ interface ReportService {
 
     fun getShiprocketReport(fromDate: String,toDate: String): List<ShiprocketReportDTO>
 
+    fun getVirtualReconciliationReport(fromDate: String,toDate: String,businessUnit: String): List<VirtualReconciliationDTO>
 }

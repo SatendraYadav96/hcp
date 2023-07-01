@@ -40,6 +40,7 @@
         SELECT TOP 25 UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
                 SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
         JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
+        WHERE UPL.IDTYPESLV_UPL = '00000000-0000-0000-0000-100000000003'
 
     </select>
 
@@ -47,6 +48,16 @@
         SELECT TOP 25 UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
                 SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
         JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
+        WHERE UPL.IDTYPESLV_UPL = '00000000-0000-0000-0000-100000000004'
+
+    </select>
+
+
+    <select id="getAllUploadLog" resultType="com.squer.promobee.controller.dto.UploadLogDTO">
+        SELECT TOP 25 UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
+                SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
+                                                  JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
+        WHERE UPL.IDTYPESLV_UPL = #{typeId}
 
     </select>
 
@@ -184,7 +195,7 @@
         WHERE CODE_DTM = #{code}
     </select>
 
-    <select id="isInvoiceGeneratedForTheRecipient" >
+    <select id="isInvoiceGeneratedForTheRecipient" resultType="int" >
 
         select count(inh.INVOICE_NO_INH) from RECIPIENT_MASTER_RCT rct
         join INVOICE_HEADER_INH inh on rct.ID_RCT = inh.ID_RCT_INH
@@ -194,7 +205,7 @@
     </select>
 
 
-    <select id="isInvoiceGeneratedForTheRecipientvirtual" >
+    <select id="isInvoiceGeneratedForTheRecipientvirtual"  resultType="int" >
 
         select count(inh.INVOICE_NO_INH) from VIRTUAL_UPLOAD_VRL vrl
         join INVOICE_HEADER_INH inh on vrl.ID_DTM_VRL = inh.ID_RCT_INH
@@ -206,9 +217,9 @@
           and did.ID_STATUS_SLV_DID = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7'
     </select>
 
-    <select id="isInvoiceGeneratedForTheRecipientspecial" >
+    <select id="isInvoiceGeneratedForTheRecipientspecial" resultType="int" >
 
-        select * from RECIPIENT_MASTER_RCT rct
+        select count(inh.INVOICE_NO_INH) from RECIPIENT_MASTER_RCT rct
         join INVOICE_HEADER_INH inh on rct.ID_RCT = inh.ID_RCT_INH
         join INVOICE_DISPATCH_PLAN_IDP idp on inh.ID_INH = idp.ID_INH_IDP
         join DISPATCH_PLAN_DIP dip on idp.ID_PLAN_IDP = dip.ID_DIP
@@ -222,9 +233,86 @@
     <insert id="insertTempInvoiceDetails">
 
         INSERT INTO TEMP_INVOICE_UPLOAD_IVT (ID_IVT,ID_UPLOAD_UPL_IVT,MONTH_IVT,YEAR_IVT,STATE_IVT,EMPLOYEE_NAME_IVT,EMPLOYEE_CODE_IVT,
-                                             BOXES_IVT,WEIGHT_IVT,TRANPORTER_NAME_IVT,LR_NO_IVT,NAME_PLAN_IVT,ERROR_TEXT_IVT,EMPLOYEE_DESG_IVT,DIMENSION_IVT,FFCODE_IVT,ID_PLAN_IVT,ID_EMPLOYEE_IVT,ID_TRANSPORTER_IVT)
-        VALUES(#{invoiceId},#{invoiceUploadId},#{month},#{year},#{state},#{employeeName},#{employeeCode},#{boxes},#{weight},#{transporterName},#{lrNo},
-               #{planName},#{errorText},#{employeeDesignation},#{dimension},#{ffCode},#{planId},#{employeeId},#{transporterId})
+                                             BOXES_IVT,WEIGHT_IVT,TRANPORTER_NAME_IVT,LR_NO_IVT,ID_EMPLOYEE_IVT,ID_TRANSPORTER_IVT,NAME_PLAN_IVT,ID_PLAN_IVT,ERROR_TEXT_IVT,EMPLOYEE_DESG_IVT,DIMENSION_IVT,FFCODE_IVT)
+        VALUES(#{invoiceId},#{invoiceUploadId},#{month},#{year},#{state},#{employeeName},#{employeeCode},#{boxes},#{weight},#{transporterName},#{lrNo},#{employeeId},#{transporterId},
+               #{planName},#{planId},#{errorText},#{employeeDesignation},#{dimension},#{ffCode})
     </insert>
+
+
+    <select id="getSamplesCount" resultType="double">
+        SELECT ISNULL(SUM((DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) + (DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) * INV.RATE_PER_INV/100),0) as 'sampleItems'
+        FROM SAMPLE_MASTER_SMP SMP
+                 JOIN INVENTORY_INV INV ON INV.ID_ITM_INV =  SMP.ID_SMP
+                 JOIN DISPATCH_DETAIL_DID DID ON DID.ID_INV_DID =  INV.ID_INV
+                 JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP =  DID.ID_DIP_DID
+        WHERE DID.ID_RCT_DID = #{recipientId} AND DIP.MONTH_DIP =  #{month} AND DIP.YEAR_DIP = #{year}
+          AND DIP.IS_SPECIAL_DIP =  #{IsSpecialDispatch} AND INV.ID_ITC_INV =  '242B921C-B27A-497D-9FA1-7222AB6E6F2A'
+    </select>
+
+    <select id="getInputCount" resultType="double">
+        SELECT ISNULL(SUM((DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) + (DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) * INV.RATE_PER_INV/100),0) as 'nonSampleItems'
+        FROM ITEM_MASTER_ITM ITM
+                 JOIN INVENTORY_INV INV ON INV.ID_ITM_INV =  ITM.ID_ITM
+                 JOIN DISPATCH_DETAIL_DID DID ON DID.ID_INV_DID =  INV.ID_INV
+                 JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP =  DID.ID_DIP_DID
+        WHERE DID.ID_RCT_DID = #{recipientId} AND DIP.MONTH_DIP =  #{month} AND DIP.YEAR_DIP = #{year}
+          AND DIP.IS_SPECIAL_DIP =  #{IsSpecialDispatch} AND INV.ID_ITC_INV IN ('2909F268-96DE-4485-B8E9-673FEC08C9A3','9689A910-F261-48E7-9DCC-7653B092BA7B')
+    </select>
+
+    <select id="getDispatchDetails" resultType="com.squer.promobee.controller.dto.DispatchDetailDTO">
+        SELECT ID_DID AS 'id',ID_DIP_DID AS 'planId',ID_INV_DID AS 'inventoryId',ID_RCT_DID AS 'recipientId',QUANTITY_DISPATCH_DID AS 'qtyDispatch',ID_QTP_DID AS 'quarterlyPlanId',ID_STATUS_SLV_DID AS 'detailStatus',
+                REMARKS_DID AS 'remarks',CREATED_ON_DID AS 'createdAt', CREATED_BY_DID AS 'createdBy', UPDATED_ON_DID AS 'updatedAt', UPDATED_BY_DID AS 'updatedBy', ID_ITC_DID AS 'categoryId'  FROM DISPATCH_DETAIL_DID DID
+                                                                                                                                                                                                          JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP =  DID.ID_DIP_DID
+        WHERE DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND DIP.IS_SPECIAL_DIP =  #{IsSpecialDispatch} AND DIP.ID_STATUS_SLV_DIP =  '00000000-0000-0000-0000-000000000024' AND
+            DID.ID_RCT_DID =  #{recipientId} AND DID.ID_STATUS_SLV_DID = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7'
+
+    </select>
+
+
+    <update  id="saveGenerateInvoice" parameterType = "map" statementType = "CALLABLE">
+        { call proc_GenrateInvoice ( #{ID_USR, jdbcType = VARCHAR, mode = IN}, #{month, jdbcType = INTEGER, mode = IN}
+            , #{year, jdbcType = INTEGER, mode = IN} , #{ID_EMPLOYEE_IVT, jdbcType = VARCHAR, mode = IN} , #{EMPLOYEE_CODE_IVT, jdbcType = VARCHAR , mode = IN}
+            , #{WEIGHT_IVT, jdbcType = DOUBLE , mode = IN} , #{LrNo, jdbcType = VARCHAR, mode = IN} , #{Boxes, jdbcType = DOUBLE , mode = IN}
+            , #{Transporter, jdbcType = VARCHAR, mode = IN} , #{SampleItems, jdbcType = DOUBLE , mode = IN} , #{NonSampleItems, jdbcType = DOUBLE , mode = IN}
+            , #{ID_GROUP_INVOICE_INH, jdbcType = VARCHAR, mode = IN} , #{PLANID jdbcType = VARCHAR, mode = IN} ) }
+
+    </update>
+
+
+    <update  id="saveGenerateInvoiceVirtual" parameterType = "map" statementType = "CALLABLE">
+        { call proc_GenrateInvoicevirtual ( #{ID_USR, jdbcType = VARCHAR, mode = IN}, #{month, jdbcType = INTEGER, mode = IN}
+            , #{year, jdbcType = INTEGER, mode = IN} , #{ID_EMPLOYEE_IVT, jdbcType = VARCHAR, mode = IN} , #{EMPLOYEE_CODE_IVT, jdbcType = VARCHAR , mode = IN}
+            , #{WEIGHT_IVT, jdbcType = DOUBLE , mode = IN} , #{LrNo, jdbcType = VARCHAR, mode = IN} , #{Boxes, jdbcType = DOUBLE , mode = IN} , #{Dimension, jdbcType = VARCHAR , mode = IN}
+            , #{Transporter, jdbcType = VARCHAR, mode = IN} , #{SampleItems, jdbcType = DOUBLE , mode = IN} , #{NonSampleItems, jdbcType = DOUBLE , mode = IN}
+            , #{ID_GROUP_INVOICE_INH, jdbcType = VARCHAR, mode = IN} , #{PLANID jdbcType = VARCHAR, mode = IN} , #{FFCODE jdbcType = VARCHAR, mode = IN} ) }
+
+    </update>
+
+
+    <update  id="saveGenerateInvoiceSpecial" parameterType = "map" statementType = "CALLABLE">
+        { call proc_GenrateInvoicespecial ( #{ID_USR, jdbcType = VARCHAR, mode = IN}, #{month, jdbcType = INTEGER, mode = IN}
+            , #{year, jdbcType = INTEGER, mode = IN} , #{ID_EMPLOYEE_IVT, jdbcType = VARCHAR, mode = IN} , #{EMPLOYEE_CODE_IVT, jdbcType = VARCHAR , mode = IN}
+            , #{WEIGHT_IVT, jdbcType = DOUBLE , mode = IN} , #{LrNo, jdbcType = VARCHAR, mode = IN} , #{Boxes, jdbcType = DOUBLE , mode = IN}
+            , #{Transporter, jdbcType = VARCHAR, mode = IN} , #{SampleItems, jdbcType = DOUBLE , mode = IN} , #{NonSampleItems, jdbcType = DOUBLE , mode = IN}
+            , #{ID_GROUP_INVOICE_INH, jdbcType = VARCHAR, mode = IN} , #{PLANID jdbcType = VARCHAR, mode = IN} ) }
+
+    </update>
+
+    <update id="insertUploadLogCompletedWithErrors">
+        INSERT INTO UPLOAD_LOG_UPL (ID_UPL,IDTYPESLV_UPL,START_TIME_UPL,END_TIME_UPL,TOTAL_RECORDS_UPL,RECORDS_UPLOAD_UPL,ID_STATUS_SLV_UPL,CREATED_ON_UPL,CREATED_BY_UPL,UPDATED_ON_UPL,UPDATED_BY_UPL,PARENT_ID_UPL)
+        VALUES(#{id},#{type},GETDATE(),GETDATE(),#{totalRecord},#{recordUpload},#{statusId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{parentId})
+    </update>
+
+    <update id="insertUploadLogCompletedSuccessFully">
+        INSERT INTO UPLOAD_LOG_UPL (ID_UPL,IDTYPESLV_UPL,START_TIME_UPL,END_TIME_UPL,TOTAL_RECORDS_UPL,RECORDS_UPLOAD_UPL,ID_STATUS_SLV_UPL,CREATED_ON_UPL,CREATED_BY_UPL,UPDATED_ON_UPL,UPDATED_BY_UPL,PARENT_ID_UPL)
+        VALUES(#{id},#{type},GETDATE(),GETDATE(),#{totalRecord},#{recordUpload},#{statusId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{parentId})
+    </update>
+
+
+
+
+
+
+
 
 </mapper>

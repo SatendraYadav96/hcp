@@ -48,10 +48,19 @@ open class UploadController@Autowired constructor(
         return ResponseEntity(invUpl, HttpStatus.OK)
     }
 
+    @GetMapping("/getAllUploadLog/{typeId}")
+    open fun getAllUploadLog(@PathVariable typeId : String) : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var invUpl = uploadService.getAllUploadLog(typeId)
+        return ResponseEntity(invUpl, HttpStatus.OK)
+    }
+
     @PostMapping("/transporterUpload")
     fun transporterUpload(@RequestBody dto: FileUploadDto) {
         return uploadService.transporterUpload(dto)
     }
+
+
 
     @GetMapping("/transportExcelData/{uplId}")
     open fun transportExcelData(@PathVariable uplId : String) : ResponseEntity<*> {
@@ -59,6 +68,16 @@ open class UploadController@Autowired constructor(
         var invUpl = uploadService.transportExcelData(uplId)
         return ResponseEntity(invUpl, HttpStatus.OK)
     }
+
+    @GetMapping("/transportErrorData/{uplId}")
+    open fun transportErrorData(@PathVariable uplId : String) : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var invUpl = uploadService.transportExcelData(uplId)
+        return ResponseEntity(invUpl, HttpStatus.OK)
+    }
+
+
+
 
     @PostMapping("/grnUpload")
     fun grnUpload(@RequestBody dto: FileUploadDto) {

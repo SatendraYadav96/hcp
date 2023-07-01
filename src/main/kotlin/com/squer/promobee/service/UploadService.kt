@@ -11,6 +11,8 @@ interface UploadService {
 
     fun getInvoiceUploadLog(): List<UploadLogDTO>
 
+    fun getAllUploadLog(typeId : String): List<UploadLogDTO>
+
     fun transporterUpload(dto: FileUploadDto)
 
     fun transportExcelData(uplId : String): List<TransporterUploadDto>

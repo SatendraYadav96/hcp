@@ -244,5 +244,17 @@ class ReportRepository
     }
 
 
+    fun getVirtualReconciliationReport(fromDate: String, toDate: String, businessUnit: String): List<VirtualReconciliationDTO>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+        data.put("fromdate", fromDate)
+        data.put("enddate", toDate)
+        data.put("BusinessUnit", businessUnit)
+
+
+
+
+        return sqlSessionFactory.openSession().selectList("ReportMapper.getVirtualReconciliationReport", data)
+    }
+
 
 }

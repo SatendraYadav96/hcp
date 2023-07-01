@@ -255,6 +255,12 @@
 
     </select>
 
+    <select id="getVirtualReconciliationReport" resultType="com.squer.promobee.controller.dto.VirtualReconciliationDTO" parameterType = "map" statementType = "CALLABLE">
+        { call GetVirtualReconciliationReport (#{fromdate, jdbcType = VARCHAR, mode = IN}, #{enddate, jdbcType = VARCHAR, mode = IN}, #{BusinessUnit, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+
 
 
 
