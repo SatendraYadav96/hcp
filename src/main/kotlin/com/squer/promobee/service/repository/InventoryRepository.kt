@@ -598,14 +598,8 @@ class InventoryRepository @Autowired constructor(
         data.put("RecipientID", employeeId)
         data.put("InvoiceHeaderID", invoiceHeaderId)
 
-        if(invoiceHeaderId !== null || invoiceHeaderId !== "") {
+        if(invoiceHeaderId.isNullOrEmpty()) {
 
-            var data0 : MutableMap<String, String> = mutableMapOf()
-            data0.put("InvoiceHeaderID", invoiceHeaderId)
-
-
-            return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getEmployeeGeneratedInvoicePopupDetails",data0)
-        }else {
 
             var data1 : MutableMap<String, String> = mutableMapOf()
             data1.put("Month", month.toString())
@@ -614,6 +608,15 @@ class InventoryRepository @Autowired constructor(
             data1.put("RecipientID", employeeId)
 
             return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getEmployeeDraftedInvoicePopupDetails",data1)
+
+
+        }else {
+
+            var data0 : MutableMap<String, String> = mutableMapOf()
+            data0.put("InvoiceHeaderID", invoiceHeaderId)
+
+
+            return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getEmployeeGeneratedInvoicePopupDetails",data0)
         }
 
 

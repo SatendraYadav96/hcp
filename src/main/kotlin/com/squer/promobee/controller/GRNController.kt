@@ -5,7 +5,6 @@ import com.squer.promobee.controller.dto.GRNAckDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.GrnService
 import com.squer.promobee.service.UploadLogService
-import com.squer.promobee.service.repository.domain.GRNAcknowledgement
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,6 +27,7 @@ open class GRNController @Autowired constructor(
 
     @GetMapping("/acknowledge")
     open fun getUnacknowledgeGRNs(): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val grns = grnService.getUnacknowledgeData()
         return ResponseEntity(grns, HttpStatus.OK)
     }

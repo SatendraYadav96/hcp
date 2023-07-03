@@ -1,8 +1,8 @@
 package com.squer.promobee.service.impl
 
+import com.squer.promobee.api.v1.enums.ItemCategoryEnum
 import com.squer.promobee.controller.dto.GRNAckDTO
 import com.squer.promobee.security.domain.NamedSquerEntity
-import com.squer.promobee.security.domain.NamedSquerId
 import com.squer.promobee.security.domain.SquerEntity
 import com.squer.promobee.security.util.DateUtils.Companion.addDays
 import com.squer.promobee.service.*
@@ -10,14 +10,11 @@ import com.squer.promobee.service.repository.GRNRepository
 import com.squer.promobee.service.repository.domain.Inventory
 import com.squer.promobee.service.repository.domain.Item
 import com.squer.promobee.service.repository.domain.Vendor
-import com.squer.promobee.api.v1.enums.ItemCategoryEnum
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.util.*
-import kotlin.collections.HashMap
-import java.time.LocalDate
 
 
 @Service
@@ -43,7 +40,8 @@ class GRNServiceImpl @Autowired constructor(
 
         //MedicalCode Count
         var medicalItemcount: Int
-        val medicalItem = itemService.getMaxItemCount("M%")
+
+         val medicalItem = itemService.getMaxItemCount("%M%")
         if(medicalItem !== null){
             medicalItemcount = (medicalItem.substring(1).toInt()) + 1
         }
@@ -54,7 +52,7 @@ class GRNServiceImpl @Autowired constructor(
 
         //Non-MedicalCode Count
         var nonMedicalItemcount: Int
-        val nonMedicalItem = itemService.getMaxItemCount("N%")
+        val nonMedicalItem = itemService.getMaxItemCount("%N%")
         if(nonMedicalItem !== null){
             nonMedicalItemcount = (nonMedicalItem.substring(1).toInt()) + 1
         }

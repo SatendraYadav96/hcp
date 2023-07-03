@@ -273,8 +273,8 @@
 
 
     <select id="getEmployeeDraftedInvoicePopupDetails" resultType="com.squer.promobee.controller.dto.EmployeeInvoiceDetailsPopupDTO" parameterType = "map" statementType = "CALLABLE">
-        { call PROC_GetDraftedInvoiceDetails(#{Month, jdbcType = INTEGER , mode = IN}, #{Year, jdbcType = INTEGER , mode = IN},
-                                             #{IsSpecial, jdbcType = INTEGER , mode = IN}, #{RecipientID, jdbcType = VARCHAR , mode = IN},
+        { call PROC_GetDraftedInvoiceDetails (#{Month, jdbcType = INTEGER , mode = IN}, #{Year, jdbcType = INTEGER , mode = IN},
+                                             #{IsSpecial, jdbcType = INTEGER , mode = IN}, #{RecipientID, jdbcType = VARCHAR , mode = IN}
 
             )}
 

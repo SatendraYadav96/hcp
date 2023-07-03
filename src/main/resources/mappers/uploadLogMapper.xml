@@ -34,6 +34,7 @@
         SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
         JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
         WHERE UPL.IDTYPESLV_UPL = '00000000-0000-0000-0000-100000000020'
+        order by CREATED_ON_UPL desc
     </select>
 
     <select id="getTransporterUploadLog" resultType="com.squer.promobee.controller.dto.UploadLogDTO">
@@ -41,6 +42,7 @@
                 SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
         JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
         WHERE UPL.IDTYPESLV_UPL = '00000000-0000-0000-0000-100000000003'
+        order by CREATED_ON_UPL desc
 
     </select>
 
@@ -49,6 +51,7 @@
                 SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
         JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
         WHERE UPL.IDTYPESLV_UPL = '00000000-0000-0000-0000-100000000004'
+        order by CREATED_ON_UPL desc
 
     </select>
 
@@ -72,7 +75,7 @@
     </insert>
 
     <update  id="uploadTransportDetails" parameterType = "map" statementType = "CALLABLE">
-        { call PROC_UPLOAD_TRANSPORTER (#{uploadId, jdbcType = VARCHAR, mode = IN}, #{createdBy, jdbcType = VARCHAR, mode = IN}) }
+        { call PROC_UPLOAD_TRANSPORTER ( #{uploadId, jdbcType = VARCHAR, mode = IN}, #{createdBy, jdbcType = VARCHAR, mode = IN} ) }
 
     </update>
 

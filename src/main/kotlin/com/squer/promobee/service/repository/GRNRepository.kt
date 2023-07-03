@@ -1,6 +1,5 @@
 package com.squer.promobee.service.repository
 
-import com.squer.promobee.mapper.GRNAcknowledgementMapper
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.GRNAcknowledgement
@@ -21,6 +20,7 @@ class GRNRepository(
     lateinit var sqlSessionFactory: SqlSessionFactory
 
     fun getUnacknowledgeData(): List<GRNAcknowledgement>{
+
         return sqlSessionFactory.openSession().selectList("GRNAcknowledgementMapper.grn_acknowledgement_select")
     }
 

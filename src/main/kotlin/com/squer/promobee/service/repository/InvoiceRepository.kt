@@ -169,39 +169,43 @@ class InvoiceRepository(
 
           var n = 0
 
-          printDetails.forEach {
+          printDetails.forEach { pd ->
+
+              pd.forEach {
 
 
-              context.put("InvoiceNumber", printDetails[i].get(n).invoiceNumber)
-              context.put("EmployeeCode", printDetails[i].get(n).employeeCode)
-              context.put("EmployeeDesignation", printDetails[i].get(n).employeeDesignation)
-              context.put("EmployeeName", printDetails[i].get(n).employeeName)
-              context.put("EmployeeAddress", printDetails[i].get(n).employeeAddress)
-              context.put("EmployeeCity", printDetails[i].get(n).employeeCity)
-              context.put("EmployeeState", printDetails[i].get(n).employeeState)
-              context.put("EmployeePinCode", printDetails[i].get(n).employeePinCode)
-              context.put("EmployeeMobileNumber", printDetails[i].get(n).employeeMobileNumber)
-              context.put("EmployeePeriod", employeePeriod)
-              context.put("EmployeeLRNumber", printDetails[i].get(n).employeeLRNumber)
-              context.put("EmployeeDate", printDetails[i].get(n).employeeDate)
-              context.put("EmployeeLRDate", printDetails[i].get(n).employeeLRDate)
-              context.put("EmployeeTeam", printDetails[i].get(n).employeeTeam)
-              context.put("EmployeeTransport", printDetails[i].get(n).employeeTransport)
-              context.put("EmployeeCFA", printDetails[i].get(n).employeeCFA)
-              context.put("PROMOMONTH", promoMonth)
-              context.put("PLANTYPE", printDetails[i].get(n).type)
-              context.put("EmployeeTotalNoOfCases", printDetails[i].get(n).employeeTotalNoOfCases)
-              context.put("EmployeeTotalWeight", printDetails[i].get(n).employeeTotalWeight)
-              if (printDetails[i].get(n).employeeRemark !== null) {
-                  context.put("EmployeeRemark", printDetails[i].get(n).employeeRemark)
-              } else {
-                  context.put("EmployeeRemark", "")
+                  context.put("InvoiceNumber", it.invoiceNumber)
+                  context.put("EmployeeCode", it.employeeCode)
+                  context.put("EmployeeDesignation", it.employeeDesignation)
+                  context.put("EmployeeName", it.employeeName)
+                  context.put("EmployeeAddress", it.employeeAddress)
+                  context.put("EmployeeCity", it.employeeCity)
+                  context.put("EmployeeState", it.employeeState)
+                  context.put("EmployeePinCode", it.employeePinCode)
+                  context.put("EmployeeMobileNumber", it.employeeMobileNumber)
+                  context.put("EmployeePeriod", employeePeriod)
+                  context.put("EmployeeLRNumber", it.employeeLRNumber)
+                  context.put("EmployeeDate", it.employeeDate)
+                  context.put("EmployeeLRDate", it.employeeLRDate)
+                  context.put("EmployeeTeam", it.employeeTeam)
+                  context.put("EmployeeTransport", it.employeeTransport)
+                  context.put("EmployeeCFA", it.employeeCFA)
+                  context.put("PROMOMONTH", promoMonth)
+                  context.put("PLANTYPE", it.type)
+                  context.put("EmployeeTotalNoOfCases", it.employeeTotalNoOfCases)
+                  context.put("EmployeeTotalWeight", it.employeeTotalWeight)
+                  if (it.employeeRemark !== null) {
+                      context.put("EmployeeRemark", it.employeeRemark)
+                  } else {
+                      context.put("EmployeeRemark", "")
+                  }
+                  context.put("TotalSampleValue", it.employeeSampleValue)
+                  context.put("TotalInputValue", it.employeeInputValue)
+                  context.put("TotalSumValue", it.employeeValue?.roundToLong())
+
+                  i++
               }
-              context.put("TotalSampleValue", printDetails[i].get(n).employeeSampleValue)
-              context.put("TotalInputValue", printDetails[i].get(n).employeeInputValue)
-              context.put("TotalSumValue", printDetails[i].get(n).employeeValue?.roundToLong())
 
-              i++
           }
 
           var tableRow = ""
@@ -210,9 +214,6 @@ class InvoiceRepository(
 
 
 
-          i = 0
-
-          n = 0
 
 
           printDetailsBody.forEach {pb ->

@@ -24,6 +24,6 @@ class CostCenterRepository @Autowired constructor(
     }
 
     fun getCostCenterCodeById(ccmId: String?): Map<String, Any>{
-        return sqlSessionFactory.openSession().selectOne("costCenterResultMap.getCostCenterCodeById", ccmId       )
+        return sqlSessionFactory.openSession().selectOne("CostCenterMapper.getCostCenterCodeById", ccmId)
     }
 }
