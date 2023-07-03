@@ -197,7 +197,7 @@
 
     <select id="isInvoiceGeneratedForTheRecipient" resultType="int" >
 
-        select count(inh.INVOICE_NO_INH) from RECIPIENT_MASTER_RCT rct
+        select count(*) from RECIPIENT_MASTER_RCT rct
         join INVOICE_HEADER_INH inh on rct.ID_RCT = inh.ID_RCT_INH
         join INVOICE_DISPATCH_PLAN_IDP idp on inh.ID_INH = idp.ID_INH_IDP
         join DISPATCH_PLAN_DIP dip on idp.ID_PLAN_IDP = dip.ID_DIP
@@ -205,9 +205,9 @@
     </select>
 
 
-    <select id="isInvoiceGeneratedForTheRecipientvirtual"  resultType="int" >
+    <select id="isInvoiceGeneratedForTheRecipientVirtual"  resultType="int" >
 
-        select count(inh.INVOICE_NO_INH) from VIRTUAL_UPLOAD_VRL vrl
+        select count(*) from VIRTUAL_UPLOAD_VRL vrl
         join INVOICE_HEADER_INH inh on vrl.ID_DTM_VRL = inh.ID_RCT_INH
         join INVOICE_DISPATCH_PLAN_IDP idp on inh.ID_INH = idp.ID_INH_IDP
         join DISPATCH_PLAN_DIP dip on idp.ID_PLAN_IDP = dip.ID_DIP
@@ -217,9 +217,9 @@
           and did.ID_STATUS_SLV_DID = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7'
     </select>
 
-    <select id="isInvoiceGeneratedForTheRecipientspecial" resultType="int" >
+    <select id="isInvoiceGeneratedForTheRecipientSpecial" resultType="int" >
 
-        select count(inh.INVOICE_NO_INH) from RECIPIENT_MASTER_RCT rct
+        select count(*) from RECIPIENT_MASTER_RCT rct
         join INVOICE_HEADER_INH inh on rct.ID_RCT = inh.ID_RCT_INH
         join INVOICE_DISPATCH_PLAN_IDP idp on inh.ID_INH = idp.ID_INH_IDP
         join DISPATCH_PLAN_DIP dip on idp.ID_PLAN_IDP = dip.ID_DIP
@@ -274,7 +274,7 @@
             , #{year, jdbcType = INTEGER, mode = IN} , #{ID_EMPLOYEE_IVT, jdbcType = VARCHAR, mode = IN} , #{EMPLOYEE_CODE_IVT, jdbcType = VARCHAR , mode = IN}
             , #{WEIGHT_IVT, jdbcType = DOUBLE , mode = IN} , #{LrNo, jdbcType = VARCHAR, mode = IN} , #{Boxes, jdbcType = DOUBLE , mode = IN}
             , #{Transporter, jdbcType = VARCHAR, mode = IN} , #{SampleItems, jdbcType = DOUBLE , mode = IN} , #{NonSampleItems, jdbcType = DOUBLE , mode = IN}
-            , #{ID_GROUP_INVOICE_INH, jdbcType = VARCHAR, mode = IN} , #{PLANID jdbcType = VARCHAR, mode = IN} ) }
+            , #{ID_GROUP_INVOICE_INH, jdbcType = VARCHAR, mode = IN} , #{PLANID, jdbcType = VARCHAR, mode = IN} ) }
 
     </update>
 
@@ -284,7 +284,7 @@
             , #{year, jdbcType = INTEGER, mode = IN} , #{ID_EMPLOYEE_IVT, jdbcType = VARCHAR, mode = IN} , #{EMPLOYEE_CODE_IVT, jdbcType = VARCHAR , mode = IN}
             , #{WEIGHT_IVT, jdbcType = DOUBLE , mode = IN} , #{LrNo, jdbcType = VARCHAR, mode = IN} , #{Boxes, jdbcType = DOUBLE , mode = IN} , #{Dimension, jdbcType = VARCHAR , mode = IN}
             , #{Transporter, jdbcType = VARCHAR, mode = IN} , #{SampleItems, jdbcType = DOUBLE , mode = IN} , #{NonSampleItems, jdbcType = DOUBLE , mode = IN}
-            , #{ID_GROUP_INVOICE_INH, jdbcType = VARCHAR, mode = IN} , #{PLANID jdbcType = VARCHAR, mode = IN} , #{FFCODE jdbcType = VARCHAR, mode = IN} ) }
+            , #{ID_GROUP_INVOICE_INH, jdbcType = VARCHAR, mode = IN} , #{PLANID, jdbcType = VARCHAR, mode = IN} , #{FFCODE, jdbcType = VARCHAR, mode = IN} ) }
 
     </update>
 
@@ -294,18 +294,21 @@
             , #{year, jdbcType = INTEGER, mode = IN} , #{ID_EMPLOYEE_IVT, jdbcType = VARCHAR, mode = IN} , #{EMPLOYEE_CODE_IVT, jdbcType = VARCHAR , mode = IN}
             , #{WEIGHT_IVT, jdbcType = DOUBLE , mode = IN} , #{LrNo, jdbcType = VARCHAR, mode = IN} , #{Boxes, jdbcType = DOUBLE , mode = IN}
             , #{Transporter, jdbcType = VARCHAR, mode = IN} , #{SampleItems, jdbcType = DOUBLE , mode = IN} , #{NonSampleItems, jdbcType = DOUBLE , mode = IN}
-            , #{ID_GROUP_INVOICE_INH, jdbcType = VARCHAR, mode = IN} , #{PLANID jdbcType = VARCHAR, mode = IN} ) }
+            , #{ID_GROUP_INVOICE_INH, jdbcType = VARCHAR, mode = IN} , #{PLANID, jdbcType = VARCHAR, mode = IN} ) }
 
     </update>
 
-    <update id="insertUploadLogCompletedWithErrors">
-        INSERT INTO UPLOAD_LOG_UPL (ID_UPL,IDTYPESLV_UPL,START_TIME_UPL,END_TIME_UPL,TOTAL_RECORDS_UPL,RECORDS_UPLOAD_UPL,ID_STATUS_SLV_UPL,CREATED_ON_UPL,CREATED_BY_UPL,UPDATED_ON_UPL,UPDATED_BY_UPL,PARENT_ID_UPL)
-        VALUES(#{id},#{type},GETDATE(),GETDATE(),#{totalRecord},#{recordUpload},#{statusId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{parentId})
+    <update id="updatedUploadLogCompletedWithErrors">
+
+        update UPLOAD_LOG_UPL set IDTYPESLV_UPL = #{type}, START_TIME_UPL = GETDATE() , END_TIME_UPL = GETDATE() , TOTAL_RECORDS_UPL = #{totalRecord} , RECORDS_UPLOAD_UPL = #{recordUpload}, ID_STATUS_SLV_UPL = #{statusId},
+                                  CREATED_ON_UPL = GETDATE(), CREATED_BY_UPL = #{createdBy}, UPDATED_ON_UPL = GETDATE() , UPDATED_BY_UPL = #{updatedBy} , PARENT_ID_UPL = #{parentId}
+        where ID_UPL = #{id}
     </update>
 
-    <update id="insertUploadLogCompletedSuccessFully">
-        INSERT INTO UPLOAD_LOG_UPL (ID_UPL,IDTYPESLV_UPL,START_TIME_UPL,END_TIME_UPL,TOTAL_RECORDS_UPL,RECORDS_UPLOAD_UPL,ID_STATUS_SLV_UPL,CREATED_ON_UPL,CREATED_BY_UPL,UPDATED_ON_UPL,UPDATED_BY_UPL,PARENT_ID_UPL)
-        VALUES(#{id},#{type},GETDATE(),GETDATE(),#{totalRecord},#{recordUpload},#{statusId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{parentId})
+    <update id="updatedUploadLogCompletedSuccessFully">
+        update UPLOAD_LOG_UPL set IDTYPESLV_UPL = #{type}, START_TIME_UPL = GETDATE() , END_TIME_UPL = GETDATE() , TOTAL_RECORDS_UPL = #{totalRecord} , RECORDS_UPLOAD_UPL = #{recordUpload}, ID_STATUS_SLV_UPL = #{statusId},
+                                  CREATED_ON_UPL = GETDATE(), CREATED_BY_UPL = #{createdBy}, UPDATED_ON_UPL = GETDATE() , UPDATED_BY_UPL = #{updatedBy} , PARENT_ID_UPL = #{parentId}
+        where ID_UPL = #{id}
     </update>
 
 
