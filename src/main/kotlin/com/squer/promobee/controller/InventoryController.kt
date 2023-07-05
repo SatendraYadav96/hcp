@@ -121,7 +121,7 @@ open class InventoryController@Autowired constructor(
 
 
     @GetMapping("/getEmployeeInvoicePopupDetails/{month}/{year}/{isSpecial}/{employeeId}/{invoiceHeaderId}")
-    fun getEmployeeInvoicePopupDetails( @PathVariable month: Int , @PathVariable year: Int , @PathVariable isSpecial: Int , @PathVariable employeeId: String , @PathVariable invoiceHeaderId: String ): ResponseEntity<*> {
+    fun getEmployeeInvoicePopupDetails( @PathVariable month: Int , @PathVariable year: Int , @PathVariable isSpecial: Int  , @PathVariable invoiceHeaderId: String , @PathVariable employeeId: String ): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = inventoryService.getEmployeeInvoicePopupDetails(month, year,isSpecial,employeeId,invoiceHeaderId)
         return ResponseEntity(data, HttpStatus.OK)

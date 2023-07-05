@@ -86,7 +86,7 @@ class InventoryServiceImpl @Autowired constructor(
         return inventoryRepository.getVirtualDispatchListForInvoicing(planId,status)
     }
 
-    override fun getEmployeeInvoicePopupDetails(month: Int, year: Int, isSpecial: Int, employeeId: String, invoiceHeaderId: String): List<EmployeeInvoiceDetailsPopupDTO> {
+    override fun getEmployeeInvoicePopupDetails(month: Int, year: Int, isSpecial: Int, invoiceHeaderId: String, employeeId: String,): List<EmployeeInvoiceDetailsPopupDTO> {
         return inventoryRepository.getEmployeeInvoicePopupDetails(month, year,isSpecial,employeeId,invoiceHeaderId)
     }
 

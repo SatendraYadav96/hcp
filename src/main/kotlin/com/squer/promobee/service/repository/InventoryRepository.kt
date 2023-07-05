@@ -588,7 +588,7 @@ class InventoryRepository @Autowired constructor(
 
 
 
-    fun getEmployeeInvoicePopupDetails(month: Int, year: Int, isSpecial: Int, employeeId: String, invoiceHeaderId: String): List<EmployeeInvoiceDetailsPopupDTO> {
+    fun getEmployeeInvoicePopupDetails(month: Int, year: Int, isSpecial: Int, invoiceHeaderId: String, employeeId: String): List<EmployeeInvoiceDetailsPopupDTO> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var data : MutableMap<String, String> = mutableMapOf()
@@ -596,9 +596,8 @@ class InventoryRepository @Autowired constructor(
         data.put("Year", year.toString())
         data.put("IsSpecial", isSpecial.toString())
         data.put("RecipientID", employeeId)
-        data.put("InvoiceHeaderID", invoiceHeaderId)
 
-        if(invoiceHeaderId.isNullOrEmpty()) {
+        if(invoiceHeaderId == "0") {
 
 
             var data1 : MutableMap<String, String> = mutableMapOf()

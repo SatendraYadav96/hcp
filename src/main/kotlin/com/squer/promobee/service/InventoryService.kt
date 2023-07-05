@@ -40,7 +40,7 @@ interface InventoryService {
 
     fun getVirtualDispatchListForInvoicing(  planId: String ,  status: String): List<DataModelInvoiceDetailsDTO>
 
-    fun getEmployeeInvoicePopupDetails(   month: Int ,  year: Int ,  isSpecial: Int ,  employeeId: String ,  invoiceHeaderId: String): List<EmployeeInvoiceDetailsPopupDTO>
+    fun getEmployeeInvoicePopupDetails(   month: Int ,  year: Int ,  isSpecial: Int ,  invoiceHeaderId: String ,  employeeId: String ): List<EmployeeInvoiceDetailsPopupDTO>
 
 
     fun exportAllocation( year: Int,  month: Int,  teamId: String,  status: String, isSpecial: Int,  planId: String,  isVirtual: Int ): List<DataModelInvoiceDetailsDTO>
