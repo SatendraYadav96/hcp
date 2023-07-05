@@ -621,14 +621,14 @@ class InvoiceRepository(
 
 
 
-        fun getRecipientToGenerateInvoice(recipientId: String): MutableList<Recipient> {
+        fun getRecipientToGenerateInvoice(recipientId: String): Recipient {
             val user =
                 (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
             var data: MutableMap<String, Any> = mutableMapOf()
 
             data.put("recipientId", recipientId)
 
-            return sqlSessionFactory.openSession().selectList<Recipient>("RecipientMapper.getRecipient", data).toMutableList()
+             return sqlSessionFactory.openSession().selectOne("RecipientMapper.getRecipient", data)
 
 
         }
@@ -754,42 +754,35 @@ class InvoiceRepository(
 
             genInv.forEach {
 
+                it.recipientId?.let { it1 -> data.put("recipientId", it1) }
+                it.boxes?.let { data.put("boxes", it) }
+                it.weight?.let { data.put("weight", it) }
+                it.transporter?.let { data.put("transporter", it) }
+                it.lrNo?.let { data.put("lrNo", it) }
+                it.dimension?.let { data.put("dimension", it) }
+                it.month?.let { data.put("month", it) }
+                it.year?.let { data.put("year", it) }
+                it.isSpecial?.let { data.put("isSpecial", it) }
 
-                genInv.get(i).recipientId?.let { data.put("recipientId", it) }
-                genInv.get(i).boxes?.let { data.put("boxes", it) }
-                genInv.get(i).weight?.let { data.put("weight", it) }
-                genInv.get(i).transporter?.let { data.put("transporter", it) }
-                genInv.get(i).lrNo?.let { data.put("lrNo", it) }
-                genInv.get(i).dimension?.let { data.put("dimension", it) }
-                genInv.get(i).month?.let { data.put("month", it) }
-                genInv.get(i).year?.let { data.put("year", it) }
-                genInv.get(i).isSpecial?.let { data.put("isSpecial", it) }
 
+                var recipient = it.recipientId?.let { it1 -> getRecipientToGenerateInvoice(it1) }
 
-                var recipient = genInv.get(i).recipientId?.let { getRecipientToGenerateInvoice(it) }
-
-                var itcCount = genInv.get(i).month?.let {
-                    genInv.get(i).year?.let { it1 ->
-                        genInv.get(i).recipientId?.let { it2 ->
-                            getRecipientItemCategoryCount(
-                                it,
-                                it1, it2
-                            )
-                        }
+                var itcCount = it.month?.let { it1 -> it.year?.let { it2 ->
+                    it.recipientId?.let { it3 ->
+                        getRecipientItemCategoryCount(it1,
+                            it2, it3
+                        )
                     }
-                }
+                } }
 
 
-                var dispatchDetails = genInv.get(i).month?.let {
-                    genInv.get(i).year?.let { it1 ->
-                        genInv.get(i).recipientId?.let { it2 ->
-                            getDispatchDetailsForInvoicing(
-                                it,
-                                it1, it2
-                            )
-                        }
+                var dispatchDetails = it.month?.let { it1 -> it.year?.let { it2 ->
+                    it.recipientId?.let { it3 ->
+                        getDispatchDetailsForInvoicing(it1,
+                            it2, it3
+                        )
                     }
-                }
+                } }
 
 
                 // INVOICE HEADER INSERT
@@ -806,17 +799,17 @@ class InvoiceRepository(
                 inh.invoiceNo?.let { data1.put("invoiceNo", it) }
                 data1.put("type", InvoiceTypeEnum.DISPATCHED.id)
                 data1.put("statusId", InvoiceStatusEnum.GENERATED_PRINTED.id)
-                recipient?.get(i)?.team?.let { it1 -> data1.put("teamId", it1.id) }
-                recipient?.let { data1.put("recipientId", it.get(i).id) }
-                recipient?.get(i)?.address?.let { data1.put("addressLine1", it) }
-                recipient?.get(i)?.address?.let { data1.put("addressLine2", it) }
-                recipient?.get(i)?.state?.let { data1.put("states", it) }
-                recipient?.get(i)?.city?.let { data1.put("city", it) }
-                recipient?.get(i)?.zip?.let { data1.put("zip", it) }
-                recipient?.get(i)?.mobile?.let { data1.put("phone", it) }
-                genInv.get(i).weight?.let { data1.put("weight", it) }
-                genInv.get(i).boxes?.let { data1.put("noOfBoxes", it) }
-                genInv.get(i).transporter?.let { data1.put("transporterId", it) }
+                recipient?.team?.let { it1 -> data1.put("teamId", it1.id) }
+                recipient?.let { it1 -> data1.put("recipientId", it1.id) }
+                recipient?.address?.let { it1 -> data1.put("addressLine1", it1) }
+                recipient?.address?.let { it1 -> data1.put("addressLine2", it1) }
+                recipient?.state?.let { it1 -> data1.put("states", it1) }
+                recipient?.city?.let { it1 -> data1.put("city", it1) }
+                recipient?.zip?.let { it1 -> data1.put("zip", it1) }
+                recipient?.mobile?.let { it1 -> data1.put("phone", it1) }
+                it.weight?.let { data1.put("weight", it) }
+                it.boxes?.let { data1.put("noOfBoxes", it) }
+                it.transporter?.let { data1.put("transporterId", it) }
                 //sample value
                 if (itcCount?.get(i)?.sampleItems !== null) {
                     itcCount?.get(i)?.sampleItems?.let { data1.put("sampleValue", it) }
@@ -834,8 +827,8 @@ class InvoiceRepository(
                 genInv.get(i).lrNo?.let { data1.put("lrNumber", it) }
                 data1.put("createdBy", user.id)
                 data1.put("updatedBy", user.id)
-                recipient?.get(i)?.designation?.let { data1.put("designationId", it.id) }
-                recipient?.get(i)?.cfa?.let { data1.put("cfa", it) }
+                recipient?.designation?.let { it1 -> data1.put("designationId", it1.id) }
+                recipient?.cfa?.let { it1 -> data1.put("cfa", it1) }
 
                 sqlSessionFactory.openSession().insert("InvoiceHeaderMapper.insertGenerateInvoiceHeader", data1)
 

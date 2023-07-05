@@ -68,7 +68,7 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.printLabel(inh)
     }
 
-    override fun getRecipientToGenerateInvoice( recipientId: String):MutableList<Recipient> {
+    override fun getRecipientToGenerateInvoice( recipientId: String):Recipient {
         return invoiceRepository.getRecipientToGenerateInvoice(recipientId)
     }
 

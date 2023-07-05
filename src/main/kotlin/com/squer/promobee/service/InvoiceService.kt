@@ -30,7 +30,7 @@ interface InvoiceService {
 
     fun printLabel(inh: List<PrintInvoiceDTO>): MutableList<ByteArray>?
 
-    fun getRecipientToGenerateInvoice( recipientId: String):MutableList<Recipient>
+    fun getRecipientToGenerateInvoice( recipientId: String):Recipient
 
     fun getInventoryByIdForInvoicing( invId: String):MutableList<Inventory>
 
