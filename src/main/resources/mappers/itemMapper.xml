@@ -9,12 +9,13 @@
         select MAX(code_itm) as count from ITEM_MASTER_ITM where CODE_ITM like #{code}
     </select>
 
+
     <select id="getItemDataById" resultMap="itemResultMap">
-        select ID_ITM ,NAME_ITM ,CI_NAME_ITM ,CODE_ITM ,ID_ITC_ITM ,DESCRIPTION_ITM ,MEDICAL_CODE_ITM ,ID_CCM_ITM ,IS_ACTIVE_ITM ,CREATED_ON_ITM ,CREATED_BY_ITM ,UPDATED_ON_ITM ,UPDATED_BY_ITM ,HSN_CODE_ITM from ITEM_MASTER_ITM where ID_ITM=#{id}
+        select * from ITEM_MASTER_ITM where ID_ITM=#{id}
     </select>
 
-    <select id="getItemDataByCode" resultMap="itemResultMap">
-        select ID_ITM ,NAME_ITM ,CI_NAME_ITM ,CODE_ITM ,ID_ITC_ITM ,DESCRIPTION_ITM ,MEDICAL_CODE_ITM ,ID_CCM_ITM ,IS_ACTIVE_ITM ,CREATED_ON_ITM ,CREATED_BY_ITM ,UPDATED_ON_ITM ,UPDATED_BY_ITM ,HSN_CODE_ITM from ITEM_MASTER_ITM where IS_ACTIVE_ITM = 1 and CODE_ITM=#{code}
+    <select id="getItemDataByCode" resultMap="itemResultMap"  >
+        select * from ITEM_MASTER_ITM where IS_ACTIVE_ITM = 1 and CODE_ITM=#{code}
     </select>
 
     <resultMap id="itemResultMap" type="com.squer.promobee.service.repository.domain.Item">

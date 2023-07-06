@@ -23,7 +23,7 @@ class ItemServiceImpl @Autowired constructor(
         return itemRepository.getItemDataById(id)
     }
 
-    override fun getItemDataByCode(code: String): Item {
+    override fun getItemDataByCode(code: String): List<Item> {
         return itemRepository.getItemDataByCode(code)
     }
 

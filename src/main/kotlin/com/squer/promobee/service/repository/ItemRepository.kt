@@ -24,14 +24,28 @@ class ItemRepository (
         }
 
         fun getItemDataById(id: String): Item{
-            return sqlSessionFactory.openSession().selectOne("ItemMapper.getItemDataById", id)
+            var data : MutableMap<String, Any> = mutableMapOf()
+            data.put("id", id)
+            return sqlSessionFactory.openSession().selectOne("ItemMapper.getItemDataById", data)
         }
 
-        fun getItemDataByCode(code: String): Item{
-            return sqlSessionFactory.openSession().selectOne("ItemMapper.getItemDataByCode", code)
+        fun getItemDataByCode(code: String):  List<Item> {
+            var data : MutableMap<String, Any> = mutableMapOf()
+            data.put("code", code)
+
+
+
+          return sqlSessionFactory.openSession().selectList<Item>("ItemMapper.getItemDataByCode",data)
+
+
+
         }
 
         fun insertItem(item: Item){
             sqlSessionFactory.openSession().insert("ItemMapper.insertItem", item)
         }
+}
+
+private fun <SqlSession> SqlSession.select(s: String, data: MutableMap<String, Any>) {
+
 }

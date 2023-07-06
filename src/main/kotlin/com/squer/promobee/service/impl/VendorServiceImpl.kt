@@ -13,7 +13,7 @@ class VendorServiceImpl @Autowired constructor(
         private val vendorRepository: VendorRepository
 ) : VendorService{
 
-    override fun getVendorByCode(code: String): Vendor{
+    override fun getVendorByCode(code: String): List<Vendor>{
         return vendorRepository.getVendorByCode(code)
     }
 

@@ -1,6 +1,5 @@
 package com.squer.promobee.service.repository
 
-import com.squer.promobee.mapper.VendorMapper
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.Vendor
@@ -18,8 +17,10 @@ class VendorRepository @Autowired constructor(
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
 
-    fun getVendorByCode(code: String): Vendor{
-        return sqlSessionFactory.openSession().selectOne("VendorMapper.getVendorByCode", code)
+    fun getVendorByCode(code: String): List<Vendor>{
+        var data : MutableMap<String, Any> = mutableMapOf()
+        data.put("code", code)
+        return sqlSessionFactory.openSession().selectList<Vendor>("VendorMapper.getVendorByCode", data)
     }
 
     fun insertVendor(vendor: Vendor){

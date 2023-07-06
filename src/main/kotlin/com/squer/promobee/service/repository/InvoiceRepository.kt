@@ -158,7 +158,7 @@ class InvoiceRepository(
           ve.init()
           /*  next, get the Template  */
           /*  next, get the Template  */
-          val t: Template = ve.getTemplate("src/main/resources/htmlPrint/promoPrintInvoice.vm")
+          val t: Template = ve.getTemplate("/src/main/resources/htmlPrint/promoPrintInvoice.vm")
           /*  create a context and add data */
           /*  create a context and add data */
 

@@ -27,7 +27,7 @@ class GRNServiceImpl @Autowired constructor(
         private val costCenterService: CostCenterService,
         private val vendorService: VendorService,
         private val inventoryService: InventoryService
-): GrnService{
+): GrnService {
 
 
 
@@ -138,9 +138,10 @@ class GRNServiceImpl @Autowired constructor(
                 grnRepository.approveAcknowledge(data.category!!, data.expiryDate!!, userId, data.grnId!!)
                 val grn = grnRepository.getAcknowledgeDataById(data.grnId!!)
                 var itemid: String? = null
+                var i = 0
                 if (grn.limid == null) {
                     var item = itemService.getItemDataByCode(data.itemCode!!)
-                    if (item == null) {
+                    if (item.isEmpty()) {
                         var addItemParam = Item()
                         addItemParam.id = UUID.randomUUID().toString()
                         addItemParam.name = grn.itemName
@@ -157,7 +158,7 @@ class GRNServiceImpl @Autowired constructor(
                         itemService.insertItem(addItemParam)
                         item = itemService.getItemDataByCode(data.itemCode!!)
                     }
-                    itemid = item.id
+                    itemid = item.get(i).id
                 } else {
                     val sample = sampleMasterService.getSampleByLmid(grn.limid!!)
                     itemid = sample.id
@@ -165,7 +166,8 @@ class GRNServiceImpl @Autowired constructor(
 
                 var vendorid: String? = null
                 var vendor = vendorService.getVendorByCode(grn.vendorCode!!)
-                if (vendor == null) {
+                 i = 0
+                if (vendor.isEmpty()) {
                     var addVendorParam = Vendor()
                     addVendorParam.id = UUID.randomUUID().toString()
                     addVendorParam.name = grn.vendorName
@@ -177,11 +179,11 @@ class GRNServiceImpl @Autowired constructor(
                     vendorService.insertVendor(addVendorParam)
                     vendor = vendorService.getVendorByCode(grn.vendorCode!!)
                 }
-                vendorid = vendor.id
+                vendorid = vendor.get(i).id
 
                 var addInventoryParam = Inventory()
                 addInventoryParam.id = UUID.randomUUID().toString()
-                addInventoryParam.item = NamedSquerEntity(itemid, "")
+                //addInventoryParam.item = NamedSquerEntity(itemid, "")
                 addInventoryParam.grnId = SquerEntity(grn.id)
                 addInventoryParam.packSize = data.basePack
                 addInventoryParam.poNo = grn.poNo
@@ -209,9 +211,11 @@ class GRNServiceImpl @Autowired constructor(
                 grnRepository.approveAcknowledge(data.category!!, data.expiryDate!!, userId, data.grnId!!, data.medicalCode, data.hsnCode, data.ratePer)
                 val grn = grnRepository.getAcknowledgeDataById(data.grnId!!)
                 var itemid: String? = null
+                var i = 0
                 if (grn.limid == null) {
+
                     var item = itemService.getItemDataByCode(data.itemCode!!)
-                    if (item == null) {
+                    if (item.isEmpty()) {
                         var addItemParam = Item()
                         addItemParam.id = UUID.randomUUID().toString()
                         addItemParam.name = grn.itemName
@@ -228,7 +232,7 @@ class GRNServiceImpl @Autowired constructor(
                         itemService.insertItem(addItemParam)
                         item = itemService.getItemDataByCode(data.itemCode!!)
                     }
-                    itemid = item.id
+                    itemid = item.get(i).id
                 } else {
                     val sample = sampleMasterService.getSampleByLmid(grn.limid!!)
                     itemid = sample.id
@@ -236,7 +240,8 @@ class GRNServiceImpl @Autowired constructor(
 
                 var vendorid: String? = null
                 var vendor = vendorService.getVendorByCode(grn.vendorCode!!)
-                if (vendor == null) {
+                i = 0
+                if (vendor.isEmpty()) {
                     var addVendorParam = Vendor()
                     addVendorParam.id = UUID.randomUUID().toString()
                     addVendorParam.name = grn.vendorName
@@ -248,7 +253,7 @@ class GRNServiceImpl @Autowired constructor(
                     vendorService.insertVendor(addVendorParam)
                     vendor = vendorService.getVendorByCode(grn.vendorCode!!)
                 }
-                vendorid = vendor.id
+                vendorid = vendor.get(i).id
 
                 var addInventoryParam = Inventory()
                 addInventoryParam.id = UUID.randomUUID().toString()

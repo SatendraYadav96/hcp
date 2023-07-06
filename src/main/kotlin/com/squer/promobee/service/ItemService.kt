@@ -8,7 +8,7 @@ interface ItemService {
 
     fun getItemDataById(id: String): Item
 
-    fun getItemDataByCode(code: String): Item
+    fun getItemDataByCode(code: String): List<Item>
 
     fun insertItem(item: Item)
 

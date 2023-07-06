@@ -4,7 +4,7 @@ import com.squer.promobee.service.repository.domain.Vendor
 
 interface VendorService {
 
-    fun getVendorByCode(code: String): Vendor
+    fun getVendorByCode(code: String):List<Vendor>
 
     fun insertVendor(vendor: Vendor)
 }

@@ -6,7 +6,6 @@ import com.squer.promobee.service.repository.domain.GRNAcknowledgement
 import org.apache.ibatis.session.SqlSessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
-import java.util.*
 
 
 @Repository
@@ -15,6 +14,7 @@ class GRNRepository(
 ): BaseRepository<GRNAcknowledgement> (
      securityUtility = securityUtility,
 ){
+
 
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
@@ -25,7 +25,9 @@ class GRNRepository(
     }
 
     fun getAcknowledgeDataById(id: String): GRNAcknowledgement{
-        return sqlSessionFactory.openSession().selectOne("GRNAcknowledgementMapper.getGrnById")
+        var data : MutableMap<String, Any> = mutableMapOf()
+        data.put("id", id)
+        return sqlSessionFactory.openSession().selectOne("GRNAcknowledgementMapper.getGrnById",data)
     }
 
     fun rejectAcknowledge(grnId: String, reason: String, userId: String){
@@ -33,10 +35,10 @@ class GRNRepository(
         data.put("grnId", grnId)
         data.put("reason", reason)
         data.put("userId", userId)
-        sqlSessionFactory.openSession().update("GRNAcknowledgementMapper.rejectGrnAcknowledge")
+        sqlSessionFactory.openSession().update("GRNAcknowledgementMapper.rejectGrnAcknowledge",data)
     }
 
-    fun approveAcknowledge(itcId: String, expiryDate: Date, userId: String, grnId: String, medicalCode: String? = null, hsnCode: String?= null, ratePer: Int?= null){
+    fun approveAcknowledge(itcId: String, expiryDate: String, userId: String, grnId: String, medicalCode: String? = null, hsnCode: String?= null, ratePer: Int?= null){
         var data: MutableMap<String, Any> = mutableMapOf()
         data.put("itcId", itcId)
         data.put("expiryDate", expiryDate)
@@ -45,6 +47,6 @@ class GRNRepository(
         data.put("medicalCode", medicalCode!!)
         data.put("hsnCode", hsnCode!!)
         data.put("ratePer", ratePer!!)
-        sqlSessionFactory.openSession().update("GRNAcknowledgementMapper.approveAcknowledge")
+        sqlSessionFactory.openSession().update("GRNAcknowledgementMapper.approveAcknowledge",data)
     }
 }
