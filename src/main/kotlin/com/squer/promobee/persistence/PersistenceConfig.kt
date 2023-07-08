@@ -1,24 +1,13 @@
 package com.squer.promobee.persistence
 
-import com.mchange.v2.c3p0.ComboPooledDataSource
-import com.squer.promobee.security.domain.NamedSquerId
-import org.apache.ibatis.session.ExecutorType
+import com.microsoft.sqlserver.jdbc.SQLServerConnectionPoolDataSource
 import org.apache.ibatis.session.SqlSessionFactory
-import org.apache.ibatis.type.JdbcType
-import org.apache.ibatis.type.MappedTypes
-import org.apache.ibatis.type.TypeHandler
 import org.mybatis.spring.SqlSessionFactoryBean
 import org.mybatis.spring.SqlSessionTemplate
-import org.mybatis.spring.annotation.MapperScan
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
-import java.sql.CallableStatement
-import java.sql.PreparedStatement
-import java.sql.ResultSet
-import java.sql.SQLException
 import javax.sql.DataSource
 
 
@@ -37,16 +26,13 @@ class PersistenceConfig {
 
     @Bean
     fun dataSource(): DataSource? {
-        val pool = ComboPooledDataSource()
-        pool.jdbcUrl = dbUrl
+        val pool = SQLServerConnectionPoolDataSource()
+        pool.url = dbUrl
         pool.user = dbUsername
-        pool.password = dbPassword
-        pool.initialPoolSize = 10
-        pool.minPoolSize = 10
-        pool.acquireIncrement = 1
-        pool.maxPoolSize = 20
-        pool.isTestConnectionOnCheckout = true
-        pool.isTestConnectionOnCheckin  = true
+        //pool.authentication = dbPassword
+        pool.setPassword(dbPassword)
+
+
         return pool
     }
 
