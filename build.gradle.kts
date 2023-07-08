@@ -34,7 +34,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-cache
 	implementation("org.springframework.boot:spring-boot-starter-cache:2.7.0")
 	compileOnly("org.projectlombok:lombok")
-	runtimeOnly("com.microsoft.sqlserver", "mssql-jdbc", "9.2.1.jre11")
+	implementation("com.microsoft.sqlserver", "mssql-jdbc", "12.2.0.jre11")
 	implementation("org.liquibase:liquibase-core")
 	runtimeOnly("com.h2database:h2")
 	annotationProcessor("org.projectlombok:lombok")
