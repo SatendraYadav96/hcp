@@ -92,7 +92,8 @@
 
     <select id="getDispatchDetails" resultType="com.squer.promobee.controller.dto.DispatchDetailDTO">
         SELECT ID_DID AS 'id',ID_DIP_DID AS 'planId',ID_INV_DID AS 'inventoryId',ID_RCT_DID AS 'recipientId',QUANTITY_DISPATCH_DID AS 'qtyDispatch',ID_QTP_DID AS 'quarterlyPlanId',ID_STATUS_SLV_DID AS 'detailStatus',
-                REMARKS_DID AS 'remarks',CREATED_ON_DID AS 'createdAt', CREATED_BY_DID AS 'createdBy', UPDATED_ON_DID AS 'updatedAt', UPDATED_BY_DID AS 'updatedBy', ID_ITC_DID AS 'categoryId'  FROM DISPATCH_DETAIL_DID DID
+                REMARKS_DID AS 'remarks',CREATED_ON_DID AS 'createdAt', CREATED_BY_DID AS 'createdBy', UPDATED_ON_DID AS 'updatedAt', UPDATED_BY_DID AS 'updatedBy', ID_ITC_DID AS 'categoryId'
+        FROM DISPATCH_DETAIL_DID DID
         JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP =  DID.ID_DIP_DID
         WHERE DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND DIP.IS_SPECIAL_DIP =  '0' AND DIP.ID_STATUS_SLV_DIP =  '00000000-0000-0000-0000-000000000024' AND
             DID.ID_RCT_DID =  #{recipientId} AND DID.ID_STATUS_SLV_DID = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7'

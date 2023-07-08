@@ -697,8 +697,8 @@ class UploadRepository(
 
 
 
-        var headers = mutableListOf<String>("Month", "Year", "Plan Name", "State", "Employee", "Designation", "Code", "Boxes", "Weight","Dimension",
-            "Transporter", "LR No.", "PlanId", "Plan","FFCode")
+        var headers = mutableListOf<String>("month", "year", "planName", "state", "employeeName", "employeeDesignation", "employeeCode", "boxes", "weight","dimension",
+            "transporterName", "lrNo", "planId", "planType","ffCode")
 
         var csvReader = CsvReader()
         csvReader.autoRenameDuplicateHeaders
@@ -1155,6 +1155,18 @@ class UploadRepository(
     private fun <T> List(): List<T> {
 
         return List<T>()
+    }
+
+
+    fun invoiceExcelData(uplId: String): List<InvoiceUploadDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",uplId)
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.invoiceExcelData", data)
     }
 
 

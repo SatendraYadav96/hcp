@@ -204,7 +204,7 @@
         join INVOICE_HEADER_INH inh on rct.ID_RCT = inh.ID_RCT_INH
         join INVOICE_DISPATCH_PLAN_IDP idp on inh.ID_INH = idp.ID_INH_IDP
         join DISPATCH_PLAN_DIP dip on idp.ID_PLAN_IDP = dip.ID_DIP
-        where dip.IS_SPECIAL_DIP = 0 and dip.MONTH_DIP = #{month} and  dip.YEAR_DIP = #{year} and  rct.ID_RCT = #{employeeId}
+        where dip.IS_SPECIAL_DIP = #{isSpecial} and dip.MONTH_DIP = #{month} and  dip.YEAR_DIP = #{year} and  rct.ID_RCT = #{employeeId}
     </select>
 
 
@@ -313,6 +313,15 @@
                                   CREATED_ON_UPL = GETDATE(), CREATED_BY_UPL = #{createdBy}, UPDATED_ON_UPL = GETDATE() , UPDATED_BY_UPL = #{updatedBy} , PARENT_ID_UPL = #{parentId}
         where ID_UPL = #{id}
     </update>
+
+    <select id="invoiceExcelData" resultType="com.squer.promobee.controller.dto.InvoiceUploadDTO">
+        select ID_IVT as 'invoiceId', ID_UPLOAD_UPL_IVT as 'invoiceUploadId',MONTH_IVT as 'month',YEAR_IVT as 'year',NAME_PLAN_IVT as 'planName', STATE_IVT as 'state',EMPLOYEE_NAME_IVT as 'employeeName',EMPLOYEE_DESG_IVT as 'employeeDesignation',
+                EMPLOYEE_CODE_IVT as 'employeeCode',BOXES_IVT as 'boxes',WEIGHT_IVT as 'weight',DIMENSION_IVT as 'dimension',TRANPORTER_NAME_IVT as 'transporterName',LR_NO_IVT as 'lrNo',ID_PLAN_IVT as 'planId',STREET2_IVT as 'planType',FFCODE_IVT as 'ffCode',ERROR_TEXT_IVT as 'errorText'
+        from TEMP_INVOICE_UPLOAD_IVT
+        where ID_UPLOAD_UPL_IVT = #{id}
+
+
+    </select>
 
 
 

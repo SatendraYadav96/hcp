@@ -44,7 +44,7 @@ interface InvoiceService {
 
     fun getDispatchPlanById(id: String): DispatchPlan
 
-    fun generateInvoice(genInv : List<GenerateInvoiceDTO>)
+    fun generateInvoice(genInv :GenerateInvoiceDTO)
 
     fun getInvoice(invoiceNo: Int): InvoiceHeader
 

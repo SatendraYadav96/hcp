@@ -177,7 +177,7 @@ open class InvoiceController@Autowired constructor(
 
 
     @PostMapping("/generateInvoice")
-        open fun generateInvoice(@RequestBody genInv : List<GenerateInvoiceDTO> ): ResponseEntity<*> {
+        open fun generateInvoice(@RequestBody genInv : GenerateInvoiceDTO ): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val generateInvoiceData = invoiceService.generateInvoice(genInv)
 
@@ -209,6 +209,8 @@ open class InvoiceController@Autowired constructor(
 
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+
 
 
 

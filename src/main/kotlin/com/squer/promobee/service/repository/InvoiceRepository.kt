@@ -16,6 +16,7 @@ import org.apache.velocity.Template
 import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.VelocityEngine
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
@@ -41,6 +42,11 @@ class InvoiceRepository(
 
     @Autowired
     lateinit var inventoryRepository : InventoryRepository
+
+
+    @Value("/src/main/resources/htmlPrint/promoPrintInvoice.vm")
+    private lateinit var vmConfigPath: String
+
 
 
     fun getInvoiceHeaderById(id: String): InvoiceHeader {
@@ -158,7 +164,7 @@ class InvoiceRepository(
           ve.init()
           /*  next, get the Template  */
           /*  next, get the Template  */
-          val t: Template = ve.getTemplate("/src/main/resources/htmlPrint/promoPrintInvoice.vm")
+          val t: Template = ve.getTemplate(vmConfigPath)
           /*  create a context and add data */
           /*  create a context and add data */
 
@@ -745,277 +751,6 @@ class InvoiceRepository(
         }
 
 
-        fun generateInvoice(genInv: List<GenerateInvoiceDTO>) {
-            val user =
-                (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-            var data: MutableMap<String, Any> = mutableMapOf()
-
-            var i: Int = 0
-
-            genInv.forEach {
-
-                it.recipientId?.let { it1 -> data.put("recipientId", it1) }
-                it.boxes?.let { data.put("boxes", it) }
-                it.weight?.let { data.put("weight", it) }
-                it.transporter?.let { data.put("transporter", it) }
-                it.lrNo?.let { data.put("lrNo", it) }
-                it.dimension?.let { data.put("dimension", it) }
-                it.month?.let { data.put("month", it) }
-                it.year?.let { data.put("year", it) }
-                it.isSpecial?.let { data.put("isSpecial", it) }
-
-
-                var recipient = it.recipientId?.let { it1 -> getRecipientToGenerateInvoice(it1) }
-
-                var itcCount = it.month?.let { it1 -> it.year?.let { it2 ->
-                    it.recipientId?.let { it3 ->
-                        getRecipientItemCategoryCount(it1,
-                            it2, it3
-                        )
-                    }
-                } }
-
-
-                var dispatchDetails = it.month?.let { it1 -> it.year?.let { it2 ->
-                    it.recipientId?.let { it3 ->
-                        getDispatchDetailsForInvoicing(it1,
-                            it2, it3
-                        )
-                    }
-                } }
-
-
-                // INVOICE HEADER INSERT
-
-                i = 0
-
-                var inh = InvoiceHeader()
-
-                var inhId = UUID.randomUUID().toString()
-
-                var data1: MutableMap<String, Any> = mutableMapOf()
-
-                data1.put("id", inhId)
-                inh.invoiceNo?.let { data1.put("invoiceNo", it) }
-                data1.put("type", InvoiceTypeEnum.DISPATCHED.id)
-                data1.put("statusId", InvoiceStatusEnum.GENERATED_PRINTED.id)
-                recipient?.team?.let { it1 -> data1.put("teamId", it1.id) }
-                recipient?.let { it1 -> data1.put("recipientId", it1.id) }
-                recipient?.address?.let { it1 -> data1.put("addressLine1", it1) }
-                recipient?.address?.let { it1 -> data1.put("addressLine2", it1) }
-                recipient?.state?.let { it1 -> data1.put("states", it1) }
-                recipient?.city?.let { it1 -> data1.put("city", it1) }
-                recipient?.zip?.let { it1 -> data1.put("zip", it1) }
-                recipient?.mobile?.let { it1 -> data1.put("phone", it1) }
-                it.weight?.let { data1.put("weight", it) }
-                it.boxes?.let { data1.put("noOfBoxes", it) }
-                it.transporter?.let { data1.put("transporterId", it) }
-                //sample value
-                if (itcCount?.get(i)?.sampleItems !== null) {
-                    itcCount?.get(i)?.sampleItems?.let { data1.put("sampleValue", it) }
-                } else {
-                    data1.put("sampleValue", 0)
-                }
-
-                // item value
-                if (itcCount?.get(i)?.nonSampleItems !== null) {
-                    itcCount?.get(i)?.nonSampleItems?.let { data1.put("otherItemValue", it) }
-                } else {
-                    data1.put("otherItemValue", 0)
-                }
-
-                genInv.get(i).lrNo?.let { data1.put("lrNumber", it) }
-                data1.put("createdBy", user.id)
-                data1.put("updatedBy", user.id)
-                recipient?.designation?.let { it1 -> data1.put("designationId", it1.id) }
-                recipient?.cfa?.let { it1 -> data1.put("cfa", it1) }
-
-                sqlSessionFactory.openSession().insert("InvoiceHeaderMapper.insertGenerateInvoiceHeader", data1)
-
-
-                var inventory: List<Inventory> = ArrayList()
-
-
-
-                dispatchDetails?.forEach {
-
-                    i < dispatchDetails!!.count()
-//                    dispatchDetails = genInv.get(i).month?.let {
-//                        genInv.get(i).year?.let { it1 ->
-//                            genInv.get(i).recipientId?.let { it2 ->
-//                                getDispatchDetailsForInvoicing(
-//                                    it,
-//                                    it1, it2
-//                                )
-//                            }
-//                        }
-//                    }
-
-
-
-
-
-
-
-//                    listOf(dispatchDetails?.get(i)?.inventoryId?.let { it1 -> invoiceRepository.getInventoryByIdForInvoicing(it1) })!!.also {
-//                        inventory =
-//                            it as List<Inventory>
-//                    }
-
-
-
-                    inventory = dispatchDetails?.get(i)?.inventoryId?.let { it1 -> getInventoryByIdForInvoicing(it1) }!!
-
-
-                    var samples = ItemCategoryEnum.SAMPLES
-                    var itemId = ""
-
-                    if (inventory[i].categoryId!!.equals(samples)) {
-
-                        var smp = inventory[i].item?.let { it1 -> getSampleMasterById(it1.id) }
-                        itemId = smp.toString()
-
-
-                    } else {
-                        var itm = inventory[i].item?.let { it1 -> getItemMasterById(it1.id) }
-
-                        itemId = itm.toString()
-                    }
-
-                    // INVOICE DETAIL IND
-
-
-                    var data2: MutableMap<String, Any> = mutableMapOf()
-
-                    var ind = InvoiceDetail()
-
-                    var indId = UUID.randomUUID().toString()
-
-                    var value =
-                        inventory[i].ratePerUnit?.let { it1 -> dispatchDetails?.get(i)!!.qtyDispatch!!.times(it1) }
-
-                    data2.put("id", indId)
-                    data2.put("headerId", inhId)
-                    inventory[i].item?.let { it1 -> data2.put("item", it1.id) }
-                    dispatchDetails?.get(i)?.qtyDispatch?.let { it1 -> data2.put("quantity", it1) }
-                    dispatchDetails!![i]?.let { it1 -> it1.id?.let { it2 -> data2.put("didId", it2) } }
-                    value?.let { it1 -> data2.put("value", it1.toDouble()) }
-                    data2.put("createdBy", user.id)
-                    data2.put("updatedBy", user.id)
-                    data2.put("inventoryId", inventory[i].id)
-                    inventory[i].hsnCode?.let { it1 -> data2.put("hsnCode", it1) }
-                    inventory[i].rate?.let { it1 -> data2.put("rate", it1) }
-
-                    sqlSessionFactory.openSession().insert("InvoiceDetailMapper.insertGenerateInvoiceDetail", data2)
-
-
-                    // DISPATCH DETAIL UPDATE
-
-
-                    var data3: MutableMap<String, Any> = mutableMapOf()
-
-                    data3.put("detailStatus", DispatchDetailStatusEnum.INVOICED.id)
-                    dispatchDetails?.get(i)?.recipientId?.let { it1 -> data3.put("recipientId", it1) }
-                    data3.put("updatedBy", user.id)
-
-                    sqlSessionFactory.openSession()
-                        .update("DispatchDetailMapper.editDispatchDetailsForInvoicing", data3)
-
-
-                    var data4: MutableMap<String, Any> = mutableMapOf()
-
-                    var qtyDisp = dispatchDetails?.get(i)?.let { it1 ->
-                        it1.qtyDispatch?.let { it2 ->
-                            inventory[i].qtyDispatched?.plus(
-                                it2
-                            )
-                        }
-                    }
-
-
-                    var qtyAlloc = dispatchDetails?.get(i)?.let { it1 ->
-                        it1.qtyDispatch?.let { it2 ->
-                            inventory[i].qtyAllocated?.minus(
-                                it2
-                            )
-                        }
-                    }
-
-                    qtyDisp?.let { it1 -> data4.put("qtyDispatched", it1.toInt()) }
-                    qtyAlloc?.let { it1 -> data4.put("qtyAllocated", it1.toInt()) }
-                    data4.put("updatedBy", user.id)
-                    data4.put("id", inventory[i].id)
-
-
-                    sqlSessionFactory.openSession().update("InventoryMapper.generateInvoiceUpdate", data4)
-
-
-
-
-
-                }
-
-
-                var dispatchPlan = dispatchDetails?.get(i)?.planId?.let { getDispatchPlanById(it) }
-
-
-                var allocatedCount: Int = genInv.get(i).month?.let {
-                    genInv.get(i).year?.let { it1 ->
-                        genInv.get(i).recipientId?.let { it2 ->
-                            getDispatchDetailsForInvoicing(
-                                it,
-                                it1, it2
-                            )
-                        }
-                    }
-                }!!.count()
-
-
-
-                if (allocatedCount > 0) {
-                    var data5: MutableMap<String, Any> = mutableMapOf()
-                    data5.put("invoiceStatus", DispatchPlanInvoiceStatus.FULLY_INVOICED.id)
-                    data5.put("updatedBy", user.id)
-                    dispatchPlan?.let { data5.put("id", it.id) }
-
-                    sqlSessionFactory.openSession()
-                        .update("DispatchPlanMapper.generateInvoiceDispatchPlanFullyInvoiced", data5)
-                } else {
-                    var data6: MutableMap<String, Any> = mutableMapOf()
-                    data6.put("invoiceStatus", DispatchPlanInvoiceStatus.PARTIAL_INVOICED.id)
-                    data6.put("updatedBy", user.id)
-                    dispatchPlan?.let { data6.put("id", it.id) }
-
-                    sqlSessionFactory.openSession()
-                        .update("DispatchPlanMapper.generateInvoiceDispatchPlanPartialInvoiced", data6)
-
-                }
-
-                var idp = InvoiceDetailPlan()
-
-                var idpId = UUID.randomUUID().toString()
-
-                var data7: MutableMap<String, Any> = mutableMapOf()
-
-                data7.put("id", idpId)
-                data7.put("headerId", inhId)
-                dispatchPlan?.let { data7.put("planId", it.id) }
-
-                sqlSessionFactory.openSession().insert("InvoiceDetailPlanMapper.insertGenerateInvoiceIDP", data7)
-
-                i++
-
-                //return System.out.println("Invoice Generated successfully !")
-
-
-
-
-            }
-
-            return System.out.println("Invoice Generated successfully !")
-
-        }
-
 
 
     fun getInvoice(invoiceNo : Int): InvoiceHeader {
@@ -1051,12 +786,291 @@ class InvoiceRepository(
 
 
 
+    fun generateInvoice(genInv: GenerateInvoiceDTO){
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        genInv.recipientId?.let { data.put("recipientId", it) }
+        genInv.boxes?.let { data.put("boxes", it) }
+        genInv.weight?.let { data.put("weight", it) }
+        genInv.transporter?.let { data.put("transporter", it) }
+        genInv.lrNo?.let { data.put("lrNo", it) }
+        genInv.dimension?.let { data.put("dimension", it) }
+        genInv.month?.let { data.put("month", it) }
+        genInv.year?.let { data.put("year", it) }
+        genInv.isSpecial?.let { data.put("isSpecial", it) }
+
+        var invoiceCount = 0
+
+        var isInvoiceAlreadyGenerated = false
+
+        var plans = 0
+
+        if(genInv !== null){
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+            genInv.recipientId?.let { data.put("employeeId", it) }
+            genInv.month?.let { data.put("month", it) }
+            genInv.year?.let { data.put("year", it) }
+            genInv.isSpecial?.let { data.put("isSpecial", it) }
+
+            invoiceCount = sqlSessionFactory.openSession()
+                .selectOne("UploadLogMapper.isInvoiceGeneratedForTheRecipient", data)
+
+            if (invoiceCount > 0) {
+                isInvoiceAlreadyGenerated = true
+                println("Invoice already generated !")
+
+            } else {
+
+
+
+
+                var recipient = genInv.recipientId?.let { getRecipientToGenerateInvoice(it) }
+
+                var itcCount = genInv.month?.let { genInv.year?.let { it1 -> genInv.recipientId?.let { it2 ->
+                    getRecipientItemCategoryCount(it, it1,
+                        it2
+                    )
+                } } }
+
+                var dispatchDetails = genInv.month?.let { genInv.year?.let { it1 -> genInv.recipientId?.let { it2 ->
+                    getDispatchDetailsForInvoicing(it, it1,
+                        it2
+                    )
+                } } }
+
+
+                var i = 0
+
+                dispatchDetails?.forEach {
+                    // INVOICE HEADER INSERT
+
+                    var inh = InvoiceHeader()
+
+                    var inhId = UUID.randomUUID().toString()
+
+                    var data1: MutableMap<String, Any> = mutableMapOf()
+
+
+
+                    data1.put("id", inhId)
+                    inh.invoiceNo?.let { data1.put("invoiceNo", it) }
+                    data1.put("type", InvoiceTypeEnum.DISPATCHED.id)
+                    data1.put("statusId", InvoiceStatusEnum.GENERATED_PRINTED.id)
+                    recipient?.team?.let { it1 -> data1.put("teamId", it1.id) }
+                    recipient?.let { it1 -> data1.put("recipientId", it1.id) }
+                    recipient?.address?.let { it1 -> data1.put("addressLine1", it1) }
+                    recipient?.address?.let { it1 -> data1.put("addressLine2", it1) }
+                    recipient?.state?.let { it1 -> data1.put("states", it1) }
+                    recipient?.city?.let { it1 -> data1.put("city", it1) }
+                    recipient?.zip?.let { it1 -> data1.put("zip", it1) }
+                    recipient?.mobile?.let { it1 -> data1.put("phone", it1) }
+                    genInv.weight?.let { data1.put("weight", it) }
+                    genInv.boxes?.let { data1.put("noOfBoxes", it) }
+                    genInv.transporter?.let { data1.put("transporterId", it) }
+                    //sample value
+                    if (itcCount?.get(i)?.sampleItems !== null) {
+                        itcCount?.get(i)?.sampleItems?.let { data1.put("sampleValue", it) }
+                    } else {
+                        data1.put("sampleValue", 0)
+                    }
+
+                    // item value
+                    if (itcCount?.get(i)?.nonSampleItems !== null) {
+                        itcCount?.get(i)?.nonSampleItems?.let { data1.put("otherItemValue", it) }
+                    } else {
+                        data1.put("otherItemValue", 0)
+                    }
+
+                    genInv.lrNo?.let { data1.put("lrNumber", it) }
+                    data1.put("createdBy", user.id)
+                    data1.put("updatedBy", user.id)
+                    recipient?.designation?.let { it1 -> data1.put("designationId", it1.id) }
+                    recipient?.cfa?.let { it1 -> data1.put("cfa", it1) }
+
+                    sqlSessionFactory.openSession().insert("InvoiceHeaderMapper.insertGenerateInvoiceHeader", data1)
+
+
+                    var inventory = it.inventoryId?.let { it1 -> getInventoryByIdForInvoicing(it1) }
+
+                    var samples = ItemCategoryEnum.SAMPLES.id
+                    var itemId = ""
+
+
+
+                    inventory?.forEach {
+                        if(it.categoryId!!.equals(samples)) {
+                            var smp = it.item?.let { it1 -> getSampleMasterById(it1.id) }
+                            if (smp != null) {
+                                itemId = smp.id
+                            }
+
+                        } else {
+                            var itm = it.item?.let { it1 -> getItemMasterById(it1.id) }
+                            if (itm != null) {
+                                itemId = itm.id
+                            }
+                        }
+                    }
+
+
+
+
+                    // INVOICE DETAIL IND
+
+
+
+
+                    var data2: MutableMap<String, Any> = mutableMapOf()
+
+                    var ind = InvoiceDetail()
+
+                    var indId = UUID.randomUUID().toString()
+
+                    var value =
+                        inventory?.get(i)?.ratePerUnit?.let { it1 -> it!!.qtyDispatch!!.times(it1) }
+
+                    data2.put("id", indId)
+                    data2.put("headerId", inhId)
+                    inventory?.get(i)?.item?.let { it1 -> data2.put("item", it1.id) }
+                    it.qtyDispatch?.let { it1 -> data2.put("quantity", it1) }
+                    it.let { it1 -> it1.id?.let { it2 -> data2.put("didId", it2) } }
+                    value?.let { it1 -> data2.put("value", it1.toDouble()) }
+                    data2.put("createdBy", user.id)
+                    data2.put("updatedBy", user.id)
+                    inventory?.get(i)?.id?.let { it1 -> data2.put("inventoryId", it1) }
+                    inventory?.get(i)?.hsnCode?.let { it1 -> data2.put("hsnCode", it1) }
+                    inventory?.get(i)?.rate?.let { it1 -> data2.put("rate", it1) }
+
+                    sqlSessionFactory.openSession().insert("InvoiceDetailMapper.insertGenerateInvoiceDetail", data2)
+
+
+                    // DISPATCH DETAIL UPDATE
+
+
+                    var data3: MutableMap<String, Any> = mutableMapOf()
+
+                    data3.put("detailStatus", DispatchDetailStatusEnum.INVOICED.id)
+                    it.recipientId?.let { it1 -> data3.put("recipientId", it1) }
+                    data3.put("updatedBy", user.id)
+
+                    sqlSessionFactory.openSession()
+                        .update("DispatchDetailMapper.editDispatchDetailsForInvoicing", data3)
+
+
+
+                    // INVENTORY UPDATE
+
+
+                    var data4: MutableMap<String, Any> = mutableMapOf()
+
+                    var qtyDisp = it.let { it1 ->
+                        it1.qtyDispatch?.let { it2 ->
+                            inventory?.get(i)?.qtyDispatched?.plus(
+                                it2
+                            )
+                        }
+                    }
+
+
+                    var qtyAlloc = it.let { it1 ->
+                        it1.qtyDispatch?.let { it2 ->
+                            inventory?.get(i)?.qtyAllocated?.minus(
+                                it2
+                            )
+                        }
+                    }
+
+                    qtyDisp?.let { it1 -> data4.put("qtyDispatched", it1.toInt()) }
+                    qtyAlloc?.let { it1 -> data4.put("qtyAllocated", it1.toInt()) }
+                    data4.put("updatedBy", user.id)
+                    inventory?.get(i)?.id?.let { it1 -> data4.put("id", it1) }
+
+
+                    sqlSessionFactory.openSession().update("InventoryMapper.generateInvoiceUpdate", data4)
+
+
+                    var dispatchPlan = it.planId?.let { getDispatchPlanById(it) }
+
+
+                    var allocatedCount: Int = genInv.month?.let {
+                        genInv.year?.let { it1 ->
+                            genInv.recipientId?.let { it2 ->
+                                getDispatchDetailsForInvoicing(
+                                    it,
+                                    it1, it2
+                                )
+                            }
+                        }
+                    }!!.count()
+
+                    if (allocatedCount > 0) {
+                        var data5: MutableMap<String, Any> = mutableMapOf()
+                        data5.put("invoiceStatus", DispatchPlanInvoiceStatus.FULLY_INVOICED.id)
+                        data5.put("updatedBy", user.id)
+                        dispatchPlan?.let { data5.put("id", it.id) }
+
+                        sqlSessionFactory.openSession()
+                            .update("DispatchPlanMapper.generateInvoiceDispatchPlanFullyInvoiced", data5)
+                    } else {
+                        var data6: MutableMap<String, Any> = mutableMapOf()
+                        data6.put("invoiceStatus", DispatchPlanInvoiceStatus.PARTIAL_INVOICED.id)
+                        data6.put("updatedBy", user.id)
+                        dispatchPlan?.let { data6.put("id", it.id) }
+
+                        sqlSessionFactory.openSession()
+                            .update("DispatchPlanMapper.generateInvoiceDispatchPlanPartialInvoiced", data6)
+
+                    }
+
+                    var idp = InvoiceDetailPlan()
+
+                    var idpId = UUID.randomUUID().toString()
+
+                    var data7: MutableMap<String, Any> = mutableMapOf()
+
+                    data7.put("id", idpId)
+                    data7.put("headerId", inhId)
+                    dispatchPlan?.let { data7.put("planId", it.id) }
+
+                    sqlSessionFactory.openSession().insert("InvoiceDetailPlanMapper.insertGenerateInvoiceIDP", data7)
+
+                    i++
+
+                }
+
+
+
+
+            }
+
+
+
+
+            } else {
+                println("There is not data in genInv payload !")
+            }
+
+        }
+
+
+
+
+
+
 
 
 
 
 
     }
+
+
+
+
+
+
 
 
 

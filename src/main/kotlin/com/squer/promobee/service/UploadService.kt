@@ -37,6 +37,8 @@ interface UploadService {
 
     fun getDoctorsByCode(code : String): RecipientDTO
 
+    fun invoiceExcelData(uplId : String): List<InvoiceUploadDTO>
+
 
 
 }

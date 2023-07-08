@@ -85,6 +85,9 @@ class UploadServiceImpl @Autowired constructor(
         return uploadRepository.invoiceUpload(dto)
     }
 
+    override fun invoiceExcelData(uplId: String): List<InvoiceUploadDTO> {
+        return uploadRepository.invoiceExcelData(uplId)
+    }
 
 
 }

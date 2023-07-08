@@ -414,6 +414,13 @@
 
     </select>
 
+    <select id="isInvoiceGeneratedForPlanAndRecipient" resultType="int" >
+
+        select count(idp.ID_IDP) from INVOICE_DISPATCH_PLAN_IDP idp
+        join INVOICE_HEADER_INH inh on idp.ID_INH_IDP = inh.ID_INH
+        where inh.ID_RCT_INH = #{recipientID} and  idp.ID_PLAN_IDP = #{planID}
+    </select>
+
 
 
 

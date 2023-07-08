@@ -96,7 +96,7 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getDispatchPlanById(id)
     }
 
-    override fun generateInvoice(genInv : List<GenerateInvoiceDTO>) {
+    override fun generateInvoice(genInv : GenerateInvoiceDTO) {
         return invoiceRepository.generateInvoice(genInv)
     }
 

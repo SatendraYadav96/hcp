@@ -141,15 +141,18 @@ open class UploadController@Autowired constructor(
     }
 
 
-
-
-
-
     @PostMapping("/invoiceUpload")
     fun invoiceUpload(@RequestBody dto: FileUploadDto) {
         return uploadService.invoiceUpload(dto)
     }
 
+
+    @GetMapping("/invoiceExcelData/{uplId}")
+    open fun invoiceExcelData(@PathVariable uplId : String) : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var invUpl = uploadService.invoiceExcelData(uplId)
+        return ResponseEntity(invUpl, HttpStatus.OK)
+    }
 
 
 
