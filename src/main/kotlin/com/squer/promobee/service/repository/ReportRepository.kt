@@ -140,13 +140,12 @@ class ReportRepository
 
     fun getReportSimpleInventory(simInv: SimpleInvenotryReportDTO) : List<SimpleInventoryReportDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
-
         data.put("BusinessUnit", simInv.businessUnit)
         data.put("Division", simInv.divison)
         simInv.userId?.let { data.put("UserID", it) }
         simInv.userDesgId?.let { data.put("UserDesgID", it) }
 
-        return sqlSessionFactory.openSession().selectList("ReportMapper.getReportSimpleInventory", data)
+        return sqlSessionFactory.openSession().selectList<SimpleInventoryReportDTO>("ReportMapper.getReportSimpleInventory", data)
     }
 
 

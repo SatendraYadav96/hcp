@@ -208,14 +208,38 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
     </select>
 
 
-    <select id="getReportSimpleInventory" resultType="com.squer.promobee.controller.dto.SimpleInventoryReportDTO" parameterType = "map" statementType = "CALLABLE">
-        { call PROC_ReportSimpleInventory (#{BusinessUnit, jdbcType = VARCHAR, mode = IN},
-        #{Division, jdbcType = VARCHAR, mode = IN},#{UserID, jdbcType = VARCHAR, mode = IN},#{UserDesgID, jdbcType = VARCHAR, mode = IN}) }
+<!--    <select id="getReportSimpleInventory" resultType="com.squer.promobee.controller.dto.SimpleInventoryReportDTO" parameterType = "map" statementType = "CALLABLE">-->
+
+<!--        <foreach collection="BusinessUnit" item="buItem" open="(" separator="," close=")">-->
+<!--        <foreach collection="Division" item="divItem" open="(" separator="," close=")">-->
+
+
+
+
+<!--        </foreach>-->
+<!--        </foreach>-->
+
+<!--        {call PROC_ReportSimpleInventory   ( #{buItem},#{divItem},#{UserID, jdbcType = VARCHAR, mode = IN },#{UserDesgID,jdbcType = VARCHAR, mode = IN })}-->
+
+
+<!--    </select>-->
+
+    <select id="getReportSimpleInventory" resultType="com.squer.promobee.controller.dto.SimpleInventoryReportDTO"  parameterType = "map" statementType = "CALLABLE">
+
+
+        { call PROC_ReportSimpleInventory (
+
+                #{BusinessUnit, jdbcType = VARCHAR, mode = IN},
+                #{Division, jdbcType = VARCHAR, mode = IN},#{UserID, jdbcType = VARCHAR, mode = IN},#{UserDesgID, jdbcType = VARCHAR, mode = IN}
+
+
+        )}
+
 
     </select>
 
     <select id="getReportNearToExpirySample" resultType="com.squer.promobee.controller.dto.NearToExpiryReportDTO" parameterType = "map" statementType = "CALLABLE">
-        { call PROC_ReportNearToExpiry (#{BusinessUnit, jdbcType = VARCHAR, mode = IN},
+        { call PROC_ReportNearToExpiry (   #{BusinessUnit, jdbcType = VARCHAR, mode = IN},
         #{Division, jdbcType = VARCHAR, mode = IN},#{UserID, jdbcType = VARCHAR, mode = IN},#{UserDesgID, jdbcType = VARCHAR, mode = IN}
         ,#{Type, jdbcType = VARCHAR, mode = IN}) }
 
