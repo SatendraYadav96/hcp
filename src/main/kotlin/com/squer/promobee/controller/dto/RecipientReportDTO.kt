@@ -1,7 +1,5 @@
 package com.squer.promobee.controller.dto
 
-import java.util.Date
-
 class RecipientReportDTO {
      var businessUnit: String ?= null
      var divison: String ?= null
@@ -30,4 +28,8 @@ class RecipientReportDTO {
      var hq: String ?= null
      var remarks: String ?= null
      var status: String ?= null
+     var emailRM: String ?= null
+     var emailAM: String ?= null
+
+
 }

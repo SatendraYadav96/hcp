@@ -7,7 +7,7 @@ interface ReportService {
 
 //    fun getReportRecipient(businessUnit: String, divison: String,team:String,statusId:String) : List<RecipientReportDTO>
 
-    fun getReportRecipient(businessUnit: String, team:String,statusId:String) : List<RecipientReportDTO>
+    fun getReportRecipient(ff: FFReportDTO) : List<RecipientReportDTO>
 
     fun getReportPurchase(startDate: String, endDate: String, userId:String, userDesgId:String, businessUnit: String, divison: String): List<PurchaseReportDTO>
 
@@ -21,7 +21,7 @@ interface ReportService {
 
     fun getReportDestruction(fromDate: String,toDate: String,userId:String,userDesgId:String,businessUnit: String,divison: String,statusId: String): List<DestructionReportDTO>
 
-    fun getReportSimpleInventory(businessUnit: String, divison: String,userId:String, userDesgId:String): List<SimpleInventoryReportDTO>
+    fun getReportSimpleInventory(simInv: SimpleInvenotryReportDTO): List<SimpleInventoryReportDTO>
 
     fun getReportNearToExpirySample(businessUnit: String, divison: String,userId:String, userDesgId:String,type:String): List<NearToExpiryReportDTO>
 

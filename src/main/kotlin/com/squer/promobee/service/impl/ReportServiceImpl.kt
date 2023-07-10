@@ -20,8 +20,8 @@ class ReportServiceImpl @Autowired constructor(
 //        return reportRepository.getReportRecipient(businessUnit, divison, team , statusId)
 //    }
 
-    override fun getReportRecipient(businessUnit: String,team:String,statusId:String) : List<RecipientReportDTO>{
-        return reportRepository.getReportRecipient(businessUnit, team , statusId)
+    override fun getReportRecipient(ff: FFReportDTO) : List<RecipientReportDTO>{
+        return reportRepository.getReportRecipient(ff)
     }
 
 
@@ -50,8 +50,8 @@ class ReportServiceImpl @Autowired constructor(
     }
 
 
-    override fun getReportSimpleInventory(businessUnit: String, divison: String,userId:String, userDesgId:String): List<SimpleInventoryReportDTO>{
-        return reportRepository.getReportSimpleInventory(businessUnit,divison,userId,userDesgId)
+    override fun getReportSimpleInventory(simInv: SimpleInvenotryReportDTO): List<SimpleInventoryReportDTO>{
+        return reportRepository.getReportSimpleInventory(simInv)
     }
 
     override fun getReportNearToExpirySample(businessUnit: String, divison: String,userId:String, userDesgId:String,type:String): List<NearToExpiryReportDTO>{

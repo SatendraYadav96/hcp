@@ -1,5 +1,7 @@
 package com.squer.promobee.controller
 
+import com.squer.promobee.controller.dto.FFReportDTO
+import com.squer.promobee.controller.dto.SimpleInvenotryReportDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.ReportService
 import lombok.extern.slf4j.Slf4j
@@ -11,6 +13,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import java.util.*
 
 
@@ -28,10 +32,10 @@ open class ReportController @Autowired constructor(
 //        return ResponseEntity(data, HttpStatus.OK)
 //    }
 
-    @GetMapping("/getReportRecipient/{businessUnit}/{team}/{statusId}")
-    fun getReportRecipient(@PathVariable businessUnit: String,  @PathVariable team:String, @PathVariable statusId:String): ResponseEntity<*> {
+    @PostMapping("/getReportRecipient")
+    fun getReportRecipient(@RequestBody ff: FFReportDTO): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        val data = reportService.getReportRecipient(businessUnit,  team, statusId)
+        val data = reportService.getReportRecipient(ff)
         return ResponseEntity(data, HttpStatus.OK)
     }
 
@@ -78,9 +82,9 @@ open class ReportController @Autowired constructor(
     }
 
 
-    @GetMapping("/getReportSimpleInventory/{businessUnit}/{divison}/{userId}/{userDesgId}")
-    fun getReportSimpleInventory(@PathVariable businessUnit: String,@PathVariable divison: String,@PathVariable userId:String,@PathVariable userDesgId:String): ResponseEntity<*>{
-        val data = reportService.getReportSimpleInventory(businessUnit,divison,userId,userDesgId)
+    @PostMapping("/getReportSimpleInventory")
+    fun getReportSimpleInventory(@RequestBody simInv: SimpleInvenotryReportDTO): ResponseEntity<*>{
+        val data = reportService.getReportSimpleInventory(simInv)
         return  ResponseEntity(data,HttpStatus.OK)
     }
 

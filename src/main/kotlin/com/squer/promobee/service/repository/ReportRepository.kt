@@ -35,13 +35,17 @@ class ReportRepository
 //        return sqlSessionFactory.openSession().selectList("ReportMapper.getReportRecipient", data)
 //    }
 
-    fun getReportRecipient( businessUnit: String,team:String,statusId:String) : List<RecipientReportDTO>{
+    fun getReportRecipient( ff: FFReportDTO) : List<RecipientReportDTO>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
-        data.put("businessUnit", businessUnit)
-        data.put("team", team)
-        data.put("statusId", statusId)
-        return sqlSessionFactory.openSession().selectList("ReportMapper.getReportRecipient", data)
+        data.put("businessUnit", ff.businessUnit)
+        data.put("team", ff.team)
+        ff.statusId?.let { data.put("statusId", it) }
+
+
+
+
+        return sqlSessionFactory.openSession().selectList<RecipientReportDTO>("ReportMapper.getReportRecipient", data)
     }
 
     fun getReportPurchase( startDate: String,endDate: String,userId:String,userDesgId:String,businessUnit: String, divison: String) : List<PurchaseReportDTO>{
@@ -134,12 +138,13 @@ class ReportRepository
 
 
 
-    fun getReportSimpleInventory(businessUnit: String, divison: String,userId:String,userDesgId:String,) : List<SimpleInventoryReportDTO>{
+    fun getReportSimpleInventory(simInv: SimpleInvenotryReportDTO) : List<SimpleInventoryReportDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
-        data.put("BusinessUnit", businessUnit)
-        data.put("Division", divison)
-        data.put("UserID", userId)
-        data.put("UserDesgID", userDesgId)
+
+        data.put("BusinessUnit", simInv.businessUnit)
+        data.put("Division", simInv.divison)
+        simInv.userId?.let { data.put("UserID", it) }
+        simInv.userDesgId?.let { data.put("UserDesgID", it) }
 
         return sqlSessionFactory.openSession().selectList("ReportMapper.getReportSimpleInventory", data)
     }
