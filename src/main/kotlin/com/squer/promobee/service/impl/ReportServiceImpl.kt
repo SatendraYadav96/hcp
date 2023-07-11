@@ -25,12 +25,12 @@ class ReportServiceImpl @Autowired constructor(
     }
 
 
-    override fun getReportPurchase(startDate: String, endDate: String, userId:String, userDesgId:String, businessUnit: String, divison: String): List<PurchaseReportDTO>{
-        return reportRepository.getReportPurchase(startDate,endDate,userId,userDesgId,businessUnit,divison)
+    override fun getReportPurchase(pur : PurchaseReportParamDTO): List<PurchaseReportDTO>{
+        return reportRepository.getReportPurchase(pur)
     }
 
-    override fun getReportDispatches(startDate: String,endDate: String,filter:Int,filterPlan:Int,userId:String,userDesgId:String,businessUnit: String, division: String): List<DispatchesReportDTO>{
-        return reportRepository.getReportDispatches(startDate,endDate,filter,filterPlan,userId,userDesgId,businessUnit,division)
+    override fun getReportDispatches(disp : DispatchesReportParamDto): List<DispatchesReportDTO>{
+        return reportRepository.getReportDispatches(disp)
     }
 
     override fun getReportDispatchRegister(startDate: String,endDate: String,userId:String,userDesgId:String, businessUnit: String,division: String ,team:String,statusId: String ,filterPlan:Int): List<DispatchRegisterReportDTO>{

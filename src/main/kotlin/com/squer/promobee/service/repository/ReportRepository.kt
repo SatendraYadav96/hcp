@@ -47,29 +47,33 @@ class ReportRepository
         return sqlSessionFactory.openSession().selectList<RecipientReportDTO>("ReportMapper.getReportRecipient", data)
     }
 
-    fun getReportPurchase( startDate: String,endDate: String,userId:String,userDesgId:String,businessUnit: String, divison: String) : List<PurchaseReportDTO>{
-        var data: MutableMap<String, Any> = mutableMapOf()
-        data.put("startDate", startDate)
-        data.put("endDate", endDate)
-        data.put("userId", userId)
-        data.put("userDesgId", userDesgId)
-        data.put("businessUnit", businessUnit)
-        data.put("divison", divison)
+    fun getReportPurchase( pur : PurchaseReportParamDTO) : List<PurchaseReportDTO>{
 
-        return sqlSessionFactory.openSession().selectList("ReportMapper.getReportPurchase", data)
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        pur.startDate?.let { data.put("startDate", it) }
+        pur.endDate?.let { data.put("endDate", it) }
+        pur.userId?.let { data.put("userId", it) }
+        pur.userDesgId?.let { data.put("userDesgId", it) }
+        data.put("BusinessUnit", pur.businessUnit)
+        data.put("Division", pur.divison)
+
+        return sqlSessionFactory.openSession().selectList<PurchaseReportDTO>("ReportMapper.getReportPurchase", data)
     }
 
 
-    fun getReportDispatches( startDate: String,endDate: String,filter:Int,filterPlan:Int,userId:String,userDesgId:String, businessUnit: String, division: String) : List<DispatchesReportDTO>{
+    fun getReportDispatches(disp : DispatchesReportParamDto) : List<DispatchesReportDTO>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
-        data.put("StartDate", startDate)
-        data.put("EndDate", endDate)
-        data.put("Filter", filter)
-        data.put("filterplan", filterPlan)
-        data.put("UserID", userId)
-        data.put("UserDesgID", userDesgId)
-        data.put("BusinessUnit", businessUnit)
-        data.put("Division", division)
+        disp.startDate?.let { data.put("StartDate", it) }
+        disp.endDate?.let { data.put("EndDate", it) }
+        disp.filter?.let { data.put("Filter", it) }
+        disp.filterPlan?.let { data.put("filterplan", it) }
+        disp.userId?.let { data.put("UserID", it) }
+        disp.userDesgId?.let { data.put("UserDesgID", it) }
+        data.put("BusinessUnit", disp.businessUnit)
+        data.put("Division", disp.division)
 
         return sqlSessionFactory.openSession().selectList("ReportMapper.getReportDispatches", data)
     }

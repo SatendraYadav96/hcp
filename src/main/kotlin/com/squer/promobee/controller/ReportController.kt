@@ -1,6 +1,8 @@
 package com.squer.promobee.controller
 
+import com.squer.promobee.controller.dto.DispatchesReportParamDto
 import com.squer.promobee.controller.dto.FFReportDTO
+import com.squer.promobee.controller.dto.PurchaseReportParamDTO
 import com.squer.promobee.controller.dto.SimpleInvenotryParamDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.ReportService
@@ -40,16 +42,16 @@ open class ReportController @Autowired constructor(
     }
 
 
-    @GetMapping("/getReportPurchase/{startDate}/{endDate}/{userId}/{userDesgId}/{businessUnit}/{divison}")
-    fun getReportPurchase(@PathVariable startDate: String , @PathVariable endDate: String,@PathVariable userId:String,@PathVariable userDesgId:String,@PathVariable businessUnit: String,@PathVariable divison: String): ResponseEntity<*>{
-        val data = reportService.getReportPurchase(startDate,endDate,userId,userDesgId,businessUnit,divison)
+    @PostMapping("/getReportPurchase")
+    fun getReportPurchase(@RequestBody pur : PurchaseReportParamDTO): ResponseEntity<*>{
+        val data = reportService.getReportPurchase(pur)
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
 
-    @GetMapping("/getReportDispatches/{startDate}/{endDate}/{filter}/{filterPlan}/{userId}/{userDesgId}/{businessUnit}/{division}")
-    fun getReportDispatches(@PathVariable startDate: String, @PathVariable  endDate: String,@PathVariable filter:Int,@PathVariable filterPlan:Int,@PathVariable userId:String,@PathVariable userDesgId:String,@PathVariable businessUnit: String,@PathVariable division: String): ResponseEntity<*>{
-        val data = reportService.getReportDispatches(startDate,endDate,filter,filterPlan,userId,userDesgId,businessUnit,division)
+    @PostMapping("/getReportDispatches")
+    fun getReportDispatches(@RequestBody disp : DispatchesReportParamDto): ResponseEntity<*>{
+        val data = reportService.getReportDispatches(disp)
         return  ResponseEntity(data,HttpStatus.OK)
     }
 

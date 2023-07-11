@@ -9,9 +9,9 @@ interface ReportService {
 
     fun getReportRecipient(ff: FFReportDTO) : List<RecipientReportDTO>
 
-    fun getReportPurchase(startDate: String, endDate: String, userId:String, userDesgId:String, businessUnit: String, divison: String): List<PurchaseReportDTO>
+    fun getReportPurchase(pur : PurchaseReportParamDTO): List<PurchaseReportDTO>
 
-    fun getReportDispatches(startDate: String,endDate: String,filter:Int,filterPlan:Int,userId:String,userDesgId:String,businessUnit: String, division: String): List<DispatchesReportDTO>
+    fun getReportDispatches(disp : DispatchesReportParamDto): List<DispatchesReportDTO>
 
     fun getReportDispatchRegister(startDate: String,endDate: String,userId:String,userDesgId:String, businessUnit: String,division: String,statusId: String, team:String,filterPlan:Int): List<DispatchRegisterReportDTO>
 

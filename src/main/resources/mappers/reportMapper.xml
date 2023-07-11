@@ -43,8 +43,14 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
         join DIVISION_BRAND_DBR DBR on BRD.ID_BRD= dbr.ID_BRD_DBR
         join DIVISION_MASTER_DIM DIM on dbr.ID_DIM_DBR =Dim.ID_DIM
         join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
-        where DIM.ID_BUM_DIM  in (SELECT Item from [dbo].SplitGUIDs (#{businessUnit}))
-        and (#{division} is null or DIM.ID_DIM  in (SELECT Item from [dbo].SplitGUIDs (#{division})))
+        where DIM.ID_BUM_DIM  in (<foreach item="item" index="index" collection="BusinessUnit"
+                                           separator=",">
+        #{item}
+    </foreach>)
+        and  DIM.ID_DIM  in (<foreach item="item" index="index" collection="Division"
+                                      separator=",">
+        #{item}
+    </foreach>)
 
         ) AS FilterResult
 
@@ -127,6 +133,11 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
 
 
 
+
+
+
+
+
     <select id="getReportDispatchRegister" resultType="com.squer.promobee.controller.dto.DispatchRegisterReportDTO" parameterType = "map" statementType = "CALLABLE">
         { call PROC_ReportDispatchRegister (#{StartDate, jdbcType = VARCHAR, mode = IN}, #{EndDate, jdbcType = VARCHAR, mode = IN}, #{UserID, jdbcType = VARCHAR, mode = IN},
         #{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN}, #{Division, jdbcType = VARCHAR, mode = IN},
@@ -189,12 +200,15 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
 <!--        #{UserDesgID, jdbcType=VARCHAR, mode=IN}-->
 <!--        )}-->
 <!--    </select>-->
+
 <!--    <select id="getReportSimpleInventory" resultType="com.squer.promobee.controller.dto.NearToExpiryReportDTO" parameterType = "map" statementType = "CALLABLE">-->
 <!--        { call PROC_ReportSimpleInventory (   #{BusinessUnit, jdbcType = VARCHAR, mode = IN},-->
 <!--                                           #{Division, jdbcType = VARCHAR, mode = IN},#{UserID, jdbcType = VARCHAR, mode = IN},#{UserDesgID, jdbcType = VARCHAR, mode = IN}-->
 <!--         ) }-->
 
 <!--    </select>-->
+
+
     <select id="getReportSimpleInventory"  resultType="com.squer.promobee.controller.dto.SimpleInventoryReportDTO">
         SELECT * INTO #FilterTable FROM
         (
@@ -203,14 +217,14 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
         join DIVISION_BRAND_DBR DBR on BRD.ID_BRD= dbr.ID_BRD_DBR
         join DIVISION_MASTER_DIM DIM on dbr.ID_DIM_DBR =Dim.ID_DIM
         join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
-        where DIM.ID_BUM_DIM  in <foreach item="item" index="index" collection="BusinessUnit"
-                                           open="(" separator="," close=")">
+        where DIM.ID_BUM_DIM  in (<foreach item="item" index="index" collection="BusinessUnit"
+                                           separator=",">
         #{item}
-    </foreach>
-        and  DIM.ID_DIM  in <foreach item="item" index="index" collection="Division"
-                                      open="(" separator="," close=")">
+    </foreach>)
+        and  DIM.ID_DIM  in (<foreach item="item" index="index" collection="Division"
+                                      separator=",">
         #{item}
-    </foreach>
+    </foreach>)
 
         ) AS FilterResult
 
@@ -298,6 +312,22 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
 
         DROP TABLE #TEMPTABLE
     </select>
+
+<!--    <select id="getReportSimpleInventory"  resultType="com.squer.promobee.controller.dto.SimpleInventoryReportDTO" parameterType = "map" statementType = "CALLABLE">-->
+
+<!--        { call PROC_ReportSimpleInventory ( <foreach item="item" index="index" collection="BusinessUnit"-->
+<!--                                                     open="(" separator="," close=")" >-->
+<!--        #{item}-->
+<!--    </foreach>,-->
+<!--        <foreach item="item" index="index" collection="Division"-->
+<!--                 open="(" separator="," close=")" >#{item}-->
+<!--          </foreach>-->
+<!--        ,-->
+<!--        #{UserID, jdbcType = VARCHAR, mode = IN},-->
+<!--        #{UserDesgID, jdbcType = VARCHAR, mode = IN}-->
+<!--        )  }-->
+
+<!--    </select>-->
 
 
 
