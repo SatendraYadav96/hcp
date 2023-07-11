@@ -1,7 +1,7 @@
 package com.squer.promobee.controller
 
 import com.squer.promobee.controller.dto.FFReportDTO
-import com.squer.promobee.controller.dto.SimpleInvenotryReportDTO
+import com.squer.promobee.controller.dto.SimpleInvenotryParamDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.ReportService
 import lombok.extern.slf4j.Slf4j
@@ -83,7 +83,7 @@ open class ReportController @Autowired constructor(
 
 
     @PostMapping("/getReportSimpleInventory")
-    fun getReportSimpleInventory(@RequestBody simInv: SimpleInvenotryReportDTO): ResponseEntity<*>{
+    fun getReportSimpleInventory(@RequestBody simInv: SimpleInvenotryParamDTO): ResponseEntity<*>{
         val data = reportService.getReportSimpleInventory(simInv)
         return  ResponseEntity(data,HttpStatus.OK)
     }

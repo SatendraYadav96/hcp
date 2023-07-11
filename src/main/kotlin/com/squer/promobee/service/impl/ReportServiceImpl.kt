@@ -50,7 +50,7 @@ class ReportServiceImpl @Autowired constructor(
     }
 
 
-    override fun getReportSimpleInventory(simInv: SimpleInvenotryReportDTO): List<SimpleInventoryReportDTO>{
+    override fun getReportSimpleInventory(simInv: SimpleInvenotryParamDTO): List<SimpleInventoryReportDTO>{
         return reportRepository.getReportSimpleInventory(simInv)
     }
 

@@ -21,7 +21,7 @@ interface ReportService {
 
     fun getReportDestruction(fromDate: String,toDate: String,userId:String,userDesgId:String,businessUnit: String,divison: String,statusId: String): List<DestructionReportDTO>
 
-    fun getReportSimpleInventory(simInv: SimpleInvenotryReportDTO): List<SimpleInventoryReportDTO>
+    fun getReportSimpleInventory(simInv: SimpleInvenotryParamDTO): List<SimpleInventoryReportDTO>
 
     fun getReportNearToExpirySample(businessUnit: String, divison: String,userId:String, userDesgId:String,type:String): List<NearToExpiryReportDTO>
 

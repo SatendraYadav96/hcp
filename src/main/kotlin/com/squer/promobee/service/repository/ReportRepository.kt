@@ -15,9 +15,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class ReportRepository
-
     (
-    securityUtility: SecurityUtility
+    securityUtility: SecurityUtility,
 ): BaseRepository<Recipient>(
     securityUtility = securityUtility
 ){
@@ -138,14 +137,37 @@ class ReportRepository
 
 
 
-    fun getReportSimpleInventory(simInv: SimpleInvenotryReportDTO) : List<SimpleInventoryReportDTO>{
+    fun getReportSimpleInventory(simInv: SimpleInvenotryParamDTO) : List<SimpleInventoryReportDTO>{
+
+//        var result = mutableListOf<SimpleInventoryReportDTO>()
+//
+//        val parameters: Map<String, Any> = HashMap()
+//
+//        val businessUnitList: MutableList<ArrayList<String>> = Arrays.asList(simInv.businessUnit) // Example list of business units
+//
+//        val divisionList: MutableList<ArrayList<String>> = Arrays.asList(simInv.divison) // Example list of divisions
+
+
         var data: MutableMap<String, Any> = mutableMapOf()
-        data.put("BusinessUnit", simInv.businessUnit)
-        data.put("Division", simInv.divison)
-        simInv.userId?.let { data.put("UserID", it) }
-        simInv.userDesgId?.let { data.put("UserDesgID", it) }
+
+            data.put("BusinessUnit",simInv.businessUnit)
+            data.put("Division", simInv.divison)
+            simInv.userId?.let { data.put("UserID", it) }
+            simInv.userDesgId?.let { data.put("UserDesgID", it) }
 
         return sqlSessionFactory.openSession().selectList<SimpleInventoryReportDTO>("ReportMapper.getReportSimpleInventory", data)
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 
