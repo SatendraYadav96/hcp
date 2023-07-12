@@ -1,9 +1,6 @@
 package com.squer.promobee.controller
 
-import com.squer.promobee.controller.dto.DispatchesReportParamDto
-import com.squer.promobee.controller.dto.FFReportDTO
-import com.squer.promobee.controller.dto.PurchaseReportParamDTO
-import com.squer.promobee.controller.dto.SimpleInvenotryParamDTO
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.ReportService
 import lombok.extern.slf4j.Slf4j
@@ -56,9 +53,9 @@ open class ReportController @Autowired constructor(
     }
 
 
-    @GetMapping("/getReportDispatchRegister/{startDate}/{endDate}/{userId}/{userDesgId}/{businessUnit}/{division}/{team}/{statusId}/{filterPlan}")
-    fun getReportDispatchRegister(@PathVariable  startDate: String, @PathVariable  endDate: String, @PathVariable userId:String, @PathVariable userDesgId:String, @PathVariable businessUnit: String, @PathVariable division: String, @PathVariable team:String,  @PathVariable statusId: String, @PathVariable filterPlan:Int): ResponseEntity<*>{
-        val data = reportService.getReportDispatchRegister(startDate,endDate,userId,userDesgId,businessUnit,division,team,statusId,filterPlan)
+    @PostMapping("/getReportDispatchRegister")
+    fun getReportDispatchRegister(@RequestBody dispReg : DispatchRegisterParamDTO ): ResponseEntity<*>{
+        val data = reportService.getReportDispatchRegister(dispReg)
         return  ResponseEntity(data,HttpStatus.OK)
     }
 

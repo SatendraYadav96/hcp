@@ -125,10 +125,329 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
 
 
 
-    <select id="getReportDispatches" resultType="com.squer.promobee.controller.dto.DispatchesReportDTO" parameterType = "map" statementType = "CALLABLE">
-        {call PROC_ReportDispatch (#{Filter, jdbcType = INTEGER , mode = IN},#{StartDate, jdbcType = VARCHAR, mode = IN}, #{EndDate, jdbcType = VARCHAR, mode = IN}, #{UserID, jdbcType = VARCHAR, mode = IN},
-        #{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN},#{Division, jdbcType = VARCHAR, mode = IN},
-        #{filterplan, jdbcType = INTEGER , mode = IN} )}
+<!--    <select id="getReportDispatches" resultType="com.squer.promobee.controller.dto.DispatchesReportDTO" parameterType = "map" statementType = "CALLABLE">-->
+<!--        {call PROC_ReportDispatch (#{Filter, jdbcType = INTEGER , mode = IN},#{StartDate, jdbcType = VARCHAR, mode = IN}, #{EndDate, jdbcType = VARCHAR, mode = IN}, #{UserID, jdbcType = VARCHAR, mode = IN},-->
+<!--        #{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN},#{Division, jdbcType = VARCHAR, mode = IN},-->
+<!--        #{filterplan, jdbcType = INTEGER , mode = IN} )}-->
+<!--    </select>-->
+
+    <select id="getReportDispatches" resultType="com.squer.promobee.controller.dto.DispatchesReportDTO" >
+        if(#{filterplan}=2)
+        begin
+
+
+        SELECT * INTO #FilterTable FROM
+        (
+        select  BRD.ID_BRD,BUM.NAME_BUM as 'businessUnit', DIM.NAME_DIM as 'divison' from
+        BRAND_MASTER_BRD BRD
+        join DIVISION_BRAND_DBR DBR on BRD.ID_BRD= dbr.ID_BRD_DBR
+        join DIVISION_MASTER_DIM DIM on dbr.ID_DIM_DBR =Dim.ID_DIM
+        join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
+        where DIM.ID_BUM_DIM  in (<foreach item="item" index="index" collection="BusinessUnit"
+                                           separator=",">
+        #{item}
+    </foreach>)
+        and  DIM.ID_DIM  in (<foreach item="item" index="index" collection="Division"
+                                      separator=",">
+        #{item}
+    </foreach>)
+
+        ) AS FilterResult
+
+
+        IF(#{Filter} = 1)
+        BEGIN
+        SELECT * INTO #TempDispatchReport FROM(
+        SELECT  distinct FT.businessUnit,FT.divison,RCT.ID_RCT AS RecipientID, RCT.NAME_RCT AS recipientName, RCT.CODE_RCT AS recipientCode,rct.state_rct as 'State',rct.zone_rct as 'Zone', ITM.CODE_ITM AS productCode,
+        ITM.NAME_ITM AS productName, IND.quantity_IND AS quantity,ROUND(SUM(IND.VALUE_IND),0) AS amount,  CONVERT(NVARCHAR,INH.CREATED_ON_INH,103) AS invoiceDate,
+        RCT.ID_TEM_RCT 'TeamID',DIP.ID_OWNER_USR_DIP 'PlanOwnerID',tem.NAME_TEM 'teamName',ulv.NAME_ULV 'desigation',inh.INVOICE_NO_INH 'invoiceNo' ,itc.NAME_ITC as ItemCategory
+        FROM INVOICE_HEADER_INH INH
+        JOIN RECIPIENT_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        Join USER_LOV_ULV ulv on rct.ID_DESG_ULV_RCT=ulv.ID_ULV
+        join TEAM_MASTER_TEM tem on inh.ID_TEM_INH=tem.ID_TEM
+        JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
+        JOIN DISPATCH_DETAIL_DID DID ON IND.ID_DID_IND = DID.ID_DID
+        JOIN DISPATCH_PLAN_DIP DIP ON DID.ID_DIP_DID = DIP.ID_DIP
+        join INVENTORY_INV INV on IND.ID_INV_IND=INV.ID_INV
+        JOIN ITEM_MASTER_ITM ITM ON INV.ID_ITM_INV = ITM.ID_ITM
+        JOIN ITEM_CATEGORY_MASTER_ITC ITC ON ITM.ID_ITC_ITM = ITC.ID_ITC
+        JOIN COST_CENTER_MASTER_CCM CCM ON ITM.ID_CCM_ITM = CCM.ID_CCM
+        join COSTCENTER_BRAND_CBR CBR on CCM.ID_CCM=CBR.ID_CCM_CBR
+        JOIN BRAND_MASTER_BRD BRD ON CBR.ID_BRD_CBR = BRD.ID_BRD
+        JOIN #FilterTable FT on BRD.ID_BRD  = FT.ID_BRD
+        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{StartDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{EndDate} AS DATE)
+        AND INH.ID_STATUS_SLV_INH = '00000000-0000-0000-0000-000000000027'
+        AND IND.ID_DID_IND != '00000000-0000-0000-0000-000000000000'
+        GROUP BY  FT.businessUnit,FT.divison,RCT.ID_RCT,RCT.NAME_RCT,RCT.CODE_RCT,RCT.STATE_RCT,RCT.ZONE_RCT,ITM.CODE_ITM,ITM.NAME_ITM,IND.quantity_IND,INH.CREATED_ON_INH,RCT.ID_TEM_RCT,DIP.ID_OWNER_USR_DIP,tem.NAME_TEM,ulv.NAME_ULV,inh.INVOICE_NO_INH,itc.NAME_ITC
+        UNION ALL
+        SELECT  distinct FT.businessUnit,FT.divison,RCT.ID_RCT AS RecipientID, RCT.NAME_RCT AS recipientName, RCT.CODE_RCT AS recipientCode,rct.state_rct as 'State',rct.zone_rct as 'Zone', SMP.LMID_SMP AS productCode,
+        SMP.NAME_SMP AS productName, IND.quantity_IND AS quantity, round(SUM(IND.VALUE_IND),0) AS amount,  CONVERT(NVARCHAR,INH.CREATED_ON_INH,103) AS invoiceDate,
+        RCT.ID_TEM_RCT 'TeamID',DIP.ID_OWNER_USR_DIP 'PlanOwnerID',tem.NAME_TEM 'teamName',ulv.NAME_ULV 'desigation' ,inh.INVOICE_NO_INH 'invoiceNo',itc.NAME_ITC as 'ItemCategory'
+        FROM INVOICE_HEADER_INH INH
+        JOIN RECIPIENT_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        Join USER_LOV_ULV ulv on rct.ID_DESG_ULV_RCT=ulv.ID_ULV
+        join TEAM_MASTER_TEM tem on inh.ID_TEM_INH=tem.ID_TEM
+        JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
+        join INVENTORY_INV inv on ind.ID_INV_IND=inv.ID_INV
+        join ITEM_CATEGORY_MASTER_ITC itc on inv.ID_ITC_INV=itc.ID_ITC
+        JOIN DISPATCH_DETAIL_DID DID ON IND.ID_DID_IND = DID.ID_DID
+        JOIN DISPATCH_PLAN_DIP DIP ON DID.ID_DIP_DID = DIP.ID_DIP
+        JOIN SAMPLE_MASTER_SMP SMP ON IND.ID_ITM_IND = SMP.ID_SMP
+        JOIN BRAND_MASTER_BRD BRD ON SMP.ID_BRD_SMP = BRD.ID_BRD
+        JOIN  #FilterTable FT  ON BRD.ID_BRD = FT.ID_BRD
+        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{StartDate AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{EndDate} AS DATE)
+        AND INH.ID_STATUS_SLV_INH = '00000000-0000-0000-0000-000000000027'
+        AND IND.ID_DID_IND != '00000000-0000-0000-0000-000000000000'
+        GROUP BY  FT.businessUnit,FT.divison,RCT.ID_RCT,RCT.NAME_RCT,RCT.CODE_RCT,RCT.STATE_RCT,RCT.ZONE_RCT,SMP.LMID_SMP,SMP.NAME_SMP,IND.quantity_IND,INH.CREATED_ON_INH,RCT.ID_TEM_RCT,DIP.ID_OWNER_USR_DIP,tem.NAME_TEM,ulv.NAME_ULV,inh.INVOICE_NO_INH,itc.NAME_ITC
+        ) AS TempDispatchReport
+        IF(#{UserDesgID} = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5')--BM
+        BEGIN
+        SELECT * FROM #TempDispatchReport WHERE PlanOwnerID = #{UserID} ORDER BY productName
+        END
+        ELSE IF(#{UserDesgID} = '88F90CCF-FB95-42DB-AECF-B4C5E8C25BE6')--BEX
+        BEGIN
+        SELECT * FROM #TempDispatchReport WHERE TeamID IN(
+        SELECT DISTINCT TET.ID_TEM_TET FROM TEAM_LEGAL_ENTITY_TET TET
+        join USER_LEGAL_ENTITY_ULE ULE on TET.ID_ETY_TET = ULE.ID_ETY_ULE
+        join USER_MASTER_USR USR on USR.ID_USR= ULE.ID_USR_ULE
+        WHERE USR.ID_USR = #{UserID}
+        )
+        ORDER BY productName
+        END
+        ELSE--HUB
+        BEGIN
+        SELECT * FROM #TempDispatchReport ORDER BY productName
+        END
+        DROP TABLE #TempDispatchReport
+        END
+        ELSE
+        BEGIN
+        SELECT * INTO #TempDispatchReport1 FROM(
+        SELECT distinct FT.businessUnit,RCT.ID_RCT AS RecipientID, RCT.NAME_RCT AS recipientName, RCT.CODE_RCT AS recipientCode,rct.state_rct as 'State',rct.zone_rct as 'Zone', ITM.CODE_ITM AS productCode,
+        ITM.NAME_ITM AS productName, IND.quantity_IND AS quantity,Round(SUM(IND.VALUE_IND),0) AS amount, CONVERT(NVARCHAR,INH.CREATED_ON_INH,103) AS invoiceDate,
+        RCT.ID_TEM_RCT 'TeamID',DIP.ID_OWNER_USR_DIP 'PlanOwnerID',tem.NAME_TEM 'teamName',ulv.NAME_ULV 'desigation' ,inh.INVOICE_NO_INH 'invoiceNo',itc.NAME_ITC as 'ItemCategory'
+        FROM INVOICE_HEADER_INH INH
+        JOIN RECIPIENT_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        Join USER_LOV_ULV ulv on rct.ID_DESG_ULV_RCT=ulv.ID_ULV
+        join TEAM_MASTER_TEM tem on inh.ID_TEM_INH=tem.ID_TEM
+        JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
+        JOIN DISPATCH_DETAIL_DID DID ON IND.ID_DID_IND = DID.ID_DID
+        JOIN DISPATCH_PLAN_DIP DIP ON DID.ID_DIP_DID = DIP.ID_DIP
+        join INVENTORY_INV INV on IND.ID_INV_IND=INV.ID_INV
+        JOIN ITEM_MASTER_ITM ITM ON INV.ID_ITM_INV = ITM.ID_ITM
+        JOIN ITEM_CATEGORY_MASTER_ITC ITC ON ITM.ID_ITC_ITM = ITC.ID_ITC
+        JOIN COST_CENTER_MASTER_CCM CCM ON ITM.ID_CCM_ITM = CCM.ID_CCM
+        join COSTCENTER_BRAND_CBR CBR on CCM.ID_CCM=CBR.ID_CCM_CBR
+        JOIN BRAND_MASTER_BRD BRD ON CBR.ID_BRD_CBR = BRD.ID_BRD
+        JOIN #FilterTable FT on BRD.ID_BRD  = FT.ID_BRD
+        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{StartDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{EndDate} AS DATE)
+        AND INH.ID_STATUS_SLV_INH = '00000000-0000-0000-0000-000000000027'
+        AND IND.ID_DID_IND != '00000000-0000-0000-0000-000000000000'
+        GROUP BY FT.businessUnit,FT.divison,RCT.ID_RCT,RCT.NAME_RCT,RCT.CODE_RCT,RCT.STATE_RCT,RCT.ZONE_RCT,ITM.CODE_ITM,ITM.NAME_ITM,IND.quantity_IND,INH.CREATED_ON_INH,RCT.ID_TEM_RCT,DIP.ID_OWNER_USR_DIP,tem.NAME_TEM,ulv.NAME_ULV,inh.INVOICE_NO_INH,itc.NAME_ITC
+        UNION
+        SELECT distinct FT.businessUnit,RCT.ID_RCT AS RecipientID, RCT.NAME_RCT AS recipientName, RCT.CODE_RCT AS recipientCode,rct.state_rct as 'State',rct.zone_rct as 'Zone', SMP.LMID_SMP AS productCode,
+        SMP.NAME_SMP AS productName, IND.quantity_IND AS quantity,Round(SUM(IND.VALUE_IND),0) AS amount, CONVERT(NVARCHAR,INH.CREATED_ON_INH,103) AS invoiceDate,
+        RCT.ID_TEM_RCT 'TeamID',DIP.ID_OWNER_USR_DIP 'PlanOwnerID',tem.NAME_TEM 'teamName',ulv.NAME_ULV 'desigation' ,inh.INVOICE_NO_INH 'invoiceNo',itc.NAME_ITC as 'ItemCategory'
+        FROM INVOICE_HEADER_INH INH
+        JOIN RECIPIENT_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        Join USER_LOV_ULV ulv on rct.ID_DESG_ULV_RCT=ulv.ID_ULV
+        join TEAM_MASTER_TEM tem on inh.ID_TEM_INH=tem.ID_TEM
+        JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
+        join INVENTORY_INV inv on ind.ID_INV_IND=inv.ID_INV
+        join ITEM_CATEGORY_MASTER_ITC itc on itc.ID_ITC=inv.ID_ITC_INV
+        JOIN DISPATCH_DETAIL_DID DID ON IND.ID_DID_IND = DID.ID_DID
+        JOIN DISPATCH_PLAN_DIP DIP ON DID.ID_DIP_DID = DIP.ID_DIP
+        JOIN SAMPLE_MASTER_SMP SMP ON IND.ID_ITM_IND = SMP.ID_SMP
+        JOIN BRAND_MASTER_BRD BRD ON SMP.ID_BRD_SMP = BRD.ID_BRD
+        JOIN  #FilterTable FT  ON BRD.ID_BRD = FT.ID_BRD
+        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{StartDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{EndDate} AS DATE)
+        AND INH.ID_STATUS_SLV_INH = '00000000-0000-0000-0000-000000000027'
+        AND IND.ID_DID_IND != '00000000-0000-0000-0000-000000000000'
+        GROUP BY FT.businessUnit,FT.divison,RCT.ID_RCT,RCT.NAME_RCT,RCT.CODE_RCT,RCT.STATE_RCT,RCT.ZONE_RCT,SMP.LMID_SMP,SMP.NAME_SMP,IND.quantity_IND,INH.CREATED_ON_INH,RCT.ID_TEM_RCT,DIP.ID_OWNER_USR_DIP,tem.NAME_TEM,ulv.NAME_ULV ,inh.INVOICE_NO_INH,itc.NAME_ITC
+        ) AS TempDispatchReport1
+
+
+        IF(#{UserDesgID} = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5')--BM
+        BEGIN
+        SELECT distinct * FROM #TempDispatchReport1 WHERE PlanOwnerID = #{UserID} ORDER BY productName
+        END
+        ELSE IF(#{UserDesgID} = '88F90CCF-FB95-42DB-AECF-B4C5E8C25BE6')--BEX
+        BEGIN
+        SELECT distinct * FROM #TempDispatchReport1 WHERE TeamID IN
+        (SELECT DISTINCT TET.ID_TEM_TET FROM TEAM_LEGAL_ENTITY_TET TET
+        join USER_LEGAL_ENTITY_ULE ULE on TET.ID_ETY_TET = ULE.ID_ETY_ULE
+        join USER_MASTER_USR USR on USR.ID_USR= ULE.ID_USR_ULE
+        WHERE USR.ID_USR = #{UserID}
+        )
+        ORDER BY productName
+        END
+        ELSE--HUB
+        BEGIN
+        SELECT distinct * FROM #TempDispatchReport1 ORDER BY productName
+        END
+
+        drop table #FilterTable
+        DROP TABLE #TempDispatchReport1
+        END
+        END
+        ELSE
+        begin
+        IF(#{Filter} = 1)
+        BEGIN
+        SELECT * INTO #FilterTable1 FROM
+        (
+        select  BRD.ID_BRD,BUM.NAME_BUM as 'businessUnit', DIM.NAME_DIM as 'divison' from
+        BRAND_MASTER_BRD BRD
+        join DIVISION_BRAND_DBR DBR on BRD.ID_BRD= dbr.ID_BRD_DBR
+        join DIVISION_MASTER_DIM DIM on dbr.ID_DIM_DBR =Dim.ID_DIM
+        join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
+        where DIM.ID_BUM_DIM  in (<foreach item="item" index="index" collection="BusinessUnit"
+                                           separator=",">
+        #{item}
+    </foreach>)
+        and  DIM.ID_DIM  in (<foreach item="item" index="index" collection="Division"
+                                      separator=",">
+        #{item}
+    </foreach>)
+
+        ) AS FilterResult
+        SELECT * INTO #TempDispatchReport2 FROM(
+        SELECT  distinct FT.businessUnit,FT.divison,RCT.ID_RCT AS RecipientID, RCT.NAME_RCT AS recipientName, RCT.CODE_RCT AS recipientCode,rct.state_rct as 'State',rct.zone_rct as 'Zone', ITM.CODE_ITM AS productCode,
+        ITM.NAME_ITM AS productName, IND.quantity_IND AS quantity,ROUND(SUM(IND.VALUE_IND),0) AS amount,  CONVERT(NVARCHAR,INH.CREATED_ON_INH,103) AS invoiceDate,
+        RCT.ID_TEM_RCT 'TeamID',DIP.ID_OWNER_USR_DIP 'PlanOwnerID',tem.NAME_TEM 'teamName',ulv.NAME_ULV 'desigation',inh.INVOICE_NO_INH 'invoiceNo' ,itc.NAME_ITC as 'ItemCategory'
+        FROM INVOICE_HEADER_INH INH
+        JOIN RECIPIENT_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        Join USER_LOV_ULV ulv on rct.ID_DESG_ULV_RCT=ulv.ID_ULV
+        join TEAM_MASTER_TEM tem on inh.ID_TEM_INH=tem.ID_TEM
+        JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
+        JOIN DISPATCH_DETAIL_DID DID ON IND.ID_DID_IND = DID.ID_DID
+        JOIN DISPATCH_PLAN_DIP DIP ON DID.ID_DIP_DID = DIP.ID_DIP
+        join INVENTORY_INV INV on IND.ID_INV_IND=INV.ID_INV
+        JOIN ITEM_MASTER_ITM ITM ON INV.ID_ITM_INV = ITM.ID_ITM
+        JOIN ITEM_CATEGORY_MASTER_ITC ITC ON ITM.ID_ITC_ITM = ITC.ID_ITC
+        JOIN COST_CENTER_MASTER_CCM CCM ON ITM.ID_CCM_ITM = CCM.ID_CCM
+        join COSTCENTER_BRAND_CBR CBR on CCM.ID_CCM=CBR.ID_CCM_CBR
+        JOIN BRAND_MASTER_BRD BRD ON CBR.ID_BRD_CBR = BRD.ID_BRD
+        JOIN #FilterTable1 FT on BRD.ID_BRD  = FT.ID_BRD
+        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{StartDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{EndDate} AS DATE)
+        AND INH.ID_STATUS_SLV_INH = '00000000-0000-0000-0000-000000000027'
+        AND IND.ID_DID_IND != '00000000-0000-0000-0000-000000000000'
+        AND DIP.IS_SPECIAL_DIP=#{filterplan}
+        GROUP BY  FT.businessUnit,FT.divison,RCT.ID_RCT,RCT.NAME_RCT,RCT.CODE_RCT,RCT.STATE_RCT,RCT.ZONE_RCT,ITM.CODE_ITM,ITM.NAME_ITM,IND.quantity_IND,INH.CREATED_ON_INH,RCT.ID_TEM_RCT,DIP.ID_OWNER_USR_DIP,tem.NAME_TEM,ulv.NAME_ULV,inh.INVOICE_NO_INH,itc.NAME_ITC
+        UNION ALL
+        SELECT  distinct FT.businessUnit,FT.divison,RCT.ID_RCT AS RecipientID, RCT.NAME_RCT AS recipientName, RCT.CODE_RCT AS recipientCode,rct.state_rct as 'State',rct.zone_rct as 'Zone', SMP.LMID_SMP AS productCode,
+        SMP.NAME_SMP AS productName, IND.quantity_IND AS quantity, round(SUM(IND.VALUE_IND),0) AS amount,  CONVERT(NVARCHAR,INH.CREATED_ON_INH,103) AS invoiceDate,
+        RCT.ID_TEM_RCT 'TeamID',DIP.ID_OWNER_USR_DIP 'PlanOwnerID',tem.NAME_TEM 'teamName',ulv.NAME_ULV 'desigation' ,inh.INVOICE_NO_INH 'invoiceNo',itc.NAME_ITC as 'ItemCategory'
+        FROM INVOICE_HEADER_INH INH
+        JOIN RECIPIENT_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        Join USER_LOV_ULV ulv on rct.ID_DESG_ULV_RCT=ulv.ID_ULV
+        join TEAM_MASTER_TEM tem on inh.ID_TEM_INH=tem.ID_TEM
+        JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
+        join INVENTORY_INV inv on ind.ID_INV_IND=inv.ID_INV
+        join ITEM_CATEGORY_MASTER_ITC itc on inv.ID_ITC_INV=itc.ID_ITC
+        JOIN DISPATCH_DETAIL_DID DID ON IND.ID_DID_IND = DID.ID_DID
+        JOIN DISPATCH_PLAN_DIP DIP ON DID.ID_DIP_DID = DIP.ID_DIP
+        JOIN SAMPLE_MASTER_SMP SMP ON IND.ID_ITM_IND = SMP.ID_SMP
+        JOIN BRAND_MASTER_BRD BRD ON SMP.ID_BRD_SMP = BRD.ID_BRD
+        JOIN  #FilterTable1 FT  ON BRD.ID_BRD = FT.ID_BRD
+        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{StartDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{EndDate} AS DATE)
+        AND INH.ID_STATUS_SLV_INH = '00000000-0000-0000-0000-000000000027'
+        AND IND.ID_DID_IND != '00000000-0000-0000-0000-000000000000'
+        AND DIP.IS_SPECIAL_DIP=#{filterplan}
+        GROUP BY  FT.businessUnit,FT.divison,RCT.ID_RCT,RCT.NAME_RCT,RCT.CODE_RCT,RCT.STATE_RCT,RCT.ZONE_RCT,SMP.LMID_SMP,SMP.NAME_SMP,IND.quantity_IND,INH.CREATED_ON_INH,RCT.ID_TEM_RCT,DIP.ID_OWNER_USR_DIP,tem.NAME_TEM,ulv.NAME_ULV,inh.INVOICE_NO_INH,itc.NAME_ITC
+        ) AS TempDispatchReport2
+        IF(#{UserDesgID} = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5')--BM
+        BEGIN
+        SELECT * FROM #TempDispatchReport2 WHERE PlanOwnerID = #{UserID} ORDER BY productName
+        END
+        ELSE IF(#{UserDesgID} = '88F90CCF-FB95-42DB-AECF-B4C5E8C25BE6')--BEX
+        BEGIN
+        SELECT * FROM #TempDispatchReport2 WHERE TeamID IN(
+        SELECT DISTINCT TET.ID_TEM_TET FROM TEAM_LEGAL_ENTITY_TET TET
+        join USER_LEGAL_ENTITY_ULE ULE on TET.ID_ETY_TET = ULE.ID_ETY_ULE
+        join USER_MASTER_USR USR on USR.ID_USR= ULE.ID_USR_ULE
+        WHERE USR.ID_USR = #{UserID}
+        )
+        ORDER BY productName
+        END
+        ELSE--HUB
+        BEGIN
+        SELECT * FROM #TempDispatchReport2 ORDER BY productName
+        END
+        DROP TABLE #TempDispatchReport2
+        END
+        ELSE
+        BEGIN
+        SELECT * INTO #TempDispatchReport3 FROM(
+        SELECT distinct FT.businessUnit,RCT.ID_RCT AS RecipientID, RCT.NAME_RCT AS recipientName, RCT.CODE_RCT AS recipientCode,rct.state_rct as 'State',rct.zone_rct as 'Zone', ITM.CODE_ITM AS productCode,
+        ITM.NAME_ITM AS productName, IND.quantity_IND AS quantity,Round(SUM(IND.VALUE_IND),0) AS amount, CONVERT(NVARCHAR,INH.CREATED_ON_INH,103) AS invoiceDate,
+        RCT.ID_TEM_RCT 'TeamID',DIP.ID_OWNER_USR_DIP 'PlanOwnerID',tem.NAME_TEM 'teamName',ulv.NAME_ULV 'desigation' ,inh.INVOICE_NO_INH 'invoiceNo',itc.NAME_ITC as 'ItemCategory'
+        FROM INVOICE_HEADER_INH INH
+        JOIN RECIPIENT_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        Join USER_LOV_ULV ulv on rct.ID_DESG_ULV_RCT=ulv.ID_ULV
+        join TEAM_MASTER_TEM tem on inh.ID_TEM_INH=tem.ID_TEM
+        JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
+        JOIN DISPATCH_DETAIL_DID DID ON IND.ID_DID_IND = DID.ID_DID
+        JOIN DISPATCH_PLAN_DIP DIP ON DID.ID_DIP_DID = DIP.ID_DIP
+        join INVENTORY_INV INV on IND.ID_INV_IND=INV.ID_INV
+        JOIN ITEM_MASTER_ITM ITM ON INV.ID_ITM_INV = ITM.ID_ITM
+        JOIN ITEM_CATEGORY_MASTER_ITC ITC ON ITM.ID_ITC_ITM = ITC.ID_ITC
+        JOIN COST_CENTER_MASTER_CCM CCM ON ITM.ID_CCM_ITM = CCM.ID_CCM
+        join COSTCENTER_BRAND_CBR CBR on CCM.ID_CCM=CBR.ID_CCM_CBR
+        JOIN BRAND_MASTER_BRD BRD ON CBR.ID_BRD_CBR = BRD.ID_BRD
+        JOIN #FilterTable1 FT on BRD.ID_BRD  = FT.ID_BRD
+        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{StartDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{EndDate} AS DATE)
+        AND INH.ID_STATUS_SLV_INH = '00000000-0000-0000-0000-000000000027'
+        AND IND.ID_DID_IND != '00000000-0000-0000-0000-000000000000'
+        AND DIP.IS_SPECIAL_DIP=#{filterplan}
+        GROUP BY FT.businessUnit,FT.divison,RCT.ID_RCT,RCT.NAME_RCT,RCT.CODE_RCT,RCT.STATE_RCT,RCT.ZONE_RCT,ITM.CODE_ITM,ITM.NAME_ITM,IND.quantity_IND,INH.CREATED_ON_INH,RCT.ID_TEM_RCT,DIP.ID_OWNER_USR_DIP,tem.NAME_TEM,ulv.NAME_ULV,inh.INVOICE_NO_INH,itc.NAME_ITC
+        UNION
+        SELECT distinct FT.businessUnit,RCT.ID_RCT AS RecipientID, RCT.NAME_RCT AS recipientName, RCT.CODE_RCT AS recipientCode, rct.state_rct as 'State',rct.zone_rct as 'Zone',SMP.LMID_SMP AS productCode,
+        SMP.NAME_SMP AS productName, IND.quantity_IND AS quantity,Round(SUM(IND.VALUE_IND),0) AS amount, CONVERT(NVARCHAR,INH.CREATED_ON_INH,103) AS invoiceDate,
+        RCT.ID_TEM_RCT 'TeamID',DIP.ID_OWNER_USR_DIP 'PlanOwnerID',tem.NAME_TEM 'teamName',ulv.NAME_ULV 'desigation' ,inh.INVOICE_NO_INH 'invoiceNo',itc.NAME_ITC as 'ItemCategory'
+        FROM INVOICE_HEADER_INH INH
+        JOIN RECIPIENT_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        Join USER_LOV_ULV ulv on rct.ID_DESG_ULV_RCT=ulv.ID_ULV
+        join TEAM_MASTER_TEM tem on inh.ID_TEM_INH=tem.ID_TEM
+        JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
+        join INVENTORY_INV inv on ind.ID_INV_IND=inv.ID_INV
+        join ITEM_CATEGORY_MASTER_ITC itc on itc.ID_ITC=inv.ID_ITC_INV
+        JOIN DISPATCH_DETAIL_DID DID ON IND.ID_DID_IND = DID.ID_DID
+        JOIN DISPATCH_PLAN_DIP DIP ON DID.ID_DIP_DID = DIP.ID_DIP
+        JOIN SAMPLE_MASTER_SMP SMP ON IND.ID_ITM_IND = SMP.ID_SMP
+        JOIN BRAND_MASTER_BRD BRD ON SMP.ID_BRD_SMP = BRD.ID_BRD
+        JOIN  #FilterTable1 FT  ON BRD.ID_BRD = FT.ID_BRD
+        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{StartDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{EndDate} AS DATE)
+        AND INH.ID_STATUS_SLV_INH = '00000000-0000-0000-0000-000000000027'
+        AND IND.ID_DID_IND != '00000000-0000-0000-0000-000000000000'
+        AND DIP.IS_SPECIAL_DIP=#{filterplan}
+        GROUP BY FT.businessUnit,FT.divison,RCT.ID_RCT,RCT.NAME_RCT,RCT.CODE_RCT,RCT.STATE_RCT,RCT.ZONE_RCT,SMP.LMID_SMP,SMP.NAME_SMP,IND.quantity_IND,INH.CREATED_ON_INH,RCT.ID_TEM_RCT,DIP.ID_OWNER_USR_DIP,tem.NAME_TEM,ulv.NAME_ULV ,inh.INVOICE_NO_INH,itc.NAME_ITC
+        ) AS TempDispatchReport3
+
+
+        IF(#{UserDesgID} = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5')--BM
+        BEGIN
+        SELECT distinct * FROM #TempDispatchReport3 WHERE PlanOwnerID = #{UserID} ORDER BY productName
+        END
+        ELSE IF(#{UserDesgID} = '88F90CCF-FB95-42DB-AECF-B4C5E8C25BE6')--BEX
+        BEGIN
+        SELECT distinct * FROM #TempDispatchReport3 WHERE TeamID IN
+        (SELECT DISTINCT TET.ID_TEM_TET FROM TEAM_LEGAL_ENTITY_TET TET
+        join USER_LEGAL_ENTITY_ULE ULE on TET.ID_ETY_TET = ULE.ID_ETY_ULE
+        join USER_MASTER_USR USR on USR.ID_USR= ULE.ID_USR_ULE
+        WHERE USR.ID_USR = #{UserID}
+        )
+        ORDER BY productName
+        END
+        ELSE--HUB
+        BEGIN
+        SELECT distinct * FROM #TempDispatchReport3 ORDER BY productName
+        END
+
+        DROP TABLE #FilterTable1
+        DROP TABLE #TempDispatchReport3
+        END
+        end
     </select>
 
 
@@ -138,10 +457,160 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
 
 
 
-    <select id="getReportDispatchRegister" resultType="com.squer.promobee.controller.dto.DispatchRegisterReportDTO" parameterType = "map" statementType = "CALLABLE">
-        { call PROC_ReportDispatchRegister (#{StartDate, jdbcType = VARCHAR, mode = IN}, #{EndDate, jdbcType = VARCHAR, mode = IN}, #{UserID, jdbcType = VARCHAR, mode = IN},
-        #{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN}, #{Division, jdbcType = VARCHAR, mode = IN},
-        #{Team, jdbcType = VARCHAR, mode = IN},#{StatusID, jdbcType = VARCHAR, mode = IN}, #{Filterplan, jdbcType = INTEGER, mode = IN}) }
+<!--    <select id="getReportDispatchRegister" resultType="com.squer.promobee.controller.dto.DispatchRegisterReportDTO" parameterType = "map" statementType = "CALLABLE">-->
+<!--        { call PROC_ReportDispatchRegister (#{StartDate, jdbcType = VARCHAR, mode = IN}, #{EndDate, jdbcType = VARCHAR, mode = IN}, #{UserID, jdbcType = VARCHAR, mode = IN},-->
+<!--        #{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN}, #{Division, jdbcType = VARCHAR, mode = IN},-->
+<!--        #{Team, jdbcType = VARCHAR, mode = IN},#{StatusID, jdbcType = VARCHAR, mode = IN}, #{Filterplan, jdbcType = INTEGER, mode = IN}) }-->
+<!--    </select>-->
+
+    <select id="getReportDispatchRegister" resultType="com.squer.promobee.controller.dto.DispatchRegisterReportDTO" >
+
+        IF (#{filterplan}=2)
+        begin
+        SELECT * INTO #FilterTable FROM
+        (
+        select TEM.ID_TEM,BUM.NAME_BUM as 'businessUnit', DIM.NAME_DIM as 'division' from
+        TEAM_MASTER_TEM TEM join division_MASTER_DIM DIM on TEM.ID_DIM_TEM =Dim.ID_DIM
+        join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
+        where DIM.ID_BUM_DIM  in (<foreach item="item" index="index" collection="BusinessUnit"
+                                           separator=",">
+        #{item}
+    </foreach>)
+        and  DIM.ID_DIM  in (<foreach item="item" index="index" collection="Division"
+                                      separator=",">
+        #{item}
+    </foreach>)
+        TEM.ID_TEM  in (<foreach item="item" index="index" collection="Team"
+                                 separator=",">
+        #{item}
+    </foreach>)
+        ) AS FilterResult
+
+        SELECT * INTO #TempDispatchRegisterReport FROM(
+        SELECT  FT.businessUnit,FT.division, INH.ID_INH 'InvoiceHeaderID',INHDIP.ID_OWNER_USR_DIP 'PlanOwnerID',INH.LR_NUMBER_INH AS lrNo, TRN.NAME_TRN AS courierName, INH.NO_OF_BOXES_INH AS noBoxes,
+        INH.weight_INH AS 'weights',	INH.INVOICE_NO_INH AS invoiceNo,ROUND(ISNULL(INH.SAMPLE_value_INH,0) + ISNUll(INH.OTHER_ITEM_value_INH,0),2) as 'values',
+        ROUND(ISNULL(INH.SAMPLE_value_INH,0),2)  as 'sampleValue', round(ISNUll(INH.OTHER_ITEM_value_INH,0),2) as 'itemValue',
+        CONVERT(nvarchar(100),INH.CREATED_ON_INH, 103) AS invoiceDate,
+        RCT.ID_RCT 'recipientID',RCT.NAME_RCT AS recipient, RCT.CODE_RCT AS employeeCode,
+        INH.address_LINE_1_INH + ' ' + INH.address_LINE_2_INH AS 'address', INH.address_city_INH AS city, INH.address_state_INH AS 'state',
+        INH.address_zip_INH AS zip, INH.PHONE_INH AS mobileNo,TEM.ID_TEM 'TeamID',TEM.NAME_TEM AS teamName,TRD.DELIVERED_TO_NAME_TRD as 'nameofReceiver',
+        CONVERT(nvarchar(100),TRD.ACTUAL_DELIVERY_DATE_TRD, 103) as 'dateofDelivery',TRD.cost_OF_DELIVERY_TRD as 'cost' ,ULV.NAME_ULV as 'designation'
+        FROM INVOICE_HEADER_INH INH
+        JOIN
+        (SELECT DISTINCT IDP.ID_INH_IDP,DIP.ID_DIP,DIP.ID_OWNER_USR_DIP,dip.IS_SPECIAL_DIP FROM DISPATCH_PLAN_DIP DIP JOIN INVOICE_DISPATCH_PLAN_IDP IDP
+        ON DIP.ID_DIP = IDP.ID_PLAN_IDP) INHDIP ON INH.ID_INH = INHDIP.ID_INH_IDP
+        left join TRANSPORT_DETAIL_TRD TRD ON INH.ID_INH=trd.ID_INH_TRD
+        JOIN TRANSPORTER_TRN TRN ON INH.ID_TRN_INH = TRN.ID_TRN
+        JOIN recipient_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        join #FilterTable FT on RCT.ID_TEM_RCT = FT.ID_TEM
+        JOIN TEAM_MASTER_TEM TEM ON INH.ID_TEM_INH = TEM.ID_TEM
+        join USER_LOV_ULV ULV on INH.ID_RCT_DESG_ULV_INH =ulv.ID_ULV
+        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{StartDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{EndDate} AS DATE)
+        and INH.ID_STATUS_SLV_INH !='00000000-0000-0000-0000-000000000028'
+        --and INHDIP.IS_SPECIAL_DIP= #{filterplan}
+        )
+
+        AS TempDispatchRegisterReport
+
+        IF(#{UserDesgID} = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5')--BM
+        BEGIN
+        SELECT distinct * FROM #TempDispatchRegisterReport WHERE PlanOwnerID = #{UserID} ORDER BY invoiceNo
+        END
+        ELSE IF(#{UserDesgID} = '88F90CCF-FB95-42DB-AECF-B4C5E8C25BE6')--BEX
+        BEGIN
+        SELECT distinct businessUnit,division, InvoiceHeaderID,lrNo,courierName,noBoxes,weights,invoiceNo,values,invoiceDate,recipientID,recipient,employeeCode,
+        address, city,'state',zip,mobileNo,TeamID,teamName,nameofReceiver,dateofDelivery,cost,designation, sampleValue, itemValue
+        FROM #TempDispatchRegisterReport WHERE TeamID IN
+        (SELECT DISTINCT TET.ID_TEM_TET FROM USER_MASTER_USR USR
+        JOIN LEGAL_ENTITY_MASTER_ETY ETY ON USR.ID_ETY_USR = ETY.ID_ETY
+        JOIN TEAM_LEGAL_ENTITY_TET TET ON ETY.ID_ETY = TET.ID_ETY_TET
+        WHERE ID_USR = #{UserID})
+        ORDER BY invoiceNo
+        END
+        ELSE--HUB
+        BEGIN
+
+        SELECT distinct businessUnit,division,InvoiceHeaderID,lrNo,courierName,noBoxes,weights,invoiceNo,values,invoiceDate,recipientID,recipient,employeeCode,
+        address, city,state,zip,mobileNo,TeamID,teamName,nameofReceiver,dateofDelivery,cost,designation, sampleValue, itemValue
+        FROM #TempDispatchRegisterReport ORDER BY invoiceNo
+        END
+        DROP table #FilterTable
+        DROP TABLE #TempDispatchRegisterReport
+        end
+        else
+        begin
+        SELECT * INTO #FilterTable1 FROM
+        (
+        select TEM.ID_TEM,BUM.NAME_BUM as 'businessUnit', DIM.NAME_DIM as 'division' from
+        TEAM_MASTER_TEM TEM join division_MASTER_DIM DIM on TEM.ID_DIM_TEM =Dim.ID_DIM
+        join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
+        where DIM.ID_BUM_DIM  in (<foreach item="item" index="index" collection="BusinessUnit"
+                                           separator=",">
+        #{item}
+    </foreach>)
+        and  DIM.ID_DIM  in (<foreach item="item" index="index" collection="Division"
+                                      separator=",">
+        #{item}
+    </foreach>)
+        TEM.ID_TEM  in (<foreach item="item" index="index" collection="Team"
+                                 separator=",">
+        #{item}
+    </foreach>)
+        ) AS FilterResult
+
+        SELECT * INTO #TempDispatchRegisterReport1 FROM(
+        SELECT  FT.businessUnit,FT.division, INH.ID_INH 'InvoiceHeaderID',INHDIP.ID_OWNER_USR_DIP 'PlanOwnerID',INH.LR_NUMBER_INH AS lrNo, TRN.NAME_TRN AS courierName, INH.NO_OF_BOXES_INH AS noBoxes,
+        INH.weight_INH AS 'weights',	INH.INVOICE_NO_INH AS invoiceNo,ROUND(ISNULL(INH.SAMPLE_value_INH,0) + ISNUll(INH.OTHER_ITEM_value_INH,0),2) as 'values',
+        ROUND(ISNULL(INH.SAMPLE_value_INH,0),2)  as 'sampleValue', round(ISNUll(INH.OTHER_ITEM_value_INH,0),2) as 'itemValue',
+        CONVERT(nvarchar(100),INH.CREATED_ON_INH, 103) AS invoiceDate,
+        RCT.ID_RCT 'recipientID',RCT.NAME_RCT AS recipient, RCT.CODE_RCT AS employeeCode,
+        INH.address_LINE_1_INH + ' ' + INH.address_LINE_2_INH AS 'address', INH.address_city_INH AS city, INH.address_state_INH AS 'state',
+        INH.address_zip_INH AS zip, INH.PHONE_INH AS mobileNo,TEM.ID_TEM 'TeamID',TEM.NAME_TEM AS teamName,TRD.DELIVERED_TO_NAME_TRD as 'nameofReceiver',
+        CONVERT(nvarchar(100),TRD.ACTUAL_DELIVERY_DATE_TRD, 103) as 'dateofDelivery',TRD.cost_OF_DELIVERY_TRD as 'cost' ,ULV.NAME_ULV as 'designation'
+        FROM INVOICE_HEADER_INH INH
+        JOIN
+        (SELECT DISTINCT IDP.ID_INH_IDP,DIP.ID_DIP,DIP.ID_OWNER_USR_DIP,dip.IS_SPECIAL_DIP FROM DISPATCH_PLAN_DIP DIP JOIN INVOICE_DISPATCH_PLAN_IDP IDP
+        ON DIP.ID_DIP = IDP.ID_PLAN_IDP) INHDIP ON INH.ID_INH = INHDIP.ID_INH_IDP
+        left join TRANSPORT_DETAIL_TRD TRD ON INH.ID_INH=trd.ID_INH_TRD
+        JOIN TRANSPORTER_TRN TRN ON INH.ID_TRN_INH = TRN.ID_TRN
+        JOIN recipient_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        join #FilterTable1 FT on RCT.ID_TEM_RCT = FT.ID_TEM
+        JOIN TEAM_MASTER_TEM TEM ON INH.ID_TEM_INH = TEM.ID_TEM
+        join USER_LOV_ULV ULV on INH.ID_RCT_DESG_ULV_INH =ulv.ID_ULV
+        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{StartDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{EndDate} AS DATE)
+        and INH.ID_STATUS_SLV_INH !='00000000-0000-0000-0000-000000000028'
+        and INHDIP.IS_SPECIAL_DIP= #{filterplan}
+        )
+
+        AS TempDispatchRegisterReport1
+        IF(#{UserDesgID} = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5')--BM
+        BEGIN
+        SELECT distinct * FROM #TempDispatchRegisterReport1 WHERE PlanOwnerID = #{UserID} ORDER BY invoiceNo
+        END
+        ELSE IF(#{UserDesgID} = '88F90CCF-FB95-42DB-AECF-B4C5E8C25BE6')--BEX
+        BEGIN
+        SELECT distinct businessUnit,division, InvoiceHeaderID,lrNo,courierName,noBoxes,weights,invoiceNo,values,invoiceDate,recipientID,recipient,employeeCode,
+        address, city,'state',zip,mobileNo,TeamID,teamName,nameofReceiver,dateofDelivery,cost,designation, sampleValue, itemValue
+        FROM #TempDispatchRegisterReport1 WHERE TeamID IN
+        (SELECT DISTINCT TET.ID_TEM_TET FROM USER_MASTER_USR USR
+        JOIN LEGAL_ENTITY_MASTER_ETY ETY ON USR.ID_ETY_USR = ETY.ID_ETY
+        JOIN TEAM_LEGAL_ENTITY_TET TET ON ETY.ID_ETY = TET.ID_ETY_TET
+        WHERE ID_USR = #{UserID})
+        ORDER BY invoiceNo
+        END
+        ELSE--HUB
+        BEGIN
+
+        SELECT distinct businessUnit,division,InvoiceHeaderID,lrNo,courierName,noBoxes,weights,invoiceNo,values,invoiceDate,recipientID,recipient,employeeCode,
+        address, city,state,zip,mobileNo,TeamID,teamName,nameofReceiver,dateofDelivery,cost,designation, sampleValue, itemValue
+        FROM #TempDispatchRegisterReport1 ORDER BY invoiceNo
+        END
+
+        DROP TABLE #FilterTable1
+        DROP TABLE #TempDispatchRegisterReport1
+        end
+
+
     </select>
 
 
