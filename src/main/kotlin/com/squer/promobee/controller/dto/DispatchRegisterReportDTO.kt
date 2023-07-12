@@ -1,28 +1,28 @@
 package com.squer.promobee.controller.dto
 
 class DispatchRegisterReportDTO {
-    val businessUnit:String ?= null
-    val divison:String ?= null
-    val lrNo:String ?= null
-    val courierName:String ?= null
-    val noBoxes:String ?= null
-    val weights:String ?= null
-    val invoiceNo:String ?= null
-    val values:String ?= null
-    val invoiceDate:String ?= null
-    val recipient:String ?= null
-    val designation:String ?= null
-    val employeeCode:String ?= null
-    val address:String ?= null
-    val city:String ?= null
-    val state:String ?= null
-    val zip:String ?= null
-    val mobileNo:String ?= null
-    val teamName:String ?= null
-    val nameofReceiver:String ?= null
-    val dateofDelivery:String ?= null
-    val cost:String ?= null
-    val sampleValue:String ?= null
-    val itemValue:String ?= null
+    val BusinessUnit:String ?= null
+    val Divison:String ?= null
+    val LRNo:String ?= null
+    val CourierName:String ?= null
+    val NoOfBoxes:String ?= null
+    val Weight:String ?= null
+    val InvoiceNo:String ?= null
+    val Value:String ?= null
+    val InvoiceDate:String ?= null
+    val Recipient:String ?= null
+    val Designation:String ?= null
+    val EmployeeCode:String ?= null
+    val Address:String ?= null
+    val City:String ?= null
+    val State:String ?= null
+    val Zip:String ?= null
+    val MobileNo:String ?= null
+    val TeamName:String ?= null
+    val NameofReceiver:String ?= null
+    val DateofDelivery:String ?= null
+    val Cost:String ?= null
+    val SampleValue:String ?= null
+    val ItemValue:String ?= null
 
 }

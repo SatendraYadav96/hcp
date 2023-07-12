@@ -463,76 +463,225 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
 <!--        #{Team, jdbcType = VARCHAR, mode = IN},#{StatusID, jdbcType = VARCHAR, mode = IN}, #{Filterplan, jdbcType = INTEGER, mode = IN}) }-->
 <!--    </select>-->
 
-    <select id="getReportDispatchRegister" resultType="com.squer.promobee.controller.dto.DispatchRegisterReportDTO" >
+<!--    <select id="getReportDispatchRegister" resultType="com.squer.promobee.controller.dto.DispatchRegisterReportDTO" >-->
 
+<!--        IF (#{filterplan}=2)-->
+<!--        begin-->
+<!--        SELECT * INTO #FilterTable FROM-->
+<!--        (-->
+<!--        select TEM.ID_TEM,BUM.NAME_BUM as 'businessUnit', DIM.NAME_DIM as 'division' from-->
+<!--        TEAM_MASTER_TEM TEM join division_MASTER_DIM DIM on TEM.ID_DIM_TEM =Dim.ID_DIM-->
+<!--        join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM-->
+<!--        where DIM.ID_BUM_DIM  in (<foreach item="item" index="index" collection="BusinessUnit"-->
+<!--                                           separator=",">-->
+<!--        #{item}-->
+<!--    </foreach>)-->
+<!--        and  DIM.ID_DIM  in (<foreach item="item" index="index" collection="Division"-->
+<!--                                      separator=",">-->
+<!--        #{item}-->
+<!--    </foreach>)-->
+<!--        TEM.ID_TEM  in (<foreach item="item" index="index" collection="Team"-->
+<!--                                 separator=",">-->
+<!--        #{item}-->
+<!--    </foreach>)-->
+<!--        ) AS FilterResult-->
+
+<!--        SELECT * INTO #TempDispatchRegisterReport FROM(-->
+<!--        SELECT  FT.businessUnit,FT.division, INH.ID_INH 'InvoiceHeaderID',INHDIP.ID_OWNER_USR_DIP 'PlanOwnerID',INH.LR_NUMBER_INH AS lrNo, TRN.NAME_TRN AS courierName, INH.NO_OF_BOXES_INH AS noBoxes,-->
+<!--        INH.weight_INH AS 'weights',	INH.INVOICE_NO_INH AS invoiceNo,ROUND(ISNULL(INH.SAMPLE_value_INH,0) + ISNUll(INH.OTHER_ITEM_value_INH,0),2) as 'values',-->
+<!--        ROUND(ISNULL(INH.SAMPLE_value_INH,0),2)  as 'sampleValue', round(ISNUll(INH.OTHER_ITEM_value_INH,0),2) as 'itemValue',-->
+<!--        CONVERT(nvarchar(100),INH.CREATED_ON_INH, 103) AS invoiceDate,-->
+<!--        RCT.ID_RCT 'recipientID',RCT.NAME_RCT AS recipient, RCT.CODE_RCT AS employeeCode,-->
+<!--        INH.address_LINE_1_INH + ' ' + INH.address_LINE_2_INH AS 'address', INH.address_city_INH AS city, INH.address_state_INH AS 'state',-->
+<!--        INH.address_zip_INH AS zip, INH.PHONE_INH AS mobileNo,TEM.ID_TEM 'TeamID',TEM.NAME_TEM AS teamName,TRD.DELIVERED_TO_NAME_TRD as 'nameofReceiver',-->
+<!--        CONVERT(nvarchar(100),TRD.ACTUAL_DELIVERY_DATE_TRD, 103) as 'dateofDelivery',TRD.cost_OF_DELIVERY_TRD as 'cost' ,ULV.NAME_ULV as 'designation'-->
+<!--        FROM INVOICE_HEADER_INH INH-->
+<!--        JOIN-->
+<!--        (SELECT DISTINCT IDP.ID_INH_IDP,DIP.ID_DIP,DIP.ID_OWNER_USR_DIP,dip.IS_SPECIAL_DIP FROM DISPATCH_PLAN_DIP DIP JOIN INVOICE_DISPATCH_PLAN_IDP IDP-->
+<!--        ON DIP.ID_DIP = IDP.ID_PLAN_IDP) INHDIP ON INH.ID_INH = INHDIP.ID_INH_IDP-->
+<!--        left join TRANSPORT_DETAIL_TRD TRD ON INH.ID_INH=trd.ID_INH_TRD-->
+<!--        JOIN TRANSPORTER_TRN TRN ON INH.ID_TRN_INH = TRN.ID_TRN-->
+<!--        JOIN recipient_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT-->
+<!--        join #FilterTable FT on RCT.ID_TEM_RCT = FT.ID_TEM-->
+<!--        JOIN TEAM_MASTER_TEM TEM ON INH.ID_TEM_INH = TEM.ID_TEM-->
+<!--        join USER_LOV_ULV ULV on INH.ID_RCT_DESG_ULV_INH =ulv.ID_ULV-->
+<!--        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{StartDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{EndDate} AS DATE)-->
+<!--        and INH.ID_STATUS_SLV_INH !='00000000-0000-0000-0000-000000000028'-->
+<!--        &#45;&#45;and INHDIP.IS_SPECIAL_DIP= #{filterplan}-->
+<!--        )-->
+
+<!--        AS TempDispatchRegisterReport-->
+
+<!--        IF(#{UserDesgID} = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5')&#45;&#45;BM-->
+<!--        BEGIN-->
+<!--        SELECT distinct * FROM #TempDispatchRegisterReport WHERE PlanOwnerID = #{UserID} ORDER BY InvoiceNo-->
+<!--        END-->
+<!--        ELSE IF(#{UserDesgID} = '88F90CCF-FB95-42DB-AECF-B4C5E8C25BE6')&#45;&#45;BEX-->
+<!--        BEGIN-->
+<!--        SELECT distinct businessUnit,division, InvoiceHeaderID,lrNo,courierName,noBoxes,weights,invoiceNo,values,invoiceDate,recipientID,recipient,employeeCode,-->
+<!--        address, city,'state',zip,mobileNo,TeamID,teamName,nameofReceiver,dateofDelivery,cost,designation, sampleValue, itemValue-->
+<!--        FROM #TempDispatchRegisterReport WHERE TeamID IN-->
+<!--        (SELECT DISTINCT TET.ID_TEM_TET FROM USER_MASTER_USR USR-->
+<!--        JOIN LEGAL_ENTITY_MASTER_ETY ETY ON USR.ID_ETY_USR = ETY.ID_ETY-->
+<!--        JOIN TEAM_LEGAL_ENTITY_TET TET ON ETY.ID_ETY = TET.ID_ETY_TET-->
+<!--         WHERE ID_USR = #{UserID})-->
+<!--        ORDER BY InvoiceNo-->
+<!--        END-->
+<!--        ELSE&#45;&#45;HUB-->
+<!--        BEGIN-->
+
+<!--        SELECT distinct businessUnit,division,InvoiceHeaderID,lrNo,courierName,noBoxes,weights,invoiceNo,values,invoiceDate,recipientID,recipient,employeeCode,-->
+<!--        address, city,state,zip,mobileNo,TeamID,teamName,nameofReceiver,dateofDelivery,cost,designation, sampleValue, itemValue-->
+<!--        FROM #TempDispatchRegisterReport ORDER BY invoiceNo-->
+<!--        END-->
+<!--        DROP table #FilterTable-->
+<!--        DROP TABLE #TempDispatchRegisterReport-->
+<!--        end-->
+<!--        else-->
+<!--        begin-->
+<!--        SELECT * INTO #FilterTable1 FROM-->
+<!--        (-->
+<!--        select TEM.ID_TEM,BUM.NAME_BUM as 'businessUnit', DIM.NAME_DIM as 'division' from-->
+<!--        TEAM_MASTER_TEM TEM join division_MASTER_DIM DIM on TEM.ID_DIM_TEM =Dim.ID_DIM-->
+<!--        join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM-->
+<!--        where DIM.ID_BUM_DIM  in (<foreach item="item" index="index" collection="BusinessUnit"-->
+<!--                                           separator=",">-->
+<!--        #{item}-->
+<!--    </foreach>)-->
+<!--        and  DIM.ID_DIM  in (<foreach item="item" index="index" collection="Division"-->
+<!--                                      separator=",">-->
+<!--        #{item}-->
+<!--    </foreach>)-->
+<!--        TEM.ID_TEM  in (<foreach item="item" index="index" collection="Team"-->
+<!--                                 separator=",">-->
+<!--        #{item}-->
+<!--    </foreach>)-->
+<!--        ) AS FilterResult-->
+
+<!--        SELECT * INTO #TempDispatchRegisterReport1 FROM(-->
+<!--        SELECT  FT.businessUnit,FT.division, INH.ID_INH 'InvoiceHeaderID',INHDIP.ID_OWNER_USR_DIP 'PlanOwnerID',INH.LR_NUMBER_INH AS lrNo, TRN.NAME_TRN AS courierName, INH.NO_OF_BOXES_INH AS noBoxes,-->
+<!--        INH.weight_INH AS 'weights',	INH.INVOICE_NO_INH AS invoiceNo,ROUND(ISNULL(INH.SAMPLE_value_INH,0) + ISNUll(INH.OTHER_ITEM_value_INH,0),2) as 'values',-->
+<!--        ROUND(ISNULL(INH.SAMPLE_value_INH,0),2)  as 'sampleValue', round(ISNUll(INH.OTHER_ITEM_value_INH,0),2) as 'itemValue',-->
+<!--        CONVERT(nvarchar(100),INH.CREATED_ON_INH, 103) AS invoiceDate,-->
+<!--        RCT.ID_RCT 'recipientID',RCT.NAME_RCT AS recipient, RCT.CODE_RCT AS employeeCode,-->
+<!--        INH.address_LINE_1_INH + ' ' + INH.address_LINE_2_INH AS 'address', INH.address_city_INH AS city, INH.address_state_INH AS 'state',-->
+<!--        INH.address_zip_INH AS zip, INH.PHONE_INH AS mobileNo,TEM.ID_TEM 'TeamID',TEM.NAME_TEM AS teamName,TRD.DELIVERED_TO_NAME_TRD as 'nameofReceiver',-->
+<!--        CONVERT(nvarchar(100),TRD.ACTUAL_DELIVERY_DATE_TRD, 103) as 'dateofDelivery',TRD.cost_OF_DELIVERY_TRD as 'cost' ,ULV.NAME_ULV as 'designation'-->
+<!--        FROM INVOICE_HEADER_INH INH-->
+<!--        JOIN-->
+<!--        (SELECT DISTINCT IDP.ID_INH_IDP,DIP.ID_DIP,DIP.ID_OWNER_USR_DIP,dip.IS_SPECIAL_DIP FROM DISPATCH_PLAN_DIP DIP JOIN INVOICE_DISPATCH_PLAN_IDP IDP-->
+<!--        ON DIP.ID_DIP = IDP.ID_PLAN_IDP) INHDIP ON INH.ID_INH = INHDIP.ID_INH_IDP-->
+<!--        left join TRANSPORT_DETAIL_TRD TRD ON INH.ID_INH=trd.ID_INH_TRD-->
+<!--        JOIN TRANSPORTER_TRN TRN ON INH.ID_TRN_INH = TRN.ID_TRN-->
+<!--        JOIN recipient_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT-->
+<!--        join #FilterTable1 FT on RCT.ID_TEM_RCT = FT.ID_TEM-->
+<!--        JOIN TEAM_MASTER_TEM TEM ON INH.ID_TEM_INH = TEM.ID_TEM-->
+<!--        join USER_LOV_ULV ULV on INH.ID_RCT_DESG_ULV_INH =ulv.ID_ULV-->
+<!--        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{StartDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{EndDate} AS DATE)-->
+<!--        and INH.ID_STATUS_SLV_INH !='00000000-0000-0000-0000-000000000028'-->
+<!--        and INHDIP.IS_SPECIAL_DIP= #{filterplan}-->
+<!--        )-->
+
+<!--        AS TempDispatchRegisterReport1-->
+<!--        IF(#{UserDesgID} = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5')&#45;&#45;BM-->
+<!--        BEGIN-->
+<!--        SELECT distinct * FROM #TempDispatchRegisterReport1 WHERE PlanOwnerID = #{UserID} ORDER BY InvoiceNo-->
+<!--        END-->
+<!--        ELSE IF(#{UserDesgID} = '88F90CCF-FB95-42DB-AECF-B4C5E8C25BE6')&#45;&#45;BEX-->
+<!--        BEGIN-->
+<!--        SELECT distinct businessUnit,division, InvoiceHeaderID,lrNo,courierName,noBoxes,weights,invoiceNo,values,invoiceDate,recipientID,recipient,employeeCode,-->
+<!--        address, city,'state',zip,mobileNo,TeamID,teamName,nameofReceiver,dateofDelivery,cost,designation, sampleValue, itemValue-->
+<!--        FROM #TempDispatchRegisterReport1 WHERE TeamID IN-->
+<!--        (SELECT DISTINCT TET.ID_TEM_TET FROM USER_MASTER_USR USR-->
+<!--        JOIN LEGAL_ENTITY_MASTER_ETY ETY ON USR.ID_ETY_USR = ETY.ID_ETY-->
+<!--        WHERE ID_USR = #{UserID})-->
+<!--        ORDER BY InvoiceNo-->
+<!--        END-->
+<!--        ELSE&#45;&#45;HUB-->
+<!--        BEGIN-->
+
+<!--        SELECT distinct businessUnit,division,InvoiceHeaderID,lrNo,courierName,noBoxes,weights,invoiceNo,values,invoiceDate,recipientID,recipient,employeeCode,-->
+<!--        address, city,state,zip,mobileNo,TeamID,teamName,nameofReceiver,dateofDelivery,cost,designation, sampleValue, itemValue-->
+<!--        FROM #TempDispatchRegisterReport1 ORDER BY invoiceNo-->
+<!--        END-->
+
+<!--        DROP TABLE #FilterTable1-->
+<!--        DROP TABLE #TempDispatchRegisterReport1-->
+<!--        end-->
+
+
+<!--    </select>-->
+
+
+    <select id="getReportDispatchRegister" resultType="com.squer.promobee.controller.dto.DispatchRegisterReportDTO">
         IF (#{filterplan}=2)
         begin
         SELECT * INTO #FilterTable FROM
         (
-        select TEM.ID_TEM,BUM.NAME_BUM as 'businessUnit', DIM.NAME_DIM as 'division' from
-        TEAM_MASTER_TEM TEM join division_MASTER_DIM DIM on TEM.ID_DIM_TEM =Dim.ID_DIM
+        select TEM.ID_TEM,BUM.NAME_BUM as 'BusinessUnit', DIM.NAME_DIM as 'Division' from
+        TEAM_MASTER_TEM TEM join DIVISION_MASTER_DIM DIM on TEM.ID_DIM_TEM =Dim.ID_DIM
         join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
         where DIM.ID_BUM_DIM  in (<foreach item="item" index="index" collection="BusinessUnit"
                                            separator=",">
         #{item}
     </foreach>)
-        and  DIM.ID_DIM  in (<foreach item="item" index="index" collection="Division"
-                                      separator=",">
+        and DIM.ID_DIM  in (<foreach item="item" index="index" collection="Division"
+                                     separator=",">
         #{item}
     </foreach>)
-        TEM.ID_TEM  in (<foreach item="item" index="index" collection="Team"
-                                 separator=",">
+        and TEM.ID_TEM  in (<foreach item="item" index="index" collection="Team"
+                                     separator=",">
         #{item}
     </foreach>)
         ) AS FilterResult
 
         SELECT * INTO #TempDispatchRegisterReport FROM(
-        SELECT  FT.businessUnit,FT.division, INH.ID_INH 'InvoiceHeaderID',INHDIP.ID_OWNER_USR_DIP 'PlanOwnerID',INH.LR_NUMBER_INH AS lrNo, TRN.NAME_TRN AS courierName, INH.NO_OF_BOXES_INH AS noBoxes,
-        INH.weight_INH AS 'weights',	INH.INVOICE_NO_INH AS invoiceNo,ROUND(ISNULL(INH.SAMPLE_value_INH,0) + ISNUll(INH.OTHER_ITEM_value_INH,0),2) as 'values',
-        ROUND(ISNULL(INH.SAMPLE_value_INH,0),2)  as 'sampleValue', round(ISNUll(INH.OTHER_ITEM_value_INH,0),2) as 'itemValue',
-        CONVERT(nvarchar(100),INH.CREATED_ON_INH, 103) AS invoiceDate,
-        RCT.ID_RCT 'recipientID',RCT.NAME_RCT AS recipient, RCT.CODE_RCT AS employeeCode,
-        INH.address_LINE_1_INH + ' ' + INH.address_LINE_2_INH AS 'address', INH.address_city_INH AS city, INH.address_state_INH AS 'state',
-        INH.address_zip_INH AS zip, INH.PHONE_INH AS mobileNo,TEM.ID_TEM 'TeamID',TEM.NAME_TEM AS teamName,TRD.DELIVERED_TO_NAME_TRD as 'nameofReceiver',
-        CONVERT(nvarchar(100),TRD.ACTUAL_DELIVERY_DATE_TRD, 103) as 'dateofDelivery',TRD.cost_OF_DELIVERY_TRD as 'cost' ,ULV.NAME_ULV as 'designation'
+        SELECT  FT.BusinessUnit,FT.Division, INH.ID_INH 'InvoiceHeaderID',INHDIP.ID_OWNER_USR_DIP 'PlanOwnerID',INH.LR_NUMBER_INH AS LRNo, TRN.NAME_TRN AS CourierName, INH.NO_OF_BOXES_INH AS NoOfBoxes,
+        INH.WEIGHT_INH AS 'Weight',	INH.INVOICE_NO_INH AS InvoiceNo,ROUND(ISNULL(INH.SAMPLE_VALUE_INH,0) + ISNUll(INH.OTHER_ITEM_VALUE_INH,0),2) as 'Value',
+        ROUND(ISNULL(INH.SAMPLE_VALUE_INH,0),2)  as 'SampleValue', round(ISNUll(INH.OTHER_ITEM_VALUE_INH,0),2) as 'ItemValue',
+        CONVERT(nvarchar(100),INH.CREATED_ON_INH, 103) AS InvoiceDate,
+        RCT.ID_RCT 'RecipientID',RCT.NAME_RCT AS Recipient, RCT.CODE_RCT AS EmployeeCode,
+        INH.ADDRESS_LINE_1_INH + ' ' + INH.ADDRESS_LINE_2_INH AS 'Address', INH.ADDRESS_CITY_INH AS City, INH.ADDRESS_STATE_INH AS 'State',
+        INH.ADDRESS_ZIP_INH AS Zip, INH.PHONE_INH AS MobileNo,TEM.ID_TEM 'TeamID',TEM.NAME_TEM AS TeamName,TRD.DELIVERED_TO_NAME_TRD as 'NameofReceiver',
+        CONVERT(nvarchar(100),TRD.ACTUAL_DELIVERY_DATE_TRD, 103) as 'DateofDelivery',TRD.COST_OF_DELIVERY_TRD as 'Cost' ,ULV.NAME_ULV as 'Designation'
         FROM INVOICE_HEADER_INH INH
         JOIN
         (SELECT DISTINCT IDP.ID_INH_IDP,DIP.ID_DIP,DIP.ID_OWNER_USR_DIP,dip.IS_SPECIAL_DIP FROM DISPATCH_PLAN_DIP DIP JOIN INVOICE_DISPATCH_PLAN_IDP IDP
         ON DIP.ID_DIP = IDP.ID_PLAN_IDP) INHDIP ON INH.ID_INH = INHDIP.ID_INH_IDP
         left join TRANSPORT_DETAIL_TRD TRD ON INH.ID_INH=trd.ID_INH_TRD
         JOIN TRANSPORTER_TRN TRN ON INH.ID_TRN_INH = TRN.ID_TRN
-        JOIN recipient_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        JOIN RECIPIENT_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
         join #FilterTable FT on RCT.ID_TEM_RCT = FT.ID_TEM
         JOIN TEAM_MASTER_TEM TEM ON INH.ID_TEM_INH = TEM.ID_TEM
         join USER_LOV_ULV ULV on INH.ID_RCT_DESG_ULV_INH =ulv.ID_ULV
         WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{StartDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{EndDate} AS DATE)
         and INH.ID_STATUS_SLV_INH !='00000000-0000-0000-0000-000000000028'
-        --and INHDIP.IS_SPECIAL_DIP= #{filterplan}
+
         )
 
         AS TempDispatchRegisterReport
 
         IF(#{UserDesgID} = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5')--BM
         BEGIN
-        SELECT distinct * FROM #TempDispatchRegisterReport WHERE PlanOwnerID = #{UserID} ORDER BY invoiceNo
+        SELECT distinct * FROM #TempDispatchRegisterReport WHERE PlanOwnerID = #{UserID} ORDER BY InvoiceNo
         END
         ELSE IF(#{UserDesgID} = '88F90CCF-FB95-42DB-AECF-B4C5E8C25BE6')--BEX
         BEGIN
-        SELECT distinct businessUnit,division, InvoiceHeaderID,lrNo,courierName,noBoxes,weights,invoiceNo,values,invoiceDate,recipientID,recipient,employeeCode,
-        address, city,'state',zip,mobileNo,TeamID,teamName,nameofReceiver,dateofDelivery,cost,designation, sampleValue, itemValue
+        SELECT distinct BusinessUnit,Division, InvoiceHeaderID,LRNo,CourierName,NoOfBoxes,[Weight],InvoiceNo,Value,InvoiceDate,RecipientID,Recipient,EmployeeCode,
+        Address, City,'State',Zip,MobileNo,TeamID,TeamName,NameofReceiver,DateofDelivery,Cost,Designation, SampleValue, ItemValue
         FROM #TempDispatchRegisterReport WHERE TeamID IN
         (SELECT DISTINCT TET.ID_TEM_TET FROM USER_MASTER_USR USR
         JOIN LEGAL_ENTITY_MASTER_ETY ETY ON USR.ID_ETY_USR = ETY.ID_ETY
         JOIN TEAM_LEGAL_ENTITY_TET TET ON ETY.ID_ETY = TET.ID_ETY_TET
         WHERE ID_USR = #{UserID})
-        ORDER BY invoiceNo
+        ORDER BY InvoiceNo
         END
         ELSE--HUB
         BEGIN
 
-        SELECT distinct businessUnit,division,InvoiceHeaderID,lrNo,courierName,noBoxes,weights,invoiceNo,values,invoiceDate,recipientID,recipient,employeeCode,
-        address, city,state,zip,mobileNo,TeamID,teamName,nameofReceiver,dateofDelivery,cost,designation, sampleValue, itemValue
-        FROM #TempDispatchRegisterReport ORDER BY invoiceNo
+        SELECT distinct BusinessUnit,Division,InvoiceHeaderID,LRNo,CourierName,NoOfBoxes,[Weight],InvoiceNo,Value,InvoiceDate,RecipientID,Recipient,EmployeeCode,
+        Address, City,State,Zip,MobileNo,TeamID,TeamName,NameofReceiver,DateofDelivery,Cost,Designation, SampleValue, ItemValue
+        FROM #TempDispatchRegisterReport ORDER BY InvoiceNo
         END
         DROP table #FilterTable
         DROP TABLE #TempDispatchRegisterReport
@@ -541,8 +690,8 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
         begin
         SELECT * INTO #FilterTable1 FROM
         (
-        select TEM.ID_TEM,BUM.NAME_BUM as 'businessUnit', DIM.NAME_DIM as 'division' from
-        TEAM_MASTER_TEM TEM join division_MASTER_DIM DIM on TEM.ID_DIM_TEM =Dim.ID_DIM
+        select TEM.ID_TEM,BUM.NAME_BUM as 'BusinessUnit', DIM.NAME_DIM as 'Division' from
+        TEAM_MASTER_TEM TEM join DIVISION_MASTER_DIM DIM on TEM.ID_DIM_TEM =Dim.ID_DIM
         join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
         where DIM.ID_BUM_DIM  in (<foreach item="item" index="index" collection="BusinessUnit"
                                            separator=",">
@@ -552,28 +701,28 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
                                       separator=",">
         #{item}
     </foreach>)
-        TEM.ID_TEM  in (<foreach item="item" index="index" collection="Team"
-                                 separator=",">
+        and  TEM.ID_TEM  in (<foreach item="item" index="index" collection="Team"
+                                      separator=",">
         #{item}
     </foreach>)
         ) AS FilterResult
 
         SELECT * INTO #TempDispatchRegisterReport1 FROM(
-        SELECT  FT.businessUnit,FT.division, INH.ID_INH 'InvoiceHeaderID',INHDIP.ID_OWNER_USR_DIP 'PlanOwnerID',INH.LR_NUMBER_INH AS lrNo, TRN.NAME_TRN AS courierName, INH.NO_OF_BOXES_INH AS noBoxes,
-        INH.weight_INH AS 'weights',	INH.INVOICE_NO_INH AS invoiceNo,ROUND(ISNULL(INH.SAMPLE_value_INH,0) + ISNUll(INH.OTHER_ITEM_value_INH,0),2) as 'values',
-        ROUND(ISNULL(INH.SAMPLE_value_INH,0),2)  as 'sampleValue', round(ISNUll(INH.OTHER_ITEM_value_INH,0),2) as 'itemValue',
-        CONVERT(nvarchar(100),INH.CREATED_ON_INH, 103) AS invoiceDate,
-        RCT.ID_RCT 'recipientID',RCT.NAME_RCT AS recipient, RCT.CODE_RCT AS employeeCode,
-        INH.address_LINE_1_INH + ' ' + INH.address_LINE_2_INH AS 'address', INH.address_city_INH AS city, INH.address_state_INH AS 'state',
-        INH.address_zip_INH AS zip, INH.PHONE_INH AS mobileNo,TEM.ID_TEM 'TeamID',TEM.NAME_TEM AS teamName,TRD.DELIVERED_TO_NAME_TRD as 'nameofReceiver',
-        CONVERT(nvarchar(100),TRD.ACTUAL_DELIVERY_DATE_TRD, 103) as 'dateofDelivery',TRD.cost_OF_DELIVERY_TRD as 'cost' ,ULV.NAME_ULV as 'designation'
+        SELECT  FT.BusinessUnit,FT.Division, INH.ID_INH 'InvoiceHeaderID',INHDIP.ID_OWNER_USR_DIP 'PlanOwnerID',INH.LR_NUMBER_INH AS LRNo, TRN.NAME_TRN AS CourierName, INH.NO_OF_BOXES_INH AS NoOfBoxes,
+        INH.WEIGHT_INH AS 'Weight',	INH.INVOICE_NO_INH AS InvoiceNo,ROUND(ISNULL(INH.SAMPLE_VALUE_INH,0) + ISNUll(INH.OTHER_ITEM_VALUE_INH,0),2) as 'Value',
+        ROUND(ISNULL(INH.SAMPLE_VALUE_INH,0),2)  as 'SampleValue', round(ISNUll(INH.OTHER_ITEM_VALUE_INH,0),2) as 'ItemValue',
+        CONVERT(nvarchar(100),INH.CREATED_ON_INH, 103) AS InvoiceDate,
+        RCT.ID_RCT 'RecipientID',RCT.NAME_RCT AS Recipient, RCT.CODE_RCT AS EmployeeCode,
+        INH.ADDRESS_LINE_1_INH + ' ' + INH.ADDRESS_LINE_2_INH AS 'Address', INH.ADDRESS_CITY_INH AS City, INH.ADDRESS_STATE_INH AS 'State',
+        INH.ADDRESS_ZIP_INH AS Zip, INH.PHONE_INH AS MobileNo,TEM.ID_TEM 'TeamID',TEM.NAME_TEM AS TeamName,TRD.DELIVERED_TO_NAME_TRD as 'NameofReceiver',
+        CONVERT(nvarchar(100),TRD.ACTUAL_DELIVERY_DATE_TRD, 103) as 'DateofDelivery',TRD.COST_OF_DELIVERY_TRD as 'Cost' ,ULV.NAME_ULV as 'Designation'
         FROM INVOICE_HEADER_INH INH
         JOIN
         (SELECT DISTINCT IDP.ID_INH_IDP,DIP.ID_DIP,DIP.ID_OWNER_USR_DIP,dip.IS_SPECIAL_DIP FROM DISPATCH_PLAN_DIP DIP JOIN INVOICE_DISPATCH_PLAN_IDP IDP
         ON DIP.ID_DIP = IDP.ID_PLAN_IDP) INHDIP ON INH.ID_INH = INHDIP.ID_INH_IDP
         left join TRANSPORT_DETAIL_TRD TRD ON INH.ID_INH=trd.ID_INH_TRD
         JOIN TRANSPORTER_TRN TRN ON INH.ID_TRN_INH = TRN.ID_TRN
-        JOIN recipient_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
+        JOIN RECIPIENT_MASTER_RCT RCT ON INH.ID_RCT_INH = RCT.ID_RCT
         join #FilterTable1 FT on RCT.ID_TEM_RCT = FT.ID_TEM
         JOIN TEAM_MASTER_TEM TEM ON INH.ID_TEM_INH = TEM.ID_TEM
         join USER_LOV_ULV ULV on INH.ID_RCT_DESG_ULV_INH =ulv.ID_ULV
@@ -585,32 +734,30 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
         AS TempDispatchRegisterReport1
         IF(#{UserDesgID} = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5')--BM
         BEGIN
-        SELECT distinct * FROM #TempDispatchRegisterReport1 WHERE PlanOwnerID = #{UserID} ORDER BY invoiceNo
+        SELECT distinct * FROM #TempDispatchRegisterReport1 WHERE PlanOwnerID = #{UserID} ORDER BY InvoiceNo
         END
         ELSE IF(#{UserDesgID} = '88F90CCF-FB95-42DB-AECF-B4C5E8C25BE6')--BEX
         BEGIN
-        SELECT distinct businessUnit,division, InvoiceHeaderID,lrNo,courierName,noBoxes,weights,invoiceNo,values,invoiceDate,recipientID,recipient,employeeCode,
-        address, city,'state',zip,mobileNo,TeamID,teamName,nameofReceiver,dateofDelivery,cost,designation, sampleValue, itemValue
+        SELECT distinct BusinessUnit,Division, InvoiceHeaderID,LRNo,CourierName,NoOfBoxes,[Weight],InvoiceNo,Value,InvoiceDate,RecipientID,Recipient,EmployeeCode,
+        Address, City,'State',Zip,MobileNo,TeamID,TeamName,NameofReceiver,DateofDelivery,Cost,Designation, SampleValue, ItemValue
         FROM #TempDispatchRegisterReport1 WHERE TeamID IN
         (SELECT DISTINCT TET.ID_TEM_TET FROM USER_MASTER_USR USR
         JOIN LEGAL_ENTITY_MASTER_ETY ETY ON USR.ID_ETY_USR = ETY.ID_ETY
         JOIN TEAM_LEGAL_ENTITY_TET TET ON ETY.ID_ETY = TET.ID_ETY_TET
         WHERE ID_USR = #{UserID})
-        ORDER BY invoiceNo
+        ORDER BY InvoiceNo
         END
         ELSE--HUB
         BEGIN
 
-        SELECT distinct businessUnit,division,InvoiceHeaderID,lrNo,courierName,noBoxes,weights,invoiceNo,values,invoiceDate,recipientID,recipient,employeeCode,
-        address, city,state,zip,mobileNo,TeamID,teamName,nameofReceiver,dateofDelivery,cost,designation, sampleValue, itemValue
-        FROM #TempDispatchRegisterReport1 ORDER BY invoiceNo
+        SELECT distinct BusinessUnit,Division,InvoiceHeaderID,LRNo,CourierName,NoOfBoxes,[Weight],InvoiceNo,Value,InvoiceDate,RecipientID,Recipient,EmployeeCode,
+        Address, City,State,Zip,MobileNo,TeamID,TeamName,NameofReceiver,DateofDelivery,Cost,Designation, SampleValue, ItemValue
+        FROM #TempDispatchRegisterReport1 ORDER BY InvoiceNo
         END
 
         DROP TABLE #FilterTable1
         DROP TABLE #TempDispatchRegisterReport1
         end
-
-
     </select>
 
 

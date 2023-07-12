@@ -91,7 +91,7 @@ class ReportRepository
         //dispReg.statusId?.let { data.put("StatusID", it) }
         dispReg.filterPlan?.let { data.put("Filterplan", it) }
 
-        return sqlSessionFactory.openSession().selectList("ReportMapper.getReportDispatchRegister", data)
+        return sqlSessionFactory.openSession().selectList<DispatchRegisterReportDTO>("ReportMapper.getReportDispatchRegister", data)
     }
 
 
