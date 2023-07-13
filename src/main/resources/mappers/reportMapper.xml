@@ -761,17 +761,23 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
     </select>
 
 
+<!--    <select id="getReportDeviation" resultType="com.squer.promobee.controller.dto.DeviationReportDTO" parameterType = "map" statementType = "CALLABLE">-->
+<!--        { call PROC_ReportDeviation(#{QuarterName, jdbcType = VARCHAR, mode = IN},#{FromDate, jdbcType = VARCHAR, mode = IN}, #{ToDate, jdbcType = VARCHAR, mode = IN},-->
+<!--        #{UserID, jdbcType = VARCHAR, mode = IN},-->
+<!--        #{UserDesgID, jdbcType = VARCHAR, mode = IN}) }-->
+<!--    </select>-->
+
     <select id="getReportDeviation" resultType="com.squer.promobee.controller.dto.DeviationReportDTO" parameterType = "map" statementType = "CALLABLE">
         { call PROC_ReportDeviation(#{QuarterName, jdbcType = VARCHAR, mode = IN},#{FromDate, jdbcType = VARCHAR, mode = IN}, #{ToDate, jdbcType = VARCHAR, mode = IN},
-        #{UserID, jdbcType = VARCHAR, mode = IN},
-        #{UserDesgID, jdbcType = VARCHAR, mode = IN}) }
+                                    #{UserID, jdbcType = VARCHAR, mode = IN},
+                                    #{UserDesgID, jdbcType = VARCHAR, mode = IN}) }
     </select>
 
 
     <select id="getReportItemConsumption" resultType="com.squer.promobee.controller.dto.ItemConsumptionReportDTO" parameterType = "map" statementType = "CALLABLE">
         { call PROC_ReportItemConsumption (#{FromDate, jdbcType = VARCHAR, mode = IN}, #{ToDate, jdbcType = VARCHAR, mode = IN},
-        #{UserID, jdbcType = VARCHAR, mode = IN},#{UserDesgID, jdbcType = VARCHAR, mode = IN},#{BusinessUnit, jdbcType = VARCHAR, mode = IN},
-        #{Division, jdbcType = VARCHAR, mode = IN}) }
+        #{UserID, jdbcType = VARCHAR, mode = IN},#{UserDesgID, jdbcType = VARCHAR, mode = IN},
+        #{Division, jdbcType = VARCHAR , mode = IN},#{BusinessUnit,  jdbcType=VARCHAR, mode = IN}) }
 
     </select>
 
@@ -783,46 +789,124 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
 
     </select>
 
+<!--    <select id="getReportDestruction" resultType="com.squer.promobee.controller.dto.DestructionReportDTO" >-->
+<!--        SELECT * INTO #FilterTable FROM-->
+<!--        (-->
+<!--        select BRD.ID_BRD,BUM.NAME_BUM as 'businessUnit', DIM.NAME_DIM as 'division' from-->
+<!--        BRAND_MASTER_BRD BRD-->
+<!--        join division_BRAND_DBR DBR on BRD.ID_BRD= dbr.ID_BRD_DBR-->
+<!--        join division_MASTER_DIM DIM on dbr.ID_DIM_DBR =Dim.ID_DIM-->
+<!--        join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM-->
+<!--        where DIM.ID_BUM_DIM  in (<foreach item="item" index="index" collection="BusinessUnit"-->
+<!--                                           separator=",">-->
+<!--        #{item}-->
+<!--    </foreach>)-->
+<!--        and  DIM.ID_DIM  in (<foreach item="item" index="index" collection="Division"-->
+<!--                                      separator=",">-->
+<!--        #{item}-->
+<!--    </foreach>)-->
 
-<!--    <select id="getReportSimpleInventory" resultType="com.squer.promobee.controller.dto.SimpleInventoryReportDTO" parameterType = "map" statementType = "CALLABLE">-->
+<!--        ) AS FilterResult-->
 
-<!--        <foreach collection="BusinessUnit" item="buItem" open="(" separator="," close=")">-->
-<!--        <foreach collection="Division" item="divItem" open="(" separator="," close=")">-->
+<!--        SELECT * INTO #DestructionReport FROM(-->
+<!--        SELECT distinct FT.businessUnit,FT.division,CCM.ID_CCM 'costCenterID',CCM.NAME_CCM 'costCenter',ITM.NAME_ITM 'itemName',ITM.CODE_ITM 'itemCode',ITC.NAME_ITC 'itemType',CONVERT(NVARCHAR,INV.EXPIRY_DATE_INV,103) 'expiryDate',-->
+<!--        CONVERT(NVARCHAR,INH.UPDATED_ON_INH,103) 'reversalDate',IND.QUANTITY_IND 'quantityReversed',INV.rate_PER_UNIT_INV 'rate',(IND.value_IND) 'value',INH.NOTES_INH 'remarks'-->
+<!--        FROM INVOICE_HEADER_INH INH JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND-->
+<!--        JOIN INVENTORY_INV INV ON IND.ID_INV_IND = INV.ID_INV-->
+<!--        JOIN ITEM_MASTER_ITM ITM ON INV.ID_ITM_INV = ITM.ID_ITM-->
+<!--        JOIN ITEM_CATEGORY_MASTER_ITC ITC ON ITM.ID_ITC_ITM = ITC.ID_ITC-->
+<!--        JOIN COST_CENTER_MASTER_CCM CCM ON ITM.ID_CCM_ITM = CCM.ID_CCM-->
+<!--        join costCenter_BRAND_CBR CBR on CCM.ID_CCM=CBR.ID_CCM_CBR-->
+<!--        JOIN BRAND_MASTER_BRD BRD ON CBR.ID_BRD_CBR = BRD.ID_BRD-->
+<!--        JOIN #FilterTable FT on BRD.ID_BRD  = FT.ID_BRD-->
 
+<!--        &#45;&#45;JOIN ITEM_MASTER_ITM ITM ON INV.ID_ITM_INV = ITM.ID_ITM-->
+<!--        &#45;&#45;JOIN ITEM_CATEGORY_MASTER_ITC ITC ON ITM.ID_ITC_ITM = ITC.ID_ITC-->
+<!--        &#45;&#45;JOIN COST_CENTER_MASTER_CCM CCM ON ITM.ID_CCM_ITM = CCM.ID_CCM-->
+<!--        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{FromDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{ToDate} AS DATE)-->
+<!--        AND INH.ID_TYPE_SLV_INH = #{StatusID}-->
+<!--        UNION ALL-->
+<!--        &#45;&#45;Removed distinct-->
+<!--        SELECT FT.businessUnit,FT.division,BRD.ID_BRD 'costCenterID',BRD.NAME_BRD 'costCenter',SMP.NAME_SMP 'itemName',SMP.LMID_SMP 'itemCode','Samples' 'itemType',CONVERT(NVARCHAR,INV.EXPIRY_DATE_INV,103) 'expiryDate',-->
+<!--        CONVERT(NVARCHAR,INH.UPDATED_ON_INH,103) 'reversalDate',IND.QUANTITY_IND 'quantityReversed',INV.rate_PER_UNIT_INV 'rate',(IND.value_IND) 'value',INH.NOTES_INH 'remarks'-->
+<!--        FROM INVOICE_HEADER_INH INH JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND-->
+<!--        JOIN INVENTORY_INV INV ON IND.ID_INV_IND = INV.ID_INV-->
+<!--        JOIN SAMPLE_MASTER_SMP SMP ON INV.ID_ITM_INV = SMP.ID_SMP-->
+<!--        JOIN BRAND_MASTER_BRD BRD ON SMP.ID_BRD_SMP = BRD.ID_BRD-->
+<!--        JOIN  #FilterTable FT  ON BRD.ID_BRD = FT.ID_BRD-->
 
+<!--        &#45;&#45;JOIN SAMPLE_MASTER_SMP SMP ON INV.ID_ITM_INV = SMP.ID_SMP-->
+<!--        &#45;&#45;JOIN BRAND_MASTER_BRD BRD ON SMP.ID_BRD_SMP = BRD.ID_BRD-->
+<!--        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{FromDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{ToDate} AS DATE)-->
+<!--        AND INH.ID_TYPE_SLV_INH = #{StatusID}) AS DestructionReport-->
 
+<!--        &#45;&#45;SELECT * FROM #DestructionReport-->
 
-<!--        </foreach>-->
-<!--        </foreach>-->
+<!--        IF(#{UserDesgID} = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5')&#45;&#45;BM-->
+<!--        BEGIN-->
+<!--        SELECT distinct businessUnit,division,costCenter,itemName,itemCode,itemType,expiryDate,reversalDate,SUM(quantityReversed) 'quantityReversed',-->
+<!--        round(MAX(rate),2) 'rate',round(SUM(value),0) 'value',remarks-->
+<!--        FROM #DestructionReport-->
+<!--        WHERE costCenterID IN (-->
+<!--        SELECT DISTINCT BBR1.ID_BRD_BBR FROM USER_MASTER_USR USR1 JOIN BRANDMANAGER_BRAND_BBR BBR1 ON USR1.ID_USR = BBR1.ID_USR_BBR-->
+<!--        WHERE USR1.ID_USR = #{UserID}-->
+<!--        UNION-->
+<!--        SELECT DISTINCT CBR2.ID_CCM_CBR FROM costCenter_BRAND_CBR CBR2 JOIN BRANDMANAGER_BRAND_BBR BBR2 ON CBR2.ID_BRD_CBR = BBR2.ID_BRD_BBR-->
+<!--        JOIN USER_MASTER_USR USR2 ON BBR2.ID_USR_BBR = USR2.ID_USR-->
+<!--        WHERE USR2.ID_USR = #{UserID}-->
+<!--        )-->
+<!--        GROUP BY businessUnit,division,costCenter,itemName,itemCode,itemType,expiryDate,reversalDate,remarks-->
+<!--        END-->
+<!--        ELSE IF(#{UserDesgID} = '88F90CCF-FB95-42DB-AECF-B4C5E8C25BE6')&#45;&#45;BEX-->
+<!--        BEGIN-->
+<!--        SELECT distinct businessUnit,division,costCenter,itemName,itemCode,itemType,expiryDate,reversalDate,SUM(quantityReversed) 'quantityReversed',-->
+<!--        round(MAX(rate),2) 'rate',round(SUM(value),0) 'value',remarks-->
+<!--        FROM #DestructionReport-->
+<!--        WHERE costCenterID IN (-->
+<!--        SELECT DISTINCT CBR.ID_CCM_CBR FROM costCenter_BRAND_CBR CBR-->
+<!--        JOIN TEAM_BRAND_TBR TBR ON CBR.ID_BRD_CBR = TBR.ID_BRD_TBR-->
+<!--        JOIN TEAM_LEGAL_ENTITY_TET TET ON TBR.ID_TEM_TBR = TET.ID_TEM_TET-->
+<!--        join USER_LEGAL_ENTITY_ULE ULE on TET.ID_ETY_TET = ULE.ID_ETY_ULE-->
+<!--        join USER_MASTER_USR USR on USR.ID_USR= ULE.ID_USR_ULE-->
+<!--        WHERE USR.ID_USR = #{UserID}-->
 
-<!--        {call PROC_ReportSimpleInventory   ( #{buItem},#{divItem},#{UserID, jdbcType = VARCHAR, mode = IN },#{UserDesgID,jdbcType = VARCHAR, mode = IN })}-->
+<!--        &#45;&#45;SELECT DISTINCT BBR1.ID_BRD_BBR FROM USER_MASTER_USR USR1 JOIN BRANDMANAGER_BRAND_BBR BBR1 ON USR1.ID_USR = BBR1.ID_USR_BBR-->
+<!--        &#45;&#45;JOIN TEAM_BRAND_TBR TBR1 ON BBR1.ID_BRD_BBR = TBR1.ID_BRD_TBR-->
+<!--        &#45;&#45;JOIN TEAM_LEGAL_ENTITY_TET TET1 ON TBR1.ID_TEM_TBR = TET1.ID_TEM_TET-->
+<!--        &#45;&#45;WHERE TET1.ID_ETY_TET = (SELECT USR3.ID_ETY_USR FROM USER_MASTER_USR USR3 WHERE USR3.ID_USR = #{UserID})-->
+<!--        UNION-->
+<!--        SELECT DISTINCT TBR.ID_BRD_TBR FROM TEAM_BRAND_TBR TBR-->
+<!--        JOIN TEAM_LEGAL_ENTITY_TET TET ON TBR.ID_TEM_TBR = TET.ID_TEM_TET-->
+<!--        join USER_LEGAL_ENTITY_ULE ULE on TET.ID_ETY_TET = ULE.ID_ETY_ULE-->
+<!--        join USER_MASTER_USR USR on USR.ID_USR= ULE.ID_USR_ULE-->
+<!--        WHERE USR.ID_USR = #{UserID}-->
 
+<!--        &#45;&#45;SELECT DISTINCT CBR2.ID_CCM_CBR FROM costCenter_BRAND_CBR CBR2 JOIN BRANDMANAGER_BRAND_BBR BBR2 ON CBR2.ID_BRD_CBR = BBR2.ID_BRD_BBR-->
+<!--        &#45;&#45;JOIN TEAM_BRAND_TBR TBR2 ON BBR2.ID_BRD_BBR = TBR2.ID_BRD_TBR-->
+<!--        &#45;&#45;JOIN TEAM_LEGAL_ENTITY_TET TET2 ON TBR2.ID_TEM_TBR = TET2.ID_TEM_TET-->
+<!--        &#45;&#45;WHERE TET2.ID_ETY_TET = (SELECT USR3.ID_ETY_USR FROM USER_MASTER_USR USR3 WHERE USR3.ID_USR = #{UserID})-->
+<!--        )-->
+<!--        GROUP BY  businessUnit,division,costCenter,itemName,itemCode,itemType,expiryDate,reversalDate,remarks-->
+<!--        END-->
+<!--        ELSE&#45;&#45;HUB-->
+<!--        BEGIN-->
+<!--        SELECT distinct businessUnit,division,costCenter,itemName,itemCode,itemType,expiryDate,reversalDate,SUM(quantityReversed) 'quantityReversed',-->
+<!--        round(MAX(rate),2) 'rate',round(SUM(value),0) 'value',remarks-->
+<!--        FROM #DestructionReport-->
+<!--        WHERE costCenterID IN (-->
+<!--        SELECT ID_BRD FROM BRAND_MASTER_BRD-->
+<!--        UNION-->
+<!--        SELECT ID_CCM FROM COST_CENTER_MASTER_CCM-->
+<!--        )-->
+<!--        GROUP BY  businessUnit,division,costCenter,itemName,itemCode,itemType,expiryDate,reversalDate,remarks-->
+<!--        END-->
+
+<!--        DROP TABLE #FilterTable-->
+<!--        DROP TABLE #DestructionReport-->
 
 <!--    </select>-->
 
-<!--    <select id="getReportSimpleInventory" resultType="com.squer.promobee.controller.dto.SimpleInventoryReportDTO" parameterType="map" statementType="CALLABLE">-->
-<!--        { call PROC_ReportSimpleInventory (-->
-<!--        <foreach collection="BusinessUnit" item="buId" separator="," open="(" close=")" index="index">-->
-<!--            <if test="buId != null and buId != ''">-->
-<!--                #{buId}-->
-<!--            </if>-->
-<!--        </foreach>,-->
-<!--        <foreach collection="Division" item="divId" separator="," open="(" close=")" index="index">-->
-<!--            <if test="divId != null and divId != ''">-->
-<!--                #{divId}-->
-<!--            </if>-->
-<!--        </foreach>,-->
-<!--        #{UserID, jdbcType=VARCHAR, mode=IN},-->
-<!--        #{UserDesgID, jdbcType=VARCHAR, mode=IN}-->
-<!--        )}-->
-<!--    </select>-->
 
-<!--    <select id="getReportSimpleInventory" resultType="com.squer.promobee.controller.dto.NearToExpiryReportDTO" parameterType = "map" statementType = "CALLABLE">-->
-<!--        { call PROC_ReportSimpleInventory (   #{BusinessUnit, jdbcType = VARCHAR, mode = IN},-->
-<!--                                           #{Division, jdbcType = VARCHAR, mode = IN},#{UserID, jdbcType = VARCHAR, mode = IN},#{UserDesgID, jdbcType = VARCHAR, mode = IN}-->
-<!--         ) }-->
-
-<!--    </select>-->
 
 
     <select id="getReportSimpleInventory"  resultType="com.squer.promobee.controller.dto.SimpleInventoryReportDTO">
@@ -1009,6 +1093,11 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
 
     </select>
 
+
+    <select id="getBusinessUnitForReport" resultType="com.squer.promobee.controller.dto.BuDTO" >
+        select ID_BUM_DIM as 'buId' from DIVISION_MASTER_DIM where ID_DIM = #{Division}
+
+    </select>
 
 
 

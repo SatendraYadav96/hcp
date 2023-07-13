@@ -68,15 +68,15 @@ open class ReportController @Autowired constructor(
     }
 
 
-    @GetMapping("/getReportItemConsumption/{fromDate}/{toDate}/{userId}/{userDesgId}/{businessUnit}/{divison}")
-    fun getReportItemConsumption(@PathVariable fromDate: String, @PathVariable  toDate: String,@PathVariable userId:String,@PathVariable userDesgId:String,@PathVariable businessUnit: String,@PathVariable divison: String): ResponseEntity<*>{
-        val data = reportService.getReportItemConsumption(fromDate,toDate,userId,userDesgId,businessUnit,divison)
+    @PostMapping("/getReportItemConsumption")
+    fun getReportItemConsumption(@RequestBody item : ItemConsumptionParamDTO): ResponseEntity<*>{
+        val data = reportService.getReportItemConsumption(item)
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
-    @GetMapping("/getReportDestruction/{fromDate}/{toDate}/{userId}/{userDesgId}/{businessUnit}/{divison}/{statusId}")
-    fun getReportDestruction(@PathVariable fromDate: String, @PathVariable  toDate: String,@PathVariable userId:String,@PathVariable userDesgId:String,@PathVariable businessUnit: String,@PathVariable divison: String,@PathVariable statusId: String): ResponseEntity<*>{
-        val data = reportService.getReportDestruction(fromDate,toDate,userId,userDesgId,businessUnit,divison,statusId)
+    @PostMapping("/getReportDestruction")
+    fun getReportDestruction(@RequestBody dest: DestructionReportParamDTO): ResponseEntity<*>{
+        val data = reportService.getReportDestruction(dest)
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
@@ -127,9 +127,9 @@ open class ReportController @Autowired constructor(
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
-    @GetMapping("/getAgeingReport/{userId}/{userDesgId}/{businessUnit}/{divison}")
-    fun getAgeingReport(@PathVariable userId:String,@PathVariable userDesgId:String,@PathVariable businessUnit: String,@PathVariable divison: String): ResponseEntity<*>{
-        val data = reportService.getAgeingReport(userId,userDesgId,businessUnit,divison)
+    @PostMapping("/getAgeingReport")
+    fun getAgeingReport(@RequestBody age:AgeingReportParamDTO): ResponseEntity<*>{
+        val data = reportService.getAgeingReport(age)
         return  ResponseEntity(data,HttpStatus.OK)
     }
 

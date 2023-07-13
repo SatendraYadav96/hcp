@@ -41,12 +41,12 @@ class ReportServiceImpl @Autowired constructor(
         return reportRepository.getReportDeviation(quarterName,fromDate,toDate,userId,userDesgId)
     }
 
-    override fun getReportItemConsumption(fromDate: String,toDate: String,userId:String,userDesgId:String,businessUnit: String,divison: String): List<ItemConsumptionReportDTO>{
-        return reportRepository.getReportItemConsumption(fromDate,toDate,userId,userDesgId,businessUnit,divison)
+    override fun getReportItemConsumption(item : ItemConsumptionParamDTO): List<ItemConsumptionReportDTO>{
+        return reportRepository.getReportItemConsumption(item)
     }
 
-    override fun getReportDestruction(fromDate: String,toDate: String,userId:String,userDesgId:String,businessUnit: String,divison: String,statusId: String): List<DestructionReportDTO>{
-        return reportRepository.getReportDestruction(fromDate,toDate,userId,userDesgId,businessUnit,divison,statusId)
+    override fun getReportDestruction(dest: DestructionReportParamDTO): List<DestructionReportDTO>{
+        return reportRepository.getReportDestruction(dest)
     }
 
 
@@ -79,8 +79,8 @@ class ReportServiceImpl @Autowired constructor(
         return reportRepository.getStockLedgerReport(fromDate,toDate,itemId)
     }
 
-    override fun getAgeingReport(userId:String,userDesgId:String,businessUnit: String,divison: String): List<AgeingReportDTO>{
-        return reportRepository.getAgeingReport(userId,userDesgId,businessUnit,divison)
+    override fun getAgeingReport(age:AgeingReportParamDTO): List<AgeingReportDTO>{
+        return reportRepository.getAgeingReport(age)
     }
 
     override fun getShiprocketReport(fromDate: String,toDate: String): List<ShiprocketReportDTO>{

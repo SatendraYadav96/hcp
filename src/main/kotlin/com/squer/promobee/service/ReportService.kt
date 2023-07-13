@@ -17,9 +17,9 @@ interface ReportService {
 
     fun getReportDeviation(quarterName:String,fromDate: String,toDate: String,userId:String,userDesgId:String): List<DeviationReportDTO>
 
-    fun getReportItemConsumption(fromDate: String,toDate: String,userId:String,userDesgId:String,businessUnit: String,divison: String): List<ItemConsumptionReportDTO>
+    fun getReportItemConsumption(item : ItemConsumptionParamDTO): List<ItemConsumptionReportDTO>
 
-    fun getReportDestruction(fromDate: String,toDate: String,userId:String,userDesgId:String,businessUnit: String,divison: String,statusId: String): List<DestructionReportDTO>
+    fun getReportDestruction(dest: DestructionReportParamDTO): List<DestructionReportDTO>
 
     fun getReportSimpleInventory(simInv: SimpleInvenotryParamDTO): List<SimpleInventoryReportDTO>
 
@@ -35,7 +35,7 @@ interface ReportService {
 
     fun getStockLedgerReport(fromDate: String,toDate: String,itemId: String): List<StockLedgerReportDTO>
 
-    fun getAgeingReport(userId: String,userDesgId: String,businessUnit: String,divison: String): List<AgeingReportDTO>
+    fun getAgeingReport(age:AgeingReportParamDTO): List<AgeingReportDTO>
 
     fun getShiprocketReport(fromDate: String,toDate: String): List<ShiprocketReportDTO>
 
