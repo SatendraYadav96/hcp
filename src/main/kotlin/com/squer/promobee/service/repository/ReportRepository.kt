@@ -238,43 +238,131 @@ class ReportRepository
     }
 
 
-    fun getReportNearToExpirySample(businessUnit: String, divison: String,userId:String,userDesgId:String,type:String) : List<NearToExpiryReportDTO>{
+    fun getReportNearToExpirySample(sample: NearExpiryReportParamDTO) : List<NearToExpiryReportDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
-        data.put("BusinessUnit", businessUnit)
-        data.put("Division", divison)
-        data.put("UserID", userId)
-        data.put("UserDesgID", userDesgId)
-        data.put("Type", type)
+        data.put("BusinessUnit", sample.businessUnit)
+        data.put("Division", sample.divison)
+        sample.userId?.let { data.put("UserID", it) }
+        sample.userDesgId?.let { data.put("UserDesgID", it) }
+        sample.type?.let { data.put("Type", it) }
 
-        return sqlSessionFactory.openSession().selectList("ReportMapper.getReportNearToExpirySample", data)
+        var buId = BuDTO()
+
+        var finalResult = mutableListOf<NearToExpiryReportDTO>()
+
+        var result = mutableListOf<NearToExpiryReportDTO>()
+
+        var i = 0
+
+        sample.divison.forEach {
+            var data1: MutableMap<String, Any> = mutableMapOf()
+
+            data1.put("Division",sample.divison.get(i))
+
+            buId = sqlSessionFactory.openSession().selectOne("ReportMapper.getBusinessUnitForReport",data1)
+
+            buId.buId?.let { it1 -> data1.put("BusinessUnit", it1) }
+            sample.userId?.let { data1.put("UserID", it) }
+            sample.userDesgId?.let { data1.put("UserDesgID", it) }
+            sample.type?.let { data1.put("Type", it) }
+
+
+            result =  sqlSessionFactory.openSession().selectList<NearToExpiryReportDTO>("ReportMapper.getReportNearToExpirySample", data1)
+
+
+            finalResult.addAll(result)
+
+            i++
+
+
+        }
+
+        return  finalResult
     }
 
-    fun getReportNearToExpiryInput(businessUnit: String, divison: String,userId:String,userDesgId:String,type:String) : List<NearToExpiryReportDTO>{
+    fun getReportNearToExpiryInput(input: NearExpiryReportParamDTO) : List<NearToExpiryReportDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
-        data.put("BusinessUnit", businessUnit)
-        data.put("Division", divison)
-        data.put("UserID", userId)
-        data.put("UserDesgID", userDesgId)
-        data.put("Type", type)
+        data.put("BusinessUnit", input.businessUnit)
+        data.put("Division", input.divison)
+        input.userId?.let { data.put("UserID", it) }
+        input.userDesgId?.let { data.put("UserDesgID", it) }
+        input.type?.let { data.put("Type", it) }
 
-        return sqlSessionFactory.openSession().selectList("ReportMapper.getReportNearToExpiryInput", data)
+        var buId = BuDTO()
+
+        var finalResult = mutableListOf<NearToExpiryReportDTO>()
+
+        var result = mutableListOf<NearToExpiryReportDTO>()
+        var i = 0
+        input.divison.forEach {
+            var data1: MutableMap<String, Any> = mutableMapOf()
+
+            data1.put("Division",input.divison.get(i))
+
+            buId = sqlSessionFactory.openSession().selectOne("ReportMapper.getBusinessUnitForReport",data1)
+
+            buId.buId?.let { it1 -> data1.put("BusinessUnit", it1) }
+            input.userId?.let { data1.put("UserID", it) }
+            input.userDesgId?.let { data1.put("UserDesgID", it) }
+            input.type?.let { data1.put("Type", it) }
+
+
+            result =  sqlSessionFactory.openSession().selectList<NearToExpiryReportDTO>("ReportMapper.getReportNearToExpiryInput", data1)
+
+
+            finalResult.addAll(result)
+
+            i++
+
+
+        }
+
+        return  finalResult
 
     }
 
 
 
-    fun getReportSpecialDispatch( fromDate: String,toDate: String,userId:String,userDesgId:String,businessUnit: String,divison: String) : List<SpecialDispatchReportDTO>{
+    fun getReportSpecialDispatch( speDisp:SpecialDispatchReportParamDTO) : List<SpecialDispatchReportDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
-        data.put("FromDate", fromDate)
-        data.put("ToDate", toDate)
-        data.put("UserID", userId)
-        data.put("UserDesgID", userDesgId)
-        data.put("BusinessUnit", businessUnit)
-        data.put("Division", divison)
+        speDisp.fromDate?.let { data.put("FromDate", it) }
+        speDisp.toDate?.let { data.put("ToDate", it) }
+        speDisp.userId?.let { data.put("UserID", it) }
+        speDisp.userDesgId?.let { data.put("UserDesgID", it) }
+        data.put("BusinessUnit", speDisp.businessUnit)
+        data.put("Division", speDisp.divison)
+
+        var buId = BuDTO()
+
+        var finalResult = mutableListOf<SpecialDispatchReportDTO>()
+
+        var result = mutableListOf<SpecialDispatchReportDTO>()
+        var i = 0
+        speDisp.divison.forEach {
+            var data1: MutableMap<String, Any> = mutableMapOf()
+
+            data1.put("Division",speDisp.divison.get(i))
+
+            buId = sqlSessionFactory.openSession().selectOne("ReportMapper.getBusinessUnitForReport",data1)
+
+            buId.buId?.let { it1 -> data1.put("BusinessUnit", it1) }
+            speDisp.fromDate?.let { data1.put("FromDate", it) }
+            speDisp.toDate?.let { data1.put("ToDate", it) }
+            speDisp.userId?.let { data1.put("UserID", it) }
+            speDisp.userDesgId?.let { data1.put("UserDesgID", it) }
 
 
+            result =  sqlSessionFactory.openSession().selectList<SpecialDispatchReportDTO>("ReportMapper.getReportSpecialDispatch", data1)
 
-        return sqlSessionFactory.openSession().selectList("ReportMapper.getReportSpecialDispatch", data)
+
+            finalResult.addAll(result)
+
+            i++
+
+
+        }
+
+        return  finalResult
     }
 
 
@@ -287,16 +375,42 @@ class ReportRepository
     }
 
 
-    fun getItemWiseReport( fromDate: String,toDate: String,businessUnit: String,divison: String) : List<ItemWiseReportDTO>{
+    fun getItemWiseReport( item : ItemWiseReportParamDTO) : List<ItemWiseReportDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
-        data.put("FromDate", fromDate)
-        data.put("ToDate", toDate)
-        data.put("BusinessUnit", businessUnit)
-        data.put("Division", divison)
+        item.fromDate?.let { data.put("FromDate", it) }
+        item.toDate?.let { data.put("ToDate", it) }
+        data.put("BusinessUnit", item.businessUnit)
+        data.put("Division", item.divison)
+
+        var buId = BuDTO()
+
+        var finalResult = mutableListOf<ItemWiseReportDTO>()
+
+        var result = mutableListOf<ItemWiseReportDTO>()
+        var i = 0
+        item.divison.forEach {
+            var data1: MutableMap<String, Any> = mutableMapOf()
+
+            data1.put("Division",item.divison.get(i))
+
+            buId = sqlSessionFactory.openSession().selectOne("ReportMapper.getBusinessUnitForReport",data1)
+
+            buId.buId?.let { it1 -> data1.put("BusinessUnit", it1) }
+            item.fromDate?.let { data1.put("FromDate", it) }
+            item.toDate?.let { data1.put("ToDate", it) }
 
 
+            result =  sqlSessionFactory.openSession().selectList<ItemWiseReportDTO>("ReportMapper.getItemWiseReport", data1)
 
-        return sqlSessionFactory.openSession().selectList("ReportMapper.getItemWiseReport", data)
+
+            finalResult.addAll(result)
+
+            i++
+
+
+        }
+
+        return  finalResult
     }
 
 

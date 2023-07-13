@@ -87,22 +87,22 @@ open class ReportController @Autowired constructor(
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
-    @GetMapping("/getReportNearToExpirySample/{businessUnit}/{divison}/{userId}/{userDesgId}/{type}")
-    fun getReportNearToExpirySample(@PathVariable businessUnit: String,@PathVariable divison: String,@PathVariable userId:String,@PathVariable userDesgId:String,@PathVariable type:String): ResponseEntity<*>{
-        val data = reportService.getReportNearToExpirySample(businessUnit,divison,userId,userDesgId,type)
+    @PostMapping("/getReportNearToExpirySample")
+    fun getReportNearToExpirySample(@RequestBody sample: NearExpiryReportParamDTO): ResponseEntity<*>{
+        val data = reportService.getReportNearToExpirySample(sample)
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
-    @GetMapping("/getReportNearToExpiryInput/{businessUnit}/{divison}/{userId}/{userDesgId}/{type}")
-    fun getReportNearToExpiryInput(@PathVariable businessUnit: String,@PathVariable divison: String,@PathVariable userId:String,@PathVariable userDesgId:String,@PathVariable type:String): ResponseEntity<*>{
-        val data = reportService.getReportNearToExpiryInput(businessUnit,divison,userId,userDesgId,type)
+    @PostMapping("/getReportNearToExpiryInput")
+    fun getReportNearToExpiryInput(@RequestBody input: NearExpiryReportParamDTO): ResponseEntity<*>{
+        val data = reportService.getReportNearToExpiryInput(input)
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
 
-    @GetMapping("/getReportSpecialDispatch/{fromDate}/{toDate}/{userId}/{userDesgId}/{businessUnit}/{divison}")
-    fun getReportSpecialDispatch(@PathVariable fromDate: String, @PathVariable  toDate: String,@PathVariable userId:String,@PathVariable userDesgId:String,@PathVariable businessUnit: String,@PathVariable divison: String): ResponseEntity<*>{
-        val data = reportService.getReportSpecialDispatch(fromDate,toDate,userId,userDesgId,businessUnit,divison)
+    @PostMapping("/getReportSpecialDispatch")
+    fun getReportSpecialDispatch(@RequestBody speDisp: SpecialDispatchReportParamDTO): ResponseEntity<*>{
+        val data = reportService.getReportSpecialDispatch(speDisp)
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
@@ -113,9 +113,9 @@ open class ReportController @Autowired constructor(
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
-    @GetMapping("/getItemWiseReport/{fromDate}/{toDate}/{businessUnit}/{divison}")
-    fun getItemWiseReport(@PathVariable fromDate: String, @PathVariable  toDate: String,@PathVariable businessUnit: String,@PathVariable divison: String): ResponseEntity<*>{
-        val data = reportService.getItemWiseReport(fromDate,toDate,businessUnit,divison)
+    @PostMapping("/getItemWiseReport")
+    fun getItemWiseReport(@RequestBody item : ItemWiseReportParamDTO): ResponseEntity<*>{
+        val data = reportService.getItemWiseReport(item)
         return  ResponseEntity(data,HttpStatus.OK)
 
     }

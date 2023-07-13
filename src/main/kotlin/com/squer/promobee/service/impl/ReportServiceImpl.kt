@@ -54,16 +54,16 @@ class ReportServiceImpl @Autowired constructor(
         return reportRepository.getReportSimpleInventory(simInv)
     }
 
-    override fun getReportNearToExpirySample(businessUnit: String, divison: String,userId:String, userDesgId:String,type:String): List<NearToExpiryReportDTO>{
-        return reportRepository.getReportNearToExpirySample(businessUnit,divison,userId,userDesgId,type)
+    override fun getReportNearToExpirySample(sample: NearExpiryReportParamDTO): List<NearToExpiryReportDTO>{
+        return reportRepository.getReportNearToExpirySample(sample)
     }
 
-    override fun getReportNearToExpiryInput(businessUnit: String, divison: String,userId:String, userDesgId:String,type:String): List<NearToExpiryReportDTO>{
-        return reportRepository.getReportNearToExpiryInput(businessUnit,divison,userId,userDesgId,type)
+    override fun getReportNearToExpiryInput(input: NearExpiryReportParamDTO): List<NearToExpiryReportDTO>{
+        return reportRepository.getReportNearToExpiryInput(input)
     }
 
-    override fun getReportSpecialDispatch(fromDate: String,toDate: String,userId:String,userDesgId:String,businessUnit: String,divison: String): List<SpecialDispatchReportDTO>{
-        return reportRepository.getReportSpecialDispatch(fromDate,toDate,userId,userDesgId,businessUnit,divison)
+    override fun getReportSpecialDispatch(speDisp:SpecialDispatchReportParamDTO): List<SpecialDispatchReportDTO>{
+        return reportRepository.getReportSpecialDispatch(speDisp)
     }
 
 
@@ -71,8 +71,8 @@ class ReportServiceImpl @Autowired constructor(
         return reportRepository.getReportDispatchByTeam(year,special)
     }
 
-    override fun getItemWiseReport(fromDate: String,toDate: String,businessUnit: String,divison: String): List<ItemWiseReportDTO>{
-        return reportRepository.getItemWiseReport(fromDate,toDate,businessUnit,divison)
+    override fun getItemWiseReport(item : ItemWiseReportParamDTO): List<ItemWiseReportDTO>{
+        return reportRepository.getItemWiseReport(item)
     }
 
     override fun getStockLedgerReport(fromDate: String,toDate: String,itemId: String): List<StockLedgerReportDTO>{

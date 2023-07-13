@@ -23,15 +23,15 @@ interface ReportService {
 
     fun getReportSimpleInventory(simInv: SimpleInvenotryParamDTO): List<SimpleInventoryReportDTO>
 
-    fun getReportNearToExpirySample(businessUnit: String, divison: String,userId:String, userDesgId:String,type:String): List<NearToExpiryReportDTO>
+    fun getReportNearToExpirySample(sample: NearExpiryReportParamDTO): List<NearToExpiryReportDTO>
 
-    fun getReportNearToExpiryInput(businessUnit: String, divison: String,userId:String, userDesgId:String,type:String): List<NearToExpiryReportDTO>
+    fun getReportNearToExpiryInput(input: NearExpiryReportParamDTO): List<NearToExpiryReportDTO>
 
-    fun getReportSpecialDispatch(fromDate: String,toDate: String,userId:String,userDesgId:String,businessUnit: String,divison: String): List<SpecialDispatchReportDTO>
+    fun getReportSpecialDispatch(speDisp:SpecialDispatchReportParamDTO): List<SpecialDispatchReportDTO>
 
     fun getReportDispatchByTeam(year: String, special: String): List<DispatchByTeamReportDTO>
 
-    fun getItemWiseReport(fromDate: String,toDate: String,businessUnit: String,divison: String): List<ItemWiseReportDTO>
+    fun getItemWiseReport(item : ItemWiseReportParamDTO): List<ItemWiseReportDTO>
 
     fun getStockLedgerReport(fromDate: String,toDate: String,itemId: String): List<StockLedgerReportDTO>
 
