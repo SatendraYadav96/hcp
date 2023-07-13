@@ -64,6 +64,7 @@ class ReportRepository
 
 
     fun getReportDispatches(disp : DispatchesReportParamDto) : List<DispatchesReportDTO>{
+
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
         disp.startDate?.let { data.put("StartDate", it) }
@@ -75,7 +76,40 @@ class ReportRepository
         data.put("BusinessUnit", disp.businessUnit)
         data.put("Division", disp.division)
 
-        return sqlSessionFactory.openSession().selectList("ReportMapper.getReportDispatches", data)
+        var buId = BuDTO()
+
+        var finalResult = mutableListOf<DispatchesReportDTO>()
+
+        var result = mutableListOf<DispatchesReportDTO>()
+
+        var i = 0
+        disp.division.forEach {
+
+            var data1: MutableMap<String, Any> = mutableMapOf()
+
+            data1.put("Division",disp.division.get(i))
+
+            buId = sqlSessionFactory.openSession().selectOne("ReportMapper.getBusinessUnitForReport",data1)
+
+            buId.buId?.let { it1 -> data1.put("BusinessUnit", it1.toString()) }
+            disp.startDate?.let { data1.put("StartDate", it) }
+            disp.endDate?.let { data1.put("EndDate", it) }
+            disp.userId?.let { data1.put("UserID", it) }
+            disp.userDesgId?.let { data1.put("UserDesgID", it) }
+            disp.filter?.let { data1.put("Filter", it) }
+            disp.filterPlan?.let { data1.put("filterplan", it) }
+
+            result =  sqlSessionFactory.openSession().selectList<DispatchesReportDTO>("ReportMapper.getReportDispatches", data1)
+
+
+            finalResult.addAll(result)
+
+            i++
+
+
+        }
+
+        return finalResult
     }
 
 
@@ -90,8 +124,48 @@ class ReportRepository
         dispReg.team?.let { data.put("Team", it) }
         //dispReg.statusId?.let { data.put("StatusID", it) }
         dispReg.filterPlan?.let { data.put("Filterplan", it) }
+        data.put("StatusID","00000000-0000-0000-0000-000000000000")
 
-        return sqlSessionFactory.openSession().selectList<DispatchRegisterReportDTO>("ReportMapper.getReportDispatchRegister", data)
+        var buId = BuDTO()
+        var divId = BuDTO()
+
+
+        var finalResult = mutableListOf<DispatchRegisterReportDTO>()
+
+        var result = mutableListOf<DispatchRegisterReportDTO>()
+        var i = 0
+        dispReg.team.forEach {
+            var data1: MutableMap<String, Any> = mutableMapOf()
+
+            data1.put("Team",dispReg.team.get(i))
+
+            divId = sqlSessionFactory.openSession().selectOne("ReportMapper.getDivisionForReport",dispReg.team.get(i))
+
+            divId.divId?.let { it1 -> data1.put("Division", it1) }
+
+            buId = sqlSessionFactory.openSession().selectOne("ReportMapper.getBusinessUnitForReport", divId.divId)
+
+            buId.buId?.let { it1 -> data1.put("BusinessUnit", it1.toString()) }
+
+
+            dispReg.startDate?.let { data1.put("StartDate", it) }
+            dispReg.endDate?.let { data1.put("EndDate", it) }
+            dispReg.userId?.let { data1.put("UserID", it) }
+            dispReg.userDesgId?.let { data1.put("UserDesgID", it) }
+            dispReg.filterPlan?.let { data1.put("Filterplan", it) }
+            data1.put("StatusID","00000000-0000-0000-0000-000000000000")
+
+            result =  sqlSessionFactory.openSession().selectList<DispatchRegisterReportDTO>("ReportMapper.getReportDispatchRegister", data1)
+
+
+            finalResult.addAll(result)
+
+            i++
+
+
+        }
+
+        return finalResult
     }
 
 
@@ -206,33 +280,44 @@ class ReportRepository
 
     fun getReportSimpleInventory(simInv: SimpleInvenotryParamDTO) : List<SimpleInventoryReportDTO>{
 
-//        var result = mutableListOf<SimpleInventoryReportDTO>()
-//
-//        val parameters: Map<String, Any> = HashMap()
-//
-//        val businessUnitList: MutableList<ArrayList<String>> = Arrays.asList(simInv.businessUnit) // Example list of business units
-//
-//        val divisionList: MutableList<ArrayList<String>> = Arrays.asList(simInv.divison) // Example list of divisions
-
-
         var data: MutableMap<String, Any> = mutableMapOf()
 
             data.put("BusinessUnit",simInv.businessUnit)
             data.put("Division", simInv.divison)
             simInv.userId?.let { data.put("UserID", it) }
             simInv.userDesgId?.let { data.put("UserDesgID", it) }
+        var buId = BuDTO()
 
-        return sqlSessionFactory.openSession().selectList<SimpleInventoryReportDTO>("ReportMapper.getReportSimpleInventory", data)
+        var finalResult = mutableListOf<SimpleInventoryReportDTO>()
+
+        var result = mutableListOf<SimpleInventoryReportDTO>()
+
+        var i = 0
+
+        simInv.divison.forEach {
+            var data1: MutableMap<String, Any> = mutableMapOf()
+
+            data1.put("Division",simInv.divison.get(i))
+
+            buId = sqlSessionFactory.openSession().selectOne("ReportMapper.getBusinessUnitForReport",data1)
+
+            buId.buId?.let { it1 -> data1.put("BusinessUnit", it1) }
+            simInv.userId?.let { data1.put("UserID", it) }
+            simInv.userDesgId?.let { data1.put("UserDesgID", it) }
 
 
 
+            result =  sqlSessionFactory.openSession().selectList<SimpleInventoryReportDTO>("ReportMapper.getReportSimpleInventory", data1)
 
 
+            finalResult.addAll(result)
+
+            i++
 
 
+        }
 
-
-
+        return  finalResult
 
 
     }

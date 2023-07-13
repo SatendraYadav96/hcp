@@ -7,6 +7,6 @@ class DispatchesReportParamDto {
     var endDate: String? = null
     var userId: String? = null
     var userDesgId: String? = null
-    var filter: String? = null
-    var filterPlan: String? = null
+    var filter: Int? = null
+    var filterPlan: Int? = null
 }

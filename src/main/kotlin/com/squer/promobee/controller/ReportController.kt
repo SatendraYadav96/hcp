@@ -24,12 +24,6 @@ open class ReportController @Autowired constructor(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-//    @GetMapping("/getReportRecipient/{businessUnit}/{divison}/{team}/{statusId}")
-//    fun getReportRecipient(@PathVariable businessUnit: String, @PathVariable divison: String, @PathVariable team:String, @PathVariable statusId:String): ResponseEntity<*> {
-//        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-//        val data = reportService.getReportRecipient(businessUnit, divison, team, statusId)
-//        return ResponseEntity(data, HttpStatus.OK)
-//    }
 
     @PostMapping("/getReportRecipient")
     fun getReportRecipient(@RequestBody ff: FFReportDTO): ResponseEntity<*> {

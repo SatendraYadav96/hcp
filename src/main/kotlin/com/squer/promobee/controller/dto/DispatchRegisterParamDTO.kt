@@ -9,5 +9,5 @@ class DispatchRegisterParamDTO {
     var userDesgId: String? = null
     var team: ArrayList<String> = ArrayList<String>()
     var filterPlan: Int? = null
-    //var statusId: String? = null
+    var statusId: String? = null
 }
