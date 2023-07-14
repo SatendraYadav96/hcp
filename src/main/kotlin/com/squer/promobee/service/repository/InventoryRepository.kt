@@ -589,6 +589,7 @@ class InventoryRepository @Autowired constructor(
 
 
     fun getEmployeeInvoicePopupDetails(month: Int, year: Int, isSpecial: Int, invoiceHeaderId: String, employeeId: String): List<EmployeeInvoiceDetailsPopupDTO> {
+
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var data : MutableMap<String, String> = mutableMapOf()
