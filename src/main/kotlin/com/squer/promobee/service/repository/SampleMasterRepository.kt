@@ -26,6 +26,6 @@ class SampleMasterRepository @Autowired constructor(
     fun getSampleByLmid(lmid: String): SampleMaster{
         var data : MutableMap<String, Any> = mutableMapOf()
         data.put("lmId", lmid)
-        return sqlSessionFactory.openSession().selectOne("SampleMasterMapper.getSampleByLmid")
+        return sqlSessionFactory.openSession().selectOne("SampleMasterMapper.getSampleByLmid",data)
     }
 }

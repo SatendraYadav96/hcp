@@ -84,11 +84,12 @@ class GRNServiceImpl @Autowired constructor(
             }
             else if(it.lineText!!.isEmpty()){
 
-                it.category = NamedSquerEntity(ItemCategoryEnum.MEDICAL.id, ItemCategoryEnum.MEDICAL.name)
+
+                it.category = NamedSquerEntity( ItemCategoryEnum.NON_MEDICAL.id, ItemCategoryEnum.NON_MEDICAL.name)
             }
             else {
 
-                it.category = NamedSquerEntity( ItemCategoryEnum.NON_MEDICAL.id, ItemCategoryEnum.NON_MEDICAL.name)
+                it.category = NamedSquerEntity(ItemCategoryEnum.MEDICAL.id, ItemCategoryEnum.MEDICAL.name)
             }
 
             //set Cost Center
@@ -137,7 +138,7 @@ class GRNServiceImpl @Autowired constructor(
     override fun approveAcknowledge(data: GRNAckDTO, userId: String) {
         try {
             if (data.costCenterCode !== null && data.category == ItemCategoryEnum.SAMPLES.id) {
-                grnRepository.approveAcknowledge(data.category!!, data.expiryDate!!, userId, data.grnId!!)
+                grnRepository.approveAcknowledge(data.category!!, data.expiryDate!!, userId, data.grnId!!,data.medicalCode!!,data.hsnCode!!,data.ratePer!!)
                 val grn = grnRepository.getAcknowledgeDataById(data.grnId!!)
                 var itemid: String? = null
                 var i = 0
@@ -185,17 +186,18 @@ class GRNServiceImpl @Autowired constructor(
 
                 var addInventoryParam = Inventory()
                 addInventoryParam.id = UUID.randomUUID().toString()
-                //addInventoryParam.item = NamedSquerEntity(itemid, "")
-                addInventoryParam.grnId = SquerEntity(grn.id)
+                addInventoryParam.item = NamedSquerEntity(itemid.toString(),"")
+                addInventoryParam.grnId = SquerEntity(grn.id.toString())
                 addInventoryParam.packSize = data.basePack
                 addInventoryParam.poNo = grn.poNo
-                addInventoryParam.ccmID = NamedSquerEntity(grn.ccmId?.id.toString(), "")
+//                addInventoryParam.ccmID = NamedSquerEntity(grn.ccmId?.id.toString(), "")
+                addInventoryParam.ccmID = grn.ccmId?.let { NamedSquerEntity(it.id,"") }
                 addInventoryParam.limid = grn.limid
                 addInventoryParam.postingDate = grn.postingDate
                 addInventoryParam.expiryDate = grn.expiryDate
-                addInventoryParam.categoryId = NamedSquerEntity(data.category!!, "")
+                addInventoryParam.categoryId = NamedSquerEntity(data.category!!.toString(), "")
                 addInventoryParam.medicalCode = data.medicalCode
-                addInventoryParam.vendorId = NamedSquerEntity(vendorid, "")
+                addInventoryParam.vendorId = NamedSquerEntity(vendorid.toString(), "")
                 addInventoryParam.ratePerUnit = grn.ratePerUnit
                 addInventoryParam.qtyReceived = grn.qty
                 addInventoryParam.qtyAllocated = 0
@@ -203,14 +205,14 @@ class GRNServiceImpl @Autowired constructor(
                 addInventoryParam.numBoxes = data.numBoxes?.toDouble()
                 addInventoryParam.isUnitAllocation = null
                 addInventoryParam.batchNo = grn.batchNo
-                addInventoryParam.hsnCode = null
-                addInventoryParam.rate = null
-                addInventoryParam.units = null
+                addInventoryParam.hsnCode = grn.hsnCode
+                addInventoryParam.rate = grn.ratePerGRN
+                addInventoryParam.units = data.units.toString()
                 addInventoryParam.createdBy = userId
                 addInventoryParam.updatedBy = userId
                 inventoryService.insertInventory(addInventoryParam)
             } else {
-                grnRepository.approveAcknowledge(data.category!!, data.expiryDate!!, userId, data.grnId!!, data.medicalCode, data.hsnCode, data.ratePer)
+                grnRepository.approveAcknowledge(data.category!!, data.expiryDate!!, userId, data.grnId!!, data.medicalCode!!, data.hsnCode!!, data.ratePer!!)
                 val grn = grnRepository.getAcknowledgeDataById(data.grnId!!)
                 var itemid: String? = null
                 var i = 0

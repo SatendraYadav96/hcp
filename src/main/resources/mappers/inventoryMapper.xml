@@ -111,6 +111,8 @@
     </update>
 
 
+
+
     <update id="blockItem">
 
         UPDATE INVENTORY_INV SET IS_BLOCK_ITEM_INV = #{isBlockItem},   UPDATED_BY_INV = #{updatedBy} , UPDATED_ON_INV = GETDATE()
