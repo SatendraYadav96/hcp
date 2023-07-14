@@ -36,7 +36,7 @@ class UploadRepository(
     @Autowired
     lateinit var invoiceRepository: InvoiceRepository
 
-    @Value("\${application.config.path}")
+    @Value("C:\\upload\\transporter")
     private lateinit var configPath: String
 
 
@@ -293,11 +293,8 @@ class UploadRepository(
             data.put("vendorCode",it.get(headers[8]).toString().trim())
             data.put("vendorName",it.get(headers[9]).toString().trim())
             data.put("ratePerUnit",it.get(headers[10]).toString().trim())
-            if(it.get(headers[11]).toString().trim().isNullOrEmpty()){
-                data.put("medicalCode", "NULL")
-            }else{
                 data.put("medicalCode",it.get(headers[11]).toString().trim())
-            }
+
 
             data.put("itemNo",it.get(headers[13]).toString().trim())
             data.put("sampleExpiry",it.get(headers[14]).toString().trim())
