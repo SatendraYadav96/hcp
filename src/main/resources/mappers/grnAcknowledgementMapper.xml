@@ -7,7 +7,7 @@
         <id property="id" column="id_grn"/>
         <result property="transactionNo" column="transaction_no_grn"/>
         <result property="poNo" column="po_no_grn"/>
-        <result property="limid" column="limid_grn"/>
+        <result property="limid" column="lmid_grn"/>
         <result property="batchNo" column="batch_no_grn"/>
         <result property="itemName" column="item_name_grn"/>
         <result property="postingDate" column="posting_date_grn"/>

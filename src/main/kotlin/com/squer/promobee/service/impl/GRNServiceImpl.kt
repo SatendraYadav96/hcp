@@ -82,11 +82,14 @@ class GRNServiceImpl @Autowired constructor(
             if(it.limid !== null){
                 it.category = NamedSquerEntity(ItemCategoryEnum.SAMPLES.id, ItemCategoryEnum.SAMPLES.name)
             }
-            else if(it.lineText !== null){
-               it.category = NamedSquerEntity(ItemCategoryEnum.MEDICAL.id, ItemCategoryEnum.MEDICAL.name)
+            else if(it.lineText!!.isBlank()){
+
+
+                it.category = NamedSquerEntity( ItemCategoryEnum.NON_MEDICAL.id, ItemCategoryEnum.NON_MEDICAL.name)
             }
             else{
-                it.category = NamedSquerEntity( ItemCategoryEnum.NON_MEDICAL.id, ItemCategoryEnum.NON_MEDICAL.name)
+
+                it.category = NamedSquerEntity(ItemCategoryEnum.MEDICAL.id, ItemCategoryEnum.MEDICAL.name)
             }
 
             //set Cost Center

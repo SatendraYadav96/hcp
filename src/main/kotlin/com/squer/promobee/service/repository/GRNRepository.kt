@@ -38,15 +38,17 @@ class GRNRepository(
         sqlSessionFactory.openSession().update("GRNAcknowledgementMapper.rejectGrnAcknowledge",data)
     }
 
-    fun approveAcknowledge(itcId: String, expiryDate: String, userId: String, grnId: String, medicalCode: String? = null, hsnCode: String?= null, ratePer: Int?= null){
+    fun approveAcknowledge(itcId: String, expiryDate: String, userId: String, grnId: String, medicalCode: String, hsnCode: String, ratePer: Int){
         var data: MutableMap<String, Any> = mutableMapOf()
         data.put("itcId", itcId)
         data.put("expiryDate", expiryDate)
         data.put("userId", userId)
         data.put("grnId", grnId)
-        data.put("medicalCode", medicalCode!!)
-        data.put("hsnCode", hsnCode!!)
-        data.put("ratePer", ratePer!!)
+        data.put("medicalCode", medicalCode)
+        data.put("hsnCode", hsnCode)
+        data.put("ratePer", ratePer)
         sqlSessionFactory.openSession().update("GRNAcknowledgementMapper.approveAcknowledge",data)
+
     }
+
 }

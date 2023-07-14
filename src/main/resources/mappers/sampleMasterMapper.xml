@@ -24,7 +24,8 @@
     </resultMap>
 
     <select id="getSampleName" resultType="Map">
-        select NAME_BRD from SAMPLE_MASTER_SMP join BRAND_MASTER_BRD on ID_BRD_SMP = ID_SMP where LMID_SMP is not null and lower(LMID_SMP) =#{lmid}
+        select brd.NAME_BRD as NAME_BRD from SAMPLE_MASTER_SMP smp
+                                     join BRAND_MASTER_BRD brd on brd.ID_BRD = smp.ID_BRD_SMP where LMID_SMP = #{lmid} and LMID_SMP is not null
     </select>
 
     <select id="getSampleByLmid" resultMap="sampleMasterResultMap">
