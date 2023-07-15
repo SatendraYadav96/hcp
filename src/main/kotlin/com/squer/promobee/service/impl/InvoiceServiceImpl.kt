@@ -76,12 +76,12 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getInventoryByIdForInvoicing(invId)
     }
 
-    override fun getRecipientItemCategoryCount(month: Int, year: Int,  recipientId: String):MutableList<ItemCategoryCountDTO> {
-        return invoiceRepository.getRecipientItemCategoryCount(month,year,recipientId)
+    override fun getRecipientItemCategoryCount(month: Int, year: Int,  recipientId: String,isSpecial:Int):MutableList<ItemCategoryCountDTO> {
+        return invoiceRepository.getRecipientItemCategoryCount(month,year,recipientId,isSpecial)
     }
 
-    override fun getDispatchDetailsForInvoicing(month: Int, year: Int, recipientId: String): MutableList<DispatchDetailDTO> {
-        return invoiceRepository.getDispatchDetailsForInvoicing(month,year,recipientId)
+    override fun getDispatchDetailsForInvoicing(month: Int, year: Int, recipientId: String,isSpecial:Int): MutableList<DispatchDetailDTO> {
+        return invoiceRepository.getDispatchDetailsForInvoicing(month,year,recipientId,isSpecial)
     }
 
     override fun getItemMasterById(id: String): Item {

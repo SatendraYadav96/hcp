@@ -699,24 +699,27 @@ class UploadRepository(
 
 
 
-        var headers = mutableListOf<String>("month", "year", "planName", "state", "employeeName", "employeeDesignation", "employeeCode", "boxes", "weight","dimension",
-            "transporterName", "lrNo", "planId", "planType","ffCode")
+        var headers = mutableListOf<String>("Month", "Year", "Plan Name", "State", "Employee", "Designation", "Code", "Boxes", "Weight","Dimension",
+            "Transporter", "LR Nov", "PlanId", "Plan","FFCode")
 
         var csvReader = CsvReader()
         csvReader.autoRenameDuplicateHeaders
         var rows = CsvReader().readAllWithHeader(File(filePath))
 
-        var i = 0
 
 
-            rows.forEach {
+
+
+
+
+        rows.forEach {
                 var data: MutableMap<String, Any> = mutableMapOf()
 
                 var dto = InvoiceUploadDTO()
 
                 var empty = NULL
 
-                var recipient = it.get(headers[6].toString().trim())?.let { it1 -> getRecipientByCode(it1) }
+
 
                 dto.invoiceId = UUID.randomUUID().toString()
                 dto.invoiceUploadId = uplId

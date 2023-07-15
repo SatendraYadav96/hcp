@@ -652,7 +652,7 @@ class InvoiceRepository(
     }
 
 
-        fun getRecipientItemCategoryCount(month: Int, year: Int, recipientId: String): MutableList<ItemCategoryCountDTO> {
+        fun getRecipientItemCategoryCount(month: Int, year: Int, recipientId: String,isSpecial:Int): MutableList<ItemCategoryCountDTO> {
             val user =
                 (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
@@ -662,6 +662,7 @@ class InvoiceRepository(
             data.put("month", month)
             data.put("year", year)
             data.put("recipientId", recipientId)
+            data.put("isSpecial",isSpecial)
 
             var i = 0
 
@@ -672,6 +673,7 @@ class InvoiceRepository(
             data0.put("month", month)
             data0.put("year", year)
             data0.put("recipientId", recipientId)
+            data0.put("isSpecial",isSpecial)
 
             var inputCount =
                 return sqlSessionFactory.openSession().selectList<ItemCategoryCountDTO>("InvoiceHeaderMapper.getInputCount", data0).toMutableList()
@@ -698,7 +700,7 @@ class InvoiceRepository(
     }
 
 
-    fun getDispatchDetailsForInvoicing(month: Int, year: Int, recipientId: String): MutableList<DispatchDetailDTO> {
+    fun getDispatchDetailsForInvoicing(month: Int, year: Int, recipientId: String,isSpecial:Int): MutableList<DispatchDetailDTO> {
             val user =
                 (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
@@ -708,6 +710,7 @@ class InvoiceRepository(
             data.put("month", month)
             data.put("year", year)
             data.put("recipientId", recipientId)
+            data.put("isSpecial",isSpecial)
 
             return sqlSessionFactory.openSession().selectList<DispatchDetailDTO>("DispatchDetailMapper.getDispatchDetails", data).toMutableList()
 
@@ -828,15 +831,21 @@ class InvoiceRepository(
                 var recipient = genInv.recipientId?.let { getRecipientToGenerateInvoice(it) }
 
                 var itcCount = genInv.month?.let { genInv.year?.let { it1 -> genInv.recipientId?.let { it2 ->
-                    getRecipientItemCategoryCount(it, it1,
-                        it2
-                    )
+                    genInv.isSpecial?.let { it3 ->
+                        getRecipientItemCategoryCount(it, it1,
+                            it2,
+                            it3
+                        )
+                    }
                 } } }
 
                 var dispatchDetails = genInv.month?.let { genInv.year?.let { it1 -> genInv.recipientId?.let { it2 ->
-                    getDispatchDetailsForInvoicing(it, it1,
-                        it2
-                    )
+                    genInv.isSpecial?.let { it3 ->
+                        getDispatchDetailsForInvoicing(it, it1,
+                            it2,
+                            it3
+                        )
+                    }
                 } } }
 
 
@@ -996,10 +1005,13 @@ class InvoiceRepository(
                     var allocatedCount: Int = genInv.month?.let {
                         genInv.year?.let { it1 ->
                             genInv.recipientId?.let { it2 ->
-                                getDispatchDetailsForInvoicing(
-                                    it,
-                                    it1, it2
-                                )
+                                genInv.isSpecial?.let { it3 ->
+                                    getDispatchDetailsForInvoicing(
+                                        it,
+                                        it1, it2,
+                                        it3
+                                    )
+                                }
                             }
                         }
                     }!!.count()

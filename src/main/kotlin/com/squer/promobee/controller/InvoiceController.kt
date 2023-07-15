@@ -133,19 +133,19 @@ open class InvoiceController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
-    @GetMapping("/getRecipientItemCategoryCount/{month}/{year}/{recipientId}")
-    open fun getRecipientItemCategoryCount(@PathVariable month: Int,@PathVariable year: Int,@PathVariable recipientId: String): ResponseEntity<*> {
+    @GetMapping("/getRecipientItemCategoryCount/{month}/{year}/{recipientId}/{isSpecial}")
+    open fun getRecipientItemCategoryCount(@PathVariable month: Int,@PathVariable year: Int,@PathVariable recipientId: String , @PathVariable isSpecial:Int): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        val data = invoiceService.getRecipientItemCategoryCount(month,year,recipientId)
+        val data = invoiceService.getRecipientItemCategoryCount(month,year,recipientId,isSpecial)
 
         return ResponseEntity(data, HttpStatus.OK)
     }
 
 
-    @GetMapping("/getDispatchDetailsForInvoicing/{month}/{year}/{recipientId}")
-    open fun getDispatchDetailsForInvoicing(@PathVariable month: Int,@PathVariable year: Int,@PathVariable recipientId: String): ResponseEntity<*> {
+    @GetMapping("/getDispatchDetailsForInvoicing/{month}/{year}/{recipientId}/{isSpecial}")
+    open fun getDispatchDetailsForInvoicing(@PathVariable month: Int,@PathVariable year: Int,@PathVariable recipientId: String, @PathVariable isSpecial:Int): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        val data = invoiceService.getDispatchDetailsForInvoicing(month,year,recipientId)
+        val data = invoiceService.getDispatchDetailsForInvoicing(month,year,recipientId,isSpecial)
 
         return ResponseEntity(data, HttpStatus.OK)
     }
