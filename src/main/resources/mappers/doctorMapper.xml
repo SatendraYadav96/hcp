@@ -28,4 +28,9 @@
     </select>
 
 
+    <select id="getDoctor" resultMap="doctorResultMap" >
+        SELECT * FROM DOCTOR_MASTER_DTM
+        WHERE ID_DTM = #{id}
+    </select>
+
 </mapper>

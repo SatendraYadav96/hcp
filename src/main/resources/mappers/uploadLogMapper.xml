@@ -230,6 +230,13 @@
           and rct.ID_RCT = #{employeeId} and dip.ID_DIP = #{planId}
     </select>
 
+    <select id="isInvoiceGeneratedVirtual" resultType="int" >
+
+        select Count(idp.ID_IDP) from INVOICE_DISPATCH_PLAN_IDP idp
+                                          join INVOICE_HEADER_INH inh on idp.ID_INH_IDP = inh.ID_INH
+        where inh.ID_RCT_INH = #{recipientId} and idp.ID_PLAN_IDP = #{planId}
+    </select>
+
 
 
 

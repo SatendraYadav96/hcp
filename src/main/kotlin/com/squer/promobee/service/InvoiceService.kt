@@ -32,11 +32,17 @@ interface InvoiceService {
 
     fun getRecipientToGenerateInvoice( recipientId: String):Recipient
 
+    fun getDoctorToGenerateInvoice( id: String):Doctor
+
     fun getInventoryByIdForInvoicing( invId: String):MutableList<Inventory>
 
     fun getRecipientItemCategoryCount( month:Int,year:Int,recipientId:String,isSpecial:Int):MutableList<ItemCategoryCountDTO>
 
+    fun getDoctorItemCategoryCount( planId: String,  recipientId: String):MutableList<ItemCategoryCountDTO>
+
     fun getDispatchDetailsForInvoicing( month:Int,year:Int,recipientId:String,isSpecial:Int):MutableList<DispatchDetailDTO>
+
+    fun getDispatchDetailVirtual( planId: String,  recipientId: String):MutableList<DispatchDetailDTO>
 
     fun getItemMasterById(id: String): Item
 
@@ -51,6 +57,10 @@ interface InvoiceService {
     fun getTransporter(name: String): Transporter
 
     fun getDocket(docketName: String): DocketDTO
+
+    fun generateInvoiceVirtual(genInv :GenerateInvoiceVirtualDTO)
+
+
 
 
 

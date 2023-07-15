@@ -125,6 +125,14 @@ open class InvoiceController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getDoctorToGenerateInvoice/{id}")
+    open fun getDoctorToGenerateInvoice(@PathVariable id: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = invoiceService.getDoctorToGenerateInvoice(id)
+
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
     @GetMapping("/getInventoryByIdForInvoicing/{id}")
     open fun getInventoryByIdForInvoicing(@PathVariable invId: String): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -141,11 +149,27 @@ open class InvoiceController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getDoctorItemCategoryCount/{planId}/{recipientId}")
+    open fun getDoctorItemCategoryCount(@PathVariable planId: String, @PathVariable recipientId: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = invoiceService.getDoctorItemCategoryCount(planId,recipientId)
+
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
 
     @GetMapping("/getDispatchDetailsForInvoicing/{month}/{year}/{recipientId}/{isSpecial}")
     open fun getDispatchDetailsForInvoicing(@PathVariable month: Int,@PathVariable year: Int,@PathVariable recipientId: String, @PathVariable isSpecial:Int): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = invoiceService.getDispatchDetailsForInvoicing(month,year,recipientId,isSpecial)
+
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getDispatchDetailVirtual/{planId}/{recipientId}")
+    open fun getDispatchDetailVirtual(@PathVariable planId: String, @PathVariable recipientId: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = invoiceService.getDispatchDetailVirtual(planId,recipientId)
 
         return ResponseEntity(data, HttpStatus.OK)
     }
@@ -209,6 +233,15 @@ open class InvoiceController@Autowired constructor(
 
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+    @PostMapping("/generateInvoiceVirtual")
+    open fun generateInvoiceVirtual(@RequestBody genInv : GenerateInvoiceVirtualDTO ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val generateInvoiceData = invoiceService.generateInvoiceVirtual(genInv)
+
+        return ResponseEntity(generateInvoiceData, HttpStatus.OK)
+    }
+
 
 
 

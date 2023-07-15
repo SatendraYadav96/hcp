@@ -388,6 +388,24 @@
           AND DIP.IS_SPECIAL_DIP =  #{isSpecial} AND INV.ID_ITC_INV IN ('2909F268-96DE-4485-B8E9-673FEC08C9A3','9689A910-F261-48E7-9DCC-7653B092BA7B')
     </select>
 
+    <select id="getSamplesCountVirtual" resultType="com.squer.promobee.controller.dto.ItemCategoryCountDTO">
+        SELECT ISNULL(SUM((DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) + (DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) * INV.RATE_PER_INV/100),0) as 'sampleItems'
+        FROM SAMPLE_MASTER_SMP SMP
+                 JOIN INVENTORY_INV INV ON INV.ID_ITM_INV =  SMP.ID_SMP
+                 JOIN DISPATCH_DETAIL_DID DID ON DID.ID_INV_DID =  INV.ID_INV
+                 JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP =  DID.ID_DIP_DID
+        WHERE DID.ID_RCT_DID = #{recipientId} AND DIP.ID_DIP = #{planId} AND INV.ID_ITC_INV =  '242B921C-B27A-497D-9FA1-7222AB6E6F2A'
+    </select>
+
+    <select id="getInputCountVirtual" resultType="com.squer.promobee.controller.dto.ItemCategoryCountDTO">
+        SELECT ISNULL(SUM((DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) + (DID.QUANTITY_DISPATCH_DID * RATE_PER_UNIT_INV) * INV.RATE_PER_INV/100),0) as 'nonSampleItems'
+        FROM ITEM_MASTER_ITM ITM
+                 JOIN INVENTORY_INV INV ON INV.ID_ITM_INV =  ITM.ID_ITM
+                 JOIN DISPATCH_DETAIL_DID DID ON DID.ID_INV_DID =  INV.ID_INV
+                 JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP =  DID.ID_DIP_DID
+        WHERE DID.ID_RCT_DID = #{recipientId} AND DIP.ID_DIP = #{planId}  AND INV.ID_ITC_INV IN ('2909F268-96DE-4485-B8E9-673FEC08C9A3','9689A910-F261-48E7-9DCC-7653B092BA7B')
+    </select>
+
 
     <select id="getTransporter" resultType="com.squer.promobee.controller.dto.TransporterDropdownDTO">
         SELECT ID_TRN as 'transporterId',NAME_TRN as 'transporterName' FROM TRANSPORTER_TRN

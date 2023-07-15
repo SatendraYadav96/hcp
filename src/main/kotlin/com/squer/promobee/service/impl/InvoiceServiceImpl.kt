@@ -72,6 +72,10 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getRecipientToGenerateInvoice(recipientId)
     }
 
+    override fun getDoctorToGenerateInvoice(id: String): Doctor {
+        return  invoiceRepository.getDoctorToGenerateInvoice(id)
+    }
+
     override fun getInventoryByIdForInvoicing(invId: String): MutableList<Inventory> {
         return invoiceRepository.getInventoryByIdForInvoicing(invId)
     }
@@ -80,8 +84,16 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getRecipientItemCategoryCount(month,year,recipientId,isSpecial)
     }
 
+    override fun getDoctorItemCategoryCount(planId: String, recipientId: String): MutableList<ItemCategoryCountDTO> {
+        return invoiceRepository.getDoctorItemCategoryCount(planId,recipientId)
+    }
+
     override fun getDispatchDetailsForInvoicing(month: Int, year: Int, recipientId: String,isSpecial:Int): MutableList<DispatchDetailDTO> {
         return invoiceRepository.getDispatchDetailsForInvoicing(month,year,recipientId,isSpecial)
+    }
+
+    override fun getDispatchDetailVirtual(planId: String, recipientId: String): MutableList<DispatchDetailDTO> {
+        return invoiceRepository.getDispatchDetailVirtual(planId,recipientId)
     }
 
     override fun getItemMasterById(id: String): Item {
@@ -111,6 +123,10 @@ class InvoiceServiceImpl @Autowired constructor(
 
     override fun getDocket(docketName: String): DocketDTO {
         return invoiceRepository.getDocket(docketName)
+    }
+
+    override fun generateInvoiceVirtual(genInv: GenerateInvoiceVirtualDTO) {
+        return invoiceRepository.generateInvoiceVirtual(genInv)
     }
 
 }

@@ -100,6 +100,14 @@
 
     </select>
 
+    <select id="getDispatchDetailVirtual" resultType="com.squer.promobee.controller.dto.DispatchDetailDTO">
+        select * from DISPATCH_DETAIL_DID did
+                          join DISPATCH_PLAN_DIP dip on did.ID_DIP_DID = dip.ID_DIP
+        where dip.ID_DIP = #{planId} and  did.ID_RCT_DID = #{recipientId}
+          and dip.ID_STATUS_SLV_DIP = '00000000-0000-0000-0000-000000000024' and did.ID_STATUS_SLV_DID = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7'
+
+    </select>
+
 
     <update id="editDispatchDetailsForInvoicing">
 
