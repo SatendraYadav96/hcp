@@ -44,7 +44,7 @@ class InvoiceRepository(
     lateinit var inventoryRepository : InventoryRepository
 
 
-    @Value("/src/main/resources/htmlPrint/promoPrintInvoice.vm")
+    @Value("./src/main/resources/htmlPrint/promoPrintInvoice.vm")
     private lateinit var vmConfigPath: String
 
 
