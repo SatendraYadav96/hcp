@@ -8,4 +8,6 @@ class PendingDispacthDashboardDTO {
     var  allocationType : String? = null
     var  submissionDate : String? = null
     var  currentStatus : String? = null
+    var  brandManager : String? = null
+    var  team : String? = null
 }
