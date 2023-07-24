@@ -511,7 +511,7 @@ class InventoryRepository @Autowired constructor(
         data.put("YEAR", year.toString())
         data.put("Special", isSpecial.toString())
 
-        return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getPickList", data)
+        return sqlSessionFactory.openSession().selectList<PickListDTO>("DispatchInvoicingMapper.getPickList", data)
     }
 
 
@@ -524,7 +524,7 @@ class InventoryRepository @Autowired constructor(
         data0.put("YEAR", year.toString())
         data0.put("Special", isSpecial.toString())
 
-        return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getPickListVirtual", data0)
+        return sqlSessionFactory.openSession().selectList<PickListDTO>("DispatchInvoicingMapper.getPickListVirtual", data0)
     }
 
     fun getPickListStatusByBM(teamId: String, month: Int, year: Int): List<BrandManagerPlanStatusDTO> {

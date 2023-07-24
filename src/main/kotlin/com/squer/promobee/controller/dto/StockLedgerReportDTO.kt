@@ -7,5 +7,6 @@ class StockLedgerReportDTO {
     val receipt: Int? = null
     val issue: Double? = null
     val balance: Double? = null
+    val batchNo:String? = null
 
 }

@@ -56,5 +56,9 @@
         where ID_VND = #{id}
     </select>
 
+    <select id="vendorExist" resultType="int">
+        select count(*) from VENDOR_MASTER_VND where CODE_VND = #{code}
+    </select>
+
 
 </mapper>

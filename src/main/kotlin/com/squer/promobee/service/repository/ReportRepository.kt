@@ -507,7 +507,7 @@ class ReportRepository
 
 
 
-        return sqlSessionFactory.openSession().selectList("ReportMapper.getStockLedgerReport", data)
+            return sqlSessionFactory.openSession().selectList<StockLedgerReportDTO>("ReportMapper.getStockLedgerReport", data)
     }
 
 

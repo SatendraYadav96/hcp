@@ -14,4 +14,6 @@ class DestructionReportDTO {
     val rate:Double ?= null
     val value:Double ?= null
     val remarks:String ?= null
+    val invoiceHeaderID: String? = null
+    val invoiceNo:String ?= null
 }

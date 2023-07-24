@@ -50,23 +50,35 @@ class MasterRepository
     fun addVendor(vnd: Vendor) {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-        var data: MutableMap<String, Any> = mutableMapOf()
+        var data0: MutableMap<String, Any> = mutableMapOf()
 
-        data.put("id", UUID.randomUUID().toString())
-        vnd.name?.let { data.put("name", it.uppercase()) }
-        vnd.name?.let { data.put("ciName", it.lowercase()) }
-        vnd.code?.let { data.put("code", it.uppercase()) }
-        vnd.addressLine1?.let { data.put("addressLine1", it) }
-        vnd.addressLine2?.let { data.put("addressLine2", it) }
-        vnd.city?.let { data.put("city", it) }
-        vnd.state?.let { data.put("state", it) }
-        vnd.zip?.let { data.put("zip", it) }
-        vnd.active?.let { data.put("active", it) }
-        data.put("createdBy", user.id )
-        data.put("updatedBy", user.id)
+        var vendorCode = 0;
+        vnd.code?.let { data0.put("code", it) }
 
-         sqlSessionTemplate.insert("VendorMapper.addVendor",data)
+        vendorCode = sqlSessionTemplate.selectOne("VendorMapper.vendorExist",data0)
 
+        if(vendorCode > 0 ){
+            println("Vendor Already exist in database.")
+        }
+        else {
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+            data.put("id", UUID.randomUUID().toString())
+            vnd.name?.let { data.put("name", it.uppercase()) }
+            vnd.name?.let { data.put("ciName", it.lowercase()) }
+            vnd.code?.let { data.put("code", it.uppercase()) }
+            vnd.addressLine1?.let { data.put("addressLine1", it) }
+            vnd.addressLine2?.let { data.put("addressLine2", it) }
+            vnd.city?.let { data.put("city", it) }
+            vnd.state?.let { data.put("state", it) }
+            vnd.zip?.let { data.put("zip", it) }
+            vnd.active?.let { data.put("active", it) }
+            data.put("createdBy", user.id)
+            data.put("updatedBy", user.id)
+
+            sqlSessionTemplate.insert("VendorMapper.addVendor", data)
+
+        }
 
     }
 

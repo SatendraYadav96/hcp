@@ -7,6 +7,7 @@ class DispatchRegisterReportDTO {
     val CourierName:String ?= null
     val NoOfBoxes:String ?= null
     val Weight:String ?= null
+    val invoiceHeaderID: String? = null
     val InvoiceNo:String ?= null
     val Value:String ?= null
     val InvoiceDate:String ?= null

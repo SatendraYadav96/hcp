@@ -12,6 +12,10 @@ class DispatchesReportDTO {
     val invoiceDate:String ?= null
     val teamName:String ?= null
     val desigation:String ?= null
+    val inhId: String? = null
     val invoiceNo:Int ?= null
+    val lRNo:String ?= null
+    val courierName:String ?= null
+    val docketStatus : String? = null
 
 }
