@@ -38,7 +38,7 @@
 
     <select id="getApprovalChainById" resultMap="approvalChainTransactionResultMap">
         select * from APPROVAL_CHAIN_TRANSACTION_API
-        where ID_API = #{id}
+        where ID_OWNER_API = #{id}
     </select>
 
 

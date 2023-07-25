@@ -286,8 +286,9 @@ class ApprovalRepository(
             plan.planId?.let { data.put("id", it) }
             data.put("planStatus", AllocationStatusEnum.DRAFT.id)
             data.put("updatedBy",user.id)
+            data.put("invoiceStatus",DispatchPlanInvoiceStatus.NOT_INITIATED.id)
 
-            sqlSessionFactory.openSession().update("DispatchPlanMapper.approvePlan",data)
+            sqlSessionFactory.openSession().update("DispatchPlanMapper.rejectPlan",data)
 
 
             var i = 0
@@ -336,6 +337,64 @@ class ApprovalRepository(
 
         }
 
+        if(user.userDesignation!!.id == UserLovEnum.BEX.id || isSpecial == 1){
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            plan.planId?.let { data.put("id", it) }
+            data.put("planStatus", AllocationStatusEnum.DRAFT.id)
+            data.put("updatedBy",user.id)
+            data.put("invoiceStatus",DispatchPlanInvoiceStatus.NOT_INITIATED.id)
+
+
+            sqlSessionFactory.openSession().update("DispatchPlanMapper.rejectPlan",data)
+
+            var i = 0
+
+            dispatchDetails!!.forEach {
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                data.put("id", dispatchDetails.get(i).id)
+                data.put("detailStatus",DispatchDetailStatusEnum.ALLOCATED.id)
+                data.put("updatedBy",user.id)
+
+                sqlSessionFactory.openSession().update("DispatchDetailMapper.rejectPlanDispatchDetails",data)
+
+                i++
+            }
+
+
+
+        }
+
+
+        if(user.userDesignation!!.id == UserLovEnum.BEX.id || isSpecial == 2){
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            plan.planId?.let { data.put("id", it) }
+            data.put("planStatus", AllocationStatusEnum.DRAFT.id)
+            data.put("updatedBy",user.id)
+            data.put("invoiceStatus",DispatchPlanInvoiceStatus.NOT_INITIATED.id)
+
+
+            sqlSessionFactory.openSession().update("DispatchPlanMapper.rejectPlan",data)
+
+            var i = 0
+
+            dispatchDetails!!.forEach {
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                data.put("id", dispatchDetails.get(i).id)
+                data.put("detailStatus",DispatchDetailStatusEnum.ALLOCATED.id)
+                data.put("updatedBy",user.id)
+
+                sqlSessionFactory.openSession().update("DispatchDetailMapper.rejectPlanDispatchDetails",data)
+
+                i++
+            }
+
+
+
+        }
 
 
     }

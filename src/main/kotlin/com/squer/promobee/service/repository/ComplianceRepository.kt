@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
+import java.text.SimpleDateFormat
 import java.util.*
 
 @Repository
@@ -39,7 +40,7 @@ class ComplianceRepository(
         if(statusType == "1"){
             data.put("month", month)
             data.put("year", year)
-            recipient =  sqlSessionFactory.openSession().selectList("ComplianceDetailsMapper.recipientBlocked", data)
+            recipient =  sqlSessionFactory.openSession().selectList ("ComplianceDetailsMapper.recipientBlocked", data)
         }
 
         else if(statusType == "0"){
@@ -115,8 +116,25 @@ class ComplianceRepository(
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
 
-        data.put("month", month)
-        data.put("year", year)
+
+
+        // Calculate the first day of the month
+        val format = SimpleDateFormat("MM/yyyy", Locale.US)
+        val date = format.parse("$month/$year")
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        val firstDayOfMonth = calendar.time
+
+        // Calculate the last day of the month
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+        val lastDayOfMonth = calendar.time
+
+        data.put("month", firstDayOfMonth)
+        data.put("year", lastDayOfMonth)
+
+
+
 
             return  sqlSessionFactory.openSession().selectList("ComplianceDetailsMapper.overSamplingDetails", data)
 

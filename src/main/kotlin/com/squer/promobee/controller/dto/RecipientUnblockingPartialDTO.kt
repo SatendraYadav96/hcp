@@ -11,10 +11,10 @@ class RecipientUnblockingPartialDTO {
     var  headquarter :String? = null
     var  emailAM :String? = null
     var  emailRM :String? = null
-    var  isBockedFF :String? = null
-    var isValidated :String? = null
-    var  isExpired :String? = null
-    var  isRejected :String? = null
+    var  isBockedFF :Int? = null
+    var isValidated :Int? = null
+    var  isExpired :Int? = null
+    var  isRejected :Int? = null
     var  reason :String? = null
     var  remark :String? = null
     var  remarkByAdmin :String? = null
