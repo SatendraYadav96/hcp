@@ -1254,7 +1254,9 @@ class MasterRepository
 
         data.put("id",id)
 
-        sqlSessionTemplate.delete("")
+        sqlSessionTemplate.delete("deleteUserBrand",data)
+
+        sqlSessionTemplate.delete("deleteUserTeam",data)
     }
 
 

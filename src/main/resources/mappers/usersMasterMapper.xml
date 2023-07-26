@@ -86,5 +86,18 @@
     </insert>
 
 
+    <delete id="deleteUserBrand" >
+
+        DELETE FROM BRANDMANAGER_BRAND_BBR WHERE ID_USR_BBR = #{id}
+
+    </delete>
+
+    <delete id="deleteUserTeam" >
+
+        DELETE FROM USER_TEAM_MAPPING_UTM WHERE ID_USR_UTM = #{id}
+
+    </delete>
+
+
 
 </mapper>
