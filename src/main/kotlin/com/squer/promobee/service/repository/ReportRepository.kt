@@ -576,5 +576,11 @@ class ReportRepository
         return sqlSessionFactory.openSession().selectList("ReportMapper.getVirtualReconciliationReport", data)
     }
 
+    fun getBatchReconciliation(): List<BatchReconciliationDTO>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        return sqlSessionFactory.openSession().selectList<BatchReconciliationDTO>("ReportMapper.getBatchReconciliation")
+    }
+
 
 }

@@ -235,5 +235,9 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.addFieldForce(ff)
     }
 
+    override fun deleteUserMapping(id: String) {
+        return masterRepository.deleteUserMapping(id)
+    }
+
 
 }

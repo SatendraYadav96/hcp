@@ -252,6 +252,13 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
 
 
 
+    <select id="getBatchReconciliation" resultType="com.squer.promobee.controller.dto.BatchReconciliationDTO" parameterType = "map" statementType = "CALLABLE">
+        { call Get_ReconciliationReport () }
+
+    </select>
+
+
+
 
 
 </mapper>

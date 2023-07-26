@@ -124,6 +124,8 @@ interface MasterService {
 
     fun addFieldForce(ff: MasterFF)
 
+    fun deleteUserMapping (id: String)
+
 
 
 

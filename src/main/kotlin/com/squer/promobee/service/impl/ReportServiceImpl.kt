@@ -91,4 +91,8 @@ class ReportServiceImpl @Autowired constructor(
         return reportRepository.getVirtualReconciliationReport(fromDate,toDate,businessUnit)
     }
 
+    override fun getBatchReconciliation(): List<BatchReconciliationDTO> {
+        return reportRepository.getBatchReconciliation()
+    }
+
 }

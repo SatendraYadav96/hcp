@@ -6,9 +6,9 @@ import com.squer.promobee.controller.dto.FieldForceDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.MasterService
 import com.squer.promobee.service.repository.domain.*
+import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import lombok.extern.slf4j.Slf4j
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -408,6 +408,13 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+
+    @PutMapping("/deleteUserMapping/{id}")
+    fun deleteUserMapping(@PathVariable id: String): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.deleteUserMapping(id)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
 
 
 

@@ -139,4 +139,14 @@ open class ReportController @Autowired constructor(
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
+    @GetMapping("/getBatchReconciliation")
+    fun getBatchReconciliation(): ResponseEntity<*>{
+        val data = reportService.getBatchReconciliation()
+        return  ResponseEntity(data,HttpStatus.OK)
+    }
+
+
+
+
+
 }
