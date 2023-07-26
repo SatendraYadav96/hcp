@@ -1,10 +1,8 @@
 package com.squer.promobee.service
 
 import com.squer.promobee.api.v1.enums.MonthlyPlanStatusEnum
-import com.squer.promobee.api.v1.enums.SLVTypeEnum
 import com.squer.promobee.controller.dto.AllocationDetailsDTO
 import com.squer.promobee.controller.dto.AllocationDistributionDTO
-import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
 import com.squer.promobee.security.domain.NamedSquerEntity
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.repository.domain.DispatchPlan
@@ -67,4 +65,10 @@ class AllocationService @Autowired constructor(
         data.allocations = inventoryService.getInventoryDistributionByTeamForPlan(planId)
         return data
     }
+
+
+
+
+
+
 }

@@ -40,5 +40,23 @@
         VALUES(#{id},#{userId},#{brandId})
     </insert>
 
+    <select id="getTseList" resultType="com.squer.promobee.controller.dto.TseListDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetTseForBM (#{bmID, jdbcType = VARCHAR, mode = IN}) }
+
+    </select>
+
+    <insert id="assignTse">
+        INSERT INTO USER_TSE_UST (ID_UST,ID_BM_USR_UST,ID_TSE_USR_UST)
+        VALUES(#{id},#{bmID},#{tseID})
+    </insert>
+
+    <delete id="unAssignTse">
+
+        DELETE FROM USER_TSE_UST where ID_TSE_USR_UST = #{id}
+
+    </delete>
+
+
+
 
 </mapper>
