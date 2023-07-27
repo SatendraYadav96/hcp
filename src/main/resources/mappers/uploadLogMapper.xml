@@ -331,6 +331,23 @@
     </select>
 
 
+    <select id="getVirtualSampleUploadLog" resultType="com.squer.promobee.controller.dto.UploadLogDTO">
+        SELECT TOP 25 ID_UPL as 'uplId',UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
+                SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
+                                                  JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
+        WHERE UPL.IDTYPESLV_UPL = '00000000-0000-0000-0000-100000000030'
+        order by CREATED_ON_UPL desc
+    </select>
+
+    <select id="getRecipientUploadLog" resultType="com.squer.promobee.controller.dto.UploadLogDTO">
+        SELECT TOP 25 ID_UPL as 'uplId',UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
+                SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
+                                                  JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
+        WHERE UPL.IDTYPESLV_UPL = '00000000-0000-0000-0000-100000000021'
+        order by CREATED_ON_UPL desc
+    </select>
+
+
 
 
 

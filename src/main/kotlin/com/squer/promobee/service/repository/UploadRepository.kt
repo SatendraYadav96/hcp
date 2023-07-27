@@ -1174,6 +1174,29 @@ class UploadRepository(
         return sqlSessionFactory.openSession().selectList("UploadLogMapper.invoiceExcelData", data)
     }
 
+    fun getVirtualSampleUploadLog (): List<UploadLogDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getVirtualSampleUploadLog", data)
+    }
+
+    fun getRecipientUploadLog (): List<UploadLogDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getRecipientUploadLog", data)
+    }
+
+
 
 }
 

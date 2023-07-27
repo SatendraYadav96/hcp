@@ -89,5 +89,12 @@ class UploadServiceImpl @Autowired constructor(
         return uploadRepository.invoiceExcelData(uplId)
     }
 
+    override fun getVirtualSampleUploadLog(): List<UploadLogDTO> {
+        return uploadRepository.getVirtualSampleUploadLog()
+    }
+
+    override fun getRecipientUploadLog(): List<UploadLogDTO> {
+        return uploadRepository.getRecipientUploadLog()
+    }
 
 }

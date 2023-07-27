@@ -154,6 +154,20 @@ open class UploadController@Autowired constructor(
         return ResponseEntity(invUpl, HttpStatus.OK)
     }
 
+    @GetMapping("/getVirtualSampleUploadLog")
+    open fun getVirtualSampleUploadLog() : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var trnUpl = uploadService.getVirtualSampleUploadLog()
+        return ResponseEntity(trnUpl, HttpStatus.OK)
+    }
+
+    @GetMapping("/getRecipientUploadLog")
+    open fun getRecipientUploadLog() : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var trnUpl = uploadService.getRecipientUploadLog()
+        return ResponseEntity(trnUpl, HttpStatus.OK)
+    }
+
 
 
 

@@ -39,6 +39,10 @@ interface UploadService {
 
     fun invoiceExcelData(uplId : String): List<InvoiceUploadDTO>
 
+    fun getVirtualSampleUploadLog(): List<UploadLogDTO>
+
+    fun getRecipientUploadLog(): List<UploadLogDTO>
+
 
 
 }
