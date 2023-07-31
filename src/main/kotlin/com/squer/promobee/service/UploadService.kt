@@ -43,6 +43,18 @@ interface UploadService {
 
     fun getRecipientUploadLog(): List<UploadLogDTO>
 
+    fun getNonComplianceUploadLog(): List<UploadLogDTO>
+
+    fun getOverSamplingUploadLog(): List<UploadLogDTO>
+
+    fun getOverSamplingDetailsUploadLog(): List<UploadLogDTO>
+
+    fun getMaterialExpiryUploadLog(): List<UploadLogDTO>
+
+    fun nonComplianceUpload(dto: FileUploadDto)
+
+    fun overSamplingUpload(dto: FileUploadDto)
+
 
 
 }

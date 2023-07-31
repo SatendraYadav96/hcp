@@ -347,6 +347,65 @@
         order by CREATED_ON_UPL desc
     </select>
 
+    <select id="getNonComplianceUploadLog" resultType="com.squer.promobee.controller.dto.UploadLogDTO">
+        SELECT TOP 25 ID_UPL as 'uplId',UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
+                SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
+                                                  JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
+        WHERE UPL.IDTYPESLV_UPL = '00000000-0000-0000-0000-100000000023'
+        order by CREATED_ON_UPL desc
+    </select>
+
+    <select id="getOverSamplingUploadLog" resultType="com.squer.promobee.controller.dto.UploadLogDTO">
+        SELECT TOP 25 ID_UPL as 'uplId',UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
+                SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
+                                                  JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
+        WHERE UPL.IDTYPESLV_UPL = '00000000-0000-0000-0000-100000000024'
+        order by CREATED_ON_UPL desc
+    </select>
+
+
+    <select id="getOverSamplingDetailsUploadLog" resultType="com.squer.promobee.controller.dto.UploadLogDTO">
+        SELECT TOP 25 ID_UPL as 'uplId',UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
+                SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
+                                                  JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
+        WHERE UPL.IDTYPESLV_UPL = '00000000-0000-0000-0000-100000000025'
+        order by CREATED_ON_UPL desc
+    </select>
+
+    <select id="getMaterialExpiryUploadLog" resultType="com.squer.promobee.controller.dto.UploadLogDTO">
+        SELECT TOP 25 ID_UPL as 'uplId',UPL.START_TIME_UPL as 'startTime',UPL.END_TIME_UPL as 'endTime',UPL.TOTAL_RECORDS_UPL as 'totalRecord',UPL.RECORDS_UPLOAD_UPL as 'recordUpload',
+                SLV.NAME_SLV as 'status' FROM UPLOAD_LOG_UPL UPL
+                                                  JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = UPL.ID_STATUS_SLV_UPL
+        WHERE UPL.IDTYPESLV_UPL = '00000000-0000-0000-0000-100000000026'
+        order by CREATED_ON_UPL desc
+    </select>
+
+
+    <insert id="insertTempUploadOptimaMiDetails">
+
+        INSERT INTO TEMP_UPLOAD_OPTIMA_MI_TOMI (ID_OMI,ID_UPLOAD_OMI,EMPLOYEE_CODE_OMI,MATERIAL_CODE_OMI,BATCH_NO_OMI,MONTH_OMI,YEAR_OMI,QTY_DISPATHCED_OMI,QTY_VALIDATED_OMI,QTY_TRANSFERED_OMI,QTY_BALANCE_OMI,
+                                                EXPIRY_DATE_OMI,CREATED_DATE_OMI,CREATED_BY_OMI,UPDATED_DATE_OMI,UPDATED_BY_OMI,ERROR_TEXT_OMI,isvalidated)
+        VALUES(#{optimaId},#{optimaUploadId},#{empCode},#{materialCode},#{batchNo},#{month},#{year},#{qtyDispatched},
+               #{qtyValidated},#{qtyTransfered},#{qtyBalance},#{expiryDate},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},NULL,#{isvalidated})
+    </insert>
+
+    <update  id="uploadOptimaMiDetails" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_OPTIMAMI_UPLOAD ( #{uploadid, jdbcType = VARCHAR, mode = IN}, #{createdBy, jdbcType = VARCHAR, mode = IN} ) }
+
+    </update>
+
+
+    <insert id="insertOverSamplingDetails">
+        INSERT INTO TEMP_COMPLIANCE_UPLOAD_TCMP (ID_CMP,ID_UPLOAD_CMP,START_DATE_CMP,END_DATE_CMP,FF_CMP,DR_ID,DR_NAME,TOT_SAMPLE_GIVEN,BU,AM,RBM,
+                                                 REMARKS,CREATED_ON_CMP,CREATED_BY_CMP,UPDATED_ON_CMP,UPDATED_BY_CMP,ERROR_TEXT_CMP,FF_CODE_CMP,TEAM_ID_CMP,TEAM_NAME_CMP)
+        VALUES(#{overSamplingId},#{overSamplingUploadId},GETDATE(),GETDATE(),#{ffCmp},#{drCode},#{drName},#{totalSampleGiven},
+               #{bu},#{am},#{rbm},#{remarks},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},NULL,#{ffCode},NULL,#{teamName})
+    </insert>
+
+    <update  id="uploadOverSampling" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_COMPLIANCE_UPLOAD ( #{uploadid, jdbcType = VARCHAR, mode = IN}, #{createdBy, jdbcType = VARCHAR, mode = IN} ) }
+
+    </update>
 
 
 

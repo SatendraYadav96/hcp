@@ -14,9 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
 
 
 @Slf4j
@@ -47,6 +44,15 @@ open class ComplianceController@Autowired constructor(
         val data = complianceService.overSamplingDetails(month,year)
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+    @GetMapping("/masterBlockedList/{year}")
+    fun masterBlockedList(@PathVariable year : String   ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = complianceService.masterBlockedList(year)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
 
 
 

@@ -1,7 +1,14 @@
 package com.squer.promobee.api.v1.enums
 
 enum class UserMenuEnum(val label: String, val key: String, val title: String, val path: String, val parentId: String){
-    DASHBOARD("Dashboard", "dashboard", "dashboard", "", ""),
+    DASHBOARD(" Dashboard", "dashboard", "dashboard", "", ""),
+    BEX_DASHBOARD("Bex Dashboard", "bex_dashboard", "bex_dashboard", "", ""),
+    BM_DASHBOARD("Bm Dashboard", "bm_dashboard", "bm_dashboard", "", ""),
+    BUHEAD_DASHBOARD("Buhead Dashboard", "buhead_dashboard", "buhead_dashboard", "", ""),
+    COMPLIANCE_ADMIN_DASHBOARD("Compliance Admin Dashboard", "compliance_admin_dashboard", "compliance_admin_dashboard", "", ""),
+    TSE_DASHBOARD("Tse Dashboard", "tse_dashboard", "tse_dashboard", "", ""),
+    RBM_DASHBOARD("Rbm Dashboard", "rbm_dashboard", "rbm_dashboard", "", ""),
+    NSM_DASHBOARD("Nsm Dashboard", "nsm_dashboard", "nsm_dashboard", "", ""),
     GOODS_RECEIPT("Goods Receipt", "goods_receipt", "goods_receipt", "", ""),
     GRN_UPLOAD_LOG("GRN Upload Log", "grn_upload_log", "grn_upload_log", "/home/grn/logs", "goods_receipt"),
     GRN_ACKNOWLEDGE("Acknowledge", "acknowledge", "acknowledge", "/home/grn/acknowledge", "goods_receipt"),

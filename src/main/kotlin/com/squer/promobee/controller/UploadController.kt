@@ -168,6 +168,52 @@ open class UploadController@Autowired constructor(
         return ResponseEntity(trnUpl, HttpStatus.OK)
     }
 
+    @GetMapping("/getNonComplianceUploadLog")
+    open fun getNonComplianceUploadLog() : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var trnUpl = uploadService.getNonComplianceUploadLog()
+        return ResponseEntity(trnUpl, HttpStatus.OK)
+    }
+
+    @GetMapping("/getOverSamplingUploadLog")
+    open fun getOverSamplingUploadLog() : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var trnUpl = uploadService.getOverSamplingUploadLog()
+        return ResponseEntity(trnUpl, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/getOverSamplingDetailsUploadLog")
+    open fun getOverSamplingDetailsUploadLog() : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var trnUpl = uploadService.getOverSamplingDetailsUploadLog()
+        return ResponseEntity(trnUpl, HttpStatus.OK)
+    }
+
+    @GetMapping("/getMaterialExpiryUploadLog")
+    open fun getMaterialExpiryUploadLog() : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var trnUpl = uploadService.getMaterialExpiryUploadLog()
+        return ResponseEntity(trnUpl, HttpStatus.OK)
+    }
+
+    @PostMapping("/nonComplianceUpload")
+    fun nonComplianceUpload(@RequestBody dto: FileUploadDto) {
+        return uploadService.nonComplianceUpload(dto)
+    }
+
+
+    @PostMapping("/overSamplingUpload")
+    fun overSamplingUpload(@RequestBody dto: FileUploadDto) {
+        return uploadService.overSamplingUpload(dto)
+    }
+
+
+
+
+
+
+
 
 
 

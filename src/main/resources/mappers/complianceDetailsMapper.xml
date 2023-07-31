@@ -77,6 +77,11 @@
         WHERE START_DATE = #{month} AND END_DATE = #{year}
     </select>
 
+    <select id="masterBlockedList" resultType="com.squer.promobee.controller.dto.RecipientBlockLogsDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GET_BLOCKED_LIST ( #{year, jdbcType = VARCHAR, mode = IN}   ) }
+
+    </select>
+
 
 
 

@@ -1197,6 +1197,272 @@ class UploadRepository(
     }
 
 
+    fun getNonComplianceUploadLog (): List<UploadLogDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getNonComplianceUploadLog", data)
+    }
+
+
+    fun getOverSamplingUploadLog (): List<UploadLogDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getOverSamplingUploadLog", data)
+    }
+
+    fun getOverSamplingDetailsUploadLog (): List<UploadLogDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getOverSamplingDetailsUploadLog", data)
+    }
+
+    fun getMaterialExpiryUploadLog (): List<UploadLogDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getMaterialExpiryUploadLog", data)
+    }
+
+    fun nonComplianceUpload(dto: FileUploadDto) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        //val filePath = "${configPath}/deliveryUpload/${System.currentTimeMillis()}${dto.fileName}"
+        val filePath = "${configPath}/nonComplianceUpload/${dto.fileName}"
+        //File(filePath).writeBytes(Base64.getDecoder().decode(dto.byteCode.substring(dto.byteCode.indexOf(";base64,") + ";base64,".length)))
+        File(filePath).writeBytes(Base64.getDecoder().decode(dto.byteCode.toString()))
+
+        var counter = 0
+
+        val validHeader: Boolean = true
+
+        val line  = ""
+
+        val successCount = 0
+
+        var upl = UploadLog()
+
+        var uplId =  UUID.randomUUID().toString()
+
+        if(dto.byteCode.isEmpty() || dto.byteCode.isBlank()){
+            data.put("id",uplId)
+            data.put("type",UploadTypeEnum.OPTIMA_DATA.id)
+            data.put("totalRecord",counter)
+            data.put("recordUpload",counter)
+            data.put("statusId",UploadStatusEnum.FILE_NOT_FOUND.id)
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            data.put("parentId",uplId)
+
+            sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogFileNotFound", data)
+        }
+
+        else{
+            data.put("id",uplId)
+            data.put("type",UploadTypeEnum.OPTIMA_DATA.id)
+            data.put("recordUpload",counter)
+            data.put("statusId",UploadStatusEnum.QUEUED.id)
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            data.put("parentId",uplId)
+
+
+            sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogQueued", data)
+        }
+
+
+
+
+
+
+        var headers = mutableListOf<String>("EMPLOYEE_CODE","MATERIAL_CODE","BATCH_NO","MONTH","YEAR","QTY_DISPATCHED","QTY_VALIDATED",
+            "QTY_TRANSFERED","QTY_BALANCE","EXPIRY_DATE","ISVALIDATED")
+
+        var csvReader = CsvReader()
+        csvReader.autoRenameDuplicateHeaders
+        var rows = CsvReader().readAllWithHeader(File(filePath))
+
+
+
+        var i = 0
+
+        rows.forEach {
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var dto = OptimaMiUploadDTO()
+
+            data.put("optimaId",UUID.randomUUID().toString())
+            data.put("optimaUploadId",uplId)
+            data.put("empCode",it.get(headers[0]).toString().trim())
+            data.put("materialCode",it.get(headers[1]).toString().trim())
+            data.put("batchNo",it.get(headers[2]).toString().trim())
+            data.put("month",it.get(headers[3]).toString().trim())
+            data.put("year",it.get(headers[4]).toString().trim())
+            data.put("qtyDispatched",it.get(headers[5]).toString().trim())
+            data.put("qtyValidated",it.get(headers[6]).toString().trim())
+            data.put("qtyTransfered",it.get(headers[7]).toString().trim())
+            data.put("qtyBalance",it.get(headers[8]).toString().trim())
+            data.put("expiryDate",it.get(headers[9]).toString().trim())
+            data.put("isvalidated",it.get(headers[10]).toString().trim())
+            data.put("errorText",it.get(headers[10]).toString().trim())
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+
+
+
+
+
+
+
+            sqlSessionFactory.openSession().insert("UploadLogMapper.insertTempUploadOptimaMiDetails", data)
+
+
+
+
+        }
+
+
+
+        data.put("uploadid",uplId)
+        data.put("createdBy",user.id)
+
+        sqlSessionFactory.openSession().update("UploadLogMapper.uploadOptimaMiDetails", data)
+
+
+    }
+
+
+
+    fun overSamplingUpload(dto: FileUploadDto) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        //val filePath = "${configPath}/deliveryUpload/${System.currentTimeMillis()}${dto.fileName}"
+        val filePath = "${configPath}/overSamplingUpload/${dto.fileName}"
+        //File(filePath).writeBytes(Base64.getDecoder().decode(dto.byteCode.substring(dto.byteCode.indexOf(";base64,") + ";base64,".length)))
+        File(filePath).writeBytes(Base64.getDecoder().decode(dto.byteCode.toString()))
+
+        var counter = 0
+
+        val validHeader: Boolean = true
+
+        val line  = ""
+
+        val successCount = 0
+
+        var upl = UploadLog()
+
+        var uplId =  UUID.randomUUID().toString()
+
+        if(dto.byteCode.isEmpty() || dto.byteCode.isBlank()){
+            data.put("id",uplId)
+            data.put("type",UploadTypeEnum.COMPLIANCE_DATA.id)
+            data.put("totalRecord",counter)
+            data.put("recordUpload",counter)
+            data.put("statusId",UploadStatusEnum.FILE_NOT_FOUND.id)
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            data.put("parentId",uplId)
+
+            sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogFileNotFound", data)
+        }
+
+        else{
+            data.put("id",uplId)
+            data.put("type",UploadTypeEnum.COMPLIANCE_DATA.id)
+            data.put("recordUpload",counter)
+            data.put("statusId",UploadStatusEnum.QUEUED.id)
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            data.put("parentId",uplId)
+
+
+            sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogQueued", data)
+        }
+
+
+
+
+
+
+        var headers = mutableListOf<String>("FF","FF_CODE","TEAM","DR-ID","DR-NAME","TOTSAMPLESGIVEN","BU","AM","RBM",
+            "REMARKS")
+
+        var csvReader = CsvReader()
+        csvReader.autoRenameDuplicateHeaders
+        var rows = CsvReader().readAllWithHeader(File(filePath))
+
+
+
+        var i = 0
+
+        rows.forEach {
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var dto = overSamplingUploadDTO()
+
+            data.put("overSamplingId",UUID.randomUUID().toString())
+            data.put("overSamplingUploadId",uplId)
+            data.put("ffCmp",it.get(headers[0]).toString().trim())
+            data.put("ffCode",it.get(headers[1]).toString().trim())
+            data.put("teamName",it.get(headers[2]).toString().trim())
+            data.put("drCode",it.get(headers[3]).toString().trim())
+            data.put("drName",it.get(headers[4]).toString().trim())
+            data.put("totalSampleGiven",it.get(headers[5]).toString().trim())
+            data.put("bu",it.get(headers[6]).toString().trim())
+            data.put("am",it.get(headers[7]).toString().trim())
+            data.put("rbm",it.get(headers[8]).toString().trim())
+            data.put("remarks",it.get(headers[9]).toString().trim())
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+
+
+
+
+
+
+
+            sqlSessionFactory.openSession().insert("UploadLogMapper.insertOverSamplingDetails", data)
+
+
+
+
+        }
+
+
+
+        data.put("uploadid",uplId)
+        data.put("createdBy",user.id)
+
+        sqlSessionFactory.openSession().update("UploadLogMapper.uploadOverSampling", data)
+
+
+    }
+
+
+
+
 
 }
 

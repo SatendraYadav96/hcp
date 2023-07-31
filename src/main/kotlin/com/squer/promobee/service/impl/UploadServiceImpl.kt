@@ -97,4 +97,27 @@ class UploadServiceImpl @Autowired constructor(
         return uploadRepository.getRecipientUploadLog()
     }
 
+    override fun getNonComplianceUploadLog(): List<UploadLogDTO> {
+        return uploadRepository.getNonComplianceUploadLog()
+    }
+
+    override fun getOverSamplingUploadLog(): List<UploadLogDTO> {
+        return uploadRepository.getOverSamplingUploadLog()
+    }
+
+    override fun getOverSamplingDetailsUploadLog(): List<UploadLogDTO> {
+        return uploadRepository.getOverSamplingDetailsUploadLog()
+    }
+
+    override fun getMaterialExpiryUploadLog(): List<UploadLogDTO> {
+        return uploadRepository.getMaterialExpiryUploadLog()
+    }
+
+    override fun nonComplianceUpload(dto: FileUploadDto) {
+        return uploadRepository.nonComplianceUpload(dto)
+    }
+
+    override fun overSamplingUpload(dto: FileUploadDto) {
+        return uploadRepository.overSamplingUpload(dto)
+    }
 }

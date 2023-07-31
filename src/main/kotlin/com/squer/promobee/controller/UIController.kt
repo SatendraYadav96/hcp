@@ -133,14 +133,14 @@ open class UIController @Autowired constructor(
                     UserMenuEnum.REPORT
                 ),
                 UserRoleEnum.PRODUCT_MANAGER_ID.id to listOf<UserMenuEnum>(
-                    UserMenuEnum.DASHBOARD,
+                    UserMenuEnum.BM_DASHBOARD,
                     UserMenuEnum.ALLOCATION,
                     UserMenuEnum.ITEM_REVALIDATION,
                     UserMenuEnum.MASS_REVALIDATION,
                     UserMenuEnum.REPORT
                 ),
             UserRoleEnum.BEX_ID.id to listOf<UserMenuEnum>(
-                UserMenuEnum.DASHBOARD,
+                UserMenuEnum.BEX_DASHBOARD,
                 UserMenuEnum.MASTERS,
                 UserMenuEnum.APPROVALS,
                 UserMenuEnum.REPORT,
@@ -155,7 +155,7 @@ open class UIController @Autowired constructor(
                 ),
 
             UserRoleEnum.BU_HEAD_ID.id to listOf<UserMenuEnum>(
-                UserMenuEnum.DASHBOARD,
+                UserMenuEnum.BUHEAD_DASHBOARD,
                 UserMenuEnum.APPROVALS,
                 UserMenuEnum.REPORT,
                 UserMenuEnum.RECIPIENT_BLOCKED,
@@ -164,7 +164,7 @@ open class UIController @Autowired constructor(
             ),
 
             UserRoleEnum.COMPLIANCE_ADMIN_ID.id to listOf<UserMenuEnum>(
-                UserMenuEnum.DASHBOARD,
+                UserMenuEnum.COMPLIANCE_ADMIN_DASHBOARD,
                 UserMenuEnum.MASTER_BLOCKED_LIST,
                 UserMenuEnum.NON_COMPLIANCE_UNBLOCK,
                 UserMenuEnum.NON_COMPLIANCE_UPLOAD,
@@ -176,7 +176,7 @@ open class UIController @Autowired constructor(
             ),
 
             UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id to listOf<UserMenuEnum>(
-                UserMenuEnum.DASHBOARD,
+                UserMenuEnum.TSE_DASHBOARD,
                 UserMenuEnum.ALLOCATION,
                 UserMenuEnum.COMPLIANCE_PROCESS,
                 UserMenuEnum.OVERSAMPLING_DETAILS

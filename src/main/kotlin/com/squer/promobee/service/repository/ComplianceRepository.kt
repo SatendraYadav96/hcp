@@ -6,6 +6,7 @@ package com.squer.promobee.service.repository
 
 import com.squer.promobee.controller.dto.OptimaDataLogsDTO
 import com.squer.promobee.controller.dto.OverSamplingDetaislDTO
+import com.squer.promobee.controller.dto.RecipientBlockLogsDTO
 import com.squer.promobee.controller.dto.RecipientUnblockingPartialDTO
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
@@ -143,7 +144,15 @@ class ComplianceRepository(
     }
 
 
+    fun masterBlockedList(year: String): List<RecipientBlockLogsDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
 
+        data.put("year",year)
+
+        return  sqlSessionFactory.openSession().selectList("ComplianceDetailsMapper.masterBlockedList",data)
+
+    }
 
 
 
