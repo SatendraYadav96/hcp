@@ -208,6 +208,16 @@ open class UploadController@Autowired constructor(
         return uploadService.overSamplingUpload(dto)
     }
 
+    @PostMapping("/overSamplingDetailsUpload")
+    fun overSamplingDetailsUpload(@RequestBody dto: FileUploadDto) {
+        return uploadService.overSamplingDetailsUpload(dto)
+    }
+
+    @PostMapping("/materialExpiryUpload")
+    fun materialExpiryUpload(@RequestBody dto: FileUploadDto) {
+        return uploadService.materialExpiryUpload(dto)
+    }
+
 
 
 

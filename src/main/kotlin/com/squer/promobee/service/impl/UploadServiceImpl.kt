@@ -120,4 +120,15 @@ class UploadServiceImpl @Autowired constructor(
     override fun overSamplingUpload(dto: FileUploadDto) {
         return uploadRepository.overSamplingUpload(dto)
     }
+
+    override fun overSamplingDetailsUpload(dto: FileUploadDto) {
+        return uploadRepository.overSamplingDetailsUpload(dto)
+    }
+
+
+    override fun materialExpiryUpload(dto: FileUploadDto) {
+        return uploadRepository.materialExpiryUpload(dto)
+    }
+
+
 }

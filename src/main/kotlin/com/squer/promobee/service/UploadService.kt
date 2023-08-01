@@ -55,6 +55,13 @@ interface UploadService {
 
     fun overSamplingUpload(dto: FileUploadDto)
 
+    fun overSamplingDetailsUpload(dto: FileUploadDto)
+
+    fun materialExpiryUpload(dto: FileUploadDto)
+
+
+
+
 
 
 }

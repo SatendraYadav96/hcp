@@ -395,7 +395,7 @@
     </update>
 
 
-    <insert id="insertOverSamplingDetails">
+    <insert id="insertOverSampling">
         INSERT INTO TEMP_COMPLIANCE_UPLOAD_TCMP (ID_CMP,ID_UPLOAD_CMP,START_DATE_CMP,END_DATE_CMP,FF_CMP,DR_ID,DR_NAME,TOT_SAMPLE_GIVEN,BU,AM,RBM,
                                                  REMARKS,CREATED_ON_CMP,CREATED_BY_CMP,UPDATED_ON_CMP,UPDATED_BY_CMP,ERROR_TEXT_CMP,FF_CODE_CMP,TEAM_ID_CMP,TEAM_NAME_CMP)
         VALUES(#{overSamplingId},#{overSamplingUploadId},GETDATE(),GETDATE(),#{ffCmp},#{drCode},#{drName},#{totalSampleGiven},
@@ -407,6 +407,37 @@
 
     </update>
 
+
+    <insert id="insertOverSamplingDetails">
+        INSERT INTO Temp_Details_Compliance_CDS (ID_CDS,NAME_TERRITORY_CDS,ID_TERRITORY_CDS,ID_PERSON_CDS,NAME_PERSON_CDS,ID_LOCATION_CDS,NAME_LOCATION_CDS,VISITED_CDS,ITEMCATEGORY_CDS,
+                                                 ID_ITEM_CDS,NAME_ITEM_CDS,BATCH_NO_CDS,QUANTITY_CDS,SUBTEAM_CDS,TEAM_CDS,AM_CDS,RBM_CDS,ID_UPLOAD_CDS,CREATED_ON_CDS,CREATED_BY_CDS,
+                                                 UPDATED_ON_CDS,UPDATED_BY_CDS,ERROR_TXT,
+                                                 MONTH_CDS,START_DATE_CDS,END_DATE_CDS)
+        VALUES(#{complianceDetailId},#{territoryName},#{territoryId},#{personId},#{personName},#{locationId},#{locationName},#{visited},
+               #{itemCategory},#{itemId},#{nameItem},#{batchNo},#{quantity},#{subTeam},#{team},#{am},#{rbm},#{complianceDetailUploadId},GETDATE(),#{createdBy}
+                  ,GETDATE(),#{updatedBy},NULL,#{month},GETDATE(),GETDATE())
+    </insert>
+
+
+    <update  id="uploadOverSamplingDetails" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_DETAILS_COMPLIANCE_UPLOAD ( #{uploadid, jdbcType = VARCHAR, mode = IN}, #{createdBy, jdbcType = VARCHAR, mode = IN} ) }
+
+    </update>
+
+
+    <insert id="insertMaterialExpiryDetails">
+        INSERT INTO TEMP_UPLOAD_OPTIMA_MATERIAL_TMI (ID_TMI,ID_UPLOAD_TMI,EMPLOYEE_CODE_TMI,MATERIAL_CODE_TMI,BATCH_NO_TMI,MONTH_TMI,YEAR_TMI,QTY_DISPATHCED_TMI,QTY_VALIDATED_TMI,
+                                                     QTY_TRANSFERED_TMI,QTY_BALANCE_TMI,EXPIRY_DATE_TMI,CREATED_DATE_TMI,CREATED_BY_TMI,UPDATED_DATE_TMI,UPDATED_BY_TMI,ERROR_TEXT_TMI,isvalidated)
+        VALUES(#{materialExpiryId},#{materialExpiryUploadId},#{employeeCode},#{materialCode},#{batchNo},#{month},#{year},#{qtyDispatched},
+               #{qtyValidated},#{qtyTransferred},#{qtyBalance},#{expiryDate},GETDATE(),#{createdBy}
+                  ,GETDATE(),#{updatedBy},NULL,#{isValidated})
+    </insert>
+
+
+    <update  id="uploadMaterialExpiryDetails" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_OPTIMATERIAL_UPLOAD ( #{uploadid, jdbcType = VARCHAR, mode = IN}, #{createdBy, jdbcType = VARCHAR, mode = IN} ) }
+
+    </update>
 
 
 
