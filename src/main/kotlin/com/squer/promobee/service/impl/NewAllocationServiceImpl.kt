@@ -3,6 +3,7 @@ package com.squer.promobee.service.impl
 
 
 import com.squer.promobee.controller.dto.TseListDTO
+import com.squer.promobee.controller.dto.UserDTO
 import com.squer.promobee.service.NewAllocationService
 import com.squer.promobee.service.repository.NewAllocationRepository
 import lombok.extern.slf4j.Slf4j
@@ -36,5 +37,8 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.unAssignTse(id)
     }
 
+    override fun getBrandManagerForTse(id: String): List<UserDTO> {
+        return newAllocationRepository.getBrandManagerForTse(id)
+    }
 
 }

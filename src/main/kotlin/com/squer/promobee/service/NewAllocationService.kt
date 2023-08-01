@@ -1,6 +1,7 @@
 package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.TseListDTO
+import com.squer.promobee.controller.dto.UserDTO
 
 
 interface NewAllocationService {
@@ -10,6 +11,8 @@ interface NewAllocationService {
    fun assignTse( id: String): List<TseListDTO>
 
    fun unAssignTse( id: String): List<TseListDTO>
+
+   fun getBrandManagerForTse( id: String): List<UserDTO>
 
 
 

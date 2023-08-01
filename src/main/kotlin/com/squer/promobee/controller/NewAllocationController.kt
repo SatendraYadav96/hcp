@@ -33,5 +33,13 @@ open class NewAllocationController @Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getBrandManagerForTse/{id}")
+    open fun getBrandManagerForTse(@PathVariable id: String): ResponseEntity<*> {
+        val data = newAllocationService.getBrandManagerForTse(id)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
 
 }

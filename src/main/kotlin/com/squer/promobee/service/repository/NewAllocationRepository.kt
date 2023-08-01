@@ -1,6 +1,7 @@
 package com.squer.promobee.service.repository
 
 import com.squer.promobee.controller.dto.TseListDTO
+import com.squer.promobee.controller.dto.UserDTO
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
@@ -78,6 +79,25 @@ class NewAllocationRepository(
 
 
         return sqlSessionFactory.openSession().selectList<TseListDTO>("BrandManagerMapper.getTseList",data0)
+
+    }
+
+
+    fun getBrandManagerForTse(id: String): List<UserDTO> {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+        data.put("tseId",id)
+
+
+        return sqlSessionFactory.openSession().selectList<UserDTO>("BrandManagerMapper.getBrandManagerForTse",data)
+
+
+
 
     }
 
