@@ -115,7 +115,15 @@ open class UIController @Autowired constructor(
                 UserMenuEnum.VIRTUAL_ALLOCATION
 
 
-            )
+            ),
+
+            UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id to listOf<UserMenuEnum>(
+                UserMenuEnum.MONTHLY_ALLOCATION,
+                UserMenuEnum.SPECIAL_ALLOCATION,
+                UserMenuEnum.VIRTUAL_ALLOCATION,
+                UserMenuEnum.PICKING_SLIP,
+
+            ),
 
 
 
@@ -135,8 +143,8 @@ open class UIController @Autowired constructor(
                 UserRoleEnum.PRODUCT_MANAGER_ID.id to listOf<UserMenuEnum>(
                     UserMenuEnum.BM_DASHBOARD,
                     UserMenuEnum.ALLOCATION,
-                    UserMenuEnum.ITEM_REVALIDATION,
-                    UserMenuEnum.MASS_REVALIDATION,
+//                    UserMenuEnum.ITEM_REVALIDATION,
+//                    UserMenuEnum.MASS_REVALIDATION,
                     UserMenuEnum.REPORT
                 ),
             UserRoleEnum.BEX_ID.id to listOf<UserMenuEnum>(
@@ -181,7 +189,13 @@ open class UIController @Autowired constructor(
                 UserMenuEnum.COMPLIANCE_PROCESS,
                 UserMenuEnum.OVERSAMPLING_DETAILS
 
-            )
+            ),
+
+            UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id to listOf<UserMenuEnum>(
+                UserMenuEnum.BM_DASHBOARD,
+                UserMenuEnum.ALLOCATION,
+                UserMenuEnum.DISPATCH_AND_INVOICING
+            ),
         )
     }
 

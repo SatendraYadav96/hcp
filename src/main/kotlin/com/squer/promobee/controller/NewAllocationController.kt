@@ -39,6 +39,16 @@ open class NewAllocationController @Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    //SPECIAL ALLOCATION
+
+    @GetMapping("/getTeamForSpeicalAllocation/{id}")
+    open fun getTeamForSpeicalAllocation(@PathVariable id: String): ResponseEntity<*> {
+        val data = newAllocationService.getBrandManagerForTse(id)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
 
 
 
