@@ -202,7 +202,7 @@ open class UIController @Autowired constructor(
     @GetMapping("/menus")
     open fun getMenusForUser(): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        val designation = user.userDesignation!!.id!!
+        val designation = user.userDesignation!!.id
         val menus =  mapOfMenusForDesignation[designation]!!.groupBy{it.parentId}
         var menusToReturn = mutableListOf<MenuPojo>()
         parentMenus[designation]!!.forEach{

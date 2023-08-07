@@ -46,6 +46,6 @@ class ItemRepository (
         }
 }
 
-private fun <SqlSession> SqlSession.select(s: String, data: MutableMap<String, Any>) {
+fun <SqlSession> SqlSession.select(s: String, data: MutableMap<String, Any>) {
 
 }

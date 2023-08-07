@@ -258,6 +258,19 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
     </select>
 
 
+    <select id="allocationDetailsOfRbm" resultType="com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_AllocationDetailsOfRbm (#{UserID, jdbcType = VARCHAR, mode = IN}, #{RBMPlanID, jdbcType = VARCHAR, mode = IN}
+                                        ) }
+
+    </select>
+
+    <select id="allocationDetailsWithCostCenter" resultType="com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_AllocationDetailsWithCostCenter (#{UserID, jdbcType = VARCHAR, mode = IN}, #{PlanID, jdbcType = VARCHAR, mode = IN}
+            ) }
+
+    </select>
+
+
 
 
 

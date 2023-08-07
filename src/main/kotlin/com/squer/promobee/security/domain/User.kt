@@ -2,16 +2,11 @@ package com.squer.promobee.security.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.squer.promobee.service.repository.domain.LegalEntity
-import com.squer.promobee.service.repository.domain.UserDesignation
-import com.squer.promobee.service.repository.domain.UserStatus
-
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import java.util.Date
+import java.util.*
 import javax.validation.constraints.NotBlank
-import kotlin.collections.HashSet
 
 class   User : java.io.Serializable, UserDetails, AuditableEntity() {
 
@@ -39,6 +34,8 @@ class   User : java.io.Serializable, UserDetails, AuditableEntity() {
     var userStatus: NamedSquerEntity?= null
 
     var roles: List<SecurityRole>? = mutableListOf<SecurityRole>()
+
+    var userRecipientId : String? = null
 
 
 

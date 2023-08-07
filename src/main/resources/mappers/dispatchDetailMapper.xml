@@ -132,6 +132,40 @@
     </update>
 
 
+    <select id="getDispatchDetailsForAllocation"  resultMap="dispatchDetailResultMap">
+        SELECT DID*
+        FROM DISPATCH_PLAN_DIP DIP
+        join DISPATCH_DETAIL_DID DID on DIP.ID_DIP = DID.ID_DIP_DID
+        where DID.ID_RCT_DID = #{rbmId} AND DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year}
+
+    </select>
+
+
+
+    <select id="rbmDetails" resultMap="dispatchDetailResultMap">
+        SELECT *
+        FROM DISPATCH_DETAIL_DID
+        where DID.ID_DIP_DID = #{planId} AND DID.ID_INV_DID = #{invId}
+
+    </select>
+
+
+    <insert id="dispatchDetailAllocationInsert" >
+        insert into DISPATCH_DETAIL_DID(ID_DID, ID_DIP_DID, ID_INV_DID, ID_RCT_DID, QUANTITY_DISPATCH_DID, ID_QTP_DID, ID_STATUS_SLV_DID,  CREATED_ON_DID, CREATED_BY_DID, UPDATED_ON_DID, UPDATED_BY_DID, ID_ITC_DID)
+        values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy}, #{categoryId})
+    </insert>
+
+    <update id="dispatchDetailAllocationUpdate">
+
+
+        UPDATE DISPATCH_DETAIL_DID SET QUANTITY_DISPATCH_DID = 0  , UPDATED_BY_DID = #{updatedBy} , UPDATED_ON_DID = GETDATE()
+        WHERE ID_DID = #{id}
+
+    </update>
+
+
+
+
 
 
 </mapper>

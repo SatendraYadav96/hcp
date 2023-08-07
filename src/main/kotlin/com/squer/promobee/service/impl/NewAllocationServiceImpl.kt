@@ -2,6 +2,7 @@ package com.squer.promobee.service.impl
 
 
 
+import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
 import com.squer.promobee.controller.dto.TseListDTO
 import com.squer.promobee.controller.dto.UserDTO
 import com.squer.promobee.service.NewAllocationService
@@ -41,4 +42,7 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getBrandManagerForTse(id)
     }
 
+    override fun createViewMonthlyPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO> {
+        return newAllocationRepository.createViewMonthlyPlan(yearMonth)
+    }
 }

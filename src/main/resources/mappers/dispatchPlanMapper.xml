@@ -72,6 +72,11 @@
         WHERE ID_DIP =  #{id}
     </select>
 
+    <select id="getDispatchPlanForAllocation" resultMap="dispatchPlanResultMap" >
+        select * from DISPATCH_PLAN_DIP
+        where MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND ID_OWNER_USR_DIP = #{owner} AND IS_SPECIAL_DIP = 0
+    </select>
+
 
     <update id="generateInvoiceDispatchPlanFullyInvoiced">
 
@@ -139,5 +144,15 @@
                                      IS_SPECIAL_DIP = #{isSpecial}
         WHERE ID_DIP = #{id}
     </update>
+
+
+    <insert id="insertPlanForAllocation">
+        INSERT INTO DISPATCH_PLAN_DIP(ID_DIP, ID_OWNER_USR_DIP, MONTH_DIP, YEAR_DIP,ID_STATUS_SLV_DIP,
+                                      IS_SPECIAL_DIP,  CREATED_ON_DIP, CREATED_BY_DIP,
+                                      UPDATED_ON_DIP, UPDATED_BY_DIP, ID_INVOICE_STATUS_SLV_DIP
+                                     )
+        VALUES( #{id}, #{owner}, #{month}, #{year}, #{planStatus}, #{isSpecial},
+                 GETDATE(), #{createdBy}, GETDATE(), #{updatedBy}, #{invoiceStatus})
+    </insert>
 
 </mapper>
