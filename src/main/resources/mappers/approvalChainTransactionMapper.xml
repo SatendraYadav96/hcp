@@ -42,6 +42,12 @@
     </select>
 
 
+    <select id="apiAllocation" resultMap="approvalChainTransactionResultMap">
+        select * from APPROVAL_CHAIN_TRANSACTION_API
+        where ID_OWNER_API = #{ownerId}
+    </select>
+
+
 
 
     <update id="updateApprovalChainTransaction">

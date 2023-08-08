@@ -42,7 +42,11 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getBrandManagerForTse(id)
     }
 
-    override fun createViewMonthlyPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO> {
-        return newAllocationRepository.createViewMonthlyPlan(yearMonth)
+    override fun createMonthlyPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO> {
+        return newAllocationRepository.createMonthlyPlan(yearMonth)
+    }
+
+    override fun isPlanApprovedOrSubmitLock(month: String, year: String) {
+        return newAllocationRepository.isPlanApprovedOrSubmitLock(month,year)
     }
 }

@@ -18,4 +18,33 @@
         </where>
     </select>
 
+
+
+
+
+    <select id="allocationTypes" resultMap="systemLovResultMap">
+
+        select NAME_SLV as 'name' from SYSTEM_LOV_SLV where ID_SLV = #{id}
+
+    </select>
+
+    <select id="allocationInvoiceStatus" resultMap="systemLovResultMap">
+
+        select NAME_SLV from SYSTEM_LOV_SLV where ID_SLV = #{id} and TYPE_SLV = 'DISPATCH_PLAN_INVOICE_STATUS'
+
+    </select>
+
+
+    <select id="monthToSubtract" resultMap="systemLovResultMap">
+
+        select NAME_SLV from SYSTEM_LOV_SLV where ID_SLV = #{id} and TYPE_SLV = 'DISPATCH_PLAN_INVOICE_STATUS'
+
+    </select>
+
+
+
+
+
+
+
 </mapper>

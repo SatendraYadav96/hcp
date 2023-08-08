@@ -51,13 +51,17 @@ open class NewAllocationController @Autowired constructor(
 
     //MONTHLY ALLOCATION
 
-    @PostMapping("/monthly/createview")
-    open fun createViewMonthlyPlan(@RequestBody yearMonth: Long): ResponseEntity<*>{
-        val items = newAllocationService.createViewMonthlyPlan(yearMonth)
+    @PostMapping("/monthly/create")
+    open fun createMonthlyPlan(@RequestBody yearMonth: Map<String , Long>): ResponseEntity<*>{
+        val items = newAllocationService.createMonthlyPlan(yearMonth["yearMonth"]!!)
         return ResponseEntity(items, HttpStatus.OK)
     }
 
-
+    @GetMapping("/isPlanApprovedOrSubmitLock/{month}/{year}")
+    open fun isPlanApprovedOrSubmitLock(@PathVariable month: String , @PathVariable year: String): ResponseEntity<*> {
+        val data = newAllocationService.isPlanApprovedOrSubmitLock(month , year)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
 
 
 

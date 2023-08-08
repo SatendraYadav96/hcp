@@ -15,7 +15,9 @@ interface NewAllocationService {
 
    fun getBrandManagerForTse( id: String): List<UserDTO>
 
-   fun createViewMonthlyPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO>
+   fun createMonthlyPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO>
+
+   fun isPlanApprovedOrSubmitLock( month: String , year: String)
 
 
 
