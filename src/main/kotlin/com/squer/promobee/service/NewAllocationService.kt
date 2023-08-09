@@ -1,6 +1,7 @@
 package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
+import com.squer.promobee.controller.dto.CommonAllocationTeamDTO
 import com.squer.promobee.controller.dto.TseListDTO
 import com.squer.promobee.controller.dto.UserDTO
 import org.springframework.http.ResponseEntity
@@ -18,9 +19,11 @@ interface NewAllocationService {
 
    fun createMonthlyPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO>
 
-   fun isPlanApprovedOrSubmitLock( month: String , year: String)
+   fun isPlanApprovedOrSubmitLock( month: String , year: String): ResponseEntity<out Any>
 
    fun getcheckforsampleFifocheckpopup( planId: String , inventoryId: String, isItem: Int): ResponseEntity<out Any>
+
+   fun getTeamForCommonAllocation( ccmId: String): List<CommonAllocationTeamDTO>
 
 
 

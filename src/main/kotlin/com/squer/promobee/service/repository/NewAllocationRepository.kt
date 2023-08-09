@@ -1,10 +1,10 @@
 package com.squer.promobee.service.repository
 
-import com.squer.promobee.api.v1.enums.*
-import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
-import com.squer.promobee.controller.dto.SampleFifoDetailsModelDTO
-import com.squer.promobee.controller.dto.TseListDTO
-import com.squer.promobee.controller.dto.UserDTO
+import com.squer.promobee.api.v1.enums.AllocationStatusEnum
+import com.squer.promobee.api.v1.enums.DispatchPlanInvoiceStatus
+import com.squer.promobee.api.v1.enums.SystemPropertyEnum
+import com.squer.promobee.api.v1.enums.UserRoleEnum
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
@@ -16,9 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import java.util.*
-import kotlin.time.Duration.Companion.days
 
 
 @Repository
@@ -280,180 +278,45 @@ class NewAllocationRepository(
 
     }
 
-    fun isPlanApprovedOrSubmitLock(month: String, year: String) {
+    fun isPlanApprovedOrSubmitLock(month: String, year: String):  ResponseEntity<out Any> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-
-        var allocationStatus = ""
-        var allocationInvoiceStatus = ""
 
         try {
 
+            var now = LocalDate.now()
+
+            var day = now.dayOfMonth
+
+            var dayValue = day.toInt()
+
             var data: MutableMap<String, Any> = mutableMapOf()
 
-            data.put("type","MONTHLY_PLAN_STATUS")
-            var allocationTypes = sqlSessionFactory.openSession().selectList<SystemLov>("SystemLovMapper.allocationTypes",data)
+            data.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK.id)
 
 
-            var data0: MutableMap<String, Any> = mutableMapOf()
-            data0.put("month",month)
-            data0.put("year",year)
-            data0.put("owner",user.id)
-
-            var plan = sqlSessionFactory.openSession().selectOne<DispatchPlan>("DispatchPlanMapper.getDispatchPlanForAllocation",data0)
+            var bmPlanLockValue = sqlSessionFactory.openSession().selectOne<SystemProperties>("SystemPropertiesMapper.checkPlanLock",data)
 
 
-            var data1: MutableMap<String, Any> = mutableMapOf()
-            plan.planStatus?.let { data1.put("id", it.id) }
+            var sypValue = bmPlanLockValue.value!!.toInt()
 
+            if(dayValue >= sypValue ){
 
-             var allocationStatus1 =   sqlSessionFactory.openSession().selectOne<SystemLov>("SystemLovMapper.allocationStatus",data1)
-
-            allocationStatus = allocationStatus1.name.toString()
-
-            var data2: MutableMap<String, Any> = mutableMapOf()
-            plan.owner?.let { data2.put("ownerId", it.id) }
-
-            var  api = sqlSessionFactory.openSession().selectOne<ApprovalChainTransaction>("ApprovalChainTransactionMapper.apiAllocation",data2)
-
-            if(api != null){
-
-                allocationStatus += api.comments
-
-            }
-
-            var data3: MutableMap<String, Any> = mutableMapOf()
-            plan.invoiceStatus?.let { data3.put("id", it.id) }
-
-            var allocationInvoiceStatus1 = sqlSessionFactory.openSession().selectOne<SystemLov>("SystemLovMapper.allocationInvoiceStatus",data3)
-
-            allocationInvoiceStatus = allocationInvoiceStatus1.name.toString()
-
-            var data4: MutableMap<String, Any> = mutableMapOf()
-          data4.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK_OF_MONTH.id)
-
-            var monthToSubtract = sqlSessionFactory.openSession().selectOne<SystemProperties>("SystemPropertiesMapper.monthToSubtract",data4)
-
-            var monthToSubtract1 = monthToSubtract.value?.toInt()
-
-            var now = LocalDate.now()
-            var firstDayOfMonth = LocalDate.now().withDayOfMonth( 1 )
-            var dayToAdd = 0
-            var dayToAdd1 = 0
-            var dayToAdd2 = 0
-            var isPlanSubmit =  true
-            var AllocationStatus =  ""
-            var AllocationInvoiceStatus =  ""
-
-
-            if(plan!= null) {
-
-                if(plan.planStatus?.id == AllocationEnum.APPROVED.id){
-                    isPlanSubmit = true
-                    AllocationStatus =  allocationStatus
-                    AllocationInvoiceStatus =  allocationInvoiceStatus
-                    println("Plan Approved")
-                }
-                if(plan.planStatus?.id == AllocationEnum.SUBMIT.id){
-                    isPlanSubmit = true
-                    AllocationStatus =  allocationStatus
-                    AllocationInvoiceStatus =  allocationInvoiceStatus
-                    println("Plan Submit")
-                }
-                if(plan.planStatus?.id == AllocationEnum.DRAFT.id){
-
-                    var data5: MutableMap<String, Any> = mutableMapOf()
-                    data5.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK.id)
-
-                    var dayToAdds = sqlSessionFactory.openSession().selectOne<SystemProperties>("SystemPropertiesMapper.dayToAddDraft",data5)
-
-                    dayToAdd = dayToAdds.value!!.toInt()
-
-
-                }
-
-                if(plan.planStatus?.id == AllocationEnum.UNLOCK.id){
-
-                    var data6: MutableMap<String, Any> = mutableMapOf()
-                    data6.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK.id)
-
-                    var dayToAddBm = sqlSessionFactory.openSession().selectOne<SystemProperties>("SystemPropertiesMapper.dayToAddDraft",data6)
-
-                    dayToAdd1 = dayToAddBm.value!!.toInt()
-
-
-                    var data7: MutableMap<String, Any> = mutableMapOf()
-                    data7.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK.id)
-
-                    var dayToAddBex = sqlSessionFactory.openSession().selectOne<SystemProperties>("SystemPropertiesMapper.dayToAddDraft",data7)
-
-
-                    dayToAdd2 = dayToAddBex.value!!.toInt()
-
-                    dayToAdd = dayToAdd1 + dayToAdd2
-
-                }
-
-
+                return ResponseEntity.ok("Plan is locked ")
+                print("Plan is locked")
 
 
             }
-            else{
-                var data8: MutableMap<String, Any> = mutableMapOf()
-                data8.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK.id)
-
-                var dayToAdds = sqlSessionFactory.openSession().selectOne<SystemProperties>("SystemPropertiesMapper.dayToAddDraft",data8)
-
-                dayToAdd = dayToAdds.value!!.toInt()
-            }
-
-            val targetDate = monthToSubtract1?.let { firstDayOfMonth.minusMonths(it.toLong()).plusDays((dayToAdd - 1).toLong()) }
-
-            var isPlanLock = targetDate!!.isBefore(now)
-
-            if(isPlanLock){
-                isPlanSubmit = true
-                AllocationStatus =  allocationStatus
-                AllocationInvoiceStatus =  allocationInvoiceStatus
-                println("Plan Lock")
-
-            }
-
-            var nYear = year.toInt()
-            var nMonth = month.toInt()
-            val tempFutureCheckActual = LocalDate.of(nYear, nMonth, 1)
-            val tempFutureCheckNow = LocalDate.now().withDayOfMonth(1)
-
-
-
-            var futureMonthCheck = 2
-
-            var futureMonth = futureMonthCheck.days
-
-            val monthsDifference = ChronoUnit.MONTHS.between(tempFutureCheckNow, tempFutureCheckActual)
-
-            val monthsDifferenceInt = monthsDifference.toInt()
-
-
-            if(monthsDifferenceInt >= futureMonthCheck ){
-                isPlanSubmit = true
-                AllocationStatus =  ""
-                AllocationInvoiceStatus =  ""
-                println("Future Plan Lock")
-            } else{
-                isPlanSubmit = false
-                AllocationStatus =  allocationStatus
-                AllocationInvoiceStatus = allocationInvoiceStatus
-
-            }
-
-
 
 
         }catch (e: Exception){
+
             e.printStackTrace()
+
         }
 
 
+
+        return ResponseEntity.ok("plan is unlocked and BM can allocate")
     }
 
 
@@ -532,6 +395,21 @@ class NewAllocationRepository(
         } catch(e: Exception){
             return ResponseEntity.ok("This line item is not sample!")
         }
+
+
+
+    }
+
+
+    fun getTeamForCommonAllocation(ccmId: String): List<CommonAllocationTeamDTO>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("ccmId",ccmId)
+
+        return sqlSessionFactory.openSession().selectList<CommonAllocationTeamDTO>("TeamMapper.getTeamForCommonAllocation",data)
+
 
 
 

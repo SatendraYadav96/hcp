@@ -69,6 +69,14 @@ open class NewAllocationController @Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getTeamForCommonAllocation/{ccmId}")
+    open fun getTeamForCommonAllocation(@PathVariable ccmId :String ): ResponseEntity<*> {
+        val data = newAllocationService.getTeamForCommonAllocation(ccmId )
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
 
 
 

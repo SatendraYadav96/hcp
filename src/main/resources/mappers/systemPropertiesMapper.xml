@@ -27,6 +27,12 @@
 
     </select>
 
+    <select id="checkPlanLock" resultMap="systemPropertiesResultMap">
+
+        select VALUE_SYP  from SYSTEM_PROPERTY_SYP where ID_SYP = #{id}
+
+    </select>
+
 
 
 

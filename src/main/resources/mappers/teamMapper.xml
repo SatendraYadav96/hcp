@@ -125,5 +125,47 @@
 
 
 
+    <select id="getTeamForCommonAllocation" resultType="com.squer.promobee.controller.dto.CommonAllocationTeamDTO">
+
+        SELECT
+            distinct
+            tem.NAME_TEM as 'Team',
+                ulv.NAME_ULV as 'Designation',
+                rct.ID_RCT as 'RecipientId',
+                COUNT(rct.NAME_RCT) OVER (PARTITION BY ulv.NAME_ULV) AS 'RecipientCount'
+        FROM
+            COST_CENTER_MASTER_CCM ccm
+                JOIN
+            COSTCENTER_BRAND_CBR cbr ON cbr.ID_CCM_CBR = ccm.ID_CCM
+                JOIN
+            BRAND_MASTER_BRD brd ON brd.ID_BRD = cbr.ID_BRD_CBR
+                JOIN
+            TEAM_BRAND_TBR tbr ON tbr.ID_BRD_TBR = brd.ID_BRD
+                JOIN
+            TEAM_MASTER_TEM tem ON tem.ID_TEM = tbr.ID_TEM_TBR
+                JOIN
+            RECIPIENT_MASTER_RCT rct ON rct.ID_TEM_RCT = tem.ID_TEM
+                JOIN
+            USER_LOV_ULV ulv ON ulv.ID_ULV = rct.ID_DESG_ULV_RCT
+                JOIN
+            DISPATCH_DETAIL_DID did on DID.ID_RCT_DID = rct.ID_RCT
+                JOIN
+            DISPATCH_PLAN_DIP dip on dip.ID_DIP = did.ID_DIP_DID
+        WHERE
+            ccm.ID_CCM = #{ccmId}
+          AND rct.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
+
+
+        GROUP BY
+            tem.NAME_TEM,
+            ulv.NAME_ULV,rct.NAME_RCT,rct.ID_RCT
+
+
+
+
+    </select>
+
+
+
 
 </mapper>

@@ -3,6 +3,7 @@ package com.squer.promobee.service.impl
 
 
 import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
+import com.squer.promobee.controller.dto.CommonAllocationTeamDTO
 import com.squer.promobee.controller.dto.TseListDTO
 import com.squer.promobee.controller.dto.UserDTO
 import com.squer.promobee.service.NewAllocationService
@@ -47,11 +48,15 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.createMonthlyPlan(yearMonth)
     }
 
-    override fun isPlanApprovedOrSubmitLock(month: String, year: String) {
+    override fun isPlanApprovedOrSubmitLock(month: String, year: String): ResponseEntity<out Any> {
         return newAllocationRepository.isPlanApprovedOrSubmitLock(month,year)
     }
 
     override fun getcheckforsampleFifocheckpopup(planId: String, inventoryId: String, isItem: Int): ResponseEntity<out Any> {
         return newAllocationRepository.getcheckforsampleFifocheckpopup(planId,inventoryId,isItem)
+    }
+
+    override fun getTeamForCommonAllocation(ccmId: String): List<CommonAllocationTeamDTO> {
+        return newAllocationRepository.getTeamForCommonAllocation(ccmId)
     }
 }
