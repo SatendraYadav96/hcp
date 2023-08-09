@@ -10,6 +10,7 @@ import com.squer.promobee.service.repository.NewAllocationRepository
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 
@@ -48,5 +49,9 @@ open class NewAllocationServiceImpl @Autowired constructor(
 
     override fun isPlanApprovedOrSubmitLock(month: String, year: String) {
         return newAllocationRepository.isPlanApprovedOrSubmitLock(month,year)
+    }
+
+    override fun getcheckforsampleFifocheckpopup(planId: String, inventoryId: String, isItem: Int): ResponseEntity<out Any> {
+        return newAllocationRepository.getcheckforsampleFifocheckpopup(planId,inventoryId,isItem)
     }
 }

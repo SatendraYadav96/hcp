@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="SystemPropertiesMapper">
-    <resultMap id="vendorResultMap" type="com.squer.promobee.service.repository.domain.SystemProperties">
+    <resultMap id="systemPropertiesResultMap" type="com.squer.promobee.service.repository.domain.SystemProperties">
         <id property="id" column="id_syp"/>
         <result property="name" column="name_syp"/>
         <result property="ciName" column="ci_name_syp"/>
@@ -15,15 +15,15 @@
     </resultMap>
 
 
-    <select id="monthToSubtract" resultMap="SystemPropertiesResultMap">
+    <select id="monthToSubtract" resultMap="systemPropertiesResultMap">
 
-        select VALUE_SYP as 'value' from SYSTEM_PROPERTY_SYP where ID_SYP = #{id}
+        select VALUE_SYP  from SYSTEM_PROPERTY_SYP where ID_SYP = #{id}
 
     </select>
 
-    <select id="dayToAddDraft" resultMap="SystemPropertiesResultMap">
+    <select id="dayToAddDraft" resultMap="systemPropertiesResultMap">
 
-        select VALUE_SYP as 'value' from SYSTEM_PROPERTY_SYP where ID_SYP = #{id}
+        select VALUE_SYP  from SYSTEM_PROPERTY_SYP where ID_SYP = #{id}
 
     </select>
 

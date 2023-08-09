@@ -22,9 +22,15 @@
 
 
 
+    <select id="allocationStatus" resultMap="systemLovResultMap">
+
+        select NAME_SLV  from SYSTEM_LOV_SLV where ID_SLV = #{id}
+
+    </select>
+
     <select id="allocationTypes" resultMap="systemLovResultMap">
 
-        select NAME_SLV as 'name' from SYSTEM_LOV_SLV where ID_SLV = #{id}
+        select NAME_SLV  from SYSTEM_LOV_SLV where TYPE_SLV = #{type}
 
     </select>
 

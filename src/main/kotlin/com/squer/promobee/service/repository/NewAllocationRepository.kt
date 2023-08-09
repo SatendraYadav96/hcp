@@ -2,6 +2,7 @@ package com.squer.promobee.service.repository
 
 import com.squer.promobee.api.v1.enums.*
 import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
+import com.squer.promobee.controller.dto.SampleFifoDetailsModelDTO
 import com.squer.promobee.controller.dto.TseListDTO
 import com.squer.promobee.controller.dto.UserDTO
 import com.squer.promobee.persistence.BaseRepository
@@ -10,11 +11,15 @@ import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.*
 import org.apache.ibatis.session.SqlSessionFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import java.util.*
+import kotlin.time.Duration.Companion.days
+
 
 @Repository
 class NewAllocationRepository(
@@ -25,6 +30,12 @@ class NewAllocationRepository(
 
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
+
+    @Autowired
+    lateinit var inventoryRepository: InventoryRepository
+
+    @Autowired
+    lateinit var masterRepository: MasterRepository
 
 
     fun getTseList(id: String): List<TseListDTO> {
@@ -254,6 +265,11 @@ class NewAllocationRepository(
 
         }
 
+        val monthString = month.toString()
+        val yearString = year.toString()
+
+        var planCheck = isPlanApprovedOrSubmitLock(monthString ,yearString)
+
 
         return allocationInventoryDetails
 
@@ -290,7 +306,9 @@ class NewAllocationRepository(
             plan.planStatus?.let { data1.put("id", it.id) }
 
 
-            allocationStatus =  sqlSessionFactory.openSession().selectOne("SystemLovMapper.allocationStatus",data1)
+             var allocationStatus1 =   sqlSessionFactory.openSession().selectOne<SystemLov>("SystemLovMapper.allocationStatus",data1)
+
+            allocationStatus = allocationStatus1.name.toString()
 
             var data2: MutableMap<String, Any> = mutableMapOf()
             plan.owner?.let { data2.put("ownerId", it.id) }
@@ -306,14 +324,16 @@ class NewAllocationRepository(
             var data3: MutableMap<String, Any> = mutableMapOf()
             plan.invoiceStatus?.let { data3.put("id", it.id) }
 
-            allocationInvoiceStatus = sqlSessionFactory.openSession().selectOne("SystemLovMapper.allocationInvoiceStatus",data3)
+            var allocationInvoiceStatus1 = sqlSessionFactory.openSession().selectOne<SystemLov>("SystemLovMapper.allocationInvoiceStatus",data3)
+
+            allocationInvoiceStatus = allocationInvoiceStatus1.name.toString()
 
             var data4: MutableMap<String, Any> = mutableMapOf()
           data4.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK_OF_MONTH.id)
 
-            var monthToSubtract = sqlSessionFactory.openSession().select("SystemPropertiesMapper.monthToSubtract",data4).toString()
+            var monthToSubtract = sqlSessionFactory.openSession().selectOne<SystemProperties>("SystemPropertiesMapper.monthToSubtract",data4)
 
-            var monthToSubtract1 = monthToSubtract.toInt()
+            var monthToSubtract1 = monthToSubtract.value?.toInt()
 
             var now = LocalDate.now()
             var firstDayOfMonth = LocalDate.now().withDayOfMonth( 1 )
@@ -323,9 +343,8 @@ class NewAllocationRepository(
             var isPlanSubmit =  true
             var AllocationStatus =  ""
             var AllocationInvoiceStatus =  ""
-            var dayToAdds = ""
-            var dayToAddBm = ""
-            var dayToAddBex = ""
+
+
             if(plan!= null) {
 
                 if(plan.planStatus?.id == AllocationEnum.APPROVED.id){
@@ -345,9 +364,9 @@ class NewAllocationRepository(
                     var data5: MutableMap<String, Any> = mutableMapOf()
                     data5.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK.id)
 
-                    dayToAdds = sqlSessionFactory.openSession().select("SystemPropertiesMapper.dayToAddDraft",data5).toString()
+                    var dayToAdds = sqlSessionFactory.openSession().selectOne<SystemProperties>("SystemPropertiesMapper.dayToAddDraft",data5)
 
-                    dayToAdd = dayToAdds.toInt()
+                    dayToAdd = dayToAdds.value!!.toInt()
 
 
                 }
@@ -357,18 +376,18 @@ class NewAllocationRepository(
                     var data6: MutableMap<String, Any> = mutableMapOf()
                     data6.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK.id)
 
-                    dayToAddBm = sqlSessionFactory.openSession().select("SystemPropertiesMapper.dayToAddDraft",data6).toString()
+                    var dayToAddBm = sqlSessionFactory.openSession().selectOne<SystemProperties>("SystemPropertiesMapper.dayToAddDraft",data6)
 
-                    dayToAdd1 = dayToAdds.toInt()
+                    dayToAdd1 = dayToAddBm.value!!.toInt()
 
 
                     var data7: MutableMap<String, Any> = mutableMapOf()
                     data7.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK.id)
 
-                    dayToAddBex = sqlSessionFactory.openSession().select("SystemPropertiesMapper.dayToAddDraft",data7).toString()
+                    var dayToAddBex = sqlSessionFactory.openSession().selectOne<SystemProperties>("SystemPropertiesMapper.dayToAddDraft",data7)
 
 
-                    dayToAdd2 = dayToAdds.toInt()
+                    dayToAdd2 = dayToAddBex.value!!.toInt()
 
                     dayToAdd = dayToAdd1 + dayToAdd2
 
@@ -382,14 +401,14 @@ class NewAllocationRepository(
                 var data8: MutableMap<String, Any> = mutableMapOf()
                 data8.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK.id)
 
-                dayToAdds = sqlSessionFactory.openSession().select("SystemPropertiesMapper.dayToAddDraft",data8).toString()
+                var dayToAdds = sqlSessionFactory.openSession().selectOne<SystemProperties>("SystemPropertiesMapper.dayToAddDraft",data8)
 
-                dayToAdd = dayToAdds.toInt()
+                dayToAdd = dayToAdds.value!!.toInt()
             }
 
-            val targetDate = firstDayOfMonth.minusMonths(monthToSubtract.toLong()).plusDays((dayToAdd - 1).toLong())
+            val targetDate = monthToSubtract1?.let { firstDayOfMonth.minusMonths(it.toLong()).plusDays((dayToAdd - 1).toLong()) }
 
-            var isPlanLock = targetDate.isBefore(now)
+            var isPlanLock = targetDate!!.isBefore(now)
 
             if(isPlanLock){
                 isPlanSubmit = true
@@ -402,17 +421,30 @@ class NewAllocationRepository(
             var nYear = year.toInt()
             var nMonth = month.toInt()
             val tempFutureCheckActual = LocalDate.of(nYear, nMonth, 1)
-            //val tempFutureCheckNow = YearMonth.of(now.year, now.monthValue).atDay(1)
             val tempFutureCheckNow = LocalDate.now().withDayOfMonth(1)
+
+
 
             var futureMonthCheck = 2
 
+            var futureMonth = futureMonthCheck.days
+
+            val monthsDifference = ChronoUnit.MONTHS.between(tempFutureCheckNow, tempFutureCheckActual)
+
+            val monthsDifferenceInt = monthsDifference.toInt()
 
 
+            if(monthsDifferenceInt >= futureMonthCheck ){
+                isPlanSubmit = true
+                AllocationStatus =  ""
+                AllocationInvoiceStatus =  ""
+                println("Future Plan Lock")
+            } else{
+                isPlanSubmit = false
+                AllocationStatus =  allocationStatus
+                AllocationInvoiceStatus = allocationInvoiceStatus
 
-
-
-
+            }
 
 
 
@@ -420,6 +452,87 @@ class NewAllocationRepository(
         }catch (e: Exception){
             e.printStackTrace()
         }
+
+
+    }
+
+
+    fun getcheckforsampleFifocheckpopup(planId: String, inventoryId: String, isItem: Int): ResponseEntity<out Any> {
+
+        try {
+            val user =
+                (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+            var isrbm = false
+
+            if (user.userDesignation?.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id || user.userDesignation?.id == UserRoleEnum.NATIONAL_SALES_MANAGER_ID.id) {
+                isrbm = true;
+            }
+
+            var sample = SampleMaster()
+            var inventory = inventoryRepository.getInventoryById(inventoryId)
+
+            var fifoDetails = mutableListOf<SampleFifoDetailsModelDTO>()
+
+            sample = masterRepository.getSampleById(inventory.item!!.id)
+
+            if (!isrbm) {
+                if (sample != null) {
+                    var data: MutableMap<String, Any> = mutableMapOf()
+                    data.put("itcId", inventory.categoryId!!.id)
+                    var itc = sqlSessionFactory.openSession()
+                        .selectOne<ItemCategoryMaster>("ItemCategoryMasterMapper.getItemCategoryById", data)
+
+                    val cutoffDate = LocalDate.now().plusDays(itc.cutOffBeforeDays!!.toLong())
+
+                    var data0: MutableMap<String, Any> = mutableMapOf()
+
+                    data0.put("sampleId", inventory.item!!.id)
+                    data0.put("cutoffday", cutoffDate)
+                    data0.put("invExpiry", inventory.expiryDate.toString())
+
+                    var inv = sqlSessionFactory.openSession()
+                        .selectList<Inventory>("InventoryMapper.getInventoryForFifo", data0)
+
+                    var invCount = inv.count()
+
+                    var i = 0
+
+                    if (invCount >= 1) {
+                        inv.forEach {
+                            var sfd = SampleFifoDetailsModelDTO()
+
+                            sfd.inventoryId = inv[i].id
+                            sfd.poNo = inv[i].poNo
+                            sfd.expiryDate = inv[i].expiryDate.toString()
+                            sfd.expiryDt = inv[i].expiryDate.toString().toShort().toString()
+                            sfd.balance =
+                                (inv[i].qtyReceived!! - inv[i].qtyAllocated!! - inv[i].qtyDispatched!!).toString()
+                            sfd.batchNo = inv[i].batchNo
+                            fifoDetails.add(sfd)
+
+                            i++
+
+                        }
+
+                        return ResponseEntity.ok(mapOf("listdata" to fifoDetails, "status" to false))
+                    } else {
+                        return ResponseEntity.ok(mapOf("listdata" to fifoDetails, "status" to false))
+                    }
+
+
+                } else {
+                    return ResponseEntity.ok(mapOf("listdata" to fifoDetails, "status" to true))
+                }
+            } else {
+                return ResponseEntity.ok(mapOf("listdata" to fifoDetails, "status" to true))
+            }
+
+
+        } catch(e: Exception){
+            return ResponseEntity.ok("This line item is not sample!")
+        }
+
 
 
     }

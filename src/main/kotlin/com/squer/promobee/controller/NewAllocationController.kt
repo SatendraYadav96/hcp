@@ -63,6 +63,17 @@ open class NewAllocationController @Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getcheckforsampleFifocheckpopup/{planId}/{inventoryId}/{isItem}")
+    open fun getcheckforsampleFifocheckpopup(@PathVariable planId: String , @PathVariable inventoryId: String, @PathVariable isItem: Int): ResponseEntity<*> {
+        val data = newAllocationService.getcheckforsampleFifocheckpopup(planId , inventoryId ,isItem )
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
+
+
+
 
 
 

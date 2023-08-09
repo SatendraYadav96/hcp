@@ -273,5 +273,17 @@
     </select>
 
 
+    <select id="getInventoryForFifo" resultMap="inventoryResultMap">
+        SELECT * FROM INVENTORY_INV
+        WHERE (QTY_RECEIVED_INV - QTY_ALLOCATED_INV - QTY_DISPATCHED_INV) &gt;= PACK_SIZE_INV
+        AND ID_ITM_INV = #{sampleId}
+        AND EXPIRY_DATE_INV &gt;= #{cutoffday}
+        AND EXPIRY_DATE_INV &lt; #{invExpiry}
+        ORDER BY EXPIRY_DATE_INV DESC
+
+
+    </select>
+
+
 
 </mapper>

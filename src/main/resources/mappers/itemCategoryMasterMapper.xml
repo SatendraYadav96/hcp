@@ -23,4 +23,6 @@
     <select id="getItemCategoryById" resultMap="itemCategoryResultMap">
         select * from ITEM_CATEGORY_MASTER_ITC where ID_ITC = #{itcId}
     </select>
+
+
 </mapper>
