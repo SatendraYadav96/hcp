@@ -25,4 +25,10 @@
         select * from USER_LOV_ULV where id_ulv=#{id}
     </select>
 
+
+
+
+
+
+
 </mapper>

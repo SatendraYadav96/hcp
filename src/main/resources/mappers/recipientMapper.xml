@@ -134,4 +134,10 @@
 
     </select>
 
+
+    <select id="getRecipientToSaveAllocation" resultMap="recipientResultMap">
+        select * from RECIPIENT_MASTER_RCT where ID_DESG_ULV_RCT = #{designationId} and ID_TEM_RCT = #{teamId}
+                                             and ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
+    </select>
+
 </mapper>

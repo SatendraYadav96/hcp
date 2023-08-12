@@ -1,5 +1,6 @@
 package com.squer.promobee.controller
 
+import com.squer.promobee.controller.dto.saveCommonAllocationDTO
 import com.squer.promobee.service.NewAllocationService
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -74,6 +75,34 @@ open class NewAllocationController @Autowired constructor(
         val data = newAllocationService.getTeamForCommonAllocation(ccmId )
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+
+    @GetMapping("/getQuantityAllocatedOfUserToItem/{userId}/{userDesgId}/{inventoryId}/{month}/{year}/{isSpecialDispatch}")
+    open fun getQuantityAllocatedOfUserToItem(@PathVariable userId :String,@PathVariable userDesgId :String,@PathVariable inventoryId :String,@PathVariable month :Int,
+        @PathVariable year :Int,@PathVariable isSpecialDispatch :Int): ResponseEntity<*> {
+        val data = newAllocationService.getQuantityAllocatedOfUserToItem(userId,userDesgId,inventoryId,month,year,isSpecialDispatch )
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/getTeamForDifferentialAllocation/{planId}/{teamId}/{inventoryId}")
+    open fun getTeamForDifferentialAllocation(@PathVariable planId :String , @PathVariable teamId :String , @PathVariable inventoryId :String ): ResponseEntity<*> {
+        val data = newAllocationService.getTeamForDifferentialAllocation(planId, teamId , inventoryId )
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @PostMapping("/saveCommonAllocation")
+    open fun saveCommonAllocation(@RequestBody saveAlloc : List<saveCommonAllocationDTO>): ResponseEntity<*>{
+        val items = newAllocationService.saveCommonAllocation(saveAlloc)
+        return ResponseEntity(items, HttpStatus.OK)
+    }
+
+
+
+
+
+
 
 
 

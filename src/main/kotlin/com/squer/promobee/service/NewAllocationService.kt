@@ -1,9 +1,6 @@
 package com.squer.promobee.service
 
-import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
-import com.squer.promobee.controller.dto.CommonAllocationTeamDTO
-import com.squer.promobee.controller.dto.TseListDTO
-import com.squer.promobee.controller.dto.UserDTO
+import com.squer.promobee.controller.dto.*
 import org.springframework.http.ResponseEntity
 
 
@@ -25,6 +22,12 @@ interface NewAllocationService {
 
    fun getTeamForCommonAllocation( ccmId: String): List<CommonAllocationTeamDTO>
 
+   fun getQuantityAllocatedOfUserToItem( userId :String,  userDesgId :String,  inventoryId :String,  month :Int,
+                                         year :Int,  isSpecialDispatch :Int): List<DesignationWiseQuantityAllocatedDTO>
 
+
+   fun getTeamForDifferentialAllocation( planId :String,  teamId :String,  inventoryId :String ): List<AllocationDataTeamPopupDetailsDTO>
+
+   fun saveCommonAllocation (saveAlloc : List<saveCommonAllocationDTO>)
 
 }

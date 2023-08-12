@@ -1,9 +1,6 @@
 package com.squer.promobee.service.repository
 
-import com.squer.promobee.api.v1.enums.AllocationStatusEnum
-import com.squer.promobee.api.v1.enums.DispatchPlanInvoiceStatus
-import com.squer.promobee.api.v1.enums.SystemPropertyEnum
-import com.squer.promobee.api.v1.enums.UserRoleEnum
+import com.squer.promobee.api.v1.enums.*
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
@@ -15,6 +12,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
 
@@ -350,9 +348,16 @@ class NewAllocationRepository(
 
                     var data0: MutableMap<String, Any> = mutableMapOf()
 
+                    val expiryDateInv: Date? = inventory.expiryDate
+
+                    val sdf = SimpleDateFormat("yyyy-MM-dd")
+                    val invExpiry: String = sdf.format(expiryDateInv)
+
+                    var cutDate = cutoffDate.toString()
+
                     data0.put("sampleId", inventory.item!!.id)
-                    data0.put("cutoffday", cutoffDate)
-                    data0.put("invExpiry", inventory.expiryDate.toString())
+                    data0.put("cutoffday", cutDate)
+                    data0.put("invExpiry", invExpiry)
 
                     var inv = sqlSessionFactory.openSession()
                         .selectList<Inventory>("InventoryMapper.getInventoryForFifo", data0)
@@ -404,6 +409,8 @@ class NewAllocationRepository(
     fun getTeamForCommonAllocation(ccmId: String): List<CommonAllocationTeamDTO>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
+
+
         var data: MutableMap<String, Any> = mutableMapOf()
 
         data.put("ccmId",ccmId)
@@ -415,6 +422,192 @@ class NewAllocationRepository(
 
     }
 
+
+    fun getQuantityAllocatedOfUserToItem(userId: String, userDesgId: String, inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int): List<DesignationWiseQuantityAllocatedDTO> {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+
+        var quantityDispatch = mutableListOf<DesignationWiseQuantityAllocatedDTO>()
+
+        var i = 0
+
+        try {
+            if(user.userDesignation!!.id == UserRoleEnum.BEX_ID.id){
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                data.put("month",month)
+                data.put("year",year)
+                data.put("inventoryId",inventoryId)
+                data.put("isSpecialDispatch",isSpecialDispatch)
+
+                quantityDispatch =  sqlSessionFactory.openSession().selectList<DesignationWiseQuantityAllocatedDTO>("DispatchDetailMapper.getQuantityAllocatedOfUserToItemForBex",data)
+
+              //  quantityDispatch = quantityDispatch1[quantityDispatch]!!
+
+
+            }else {
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                data.put("month",month)
+                data.put("year",year)
+                data.put("inventoryId",inventoryId)
+                data.put("isSpecialDispatch",isSpecialDispatch)
+                data.put("userId",user.id)
+
+                    quantityDispatch =  sqlSessionFactory.openSession().selectList<DesignationWiseQuantityAllocatedDTO>("DispatchDetailMapper.getQuantityAllocatedOfUserToItem",data)
+
+               // quantityDispatch = quantityDispatch1[quantityDispatch]!!
+            }
+
+
+
+
+        }catch (e : Exception){
+            e.printStackTrace()
+        }
+
+        return quantityDispatch
+    }
+
+
+
+
+
+
+     fun getTeamForDifferentialAllocation(planId: String, teamId: String, inventoryId: String): List<AllocationDataTeamPopupDetailsDTO> {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+         var teamPopupDetails = mutableListOf<AllocationDataTeamPopupDetailsDTO>()
+
+         if(user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id ) {
+             var data: MutableMap<String, Any> = mutableMapOf()
+
+             data.put("PlanID",planId)
+             data.put("TeamID",teamId)
+             data.put("InventoryID",inventoryId)
+
+             teamPopupDetails = sqlSessionFactory.openSession().selectList<AllocationDataTeamPopupDetailsDTO>("TeamMapper.getTeamForDifferentialAllocation",data)
+
+
+         } else {
+             var data: MutableMap<String, Any> = mutableMapOf()
+
+             data.put("PlanID",planId)
+             data.put("TeamID",teamId)
+             data.put("InventoryID",inventoryId)
+
+             teamPopupDetails = sqlSessionFactory.openSession().selectList<AllocationDataTeamPopupDetailsDTO>("TeamMapper.getTeamForDifferentialAllocation",data)
+         }
+
+         return teamPopupDetails
+
+    }
+
+
+
+     fun saveCommonAllocation(saveAlloc: List<saveCommonAllocationDTO>) {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+         var data: MutableMap<String, Any> = mutableMapOf()
+
+     // var i = 0
+//
+//         var data0: MutableMap<String, Any> = mutableMapOf()
+//
+//         saveAlloc[i].dispatchPlanId?.let { it1 -> data0.put("id", it1) }
+//
+//
+//         sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteCommonAllocation", data0)
+
+
+
+         var recipient = mutableListOf<Recipient>()
+
+
+
+
+             var n = 0
+
+             saveAlloc[n].designationId!!.forEach {
+
+
+
+
+                 var data1: MutableMap<String, Any> = mutableMapOf()
+
+
+                 saveAlloc[n].designationId?.let { it1 -> data1.put("designationId", it1) }
+                 saveAlloc[n].teamId?.let { it1 -> data1.put("teamId", it1) }
+
+                 recipient = sqlSessionFactory.openSession()
+                     .selectList<Recipient>("RecipientMapper.getRecipientToSaveAllocation", data1)
+
+
+
+
+
+
+                 var m = 0
+
+                 recipient.forEach {
+
+
+
+
+
+
+
+                     var dispatchDetail = DispatchDetail()
+
+                     var data: MutableMap<String, Any> = mutableMapOf()
+
+                     data.put("id", UUID.randomUUID().toString())
+                     saveAlloc[n].dispatchPlanId?.let { it1 -> data.put("planId", it1) }
+                     saveAlloc[n].inventoryId?.let { it1 -> data.put("inventoryId", it1) }
+                     data.put("recipientId", recipient[m].id)
+                     saveAlloc[n].quantity?.let { it1 -> data.put("qtyDispatch", it1) }
+                     data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+                     data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+                     data.put("createdBy", user.id)
+                     data.put("updatedBy", user.id)
+
+                     sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveCommonAllocation", data)
+
+
+                     var data2: MutableMap<String, Any> = mutableMapOf()
+
+
+                     saveAlloc[n].inventoryId?.let { it1 -> data2.put("id", it1) }
+
+                     var inv = sqlSessionFactory.openSession()
+                         .selectOne<Inventory>("InventoryMapper.getInventoryByIdForInvoicing", data2)
+
+                     var data3: MutableMap<String, Any> = mutableMapOf()
+
+                     var invAllocatedQty = inv.qtyAllocated?.plus(saveAlloc[n].quantity!!)
+
+                     data3.put("id", inv.id)
+                     data3.put("qtyAllocated", invAllocatedQty!!)
+                     data3.put("updatedBy", user.id)
+
+                     sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
+
+
+m++
+
+                 }
+
+n++
+
+             }
+
+         print("allocation saved successfully !")
+
+
+    }
 
 
 

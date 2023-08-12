@@ -2,10 +2,7 @@ package com.squer.promobee.service.impl
 
 
 
-import com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO
-import com.squer.promobee.controller.dto.CommonAllocationTeamDTO
-import com.squer.promobee.controller.dto.TseListDTO
-import com.squer.promobee.controller.dto.UserDTO
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.NewAllocationService
 import com.squer.promobee.service.repository.NewAllocationRepository
 import lombok.extern.slf4j.Slf4j
@@ -58,5 +55,17 @@ open class NewAllocationServiceImpl @Autowired constructor(
 
     override fun getTeamForCommonAllocation(ccmId: String): List<CommonAllocationTeamDTO> {
         return newAllocationRepository.getTeamForCommonAllocation(ccmId)
+    }
+
+    override fun getQuantityAllocatedOfUserToItem(userId: String, userDesgId: String, inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int): List<DesignationWiseQuantityAllocatedDTO> {
+        return newAllocationRepository.getQuantityAllocatedOfUserToItem(userId,userDesgId,inventoryId,month,year,isSpecialDispatch)
+    }
+
+    override fun getTeamForDifferentialAllocation(planId: String, teamId: String, inventoryId: String): List<AllocationDataTeamPopupDetailsDTO> {
+        return newAllocationRepository.getTeamForDifferentialAllocation(planId , teamId , inventoryId)
+    }
+
+    override fun saveCommonAllocation(saveAlloc: List<saveCommonAllocationDTO>) {
+        return newAllocationRepository.saveCommonAllocation(saveAlloc)
     }
 }
