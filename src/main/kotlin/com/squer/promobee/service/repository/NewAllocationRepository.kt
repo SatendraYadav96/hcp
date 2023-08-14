@@ -1,6 +1,9 @@
 package com.squer.promobee.service.repository
 
-import com.squer.promobee.api.v1.enums.*
+import com.squer.promobee.api.v1.enums.AllocationStatusEnum
+import com.squer.promobee.api.v1.enums.DispatchPlanInvoiceStatus
+import com.squer.promobee.api.v1.enums.SystemPropertyEnum
+import com.squer.promobee.api.v1.enums.UserRoleEnum
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
@@ -513,81 +516,54 @@ class NewAllocationRepository(
 
          var data: MutableMap<String, Any> = mutableMapOf()
 
-     // var i = 0
-//
-//         var data0: MutableMap<String, Any> = mutableMapOf()
-//
-//         saveAlloc[i].dispatchPlanId?.let { it1 -> data0.put("id", it1) }
-//
-//
-//         sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteCommonAllocation", data0)
-
-
-
          var recipient = mutableListOf<Recipient>()
 
+             var i = 0
 
+         saveAlloc.forEach {
 
+                 var data1: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> = kotlin.collections.mutableMapOf()
 
-             var n = 0
-
-             saveAlloc[n].designationId!!.forEach {
-
-
-
-
-                 var data1: MutableMap<String, Any> = mutableMapOf()
-
-
-                 saveAlloc[n].designationId?.let { it1 -> data1.put("designationId", it1) }
-                 saveAlloc[n].teamId?.let { it1 -> data1.put("teamId", it1) }
+                 saveAlloc[i].designationId?.let { it1 -> data1.put("designationId", it1) }
+                 saveAlloc[i].teamId?.let { it1 -> data1.put("teamId", it1) }
 
                  recipient = sqlSessionFactory.openSession()
-                     .selectList<Recipient>("RecipientMapper.getRecipientToSaveAllocation", data1)
+                     .selectList<com.squer.promobee.service.repository.domain.Recipient>("RecipientMapper.getRecipientToSaveAllocation", data1)
 
 
+                 recipient.forEach {it ->
 
+                     var dispatchDetail = com.squer.promobee.service.repository.domain.DispatchDetail()
 
+                     var data: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> =
+                         kotlin.collections.mutableMapOf()
 
-
-                 var m = 0
-
-                 recipient.forEach {
-
-
-
-
-
-
-
-                     var dispatchDetail = DispatchDetail()
-
-                     var data: MutableMap<String, Any> = mutableMapOf()
-
-                     data.put("id", UUID.randomUUID().toString())
-                     saveAlloc[n].dispatchPlanId?.let { it1 -> data.put("planId", it1) }
-                     saveAlloc[n].inventoryId?.let { it1 -> data.put("inventoryId", it1) }
-                     data.put("recipientId", recipient[m].id)
-                     saveAlloc[n].quantity?.let { it1 -> data.put("qtyDispatch", it1) }
+                     data.put("id", java.util.UUID.randomUUID().toString())
+                     saveAlloc[i].dispatchPlanId?.let { it1 -> data.put("planId", it1) }
+                     saveAlloc[i].inventoryId?.let { it1 -> data.put("inventoryId", it1) }
+                     data.put("recipientId", it.id)
+                     saveAlloc[i].quantity?.let { it1 -> data.put("qtyDispatch", it1) }
                      data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                     data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+                     data.put("detailStatus", com.squer.promobee.api.v1.enums.DispatchDetailStatusEnum.ALLOCATED.id)
                      data.put("createdBy", user.id)
                      data.put("updatedBy", user.id)
 
                      sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveCommonAllocation", data)
 
 
-                     var data2: MutableMap<String, Any> = mutableMapOf()
+                     var data2: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> =
+                         kotlin.collections.mutableMapOf()
 
 
-                     saveAlloc[n].inventoryId?.let { it1 -> data2.put("id", it1) }
+                     saveAlloc[i].inventoryId?.let { it1 -> data2.put("id", it1) }
 
                      var inv = sqlSessionFactory.openSession()
-                         .selectOne<Inventory>("InventoryMapper.getInventoryByIdForInvoicing", data2)
+                         .selectOne<com.squer.promobee.service.repository.domain.Inventory>("InventoryMapper.getInventoryByIdForInvoicing", data2)
 
-                     var data3: MutableMap<String, Any> = mutableMapOf()
+                     var data3: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> =
+                         kotlin.collections.mutableMapOf()
 
-                     var invAllocatedQty = inv.qtyAllocated?.plus(saveAlloc[n].quantity!!)
+                     var invAllocatedQty = inv.qtyAllocated?.plus(saveAlloc[i].quantity!!)
 
                      data3.put("id", inv.id)
                      data3.put("qtyAllocated", invAllocatedQty!!)
@@ -596,27 +572,90 @@ class NewAllocationRepository(
                      sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
 
 
-m++
+
 
                  }
 
-n++
+             i++
 
              }
 
-         print("allocation saved successfully !")
-
-
-    }
 
 
 
 
+             }
 
 
 
 
 
+             }
 
 
-}
+
+
+
+
+//    fun saveCommonAllocation(saveAlloc: List<saveCommonAllocationDTO>) {
+//        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+//
+//        saveAlloc.forEach { dto ->
+//            val data1: MutableMap<String, Any> = mutableMapOf()
+//
+//            dto.designationId?.forEach { designationId ->
+//                data1["designationId"] = designationId
+//                dto.teamId?.let { data1["teamId"] = it }
+//
+//                val recipient = sqlSessionFactory.openSession()
+//                    .selectList<Recipient>("RecipientMapper.getRecipientToSaveAllocation", data1)
+//
+//                recipient.forEach { recipientItem ->
+//                    val dispatchDetail = DispatchDetail()
+//
+//                    val data: MutableMap<String, Any> = mutableMapOf()
+//                    data["id"] = UUID.randomUUID().toString()
+//                    dto.dispatchPlanId?.let { data["planId"] = it }
+//                    dto.inventoryId?.let { data["inventoryId"] = it }
+//                    data["recipientId"] = recipientItem.id
+//                    dto.quantity?.let { data["qtyDispatch"] = it }
+//                    data["quarterlyPlanId"] = "00000000-0000-0000-0000-000000000000"
+//                    data["detailStatus"] = DispatchDetailStatusEnum.ALLOCATED.id
+//                    data["createdBy"] = user.id
+//                    data["updatedBy"] = user.id
+//
+//                    sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveCommonAllocation", data)
+//
+//                    val data2: MutableMap<String, Any> = mutableMapOf()
+//                    dto.inventoryId?.let { data2["id"] = it }
+//
+//                    val inv = sqlSessionFactory.openSession()
+//                        .selectOne<Inventory>("InventoryMapper.getInventoryByIdForInvoicing", data2)
+//
+//                    val data3: MutableMap<String, Any> = mutableMapOf()
+//                    val invAllocatedQty = inv.qtyAllocated?.plus(dto.quantity!!)
+//                    data3["id"] = inv.id
+//                    data3["qtyAllocated"] = invAllocatedQty!!
+//                    data3["updatedBy"] = user.id
+//
+//                    sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
+//                }
+//            }
+//        }
+//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
