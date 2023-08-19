@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.squer.promobee.mapper.DispatchPlanBrandMapper">
+<mapper namespace="DispatchPlanBrandMapper">
     <resultMap id="dispatchPlanBrandResultType" type="com.squer.promobee.service.repository.domain.DispatchPlanBrand">
         <id property="id" column="id_dpbt"/>
         <result property="createdAt" column="created_on_dpbt"/>
@@ -25,4 +25,11 @@
     <select id="getDip" parameterType="map" resultType="com.squer.promobee.service.repository.domain.DispatchPlan">
         select id_dip as id from DISPATCH_PLAN_DIP where id_dip=#{id_dip_dpbt}
     </select>
+
+
+    <insert id="submitMonthlyAllocation">
+        INSERT INTO DISPATCH_PLAN_BRAND_DPBT (ID_DPBT,ID_DIP_DPBT,ID_BRD_DPBT,ID_DIP_OWNER_DPBT,CREATED_ON_DPBT,CREATED_BY_DPBT,UPDATED_ON_DPBT,UPDATED_BY_DPBT)
+        values(#{id},#{dipId},#{brdId},#{dipOwnerId},GETDTE(),#{createdBy},GETDTE(),#{updatedBy})
+    </insert>
+
 </mapper>

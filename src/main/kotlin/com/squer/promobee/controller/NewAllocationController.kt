@@ -1,6 +1,8 @@
 package com.squer.promobee.controller
 
 import com.squer.promobee.controller.dto.saveCommonAllocationDTO
+import com.squer.promobee.controller.dto.saveDifferentialAllocation
+import com.squer.promobee.controller.dto.submitAllocationDTO
 import com.squer.promobee.service.NewAllocationService
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -97,6 +99,22 @@ open class NewAllocationController @Autowired constructor(
         val items = newAllocationService.saveCommonAllocation(saveAlloc)
         return ResponseEntity(items, HttpStatus.OK)
     }
+
+    @PostMapping("/saveDifferentialAllocation")
+    open fun saveDifferentialAllocation(@RequestBody saveAlloc : List<saveDifferentialAllocation>): ResponseEntity<*>{
+        val items = newAllocationService.saveDifferentialAllocation(saveAlloc)
+        return ResponseEntity(items, HttpStatus.OK)
+    }
+
+    @PostMapping("/submitMonthlyAllocation")
+    open fun submitMonthlyAllocation(@RequestBody alloc : submitAllocationDTO): ResponseEntity<*>{
+        val items = newAllocationService.submitMonthlyAllocation(alloc)
+        return ResponseEntity(items, HttpStatus.OK)
+    }
+
+
+
+
 
 
 

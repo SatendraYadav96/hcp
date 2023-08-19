@@ -155,4 +155,12 @@
                  GETDATE(), #{createdBy}, GETDATE(), #{updatedBy}, #{invoiceStatus})
     </insert>
 
+    <update id="submitMonthlyAllocation">
+
+        UPDATE DISPATCH_PLAN_DIP SET   SUBMISSION_DATE_DIP = GETDATE() , ID_STATUS_SLV_DIP = #{planStatus} ,, ID_INVOICE_STATUS_SLV_DIP = #{invoiceStatus} ,UPDATED_ON_DIP = GETDATE(), UPDATED_BY_DIP = #{updatedBy}
+         WHERE ID_DIP = #{id}
+    </update>
+
+
+
 </mapper>

@@ -30,4 +30,8 @@ interface NewAllocationService {
 
    fun saveCommonAllocation (saveAlloc : List<saveCommonAllocationDTO>)
 
+   fun saveDifferentialAllocation (saveAlloc : List<saveDifferentialAllocation>)
+
+   fun submitMonthlyAllocation (alloc : submitAllocationDTO)
+
 }

@@ -68,4 +68,12 @@ open class NewAllocationServiceImpl @Autowired constructor(
     override fun saveCommonAllocation(saveAlloc: List<saveCommonAllocationDTO>) {
         return newAllocationRepository.saveCommonAllocation(saveAlloc)
     }
+
+    override fun saveDifferentialAllocation(saveAlloc: List<saveDifferentialAllocation>) {
+        return newAllocationRepository.saveDifferentialAllocation(saveAlloc)
+    }
+
+    override fun submitMonthlyAllocation(alloc: submitAllocationDTO) {
+        return newAllocationRepository.submitMonthlyAllocation(alloc)
+    }
 }
