@@ -6,6 +6,8 @@ import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.NewAllocationService
 import com.squer.promobee.service.repository.NewAllocationRepository
 import com.squer.promobee.service.repository.domain.DispatchPlan
+import com.squer.promobee.service.repository.domain.Recipient
+import com.squer.promobee.service.repository.domain.Team
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -91,5 +93,25 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.searchSpecialPlan(month,year,status,remark)
     }
 
+    override fun getTeamForSpecialAllocation(ccmId: String): List<Team> {
+        return newAllocationRepository.getTeamForSpecialAllocation(ccmId)
+    }
+
+    override fun getRecipientForSpecialAllocation(teamId: String): List<Recipient> {
+        return newAllocationRepository.getRecipientForSpecialAllocation(teamId)
+    }
+
+    override fun saveSpecialAllocation(saveAlloc: List<saveDifferentialAllocation>) {
+        return newAllocationRepository.saveSpecialAllocation(saveAlloc)
+    }
+
+
+    override fun deleteSpecialAllocation(dipId: String): Map<String, Any> {
+        return newAllocationRepository.deleteSpecialAllocation(dipId)
+    }
+
+    override fun deleteSpecialAllocationDID(dipId: String): Map<String, Any> {
+        return newAllocationRepository.deleteSpecialAllocationDID(dipId)
+    }
 
 }

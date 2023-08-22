@@ -180,6 +180,10 @@
         SELECT * FROM DISPATCH_PLAN_DIP WHERE MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND ID_STATUS_SLV_DIP = #{status} AND REMARKS_DIP = {remark}
     </select>
 
+    <delete id="deleteSpecialAllocation">
+        DELETE FROM DISPATCH_PLAN_DIP WHERE ID_DIP = #{id}
+    </delete>
+
 
 
 

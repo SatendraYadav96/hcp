@@ -175,6 +175,16 @@
     </select>
 
 
+    <select id="getTeamForSpecialAllocation" resultMap="teamResultMap" >
+        SELECT TEM.* FROM TEAM_MASTER_TEM TEM
+                              JOIN TEAM_BRAND_TBR TBR ON TBR.ID_TEM_TBR =  TEM.ID_TEM
+                              JOIN BRAND_MASTER_BRD BRD ON BRD.ID_BRD = TBR.ID_BRD_TBR
+                              JOIN COSTCENTER_BRAND_CBR CBR ON CBR.ID_BRD_CBR =  BRD.ID_BRD
+                              JOIN COST_CENTER_MASTER_CCM CCM ON CCM.ID_CCM =  CBR.ID_CCM_CBR
+        WHERE CCM.ID_CCM = #{id}
+    </select>
+
+
 
 
 </mapper>

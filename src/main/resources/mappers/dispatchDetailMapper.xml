@@ -197,6 +197,18 @@
     </delete>
 
 
+    <select id="deleteSpecialAllocationDID" resultMap="dispatchDetailResultMap">
+        SELECT *
+        FROM DISPATCH_DETAIL_DID
+        where ID_DIP_DID = #{id}
+
+    </select>
+
+    <delete id="specialAllocation">
+        DELETE FROM DISPATCH_DETAIL_DID
+        where ID_DID = #{id}
+    </delete>
+
 
 
 

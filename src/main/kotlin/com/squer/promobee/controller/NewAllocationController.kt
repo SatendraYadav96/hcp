@@ -136,6 +136,39 @@ open class NewAllocationController @Autowired constructor(
     }
 
 
+    @GetMapping("/getTeamForSpecialAllocation/{ccmId}")
+    open fun getTeamForSpecialAllocation(@PathVariable ccmId: String): ResponseEntity<*> {
+        val data = newAllocationService.getTeamForSpecialAllocation(ccmId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getRecipientForSpecialAllocation/{teamId}")
+    open fun getRecipientForSpecialAllocation(@PathVariable teamId: String): ResponseEntity<*> {
+        val data = newAllocationService.getRecipientForSpecialAllocation(teamId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PostMapping("/saveSpecialAllocation")
+    open fun saveSpecialAllocation(@RequestBody saveAlloc : List<saveDifferentialAllocation>): ResponseEntity<*>{
+        val items = newAllocationService.saveSpecialAllocation(saveAlloc)
+        return ResponseEntity(items, HttpStatus.OK)
+    }
+
+    @PostMapping("/deleteSpecialAllocation/{dipId}")
+    open fun deleteSpecialAllocation(@PathVariable dipId: String): ResponseEntity<*> {
+        val data = newAllocationService.deleteSpecialAllocation(dipId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PostMapping("/deleteSpecialAllocationDID/{dipId}")
+    open fun deleteSpecialAllocationDID(@PathVariable dipId: String): ResponseEntity<*> {
+        val data = newAllocationService.deleteSpecialAllocationDID(dipId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
+
 
 
 

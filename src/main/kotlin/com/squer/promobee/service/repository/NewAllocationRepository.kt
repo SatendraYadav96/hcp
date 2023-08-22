@@ -874,6 +874,204 @@ class NewAllocationRepository(
 
 
 
+    fun getTeamForSpecialAllocation(ccmId: String): List<Team>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",ccmId)
+
+        return sqlSessionFactory.openSession().selectList<Team>("TeamMapper.getTeamForSpecialAllocation",data)
+
+
+
+    }
+
+
+    fun getRecipientForSpecialAllocation(teamId: String): List<Recipient>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",teamId)
+
+        return sqlSessionFactory.openSession().selectList<Recipient>("RecipientMapper.getRecipientForSpecialAllocation",data)
+
+
+    }
+
+
+    fun saveSpecialAllocation(saveAlloc: List<saveDifferentialAllocation>) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        var dispatchDetails = DispatchDetail()
+
+        saveAlloc.forEach { it ->
+            data.put("id", UUID.randomUUID().toString())
+            data.put("planId",it.dispatchPlanId!!)
+            data.put("inventoryId",it.inventoryId!!)
+            data.put("recipientId",it.recipientId!!)
+            data.put("qtyDispatch",it.quantity!!)
+            data.put("quarterlyPlanId","00000000-0000-0000-0000-000000000000")
+            data.put("detailStatus",DispatchDetailStatusEnum.ALLOCATED.id)
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+
+            sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveCommonAllocation",data)
+
+
+            var data2: MutableMap<String, Any> = mutableMapOf()
+
+
+            data2.put("id", it.inventoryId!!)
+
+            var inv = sqlSessionFactory.openSession()
+                .selectOne<Inventory>("InventoryMapper.getInventoryByIdForInvoicing", data2)
+
+            var data3: MutableMap<String, Any> = mutableMapOf()
+
+            var invAllocatedQty = inv.qtyAllocated?.plus(it.quantity!!)
+
+            data3.put("id", inv.id)
+            data3.put("qtyAllocated", invAllocatedQty!!)
+            data3.put("updatedBy", user.id)
+
+            sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
+
+        }
+
+    }
+
+
+    fun deleteSpecialAllocation(dipId: String): Map<String, Any> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var plan = DispatchPlan()
+
+        lateinit var jsonResult : Map<String, Any>
+
+        try{
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            data.put("id",dipId)
+
+            plan = sqlSessionFactory.openSession().selectOne("DispatchPlanMapper.getDispatchPlanById",data)
+
+            if(plan == null) {
+                jsonResult = mapOf("success" to false, "message" to "Special dispatch not found")
+
+                return jsonResult
+
+            }else {
+
+                var data0: MutableMap<String, Any> = mutableMapOf()
+
+                data0.put("ID_DIP",dipId)
+
+                sqlSessionFactory.openSession().update("DispatchPlanMapper.resetDraftPlan",data0)
+
+                var data1: MutableMap<String, Any> = mutableMapOf()
+
+                data1.put("id",dipId)
+
+                sqlSessionFactory.openSession().delete("DispatchPlanMapper.deleteSpecialAllocation",data1)
+
+                jsonResult = mapOf("success" to true, "message" to "Special dispatch deleted successfully.")
+
+                return jsonResult
+
+            }
+        } catch (e:Exception){
+            mapOf("success" to false, "message" to "Error occurred while deleting special dispatch")
+        }
+
+        return jsonResult
+
+
+
+    }
+
+
+
+
+    fun deleteSpecialAllocationDID(dipId: String): Map<String, Any>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        lateinit var jsonResult : Map<String, Any>
+
+        try{
+            var dispatchDetail = mutableListOf<DispatchDetail>()
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            data.put("id",dipId)
+
+            dispatchDetail = sqlSessionFactory.openSession().selectList<DispatchDetail>("DispatchDetailMapper.deleteSpecialAllocationDID",data)
+
+            if(dispatchDetail == null){
+                jsonResult = mapOf("success" to false, "message" to "Allocation not found")
+
+                return jsonResult
+            } else{
+
+                dispatchDetail.forEach {it ->
+                    var data0: MutableMap<String, Any> = mutableMapOf()
+
+                    var inv = Inventory()
+
+                    data0.put("id",it.inventoryId!!.id)
+
+                     inv = sqlSessionFactory.openSession().selectOne("InventoryMapper.getInventoryForSpecialAllocation",data0)
+
+                    var invAllocatedQty = inv.qtyAllocated!!.minus(it.qtyDispatch!!)
+
+                    var data1: MutableMap<String, Any> = mutableMapOf()
+
+                    data1.put("id",inv.id)
+                    data1.put("qtyAllocated", invAllocatedQty)
+                    data1.put("updatedBy",user.id)
+
+                    sqlSessionFactory.openSession().update("InventoryMapper.deleteSpecialAllocationDID",data1)
+
+
+                    var data2: MutableMap<String, Any> = mutableMapOf()
+
+                    data2.put("id",it.id)
+
+                    sqlSessionFactory.openSession().delete("DispatchDetailMapper.specialAllocation",data2)
+
+
+
+
+                }
+
+
+                jsonResult = mapOf("success" to true, "message" to "Special dispatch deleted successfully.")
+
+                return jsonResult
+            }
+
+
+        }catch (e:Exception){
+            mapOf("success" to false, "message" to "Error occurred while deleting allocation")
+            return jsonResult
+        }
+
+        return jsonResult
+
+
+    }
+
+
+
+
+
+
+
+
+
 
 
 
