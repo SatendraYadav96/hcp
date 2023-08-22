@@ -1,5 +1,6 @@
 package com.squer.promobee.controller
 
+import com.squer.promobee.controller.dto.CreateAllocationDTO
 import com.squer.promobee.controller.dto.saveCommonAllocationDTO
 import com.squer.promobee.controller.dto.saveDifferentialAllocation
 import com.squer.promobee.controller.dto.submitAllocationDTO
@@ -111,6 +112,36 @@ open class NewAllocationController @Autowired constructor(
         val items = newAllocationService.submitMonthlyAllocation(alloc)
         return ResponseEntity(items, HttpStatus.OK)
     }
+
+
+    //SPECIAL ALLOCATION
+
+
+    @PostMapping("/special/create")
+    open fun createSpecialPlan(@RequestBody alloc : CreateAllocationDTO): ResponseEntity<*>{
+        val items = newAllocationService.createSpecialPlan(alloc)
+        return ResponseEntity(items, HttpStatus.OK)
+    }
+
+    @GetMapping("/special/edit/{planId}")
+    open fun editSpecialPlan(@PathVariable planId: String): ResponseEntity<*> {
+        val data = newAllocationService.editSpecialPlan(planId )
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/searchSpecialPlan/{planId}")
+    open fun searchSpecialPlan(@PathVariable month: Int, @PathVariable year: Int,@PathVariable status: String,@PathVariable remark: String): ResponseEntity<*> {
+        val data = newAllocationService.searchSpecialPlan(month,year,status,remark )
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
+
+
+
+
+
 
 
 

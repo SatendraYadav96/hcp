@@ -714,10 +714,171 @@ class NewAllocationRepository(
         }
 
 
+    }
+
+
+
+    // SPECIAL ALLOCATION
+
+    fun createSpecialPlan(alloc: CreateAllocationDTO): MutableList<AllocationInventoryDetailsWithCostCenterDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+
+
+            var plan = DispatchPlan()
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var planId = UUID.randomUUID().toString()
+
+            data.put("id", planId)
+            data.put("owner", user.id)
+            data.put("month", alloc.month!!)
+            data.put("year", alloc.year!!)
+            data.put("planStatus", AllocationStatusEnum.DRAFT.id)
+            data.put("isSpecial", 1)
+            data.put("remarks", alloc.name!!)
+            data.put("createdBy", user.id)
+            data.put("updatedBy", user.id)
+            data.put("invoiceStatus", DispatchPlanInvoiceStatus.NOT_INITIATED.id)
+            data.put("isVirtual", 0)
+
+            sqlSessionFactory.openSession().insert("DispatchPlanMapper.insertSpecialPlanForAllocation", data)
+
+            var diu = mutableListOf<DispatchPlanUtilization>()
+
+            var data0: MutableMap<String, Any> = mutableMapOf()
+
+            data0.put("dipId", planId)
+
+            diu = sqlSessionFactory.openSession()
+                .selectList<DispatchPlanUtilization>("DispatchPlanUtilizationMapper.createSpecialAllocation", data0)
+
+            diu.forEach {
+
+                var data1: MutableMap<String, Any> = mutableMapOf()
+
+                data1.put("dipId", planId)
+
+                sqlSessionFactory.openSession()
+                    .delete("DispatchPlanUtilizationMapper.deleteSpecialDispatchPlanUtilization", data1)
+
+            }
+
+            diu.forEach {
+                var du = DispatchPlanUtilization()
+                var data2: MutableMap<String, Any> = mutableMapOf()
+
+                data2.put("id", UUID.randomUUID().toString())
+                data2.put("dipId", planId)
+                data2.put("month", alloc.month!!)
+                data2.put("createdBy", user.id)
+                data2.put("updatedBy", user.id)
+
+                sqlSessionFactory.openSession()
+                    .insert("DispatchPlanUtilizationMapper.insertSpecialDispatchPlanUtilization", data2)
+
+
+            }
+
+            var allocationInventoryDetails = mutableListOf<AllocationInventoryDetailsWithCostCenterDTO>()
+
+            var data3: MutableMap<String, Any> = mutableMapOf()
+
+            data3.put("UserID", user.id)
+            data3.put("PlanID", plan.id)
+
+
+            allocationInventoryDetails = sqlSessionFactory.openSession()
+                .selectList<AllocationInventoryDetailsWithCostCenterDTO>(
+                    "ReportMapper.allocationDetailsWithCostCenter",
+                    data3
+                )
+        //var i = 0
+        //var inv = allocationInventoryDetails.sortBy { allocationInventoryDetails[i].qtyAllocated!!.dec() }
+
+
+          return allocationInventoryDetails
 
 
 
     }
+
+
+    fun editSpecialPlan(planId: String): MutableList<AllocationInventoryDetailsWithCostCenterDTO> {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var plan = DispatchPlan()
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id", planId)
+
+        plan = sqlSessionFactory.openSession().selectOne("DispatchPlanMapper.getDispatchPlanCount",data)
+
+        var allocationInventoryDetails = mutableListOf<AllocationInventoryDetailsWithCostCenterDTO>()
+
+
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("UserID", user.id)
+        data0.put("PlanID", plan.id)
+
+
+        allocationInventoryDetails = sqlSessionFactory.openSession()
+            .selectList<AllocationInventoryDetailsWithCostCenterDTO>(
+                "ReportMapper.allocationDetailsWithCostCenter",
+                data0
+            )
+
+        val sortedAllocationDetails = allocationInventoryDetails.sortedByDescending { it.qtyAllocated }.toMutableList()
+
+        return sortedAllocationDetails
+
+
+
+    }
+
+
+    fun searchSpecialPlan(month: Int, year: Int, status: String, remark: String): MutableList<DispatchPlan> {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var plan = mutableListOf<DispatchPlan>()
+        if(remark.isNullOrEmpty()){
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            data.put("month",month)
+            data.put("year",year)
+            data.put("status",status)
+
+            plan = sqlSessionFactory.openSession().selectList("DispatchPlanMapper.searchSpecialPlanWithoutRemarks",data)
+
+        } else {
+            var data0: MutableMap<String, Any> = mutableMapOf()
+
+            data0.put("month",month)
+            data0.put("year",year)
+            data0.put("status",status)
+
+            plan = sqlSessionFactory.openSession().selectList("DispatchPlanMapper.searchSpecialPlanWithRemarks",data0)
+        }
+
+
+        return plan
+
+
+    }
+
+
+
+
+
+
+
+
 
 
 

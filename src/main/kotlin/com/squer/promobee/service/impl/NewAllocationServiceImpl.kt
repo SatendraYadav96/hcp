@@ -5,6 +5,7 @@ package com.squer.promobee.service.impl
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.NewAllocationService
 import com.squer.promobee.service.repository.NewAllocationRepository
+import com.squer.promobee.service.repository.domain.DispatchPlan
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -76,4 +77,19 @@ open class NewAllocationServiceImpl @Autowired constructor(
     override fun submitMonthlyAllocation(alloc: submitAllocationDTO) {
         return newAllocationRepository.submitMonthlyAllocation(alloc)
     }
+
+
+    override fun createSpecialPlan(alloc: CreateAllocationDTO): MutableList<AllocationInventoryDetailsWithCostCenterDTO> {
+        return newAllocationRepository.createSpecialPlan(alloc)
+    }
+
+    override fun editSpecialPlan(planId: String): MutableList<AllocationInventoryDetailsWithCostCenterDTO> {
+        return newAllocationRepository.editSpecialPlan(planId)
+    }
+
+    override fun searchSpecialPlan(month: Int, year: Int, status: String, remark: String): MutableList<DispatchPlan> {
+        return newAllocationRepository.searchSpecialPlan(month,year,status,remark)
+    }
+
+
 }

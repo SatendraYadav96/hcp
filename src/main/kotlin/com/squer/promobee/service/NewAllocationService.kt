@@ -1,6 +1,7 @@
 package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.*
+import com.squer.promobee.service.repository.domain.DispatchPlan
 import org.springframework.http.ResponseEntity
 
 
@@ -33,5 +34,11 @@ interface NewAllocationService {
    fun saveDifferentialAllocation (saveAlloc : List<saveDifferentialAllocation>)
 
    fun submitMonthlyAllocation (alloc : submitAllocationDTO)
+
+   fun createSpecialPlan (alloc : CreateAllocationDTO): MutableList<AllocationInventoryDetailsWithCostCenterDTO>
+
+   fun editSpecialPlan (planId: String): MutableList<AllocationInventoryDetailsWithCostCenterDTO>
+
+   fun searchSpecialPlan(month: Int,year: Int,status:String,remark:String): MutableList<DispatchPlan>
 
 }

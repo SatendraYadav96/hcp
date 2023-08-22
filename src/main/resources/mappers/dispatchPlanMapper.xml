@@ -162,5 +162,26 @@
     </update>
 
 
+    <insert id="insertSpecialPlanForAllocation">
+        INSERT INTO DISPATCH_PLAN_DIP(ID_DIP, ID_OWNER_USR_DIP, MONTH_DIP, YEAR_DIP,ID_STATUS_SLV_DIP,
+                                      IS_SPECIAL_DIP,REMARKS_DIP,  CREATED_ON_DIP, CREATED_BY_DIP,
+                                      UPDATED_ON_DIP, UPDATED_BY_DIP, ID_INVOICE_STATUS_SLV_DIP,IS_VIRTUAL_DIP
+        )
+        VALUES( #{id}, #{owner}, #{month}, #{year}, #{planStatus}, #{isSpecial},#{remarks},
+                GETDATE(), #{createdBy}, GETDATE(), #{updatedBy}, #{invoiceStatus} , #{isVirtual})
+    </insert>
+
+
+    <select id="searchSpecialPlanWithoutRemarks" resultMap="dispatchPlanResultMap" >
+        SELECT * FROM DISPATCH_PLAN_DIP WHERE MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND ID_STATUS_SLV_DIP = #{status}
+    </select>
+
+    <select id="searchSpecialPlanWithRemarks" resultMap="dispatchPlanResultMap" >
+        SELECT * FROM DISPATCH_PLAN_DIP WHERE MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND ID_STATUS_SLV_DIP = #{status} AND REMARKS_DIP = {remark}
+    </select>
+
+
+
+
 
 </mapper>

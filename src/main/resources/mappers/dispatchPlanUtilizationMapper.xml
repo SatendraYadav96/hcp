@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.squer.promobee.mapper.DispatchPlanUtilizationMapper">
+<mapper namespace="DispatchPlanUtilizationMapper">
     <resultMap id="dispatchPlanUtilizationResultMap" type="com.squer.promobee.service.repository.domain.DispatchPlanUtilization">
         <id property="id" column="id_dipu"/>
         <result property="month" column="month_dipu"/>
@@ -18,5 +18,21 @@
     <select id="getDip" parameterType="map" resultType="com.squer.promobee.service.repository.domain.DispatchPlan">
         select id_dip as id from DISPATCH_PLAN_DIP where id_dip=#{id_dip_dipu}
     </select>
+
+
+    <select id="createSpecialAllocation" resultMap="dispatchPlanUtilizationResultMap">
+        select * from DISPATCH_PLAN_UTILIZATION where ID_DIP_DIPU = #{dipId}
+    </select>
+
+    <delete id="deleteSpecialDispatchPlanUtilization" >
+        delete from DISPATCH_PLAN_UTILIZATION where ID_DIP_DIPU = #{dipId}
+    </delete>
+
+    <insert id="insertSpecialDispatchPlanUtilization">
+        INSERT INTO DISPATCH_PLAN_UTILIZATION (ID_DIPU,ID_DIP_DIPU,MONTH_DIPU,CREATED_ON,CREATED_BY,UPDATED_ON,UPDATED_BY)
+        VALUES(#{id},#{dipId},#{month},GETDATE(),#{createdBy},GETDATE(),#{updatedBy})
+
+
+    </insert>
 
 </mapper>
