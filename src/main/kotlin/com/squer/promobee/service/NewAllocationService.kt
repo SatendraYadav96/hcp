@@ -25,7 +25,7 @@ interface NewAllocationService {
 
    fun getTeamForCommonAllocation( ccmId: String): List<CommonAllocationTeamDTO>
 
-   fun getQuantityAllocatedOfUserToItem( userId :String,  userDesgId :String,  inventoryId :String,  month :Int,
+   fun getQuantityAllocatedOfUserToItem( userId :String, inventoryId :String,  month :Int,
                                          year :Int,  isSpecialDispatch :Int): List<DesignationWiseQuantityAllocatedDTO>
 
 
@@ -53,6 +53,19 @@ interface NewAllocationService {
    fun deleteSpecialAllocation( dipId: String): Map<String, Any>
 
    fun deleteSpecialAllocationDID( dipId: String): Map<String, Any>
+
+
+   fun createVirtualPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO>
+
+   fun isVirtualPlanApprovedOrSubmitLock( month: String , year: String):Map<String , Any>
+
+   fun getVirtualTeamForCommonAllocation( ccmId: String): List<CommonAllocationTeamDTO>
+
+   fun getVirtualQuantityAllocatedToUser( userId :String, inventoryId :String,  month :Int,
+                                         year :Int,  isSpecialDispatch :Int,planId: String): List<DesignationWiseQuantityAllocatedDTO>
+
+
+
 
 
 

@@ -165,6 +165,26 @@
     </select>
 
 
+    <select id="getVirtualTeamForCommonAllocation" resultType="com.squer.promobee.controller.dto.CommonAllocationTeamDTO">
+
+        SELECT TEM.ID_TEM AS 'TeamID',TEM.NAME_TEM AS 'Team',RCT.ID_DESG_ULV_RCT AS
+	'DesignationId',ULV.NAME_ULV AS 'Designation',COUNT(RCT.ID_RCT) AS 'RecipientCount',rct.ID_RCT as 'RecipientId',
+        FROM SAMPLE_MASTER_SMP SMP
+                 JOIN TEAM_BRAND_TBR TBR ON SMP.ID_BRD_SMP=TBR.ID_BRD_TBR
+                 JOIN TEAM_MASTER_TEM TEM ON TBR.ID_TEM_TBR=TEM.ID_TEM
+                 JOIN RECIPIENT_MASTER_RCT RCT ON TBR.ID_TEM_TBR=RCT.ID_TEM_RCT
+                 JOIN USER_LOV_ULV ULV ON ULV.ID_ULV=RCT.ID_DESG_ULV_RCT
+        WHERE RCT.RM_CODE_RCT=#{code} AND TEM.IS_ACTIVE_TEM ='1' --AND SMP.ID_SMP=@BrandId
+          --AND RCT.ID_TEM_RCT=@TeamId
+          AND RCT.ID_STATUS_SLV_RCT='80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
+        GROUP BY ID_DESG_ULV_RCT,ULV.NAME_ULV,TEM.ID_TEM,TEM.NAME_TEM,rct.ID_RCT
+
+
+
+
+    </select>
+
+
 
 
 

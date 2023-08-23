@@ -184,6 +184,19 @@
         DELETE FROM DISPATCH_PLAN_DIP WHERE ID_DIP = #{id}
     </delete>
 
+    <select id="createVirtualPlan" resultMap="dispatchPlanResultMap" >
+        SELECT * FROM DISPATCH_PLAN_DIP WHERE MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND ID_OWNER_USR_DIP = #{owner} and IS_SPECIAL_DIP = 1 and IS_VIRTUAL_DIP = 1
+    </select>
+
+
+    <insert id="insertVirtualPlan">
+        INSERT INTO DISPATCH_PLAN_DIP(ID_DIP, ID_OWNER_USR_DIP, MONTH_DIP, YEAR_DIP,ID_STATUS_SLV_DIP,
+                                      IS_SPECIAL_DIP,REMARKS_DIP,  CREATED_ON_DIP, CREATED_BY_DIP,
+                                      UPDATED_ON_DIP, UPDATED_BY_DIP, ID_INVOICE_STATUS_SLV_DIP,IS_VIRTUAL_DIP
+        )
+        VALUES( #{id}, #{owner}, #{month}, #{year}, #{planStatus}, #{isSpecial},#{remarks},
+                GETDATE(), #{createdBy}, GETDATE(), #{updatedBy}, #{invoiceStatus} , #{isVirtual})
+    </insert>
 
 
 

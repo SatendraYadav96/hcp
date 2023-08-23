@@ -80,10 +80,10 @@ open class NewAllocationController @Autowired constructor(
     }
 
 
-    @GetMapping("/getQuantityAllocatedOfUserToItem/{userId}/{userDesgId}/{inventoryId}/{month}/{year}/{isSpecialDispatch}")
-    open fun getQuantityAllocatedOfUserToItem(@PathVariable userId :String,@PathVariable userDesgId :String,@PathVariable inventoryId :String,@PathVariable month :Int,
+    @GetMapping("/getQuantityAllocatedOfUserToItem/{userId}/{inventoryId}/{month}/{year}/{isSpecialDispatch}")
+    open fun getQuantityAllocatedOfUserToItem(@PathVariable userId :String,@PathVariable inventoryId :String,@PathVariable month :Int,
         @PathVariable year :Int,@PathVariable isSpecialDispatch :Int): ResponseEntity<*> {
-        val data = newAllocationService.getQuantityAllocatedOfUserToItem(userId,userDesgId,inventoryId,month,year,isSpecialDispatch )
+        val data = newAllocationService.getQuantityAllocatedOfUserToItem(userId,inventoryId,month,year,isSpecialDispatch )
         return ResponseEntity(data, HttpStatus.OK)
     }
 
@@ -165,6 +165,44 @@ open class NewAllocationController @Autowired constructor(
         val data = newAllocationService.deleteSpecialAllocationDID(dipId)
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+
+    //VIRTUAL ALLOCATION
+
+
+    @PostMapping("/virtual/create")
+    open fun createVirtualPlan(@RequestBody yearMonth: Map<String , Long>): ResponseEntity<*>{
+        val items = newAllocationService.createVirtualPlan(yearMonth["yearMonth"]!!)
+        return ResponseEntity(items, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/isVirtualPlanApprovedOrSubmitLock/{month}/{year}")
+    open fun isVirtualPlanApprovedOrSubmitLock(@PathVariable month: String , @PathVariable year: String): ResponseEntity<*> {
+        val data = newAllocationService.isVirtualPlanApprovedOrSubmitLock(month , year)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/getVirtualTeamForCommonAllocation/{ccmId}")
+    open fun getVirtualTeamForCommonAllocation(@PathVariable ccmId :String ): ResponseEntity<*> {
+        val data = newAllocationService.getVirtualTeamForCommonAllocation(ccmId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/getVirtualQuantityAllocatedToUser/{userId}/{inventoryId}/{month}/{year}/{isSpecialDispatch}/{planId}")
+    open fun getVirtualQuantityAllocatedToUser(@PathVariable userId :String,@PathVariable inventoryId :String,@PathVariable month :Int,
+                                              @PathVariable year :Int,@PathVariable isSpecialDispatch :Int,@PathVariable planId :String): ResponseEntity<*> {
+        val data = newAllocationService.getVirtualQuantityAllocatedToUser(userId,inventoryId,month,year,isSpecialDispatch, planId )
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
+
+
+
 
 
 

@@ -26,6 +26,11 @@
     </select>
 
 
+    <select id="createVirtualPlan" resultMap="userDesignationResultMap">
+        select * from USER_LOV_ULV where id_ulv=#{id}
+    </select>
+
+
 
 
 

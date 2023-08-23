@@ -148,4 +148,10 @@
         WHERE TEM.ID_TEM = #{id} AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
     </select>
 
+    <select id="getRecipientForVirtualTeamForCommonAllocation" resultMap="recipientResultMap">
+        select RCT.* from USER_MASTER_USR USR
+                              JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = USR.ID_RCT_USR
+        where ID_USR = #{id}
+    </select>
+
 </mapper>

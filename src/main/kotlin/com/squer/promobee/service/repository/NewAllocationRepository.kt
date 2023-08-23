@@ -14,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 
@@ -423,7 +425,7 @@ class NewAllocationRepository(
     }
 
 
-    fun getQuantityAllocatedOfUserToItem(userId: String, userDesgId: String, inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int): List<DesignationWiseQuantityAllocatedDTO> {
+    fun getQuantityAllocatedOfUserToItem(userId: String, inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int): List<DesignationWiseQuantityAllocatedDTO> {
 
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
@@ -1063,6 +1065,454 @@ class NewAllocationRepository(
 
 
     }
+
+
+
+    fun createVirtualPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO> {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        val month = (yearMonth % 100).toInt()
+        val year = (yearMonth / 100).toInt()
+
+
+        var tseID = getTseList(user.id)
+
+        var allocationInventoryDetails = mutableListOf<AllocationInventoryDetailsWithCostCenterDTO>()
+
+        var plan = DispatchPlan()
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("month",month)
+        data.put("year",year)
+        data.put("owner",user.id)
+
+        plan = sqlSessionFactory.openSession().selectOne("DispatchPlanMapper.createVirtualPlan",data)
+
+        var isRbmOrNsm = false;
+
+        if(user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id || user.userDesignation!!.id == UserRoleEnum.NATIONAL_SALES_MANAGER_ID.id){
+            isRbmOrNsm = true;
+        }
+
+            var ulv = UserDesignation()
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("id",user.userDesignation!!.id)
+
+        ulv = sqlSessionFactory.openSession().selectOne("UserDesignationMapper.createVirtualPlan",data0)
+
+        if(plan == null) {
+
+            var data1: MutableMap<String, Any> = mutableMapOf()
+
+            var planId = UUID.randomUUID().toString()
+
+            data1.put("id",planId)
+            data1.put("owner",user.id)
+            data1.put("month",month)
+            data1.put("year",year)
+            data1.put("planStatus",AllocationStatusEnum.DRAFT.id)
+            data1.put("isSpecial", 1)
+            data1.put("remarks", "virtualplan")
+            data1.put("createdBy",user.id)
+            data1.put("updatedBy",user.id)
+            data1.put("invoiceStatus",DispatchPlanInvoiceStatus.NOT_INITIATED.id)
+            data1.put("isVirtual",1)
+
+            sqlSessionFactory.openSession().insert("DispatchPlanMapper.insertVirtualPlan",data1)
+
+        }
+        var bmPlanId = mutableListOf<VirtualDispatchDetail>()
+
+        if(isRbmOrNsm){
+            var data2: MutableMap<String, Any> = mutableMapOf()
+
+            data2.put("month",month)
+            data2.put("year",year)
+            data2.put("owner",user.userRecipientId!!)
+
+            bmPlanId == sqlSessionFactory.openSession().selectList<VirtualDispatchDetail>("VirtualDispatchDetailMapper.createVirtualPlan",data2)
+
+            bmPlanId.forEach {  it ->
+                var data3: MutableMap<String, Any> = mutableMapOf()
+
+                data3.put("id",plan.id)
+                data3.put("invId", it.inventoryId!!)
+
+                var rbmdetails = sqlSessionFactory.openSession().selectList<DispatchDetail>("DispatchDetailMapper.createVirtualPlan",data3)
+
+                var status = SystemLov()
+
+                var data4: MutableMap<String, Any> = mutableMapOf()
+
+                data4.put("id",plan.id)
+
+                var bmPlan = sqlSessionFactory.openSession().selectOne<DispatchPlan>("DispatchPlanMapper.getDispatchPlanById",data4)
+
+                if(bmPlan.isVirtual == 1 && bmPlan.planStatus!!.id == AllocationStatusEnum.SUBMIT.id){
+                    if(rbmdetails == null) {
+
+                        var detail = DispatchDetail()
+
+                        var data5: MutableMap<String, Any> = mutableMapOf()
+
+                        var didId = UUID.randomUUID().toString()
+
+                        data5.put("id",didId)
+                        data5.put("planId",plan.id)
+                        data5.put("inventoryId",it.inventoryId!!)
+                        data5.put("recipientId",it.recipientId!!)
+                        data5.put("qtyDispatch",it.qtyDispatch!!)
+                        data5.put("quarterlyPlanId","00000000-0000-0000-0000-000000000000")
+                        data5.put("detailStatus",DispatchDetailStatusEnum.ALLOCATED.id)
+                        data5.put("createdBy",user.id)
+                        data5.put("updatedBy",user.id)
+
+                        sqlSessionFactory.openSession().insert("DispatchDetailMapper.insertVirtualPlan",data5)
+
+                        var data6: MutableMap<String, Any> = mutableMapOf()
+
+                        data6.put("id", it.id)
+                        data6.put("qtyDispatch", 0)
+
+                        sqlSessionFactory.openSession().update("VirtualDispatchDetailMapper.updateVirtualPlan",data6)
+
+
+
+
+
+
+
+
+
+                    }
+                }
+
+
+            }
+
+
+        }
+
+
+        if(isRbmOrNsm){
+
+            var data7: MutableMap<String, Any> = mutableMapOf()
+
+            data7.put("UserID", user.userRecipientId!!)
+            data7.put("PlanID", plan.id)
+
+            allocationInventoryDetails = sqlSessionFactory.openSession().selectList<AllocationInventoryDetailsWithCostCenterDTO>("ReportMapper.GetVirtualAllocationDetailsforRbm",data7)
+
+
+        } else {
+            var data8: MutableMap<String, Any> = mutableMapOf()
+
+            data8.put("UserID", user.userRecipientId!!)
+            data8.put("PlanID", plan.id)
+
+            allocationInventoryDetails = sqlSessionFactory.openSession().selectList<AllocationInventoryDetailsWithCostCenterDTO>("ReportMapper.GetVirtualAllocationInventoryWithCostCenter",data8)
+
+
+        }
+
+        if(plan.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || plan.planStatus!!.id == AllocationStatusEnum.APPROVED.id) {
+
+            allocationInventoryDetails = allocationInventoryDetails.filter { it.qtyAllocated != null && it.qtyAllocated!! > 0  }.sortedByDescending { it.qtyAllocated }.toMutableList()
+        }
+
+        return  allocationInventoryDetails
+
+
+    }
+
+
+
+
+    fun isVirtualPlanApprovedOrSubmitLock(month: String, year: String): Map<String, Any> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var allocationStatus = ""
+
+        var allocationInvoiceStatus = ""
+
+       lateinit var jsonResult : Map<String, Any>
+
+        try{
+            var allocationTypes = mutableListOf<SystemLov>()
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            data.put("type",SLVTypeEnum.MONTHLY_PLAN_STATUS.type)
+
+            allocationTypes = sqlSessionFactory.openSession().selectList<SystemLov>("SystemLovMapper.isVirtualPlanApprovedOrSubmitLock",data)
+
+            var plan = DispatchPlan()
+
+            var data0: MutableMap<String, Any> = mutableMapOf()
+
+            data0.put("month",month)
+            data0.put("year",year)
+            data0.put("owner",user.id)
+
+            plan = sqlSessionFactory.openSession().selectOne("DispatchPlanMapper.createVirtualPlan",data0)
+
+            var data1: MutableMap<String, Any> = mutableMapOf()
+
+            data1.put("id",plan.planStatus!!.id)
+
+            allocationStatus = sqlSessionFactory.openSession().selectOne("SystemLovMapper.allocationStatus",data1)
+
+            var api = ApprovalChainTransaction()
+
+            var data2: MutableMap<String, Any> = mutableMapOf()
+
+            data2.put("id",plan.id)
+
+            api = sqlSessionFactory.openSession().selectOne("ApprovalChainTransactionMapper.getApprovalChainById",data2)
+
+            if(api != null){
+                allocationStatus = "$allocationStatus(Last Comments-: ${api.comments})"
+            }
+
+            var data3: MutableMap<String, Any> = mutableMapOf()
+
+            data3.put("id",plan.planStatus!!.id)
+            data3.put("type",SLVTypeEnum.DISPATCH_PLAN_INVOICE_STATUS.type)
+
+            allocationInvoiceStatus = sqlSessionFactory.openSession().selectOne("SystemLovMapper.isVirtualPlanApprovedOrSubmitLockAllocationInvoiceStatus",data3)
+
+            var monthToSubtract = 0
+
+            var data4: MutableMap<String, Any> = mutableMapOf()
+
+            data4.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK_OF_MONTH.id)
+
+            monthToSubtract = sqlSessionFactory.openSession().selectOne("SystemPropertiesMapper.monthToSubtract",data4)
+
+            var monthInt = month.toInt()
+            var yearInt = year.toInt()
+
+            val now = LocalDateTime.now()
+            val firstDayOfMonth = LocalDateTime.of(yearInt, monthInt, 1, 0, 0)
+
+            var dayToAdd = 0 ;
+            var dayToAddBm = 0 ;
+            var dayToAddBex = 0 ;
+
+
+            if(plan != null){
+                if(plan.planStatus!!.id == AllocationStatusEnum.APPROVED.id ){
+                     jsonResult = mapOf(
+                        "IsPlanSubmit" to true,
+                        "Message" to "Plan Approved",
+                        "AllocationStatus" to allocationStatus,
+                        "AllocationInvoiceStatus" to allocationInvoiceStatus
+                    )
+
+                    return jsonResult
+                }
+
+
+                if(plan.planStatus!!.id == AllocationStatusEnum.SUBMIT.id ){
+                    jsonResult = mapOf(
+                        "IsPlanSubmit" to true,
+                        "Message" to "Plan Submit",
+                        "AllocationStatus" to allocationStatus,
+                        "AllocationInvoiceStatus" to allocationInvoiceStatus
+                    )
+
+                    return jsonResult
+                }
+
+                if(plan.planStatus!!.id == AllocationStatusEnum.DRAFT.id){
+                    var data5: MutableMap<String, Any> = mutableMapOf()
+
+                    data5.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK.id)
+
+                    dayToAdd = sqlSessionFactory.openSession().selectOne("SystemPropertiesMapper.isVirtualPlanApprovedOrSubmitLockDayToAdd",data5)
+                }
+
+
+                if(plan.planStatus!!.id == AllocationStatusEnum.UNLOCK.id){
+                    var data6: MutableMap<String, Any> = mutableMapOf()
+
+                    data6.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK.id)
+
+                    dayToAddBm = sqlSessionFactory.openSession().selectOne("SystemPropertiesMapper.isVirtualPlanApprovedOrSubmitLockDayToAdd",data6)
+
+                    var data7: MutableMap<String, Any> = mutableMapOf()
+
+                    data7.put("id",SystemPropertyEnum.BEX_MONTH_PLAN_UNLOCK.id)
+
+                    dayToAddBex = sqlSessionFactory.openSession().selectOne("SystemPropertiesMapper.isVirtualPlanApprovedOrSubmitLockDayToAdd",data7)
+
+                    dayToAdd = dayToAddBm + dayToAddBex
+
+
+
+
+                }
+
+
+
+
+
+            } else {
+
+                var data8: MutableMap<String, Any> = mutableMapOf()
+
+                data8.put("id",SystemPropertyEnum.BM_MONTH_PLAN_LOCK.id)
+
+                dayToAdd = sqlSessionFactory.openSession().selectOne("SystemPropertiesMapper.isVirtualPlanApprovedOrSubmitLockDayToAdd",data8)
+
+            }
+
+            var monthToSubtractLong = monthToSubtract.toLong()
+            var dayToAddLong = dayToAdd.toLong()
+
+            val calculatedDate = firstDayOfMonth.minusMonths(monthToSubtractLong).plusDays(dayToAddLong - 1)
+            val isPlanLock = calculatedDate.isBefore(now)
+
+            if(isPlanLock){
+                jsonResult = mapOf(
+                    "IsPlanSubmit" to true,
+                    "Message" to "Plan Lock",
+                    "AllocationStatus" to allocationStatus,
+                    "AllocationInvoiceStatus" to allocationInvoiceStatus
+                )
+
+                return jsonResult
+            }
+
+            val tempFutureCheckActual = LocalDateTime.of(yearInt, monthInt, 1, 0, 0)
+            val tempFutureCheckNow = LocalDateTime.of(now.year, now.month, 1, 0, 0)
+
+            var futureMonthCheck = 0 ;
+            var allocationFutureMonthToCheck = 2;
+
+            futureMonthCheck = allocationFutureMonthToCheck
+
+            val monthsBetween = ChronoUnit.MONTHS.between(
+                tempFutureCheckActual, tempFutureCheckNow
+            ).toInt()
+
+            if(monthsBetween >= futureMonthCheck){
+                jsonResult = mapOf(
+                    "IsPlanSubmit" to true,
+                    "Message" to "Future Plan Lock",
+                    "AllocationStatus" to "",
+                    "AllocationInvoiceStatus" to ""
+                )
+                return jsonResult
+            }
+
+            jsonResult = mapOf(
+                "IsPlanSubmit" to false,
+                "Message" to "",
+                "AllocationStatus" to allocationStatus,
+                "AllocationInvoiceStatus" to allocationInvoiceStatus
+            )
+            return jsonResult
+
+
+
+        }catch (e :Exception){
+            jsonResult = mapOf(
+                "IsPlanSubmit" to false,
+                "Message" to "",
+                "AllocationStatus" to allocationStatus,
+                "AllocationInvoiceStatus" to allocationInvoiceStatus
+            )
+            return jsonResult
+        }
+
+
+    }
+
+
+    fun getVirtualTeamForCommonAllocation(ccmId: String): List<CommonAllocationTeamDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var recipient = Recipient()
+
+        var data1: MutableMap<String, Any> = mutableMapOf()
+        data1.put("id",user.id)
+
+        recipient = sqlSessionFactory.openSession().selectOne("RecipientMapper.getRecipientForVirtualTeamForCommonAllocation",data1)
+
+
+
+        var virtualCommonTeam = mutableListOf<CommonAllocationTeamDTO>()
+
+        if(user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id){
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            data.put("code",recipient.rmCode!!)
+
+            virtualCommonTeam = sqlSessionFactory.openSession().selectList<CommonAllocationTeamDTO>("TeamMapper.getVirtualTeamForCommonAllocation",data)
+
+
+        } else {
+            var data0: MutableMap<String, Any> = mutableMapOf()
+
+            data0.put("ccmId",ccmId)
+
+            virtualCommonTeam =  sqlSessionFactory.openSession().selectList<CommonAllocationTeamDTO>("TeamMapper.getTeamForCommonAllocation",data0)
+        }
+
+        return virtualCommonTeam
+    }
+
+
+    fun getVirtualQuantityAllocatedToUser(userId: String,inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int,planId: String): List<DesignationWiseQuantityAllocatedDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var quantityDispatch = mutableListOf<DesignationWiseQuantityAllocatedDTO>()
+
+        if(user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id){
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            data.put("month",month)
+            data.put("year",year)
+            data.put("inventoryId",inventoryId)
+            data.put("isSpecialDispatch",isSpecialDispatch)
+            data.put("planId",planId)
+
+            quantityDispatch =  sqlSessionFactory.openSession().selectList<DesignationWiseQuantityAllocatedDTO>("DispatchDetailMapper.getVirtualQuantityAllocatedToUserForRbm",data)
+        } else {
+            quantityDispatch = getQuantityAllocatedOfUserToItem(userId,inventoryId,month,year,isSpecialDispatch).toMutableList()
+        }
+
+        return quantityDispatch
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

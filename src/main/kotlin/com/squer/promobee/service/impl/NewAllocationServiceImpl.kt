@@ -60,8 +60,8 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getTeamForCommonAllocation(ccmId)
     }
 
-    override fun getQuantityAllocatedOfUserToItem(userId: String, userDesgId: String, inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int): List<DesignationWiseQuantityAllocatedDTO> {
-        return newAllocationRepository.getQuantityAllocatedOfUserToItem(userId,userDesgId,inventoryId,month,year,isSpecialDispatch)
+    override fun getQuantityAllocatedOfUserToItem(userId: String,  inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int): List<DesignationWiseQuantityAllocatedDTO> {
+        return newAllocationRepository.getQuantityAllocatedOfUserToItem(userId,inventoryId,month,year,isSpecialDispatch)
     }
 
     override fun getTeamForDifferentialAllocation(planId: String, teamId: String, inventoryId: String): List<AllocationDataTeamPopupDetailsDTO> {
@@ -113,5 +113,26 @@ open class NewAllocationServiceImpl @Autowired constructor(
     override fun deleteSpecialAllocationDID(dipId: String): Map<String, Any> {
         return newAllocationRepository.deleteSpecialAllocationDID(dipId)
     }
+
+    override fun createVirtualPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO> {
+        return newAllocationRepository.createVirtualPlan(yearMonth)
+    }
+
+    override fun isVirtualPlanApprovedOrSubmitLock(month: String, year: String): Map<String, Any> {
+        return newAllocationRepository.isVirtualPlanApprovedOrSubmitLock(month,year)
+    }
+
+    override fun getVirtualTeamForCommonAllocation(ccmId: String): List<CommonAllocationTeamDTO> {
+        return newAllocationRepository.getVirtualTeamForCommonAllocation(ccmId)
+    }
+
+    override fun getVirtualQuantityAllocatedToUser(userId: String, inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int,planId: String): List<DesignationWiseQuantityAllocatedDTO> {
+        return newAllocationRepository.getVirtualQuantityAllocatedToUser(userId,inventoryId,month,year,isSpecialDispatch,planId)
+    }
+
+
+
+
+
 
 }

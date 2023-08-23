@@ -49,6 +49,20 @@
     </select>
 
 
+    <select id="isVirtualPlanApprovedOrSubmitLock" resultMap="systemLovResultMap">
+
+        select *  from SYSTEM_LOV_SLV where TYPE_SLV = #{type}
+
+    </select>
+
+
+    <select id="isVirtualPlanApprovedOrSubmitLockAllocationInvoiceStatus" resultMap="systemLovResultMap">
+
+        select * from SYSTEM_LOV_SLV where TYPE_SLV = #{type} AND ID_SLV = #{id}
+
+    </select>
+
+
 
 
 
