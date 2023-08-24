@@ -130,6 +130,17 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getVirtualQuantityAllocatedToUser(userId,inventoryId,month,year,isSpecialDispatch,planId)
     }
 
+    override fun getVirtualTeamForDifferentialAllocation(planId: String, teamId: String, inventoryId: String): List<AllocationDataTeamPopupDetailsDTO> {
+        return newAllocationRepository.getVirtualTeamForDifferentialAllocation(planId,teamId,inventoryId)
+    }
+
+    override fun saveVirtualCommonAllocation(saveAlloc: List<saveVirtualCommonAllocationDTO>) {
+        return newAllocationRepository.saveVirtualCommonAllocation(saveAlloc)
+    }
+
+    override fun submitVirtualAllocation(alloc: submitAllocationDTO) {
+        return newAllocationRepository.submitVirtualAllocation(alloc)
+    }
 
 
 

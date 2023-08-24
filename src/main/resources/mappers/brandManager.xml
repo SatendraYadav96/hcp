@@ -67,6 +67,11 @@
     </select>
 
 
+    <select id="submitVirtualAllocation" resultMap="brandManagerResultMap">
+        select * from BRANDMANAGER_BRAND_BBR where ID_USR_BBR = #{id}
+
+    </select>
+
 
 
 </mapper>

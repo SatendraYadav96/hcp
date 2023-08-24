@@ -236,6 +236,16 @@
 
 
 
+    <update id="saveVirtualCommonAllocation">
+
+
+        UPDATE DISPATCH_DETAIL_DID SET QUANTITY_DISPATCH_DID = 0  , UPDATED_BY_DID = #{updatedBy} , UPDATED_ON_DID = GETDATE()
+        WHERE ID_DIP_DID = #{id}
+
+    </update>
+
+
+
 
 
 </mapper>

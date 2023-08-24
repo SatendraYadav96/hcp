@@ -64,6 +64,12 @@ interface NewAllocationService {
    fun getVirtualQuantityAllocatedToUser( userId :String, inventoryId :String,  month :Int,
                                          year :Int,  isSpecialDispatch :Int,planId: String): List<DesignationWiseQuantityAllocatedDTO>
 
+   fun getVirtualTeamForDifferentialAllocation( planId :String,  teamId :String,  inventoryId :String ): List<AllocationDataTeamPopupDetailsDTO>
+
+   fun saveVirtualCommonAllocation (saveAlloc : List<saveVirtualCommonAllocationDTO>)
+
+   fun submitVirtualAllocation (alloc : submitAllocationDTO)
+
 
 
 

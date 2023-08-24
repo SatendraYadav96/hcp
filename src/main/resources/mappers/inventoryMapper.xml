@@ -305,5 +305,21 @@
 
     </update>
 
+    <select id="saveVirtualCommonAllocation" resultMap="inventoryResultMap">
+        select * from INVENTORY_INV where ID_INV = #{id}
+    </select>
+
+    <select id="submitVirtualAllocation" resultMap="inventoryResultMap">
+        select * from INVENTORY_INV where ID_INV = #{id}
+    </select>
+
+
+    <update id="submitVirtualAllocationInventory">
+
+        UPDATE INVENTORY_INV SET QTY_ALLOCATED_INV = #{qtyAllocated},  UPDATED_BY_INV = #{updatedBy} , UPDATED_ON_INV = GETDATE()
+        WHERE ID_INV = #{id}
+
+    </update>
+
 
 </mapper>

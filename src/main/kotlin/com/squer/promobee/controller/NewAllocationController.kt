@@ -1,9 +1,6 @@
 package com.squer.promobee.controller
 
-import com.squer.promobee.controller.dto.CreateAllocationDTO
-import com.squer.promobee.controller.dto.saveCommonAllocationDTO
-import com.squer.promobee.controller.dto.saveDifferentialAllocation
-import com.squer.promobee.controller.dto.submitAllocationDTO
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.NewAllocationService
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -197,6 +194,36 @@ open class NewAllocationController @Autowired constructor(
         val data = newAllocationService.getVirtualQuantityAllocatedToUser(userId,inventoryId,month,year,isSpecialDispatch, planId )
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+
+
+    @GetMapping("/getVirtualTeamForDifferentialAllocation/{planId}/{teamId}/{inventoryId}")
+    open fun getVirtualTeamForDifferentialAllocation(@PathVariable planId :String , @PathVariable teamId :String , @PathVariable inventoryId :String ): ResponseEntity<*> {
+        val data = newAllocationService.getVirtualTeamForDifferentialAllocation(planId, teamId , inventoryId )
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PostMapping("/saveVirtualCommonAllocation")
+    open fun saveVirtualCommonAllocation(@RequestBody saveAlloc : List<saveVirtualCommonAllocationDTO>): ResponseEntity<*>{
+        val items = newAllocationService.saveVirtualCommonAllocation(saveAlloc)
+        return ResponseEntity(items, HttpStatus.OK)
+    }
+
+
+    @PostMapping("/submitVirtualAllocation")
+    open fun submitVirtualAllocation(@RequestBody alloc : submitAllocationDTO): ResponseEntity<*>{
+        val items = newAllocationService.submitVirtualAllocation(alloc)
+        return ResponseEntity(items, HttpStatus.OK)
+    }
+
+
+
+
+
+
+
+
+
 
 
 

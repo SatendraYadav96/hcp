@@ -198,6 +198,13 @@
                 GETDATE(), #{createdBy}, GETDATE(), #{updatedBy}, #{invoiceStatus} , #{isVirtual})
     </insert>
 
+    <update id="submitVirtualAllocation">
+
+        UPDATE DISPATCH_PLAN_DIP SET   SUBMISSION_DATE_DIP = GETDATE() , ID_STATUS_SLV_DIP = #{planStatus} ,, ID_INVOICE_STATUS_SLV_DIP = #{invoiceStatus} ,UPDATED_ON_DIP = GETDATE(), UPDATED_BY_DIP = #{updatedBy}
+        WHERE ID_DIP = #{id}
+    </update>
+
+
 
 
 
