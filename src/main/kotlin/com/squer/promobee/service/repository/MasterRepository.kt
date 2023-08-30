@@ -47,10 +47,12 @@ class MasterRepository
     }
 
 
-    fun addVendor(vnd: Vendor) {
+    fun addVendor(vnd: Vendor): Map<String, Any> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var data0: MutableMap<String, Any> = mutableMapOf()
+
+        lateinit var jsonResult : Map<String, Any>
 
         var vendorCode = 0;
         vnd.code?.let { data0.put("code", it) }
@@ -59,6 +61,9 @@ class MasterRepository
 
         if(vendorCode > 0 ){
             println("Vendor Already exist in database.")
+            jsonResult = mapOf("success" to false, "message" to "Vendor Code Already Exist !")
+
+            return jsonResult
         }
         else {
 
@@ -78,7 +83,13 @@ class MasterRepository
 
             sqlSessionTemplate.insert("VendorMapper.addVendor", data)
 
+            jsonResult = mapOf("success" to true, "message" to "Vendor created successfully !")
+
+            return jsonResult
+
         }
+
+        return jsonResult
 
     }
 
@@ -118,45 +129,65 @@ class MasterRepository
     }
 
 
-    fun addCostCenter(ccm: MasterCostCenter) {
+    fun addCostCenter(ccm: MasterCostCenter): Map<String, Any> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var data: MutableMap<String, Any> = mutableMapOf()
 
+        lateinit var jsonResult : Map<String, Any>
+
+        var costCenter = CostCenter()
+
+        var data0 : MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("code", ccm.code!!)
+
+        costCenter = sqlSessionTemplate.selectOne("CostCenterMapper.checkCostCenterCode",data0)
 
 
-        var ccmId5 = UUID.randomUUID().toString()
+        if(costCenter.code == ccm.code){
+            jsonResult = mapOf("success" to false, "message" to "Cost Center Code Already Exist !")
 
-        data.put("id",ccmId5 )
-        ccm.name?.let { data.put("name", it.uppercase()) }
-        ccm.name?.let { data.put("ciName", it.lowercase()) }
-        ccm.code?.let { data.put("code", it.uppercase()) }
-        ccm.active?.let { data.put("active", it) }
-        data.put("createdBy", user.id )
-        data.put("updatedBy", user.id)
+            return jsonResult
+        }else{
+            var ccmId5 = UUID.randomUUID().toString()
+
+            data.put("id",ccmId5 )
+            ccm.name?.let { data.put("name", it.uppercase()) }
+            ccm.name?.let { data.put("ciName", it.lowercase()) }
+            ccm.code?.let { data.put("code", it.uppercase()) }
+            ccm.active?.let { data.put("active", it) }
+            data.put("createdBy", user.id )
+            data.put("updatedBy", user.id)
 
 
 
-        sqlSessionTemplate.insert("CostCenterMapper.addCostCenter",data)
+            sqlSessionTemplate.insert("CostCenterMapper.addCostCenter",data)
 
 
 
-        var i = 0
+            var i = 0
 
-        ccm.brandId.forEach {
-            var cbr = CostCenterBrand()
-            var cbrId = UUID.randomUUID().toString()
+            ccm.brandId.forEach {
+                var cbr = CostCenterBrand()
+                var cbrId = UUID.randomUUID().toString()
 
-            data.put("id", cbrId)
-            data.put("ccmId", ccmId5)
-            data.put("brandId",ccm.brandId.get(i))
+                data.put("id", cbrId)
+                data.put("ccmId", ccmId5)
+                data.put("brandId",ccm.brandId.get(i))
 
-            sqlSessionTemplate.insert("CostCenterBrandMapper.addCostCenterBrand", data)
+                sqlSessionTemplate.insert("CostCenterBrandMapper.addCostCenterBrand", data)
 
-            i++
+                i++
+            }
+
+            jsonResult = mapOf("success" to true, "message" to "Cost Center created successfully !")
+
+            return jsonResult
         }
 
 
+        return jsonResult
 
 
 
@@ -223,33 +254,51 @@ class MasterRepository
     }
 
 
-    fun addSample(smp: SampleMaster) {
+    fun addSample(smp: SampleMaster): Map<String, Any> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-        var data: MutableMap<String, Any> = mutableMapOf()
+        lateinit var jsonResult : Map<String, Any>
+
+        var sample = SampleMaster()
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("lmid",smp.lmid!!)
+
+        sample = sqlSessionTemplate.selectOne("SampleMasterMapper.getSampleByLmid",data0)
+
+        if(sample.lmid == smp.lmid){
+            jsonResult = mapOf("success" to false, "message" to "Sample Code Already Exist !")
+
+            return jsonResult
+        } else {
+            var data: MutableMap<String, Any> = mutableMapOf()
+            var smp1 = UUID.randomUUID().toString()
+
+            data.put("id",smp1 )
+            smp.lmid?.let { data.put("lmid", it.uppercase()) }
+            smp.name?.let { data.put("name", it.uppercase()) }
+            smp.name?.let { data.put("ciName", it.lowercase()) }
+            smp.description?.let { data.put("description", it) }
+            data.put("brandId",NamedSquerEntity(smp.brandId?.id.toString(),""))
+            smp.packSize?.let { data.put("packSize", it) }
+            smp.active?.let { data.put("active", it) }
+            smp.hsnCode?.let { data.put("hsnCode", it) }
+            smp.cap?.let { data.put("cap", it) }
+            data.put("createdBy", user.id )
+            data.put("updatedBy", user.id)
 
 
-
-        var smp1 = UUID.randomUUID().toString()
-
-        data.put("id",smp1 )
-        smp.lmid?.let { data.put("lmid", it.uppercase()) }
-        smp.name?.let { data.put("name", it.uppercase()) }
-        smp.name?.let { data.put("ciName", it.lowercase()) }
-        smp.description?.let { data.put("description", it) }
-        data.put("brandId",NamedSquerEntity(smp.brandId?.id.toString(),""))
-        smp.packSize?.let { data.put("packSize", it) }
-        smp.active?.let { data.put("active", it) }
-        smp.hsnCode?.let { data.put("hsnCode", it) }
-        smp.cap?.let { data.put("cap", it) }
-        data.put("createdBy", user.id )
-        data.put("updatedBy", user.id)
+            sqlSessionTemplate.insert("SampleMasterMapper.addSample",data)
 
 
+            jsonResult = mapOf("success" to true, "message" to "Sample created successfully !")
+
+            return jsonResult
+        }
 
 
-        sqlSessionTemplate.insert("SampleMasterMapper.addSample",data)
-
+        return jsonResult
 
     }
 
@@ -408,26 +457,45 @@ class MasterRepository
     }
 
 
-    fun addBusinessUnit(bu: BU) {
+    fun addBusinessUnit(bu: BU): Map<String, Any> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-        var data: MutableMap<String, Any> = mutableMapOf()
+        lateinit var jsonResult : Map<String, Any>
+
+        var businessUnit = BU()
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("code",bu.code!!)
+
+        businessUnit = sqlSessionTemplate.selectOne("BUMapper.checkBUCode",data0)
+
+        if(businessUnit.code == bu.code){
+            jsonResult = mapOf("success" to false, "message" to "Business Unit Code Already Exist !")
+
+            return jsonResult
+        } else {
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var buId = UUID.randomUUID().toString()
+
+            data.put("id",buId)
+            bu.name?.let { data.put("name", it.uppercase()) }
+            bu.name?.let { data.put("ciName", it.lowercase()) }
+            bu.code?.let { data.put("code", it) }
+            bu.active?.let { data.put("active", it) }
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
 
 
+            sqlSessionTemplate.insert("BUMapper.addBusinessUnit",data)
 
-        var buId = UUID.randomUUID().toString()
+            jsonResult = mapOf("success" to true, "message" to "Business Unit created successfully !")
 
+            return jsonResult
+        }
 
-        data.put("id",buId)
-        bu.name?.let { data.put("name", it.uppercase()) }
-        bu.name?.let { data.put("ciName", it.lowercase()) }
-        bu.code?.let { data.put("code", it) }
-        bu.active?.let { data.put("active", it) }
-        data.put("createdBy",user.id)
-        data.put("updatedBy",user.id)
-
-
-        sqlSessionTemplate.insert("BUMapper.addBusinessUnit",data)
+        return jsonResult
 
 
     }
@@ -546,78 +614,97 @@ class MasterRepository
 
 
 
-    fun addTeam(tem: MasterTeam) {
+    fun addTeam(tem: MasterTeam): Map<String, Any> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var data: MutableMap<String, Any> = mutableMapOf()
+
+        lateinit var jsonResult : Map<String, Any>
+
+        var team = Team()
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("code",tem.code!!)
+
+        team = sqlSessionTemplate.selectOne("TeamMapper.checkTeamCode",data0)
+
+        if(team.code == tem.code){
+            jsonResult = mapOf("success" to false, "message" to "Team Code Already Exist !")
+
+            return jsonResult
+        } else {
+            // add team
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+            var temId = UUID.randomUUID().toString()
+
+            data.put("id",temId)
+            tem.name?.let { data.put("name", it) }
+            tem.name?.let { data.put("ciName", it.lowercase()) }
+            tem.code?.let { data.put("code", it) }
+            tem.active?.let { data.put("active", it) }
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            tem.division?.id.let { it?.let { it1 -> data.put("division", it1) } }
+
+            sqlSessionTemplate.insert("TeamMapper.addTeam",data)
 
 
 
+            // mapped requested brand to team
 
-        // add team
+            var tbr =  TeamBrand()
 
-        var temId = UUID.randomUUID().toString()
+            var i = 0
 
-        data.put("id",temId)
-        tem.name?.let { data.put("name", it) }
-        tem.name?.let { data.put("ciName", it.lowercase()) }
-        tem.code?.let { data.put("code", it) }
-        tem.active?.let { data.put("active", it) }
-        data.put("createdBy",user.id)
-        data.put("updatedBy",user.id)
-        tem.division?.id.let { it?.let { it1 -> data.put("division", it1) } }
-
-        sqlSessionTemplate.insert("TeamMapper.addTeam",data)
+            tem.brand.forEach {
 
 
 
-        // mapped requested brand to team
+                var tbrId = UUID.randomUUID().toString()
 
-        var tbr =  TeamBrand()
+                data.put("id",tbrId)
+                data.put("teamId",temId)
+                data.put("brandId",tem.brand.get(i))
 
-        var i = 0
+                sqlSessionTemplate.insert("TeamBrandMapper.addBrandByTeamId",data)
 
-        tem.brand.forEach {
+                i++
+
+            }
 
 
 
-            var tbrId = UUID.randomUUID().toString()
+            //mapped requested entity to team
 
-            data.put("id",tbrId)
-            data.put("teamId",temId)
-            data.put("brandId",tem.brand.get(i))
+            var tet = TeamLegalEntity()
 
-            sqlSessionTemplate.insert("TeamBrandMapper.addBrandByTeamId",data)
+            i = 0
 
-            i++
+            tem.ety.forEach {
 
+
+                var tetId = UUID.randomUUID().toString()
+
+                data.put("id",tetId)
+                data.put("team",temId)
+                data.put("legalEntity",tem.ety.get(i))
+
+                sqlSessionTemplate.insert("TeamLegalEntityMapper.addEntityByTeamId",data)
+
+                i++
+
+            }
+
+
+            println("Team Added Successfully !")
+
+            jsonResult = mapOf("success" to true, "message" to "Team created successfully !")
+
+            return jsonResult
         }
 
 
-
-        //mapped requested entity to team
-
-        var tet = TeamLegalEntity()
-
-        i = 0
-
-        tem.ety.forEach {
-
-
-            var tetId = UUID.randomUUID().toString()
-
-            data.put("id",tetId)
-            data.put("team",temId)
-            data.put("legalEntity",tem.ety.get(i))
-
-            sqlSessionTemplate.insert("TeamLegalEntityMapper.addEntityByTeamId",data)
-
-            i++
-
-        }
-
-
-        println("Team Added Successfully !")
-
+        return jsonResult
 
 
     }
@@ -915,120 +1002,140 @@ class MasterRepository
 
 
 
-    fun addBrand(brd: MasterBrand) {
+    fun addBrand(brd: MasterBrand): Map<String, Any> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var data: MutableMap<String, Any> = mutableMapOf()
+        var data0: MutableMap<String, Any> = mutableMapOf()
 
+        lateinit var jsonResult : Map<String, Any>
 
+        var brand = BrandMaster()
 
+        data0.put("code",brd.code!!)
 
-        // add brand
+        brand = sqlSessionTemplate.selectOne("BrandMasterMapper.checkBrandCode",data0)
 
-        var brdId = UUID.randomUUID().toString()
+        if(brand.code == brd.code){
+            jsonResult = mapOf("success" to false, "message" to "Brand Code Already Exist !")
 
-        data.put("id",brdId)
-        brd.name?.let { data.put("name", it.uppercase()) }
-        brd.name?.let { data.put("ciName", it.lowercase()) }
-        brd.code?.let { data.put("code", it) }
-        brd.active?.let { data.put("active", it) }
-        data.put("createdBy",user.id)
-        data.put("updatedBy",user.id)
-
-        sqlSessionTemplate.insert("BrandMasterMapper.addBrand",data)
-
-
-
-
-        //map selected division to brand
-
-        var dbr = DivisionBrand()
-
-        var dbrId = UUID.randomUUID().toString()
-
-        data.put("id",dbrId)
-        brd.division?.let { data.put("divisionId", it.id) }
-        data.put("brandId", brdId)
-
-        sqlSessionTemplate.insert("DivisionBrandMapper.addBrandByBrandId",data)
-
-
-
-
-        // map selected user to brand
-
-        var bbr = BrandManager()
-
-        var i = 0
-
-        brd.user.forEach {
-            var data: MutableMap<String, Any> = mutableMapOf()
-
-            var bbrId = UUID.randomUUID().toString()
-
-            data.put("id",bbrId)
-            data.put("userId",brd.user.get(i))
-            data.put("brandId",brdId)
-
-            sqlSessionTemplate.insert("BrandManagerMapper.addBrandByBrandId",data)
-
-            i++
-
-
-        }
-
-
-
-
-        // map requested team to brand
-
-        var tbr = TeamBrand()
-
-        i = 0
-
-        brd.team.forEach {
+            return jsonResult
+        } else{
+            // add brand
 
             var data: MutableMap<String, Any> = mutableMapOf()
 
-            var tbrId = UUID.randomUUID().toString()
+            var brdId = UUID.randomUUID().toString()
 
-            data.put("id",tbrId)
-            data.put("teamId",brd.team.get(i))
-            data.put("brandId",brdId)
+            data.put("id",brdId)
+            brd.name?.let { data.put("name", it.uppercase()) }
+            brd.name?.let { data.put("ciName", it.lowercase()) }
+            brd.code?.let { data.put("code", it) }
+            brd.active?.let { data.put("active", it) }
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
 
-            sqlSessionTemplate.insert("TeamBrandMapper.addBrandByBrandId",data)
-
-            i++
+            sqlSessionTemplate.insert("BrandMasterMapper.addBrand",data)
 
 
 
+
+            //map selected division to brand
+
+            var dbr = DivisionBrand()
+
+            var dbrId = UUID.randomUUID().toString()
+
+            data.put("id",dbrId)
+            brd.division?.let { data.put("divisionId", it.id) }
+            data.put("brandId", brdId)
+
+            sqlSessionTemplate.insert("DivisionBrandMapper.addBrandByBrandId",data)
+
+
+
+
+            // map selected user to brand
+
+            var bbr = BrandManager()
+
+            var i = 0
+
+            brd.user.forEach {
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                var bbrId = UUID.randomUUID().toString()
+
+                data.put("id",bbrId)
+                data.put("userId",brd.user.get(i))
+                data.put("brandId",brdId)
+
+                sqlSessionTemplate.insert("BrandManagerMapper.addBrandByBrandId",data)
+
+                i++
+
+
+            }
+
+
+
+
+            // map requested team to brand
+
+            var tbr = TeamBrand()
+
+            i = 0
+
+            brd.team.forEach {
+
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                var tbrId = UUID.randomUUID().toString()
+
+                data.put("id",tbrId)
+                data.put("teamId",brd.team.get(i))
+                data.put("brandId",brdId)
+
+                sqlSessionTemplate.insert("TeamBrandMapper.addBrandByBrandId",data)
+
+                i++
+
+
+
+            }
+
+
+
+
+            // map requested cost center  to brand
+
+            var cbr = CostCenterBrand()
+
+            i = 0
+
+            brd.costCenter.forEach {
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                var cbrId = UUID.randomUUID().toString()
+
+                data.put("id",cbrId)
+                data.put("costCenter",brd.costCenter.get(i))
+                data.put("brand",brdId)
+
+                sqlSessionTemplate.insert("CostCenterBrandMapper.addBrandByBrandId",data)
+
+                i++
+
+            }
+
+
+            println("Brand Added Successfully !")
+
+            jsonResult = mapOf("success" to true, "message" to "Brand created successfully !")
+
+            return jsonResult
         }
 
 
-
-
-        // map requested cost center  to brand
-
-        var cbr = CostCenterBrand()
-
-        i = 0
-
-        brd.costCenter.forEach {
-            var data: MutableMap<String, Any> = mutableMapOf()
-
-            var cbrId = UUID.randomUUID().toString()
-
-            data.put("id",cbrId)
-            data.put("costCenter",brd.costCenter.get(i))
-            data.put("brand",brdId)
-
-            sqlSessionTemplate.insert("CostCenterBrandMapper.addBrandByBrandId",data)
-
-            i++
-
-        }
-
-
-        println("Brand Added Successfully !")
+        return jsonResult
 
 
 
@@ -1173,77 +1280,98 @@ class MasterRepository
 
 
 
-    fun addFieldForce(ff: MasterFF) {
+    fun addFieldForce(ff: MasterFF): Map<String, Any> {
 
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var data: MutableMap<String, Any> = mutableMapOf()
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        lateinit var jsonResult : Map<String, Any>
+
+        var recipient = Recipient()
+
+        data0.put("code",ff.code!!)
+
+        recipient = sqlSessionTemplate.selectOne("FieldForceMapper.checkFieldForceCode",data0)
+
+        if(recipient.code == ff.code){
+            jsonResult = mapOf("success" to false, "message" to "Recipient Code Already Exist !")
+
+            return jsonResult
+        } else{
+            // insert ff
+            var data: MutableMap<String, Any> = mutableMapOf()
+            var recId = UUID.randomUUID().toString()
+
+            data.put("id", recId)
+            ff.name?.let { data.put("name", it.uppercase()) }
+            ff.name?.let { data.put("ciName", it.lowercase()) }
+            ff.code?.let { data.put("code", it) }
+            ff.address?.let { data.put("address", it) }
+            ff.city?.let { data.put("city", it) }
+            ff.state?.let { data.put("state", it) }
+            ff.zip?.let { data.put("zip", it) }
+            ff.email?.let { data.put("email", it) }
+            ff.mobile?.let { data.put("mobile", it) }
+            ff.designation?.let { data.put("designation", it.id) }
+            ff.headQuarter?.let { data.put("headQuarter", it) }
+            ff.zone?.let { data.put("zone", it) }
+            ff.joiningDate?.let { data.put("joiningDate", it) }
+            ff.team?.let { data.put("team", it.id) }
+            ff.cfa?.let { data.put("cfa", it) }
+            ff.recipientStatus?.let { data.put("recipientStatus", it.id) }
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            ff.loginId?.let { data.put("loginId", it) }
+            ff.gender?.let { data.put("gender", it) }
+            ff.workId?.let { data.put("workId", it) }
+            ff.emailRBM?.let { data.put("emailRBM", it) }
+            ff.emailAM?.let { data.put("emailAM", it) }
+            ff.businessUnit?.let { data.put("businessUnit", it.id) }
+
+            sqlSessionTemplate.insert("FieldForceMapper.addFieldForce",data)
 
 
-        // insert ff
+            //insert ff history
 
-        var recId = UUID.randomUUID().toString()
+            var recpHist =  RecipientHistory()
+            var repHisId =  UUID.randomUUID().toString()
 
-        data.put("id", recId)
-        ff.name?.let { data.put("name", it.uppercase()) }
-        ff.name?.let { data.put("ciName", it.lowercase()) }
-        ff.code?.let { data.put("code", it) }
-        ff.address?.let { data.put("address", it) }
-        ff.city?.let { data.put("city", it) }
-        ff.state?.let { data.put("state", it) }
-        ff.zip?.let { data.put("zip", it) }
-        ff.email?.let { data.put("email", it) }
-        ff.mobile?.let { data.put("mobile", it) }
-        ff.designation?.let { data.put("designation", it.id) }
-        ff.headQuarter?.let { data.put("headQuarter", it) }
-        ff.zone?.let { data.put("zone", it) }
-        ff.joiningDate?.let { data.put("joiningDate", it) }
-        ff.team?.let { data.put("team", it.id) }
-        ff.cfa?.let { data.put("cfa", it) }
-        ff.recipientStatus?.let { data.put("recipientStatus", it.id) }
-        data.put("createdBy",user.id)
-        data.put("updatedBy",user.id)
-        ff.loginId?.let { data.put("loginId", it) }
-        ff.gender?.let { data.put("gender", it) }
-        ff.workId?.let { data.put("workId", it) }
-        ff.emailRBM?.let { data.put("emailRBM", it) }
-        ff.emailAM?.let { data.put("emailAM", it) }
-        ff.businessUnit?.let { data.put("businessUnit", it.id) }
+            data.put("id",repHisId)
+            data.put("recipientId",recId)
+            ff.name?.let { data.put("name", it.uppercase()) }
+            ff.name?.let { data.put("ciName", it.lowercase()) }
+            ff.code?.let { data.put("code", it) }
+            ff.address?.let { data.put("address", it) }
+            ff.city?.let { data.put("city", it) }
+            ff.state?.let { data.put("state", it) }
+            ff.zip?.let { data.put("zip", it) }
+            ff.email?.let { data.put("email", it) }
+            ff.mobile?.let { data.put("mobile", it) }
+            ff.designation?.let { data.put("designation", it.id) }
+            ff.headQuarter?.let { data.put("headQuarter", it) }
+            ff.zone?.let { data.put("zone", it) }
+            ff.joiningDate?.let { data.put("joiningDate", it) }
+            ff.team?.let { data.put("team", it.id) }
+            ff.cfa?.let { data.put("cfa", it) }
+            ff.recipientStatus?.let { data.put("status", it.id) }
+            ff.statusChangeDate?.let { data.put("changedOnDate", it) }
+            data.put("createdBy", user.id)
+            data.put("updatedBy", user.id)
+            ff.remarks?.let { data.put("remarks", it) }
+            ff.emailRBM?.let { data.put("emailRBM", it) }
+            ff.emailAM?.let { data.put("emailAM", it) }
+            ff.businessUnit?.let { data.put("businessUnit", it.id) }
 
-        sqlSessionTemplate.insert("FieldForceMapper.addFieldForce",data)
+            sqlSessionTemplate.insert("FieldForceMapper.insertFieldForceHistory",data)
 
+            jsonResult = mapOf("success" to true, "message" to "FF created successfully !")
 
-        //insert ff history
+            return jsonResult
 
-        var recpHist =  RecipientHistory()
-        var repHisId =  UUID.randomUUID().toString()
+        }
 
-        data.put("id",repHisId)
-        data.put("recipientId",recId)
-        ff.name?.let { data.put("name", it.uppercase()) }
-        ff.name?.let { data.put("ciName", it.lowercase()) }
-        ff.code?.let { data.put("code", it) }
-        ff.address?.let { data.put("address", it) }
-        ff.city?.let { data.put("city", it) }
-        ff.state?.let { data.put("state", it) }
-        ff.zip?.let { data.put("zip", it) }
-        ff.email?.let { data.put("email", it) }
-        ff.mobile?.let { data.put("mobile", it) }
-        ff.designation?.let { data.put("designation", it.id) }
-        ff.headQuarter?.let { data.put("headQuarter", it) }
-        ff.zone?.let { data.put("zone", it) }
-        ff.joiningDate?.let { data.put("joiningDate", it) }
-        ff.team?.let { data.put("team", it.id) }
-        ff.cfa?.let { data.put("cfa", it) }
-        ff.recipientStatus?.let { data.put("status", it.id) }
-        ff.statusChangeDate?.let { data.put("changedOnDate", it) }
-        data.put("createdBy", user.id)
-        data.put("updatedBy", user.id)
-        ff.remarks?.let { data.put("remarks", it) }
-        ff.emailRBM?.let { data.put("emailRBM", it) }
-        ff.emailAM?.let { data.put("emailAM", it) }
-        ff.businessUnit?.let { data.put("businessUnit", it.id) }
-
-        sqlSessionTemplate.insert("FieldForceMapper.insertFieldForceHistory",data)
+        return jsonResult
 
     }
 

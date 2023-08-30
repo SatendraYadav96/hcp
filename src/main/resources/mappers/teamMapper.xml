@@ -205,6 +205,12 @@
     </select>
 
 
+    <select id="checkTeamCode" resultMap="teamResultMap" >
+        SELECT * FROM TEAM_MASTER_TEM
+        WHERE CODE_TEM = #{code}
+    </select>
+
+
 
 
 </mapper>

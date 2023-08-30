@@ -12,7 +12,7 @@ interface MasterService {
 
     fun getVendorById (id: String): Vendor
 
-    fun addVendor(vnd: Vendor)
+    fun addVendor(vnd: Vendor): Map<String, Any>
 
     fun editVendor (vnd: Vendor)
 
@@ -20,7 +20,7 @@ interface MasterService {
 
     fun getCostCenter(status: Int): List<CostCenter>
 
-    fun addCostCenter(ccm: MasterCostCenter)
+    fun addCostCenter(ccm: MasterCostCenter): Map<String, Any>
 
     fun editCostCenter (ccm: MasterCostCenter)
 
@@ -30,7 +30,7 @@ interface MasterService {
 
     fun getSample(status: Int): List<SampleMaster>
 
-    fun addSample(smp: SampleMaster)
+    fun addSample(smp: SampleMaster): Map<String, Any>
 
     fun editSample(smp: SampleMaster)
 
@@ -77,7 +77,7 @@ interface MasterService {
 
     fun editBusinessUnit(bu: BU)
 
-    fun addBusinessUnit(bu: BU)
+    fun addBusinessUnit(bu: BU): Map<String, Any>
 
     //TEAM SERVICES
 
@@ -89,7 +89,7 @@ interface MasterService {
 
     fun editTeam(tem: MasterTeam)
 
-    fun addTeam(tem: MasterTeam)
+    fun addTeam(tem: MasterTeam): Map<String, Any>
 
 
     //USER SERVICES
@@ -110,7 +110,7 @@ interface MasterService {
 
     fun editBrand(brd: MasterBrand)
 
-    fun addBrand(brd: MasterBrand)
+    fun addBrand(brd: MasterBrand): Map<String, Any>
 
     //RECIPIENT SERVICES
 
@@ -122,7 +122,7 @@ interface MasterService {
 
     fun editFieldForce(ff: MasterFF)
 
-    fun addFieldForce(ff: MasterFF)
+    fun addFieldForce(ff: MasterFF): Map<String, Any>
 
     fun deleteUserMapping (id: String)
 

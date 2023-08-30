@@ -27,7 +27,7 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getVendorById(id)
     }
 
-    override fun addVendor(vnd: Vendor) {
+    override fun addVendor(vnd: Vendor): Map<String, Any> {
         return masterRepository.addVendor(vnd)
     }
 
@@ -42,7 +42,7 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getCostCenter(status)
     }
 
-    override fun addCostCenter(ccm: MasterCostCenter) {
+    override fun addCostCenter(ccm: MasterCostCenter): Map<String, Any> {
         return masterRepository.addCostCenter(ccm)
     }
 
@@ -61,7 +61,7 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getSample(status)
     }
 
-    override fun addSample(smp: SampleMaster) {
+    override fun addSample(smp: SampleMaster): Map<String, Any> {
         return masterRepository.addSample(smp)
     }
 
@@ -148,7 +148,7 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.editBusinessUnit(bu)
     }
 
-    override fun addBusinessUnit(bu: BU) {
+    override fun addBusinessUnit(bu: BU): Map<String, Any> {
         return masterRepository.addBusinessUnit(bu)
     }
 
@@ -170,7 +170,7 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.editTeam(tem)
     }
 
-    override fun addTeam(tem: MasterTeam) {
+    override fun addTeam(tem: MasterTeam): Map<String, Any> {
         return masterRepository.addTeam(tem)
     }
 
@@ -208,7 +208,7 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.editBrand(brd)
     }
 
-    override fun addBrand(brd: MasterBrand) {
+    override fun addBrand(brd: MasterBrand): Map<String, Any> {
         return masterRepository.addBrand(brd)
     }
 
@@ -231,7 +231,7 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.editFieldForce(ff)
     }
 
-    override fun addFieldForce(ff: MasterFF) {
+    override fun addFieldForce(ff: MasterFF): Map<String, Any> {
         return masterRepository.addFieldForce(ff)
     }
 

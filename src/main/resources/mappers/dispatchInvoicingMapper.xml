@@ -5,7 +5,7 @@
 <mapper namespace="DispatchInvoicingMapper">
 
     <select id="getPickListDetailForVirtual" resultType="com.squer.promobee.controller.dto.PickingSlipDTO">
-        SELECT team, teamID, ownerId, brandManager, months, years, specialDispatch, planName, planID, planInvoiceStatus, approvalDate FROM (
+        SELECT team, teamID, ownerId, brandManager, months, years, specialDispatch, planName, planID, planInvoiceStatus,  approvalDate FROM (
             SELECT DISTINCT '' AS team, '00000000-0000-0000-0000-000000000000' AS teamID,
             DIP.ID_OWNER_USR_DIP AS ownerId, USR.NAME_USR as brandManager, #{month} as months, #{year} as years, 1 as specialDispatch, DIP.REMARKS_DIP as planName, DIP.ID_DIP as planID,
             SLV.NAME_SLV as planInvoiceStatus, MAX(API.UPDATED_ON_API) as approvalDate
@@ -20,7 +20,7 @@
     </select>
 
     <select id="getPickListDetailsForSpecial" resultType="com.squer.promobee.controller.dto.PickingSlipDTO">
-        SELECT team, teamID, ownerId, brandManager, months, years, specialDispatch, planName, planID, planInvoiceStatus, approvalDate FROM (
+        SELECT team, teamID, ownerId, brandManager, months, years, specialDispatch, planName, planID, planInvoiceStatus,  approvalDate  FROM (
             SELECT DISTINCT '' AS team, '00000000-0000-0000-0000-000000000000' AS teamID,
             DIP.ID_OWNER_USR_DIP AS ownerId, USR.NAME_USR as brandManager, #{month} as months, #{year} as years, #{dispatchType} as specialDispatch, DIP.REMARKS_DIP as planName, DIP.ID_DIP as planID,
             SLV.NAME_SLV as planInvoiceStatus, MAX(API.UPDATED_ON_API) as approvalDate

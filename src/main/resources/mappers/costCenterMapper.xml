@@ -73,6 +73,11 @@
     </select>
 
 
+    <select id="checkCostCenterCode" resultMap="costCenterResultMap" >
+        SELECT * FROM COST_CENTER_MASTER_CCM CCM
+        WHERE CCM.CODE_CCM = #{code}
+    </select>
+
 
 
 </mapper>

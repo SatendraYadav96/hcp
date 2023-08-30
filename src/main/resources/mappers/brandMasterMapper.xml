@@ -73,6 +73,11 @@
     </insert>
 
 
+    <select id="checkBrandCode" resultMap="brandMasterResultMap" >
+        select * from BRAND_MASTER_BRD WHERE CODE_BRD = #{code}
+
+    </select>
+
 
 
 </mapper>

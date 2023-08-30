@@ -46,6 +46,11 @@
 
     </select>
 
+    <select id="checkBUCode" resultMap="buResultMap" >
+        select * from BU_MASTER_BUM WHERE CODE_BUM = #{code}
+
+    </select>
+
 
 
 </mapper>
