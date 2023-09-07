@@ -2,7 +2,7 @@ package com.squer.promobee.api.v1.enums
 
 enum class UserMenuEnum(val label: String, val key: String, val title: String, val path: String, val parentId: String){
     DASHBOARD(" Dashboard", "dashboard", "dashboard", "", ""),
-    BEX_DASHBOARD("Bex Dashboard", "bex_dashboard", "bex_dashboard", "", ""),
+    BEX_DASHBOARD("BexDashboard", "bexdashboard", "bexdashboard", "/home/bexdashboard", ""),
     BM_DASHBOARD("Bm Dashboard", "bm_dashboard", "bm_dashboard", "", ""),
     BUHEAD_DASHBOARD("Buhead Dashboard", "buhead_dashboard", "buhead_dashboard", "", ""),
     COMPLIANCE_ADMIN_DASHBOARD("Compliance Admin Dashboard", "compliance_admin_dashboard", "compliance_admin_dashboard", "", ""),
@@ -35,7 +35,7 @@ enum class UserMenuEnum(val label: String, val key: String, val title: String, v
     STOCK_LEDGER_REPORT("Stock Ledger Report", "stock_ledger_report", "stock_ledger_report", "/home/inventory/stockLedgerReport", "inventory"),
     NEAR_TO_EXPIRY_REPORT("Near To Expiry Report","near_to_expiry_report", "near_to_expiry_report", "/home/inventory/nearToExpiryReport", "inventory"),
     AGEING_REPORT("Ageing Report", "ageing_report", "ageing_report", "/home/inventory/ageingReport", "inventory"),
-    INVENTORY_REPORT("Inventory Report", "inventory_report", "inventory_report", "/home/inventory/inventoryReport", "inventory"),
+    INVENTORY_REPORT("Inventory Report", "inventory_report", "inventory_report", "/home/inventory/inventoryReport", "report"),
     ITEM_REVALIDATION("Item Revalidation", "item_revalidation", "item_revalidation", "/home/itemRevalidation", ""),
     HSN_AND_INVOICE("HSN & Invoice", "hsn_invoice", "hsn_invoice", "", ""),
     ADD_HSN("Add HSN", "add_hsn", "add_hsn", "/home/hsnInvoice/addHsn", "hsn_invoice"),

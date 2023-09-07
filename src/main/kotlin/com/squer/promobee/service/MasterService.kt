@@ -64,7 +64,10 @@ interface MasterService {
 
     fun getUserDropdown(): List<UserDropdownDTO>
 
-    fun getApproverDropdown(): List<UserDropdownDTO>
+    fun getApproverDropdown(): List<ApproverDropdownDTO>
+
+    fun getOwnerDropdown(): List<ApproverDropdownDTO>
+
 
 
 

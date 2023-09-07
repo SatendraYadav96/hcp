@@ -411,9 +411,14 @@ class MasterRepository
     }
 
 
-    fun getApproverDropdown( ): List<UserDropdownDTO> {
+    fun getApproverDropdown( ): List<ApproverDropdownDTO> {
 
         return sqlSessionTemplate.selectList("UsersMasterMapper.getApproverDropdown")
+    }
+
+    fun getOwnerDropdown( ): List<ApproverDropdownDTO> {
+
+        return sqlSessionTemplate.selectList("UsersMasterMapper.getOwnerDropdown")
     }
 
 

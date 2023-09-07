@@ -129,8 +129,12 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getUserDropdown()
     }
 
-    override fun getApproverDropdown(): List<UserDropdownDTO> {
+    override fun getApproverDropdown(): List<ApproverDropdownDTO> {
         return masterRepository.getApproverDropdown()
+    }
+
+    override fun getOwnerDropdown(): List<ApproverDropdownDTO> {
+        return masterRepository.getOwnerDropdown()
     }
 
 
