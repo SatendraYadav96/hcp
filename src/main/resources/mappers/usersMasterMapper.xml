@@ -72,7 +72,7 @@
 
     <select id="getApproverDropdown" resultType="com.squer.promobee.controller.dto.ApproverDropdownDTO">
 
-        SELECT ID_USR AS 'userId',NAME_USR AS 'userName',EMAIL_BUH_USR AS 'userEmail' FROM USER_MASTER_USR WHERE ID_DESG_ULV_USR = '6B1C8B6D-C38E-4B4D-8C73-25ADF30CE474'
+        SELECT ID_USR AS 'userId',NAME_USR AS 'userName',EMAIL_ADDRESS_USR AS 'userEmail' FROM USER_MASTER_USR WHERE ID_DESG_ULV_USR = '6B1C8B6D-C38E-4B4D-8C73-25ADF30CE474'
 
     </select>
 
