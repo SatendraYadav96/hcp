@@ -1,5 +1,7 @@
 package com.squer.promobee.controller.dto
 
+import java.util.*
+
 class RecipientUploadDTO {
     var recipientId: String ?= null
     var recipientUploadId: String ?= null
@@ -12,9 +14,9 @@ class RecipientUploadDTO {
     var email: String ?= null
     var mobile: String ?= null
     var designation: String ?= null
-    var designationId: String ?= null
+    var designationId: String?= null
     var zone: String ?= null
-    var joiningDate: String ?= null
+    var joiningDate: String?= null
     var team: String ?= null
     var teamId: String ?= null
     var status: String ?= null
