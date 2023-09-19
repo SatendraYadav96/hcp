@@ -130,5 +130,21 @@ class UploadServiceImpl @Autowired constructor(
         return uploadRepository.materialExpiryUpload(dto)
     }
 
+    override fun nonComplianceExcelData(uplId: String): List<OptimaMiUploadDTO> {
+        return uploadRepository.nonComplianceExcelData(uplId)
+    }
+
+    override fun overSamplingExcelData(uplId: String): List<overSamplingUploadDTO> {
+        return uploadRepository.overSamplingExcelData(uplId)
+    }
+
+    override fun overSamplingDetailsExcelData(uplId: String): List<OverSamplingDetailsUploadDTO> {
+        return uploadRepository.overSamplingDetailsExcelData(uplId)
+    }
+
+    override fun materialExpiryExcelData(uplId: String): List<OptimaMiUploadDTO> {
+        return uploadRepository.materialExpiryExcelData(uplId)
+    }
+
 
 }

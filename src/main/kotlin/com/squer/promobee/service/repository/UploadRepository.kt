@@ -1689,6 +1689,54 @@ class UploadRepository(
     }
 
 
+    fun nonComplianceExcelData(uplId: String): List<OptimaMiUploadDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",uplId)
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.nonComplianceExcelData", data)
+    }
+
+
+    fun overSamplingExcelData(uplId: String): List<overSamplingUploadDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",uplId)
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.overSamplingExcelData", data)
+    }
+
+
+
+    fun overSamplingDetailsExcelData(uplId: String): List<OverSamplingDetailsUploadDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",uplId)
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.overSamplingDetailsExcelData", data)
+    }
+
+
+    fun materialExpiryExcelData(uplId: String): List<OptimaMiUploadDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",uplId)
+
+
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.materialExpiryExcelData", data)
+    }
+
 
 
 

@@ -219,6 +219,39 @@ open class UploadController@Autowired constructor(
     }
 
 
+    @GetMapping("/nonComplianceExcelData/{uplId}")
+    open fun nonComplianceExcelData(@PathVariable uplId : String) : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var excel = uploadService.nonComplianceExcelData(uplId)
+        return ResponseEntity(excel, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/overSamplingExcelData/{uplId}")
+    open fun overSamplingExcelData(@PathVariable uplId : String) : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var excel = uploadService.overSamplingExcelData(uplId)
+        return ResponseEntity(excel, HttpStatus.OK)
+    }
+
+
+    @GetMapping("/overSamplingDetailsExcelData/{uplId}")
+    open fun overSamplingDetailsExcelData(@PathVariable uplId : String) : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var excel = uploadService.overSamplingDetailsExcelData(uplId)
+        return ResponseEntity(excel, HttpStatus.OK)
+    }
+
+    @GetMapping("/materialExpiryExcelData/{uplId}")
+    open fun materialExpiryExcelData(@PathVariable uplId : String) : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var excel = uploadService.materialExpiryExcelData(uplId)
+        return ResponseEntity(excel, HttpStatus.OK)
+    }
+
+
+
+
 
 
 

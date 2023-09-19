@@ -59,6 +59,14 @@ interface UploadService {
 
     fun materialExpiryUpload(dto: FileUploadDto)
 
+    fun nonComplianceExcelData(uplId : String): List<OptimaMiUploadDTO>
+
+    fun overSamplingExcelData(uplId : String): List<overSamplingUploadDTO>
+
+    fun overSamplingDetailsExcelData(uplId : String): List<OverSamplingDetailsUploadDTO>
+
+    fun materialExpiryExcelData(uplId : String): List<OptimaMiUploadDTO>
+
 
 
 

@@ -440,6 +440,52 @@
     </update>
 
 
+    <select id="nonComplianceExcelData" resultType="com.squer.promobee.controller.dto.OptimaMiUploadDTO">
+        SELECT ID_OMI AS 'optimaId', ID_UPLOAD_OMI AS 'optimaUploadId', EMPLOYEE_CODE_OMI AS 'empCode',
+                MATERIAL_CODE_OMI AS 'materialCode', BATCH_NO_OMI AS 'batchNo', MONTH_OMI AS 'month', YEAR_OMI AS 'year',
+                QTY_DISPATHCED_OMI AS 'qtyDispatched',QTY_VALIDATED_OMI AS 'qtyValidated', QTY_TRANSFERED_OMI AS 'qtyTransfered',
+                QTY_BALANCE_OMI AS 'qtyBalance' , EXPIRY_DATE_OMI AS 'expiryDate' , ERROR_TEXT_OMI AS 'errorText', isvalidated AS 'isvalidated'
+        FROM TEMP_UPLOAD_OPTIMA_MI_TOMI
+        WHERE ID_UPLOAD_OMI = #{id}
+
+
+    </select>
+
+
+    <select id="overSamplingExcelData" resultType="com.squer.promobee.controller.dto.overSamplingUploadDTO">
+        SELECT ID_CMP AS 'overSamplingId', ID_UPLOAD_CMP AS 'overSamplingUploadId', FORMAT(START_DATE_CMP, 'yyyy-MM-dd') AS 'startDate',FORMAT(END_DATE_CMP, 'yyyy-MM-dd') AS 'endDate', FF_CMP AS 'ffCmp',
+                DR_ID AS 'drCode', DR_NAME AS 'drName', TOT_SAMPLE_GIVEN AS 'totalSampleGiven', BU AS 'bu', AM AS 'am', RBM AS 'rbm',
+                REMARKS AS 'remarks', ERROR_TEXT_CMP AS 'errorText',FF_CODE_CMP AS 'ffCode', TEAM_ID_CMP AS 'teamId', TEAM_NAME_CMP AS 'teamName'
+        FROM TEMP_COMPLIANCE_UPLOAD_TCMP
+        where ID_UPLOAD_CMP = #{id}
+
+    </select>
+
+
+    <select id="overSamplingDetailsExcelData" resultType="com.squer.promobee.controller.dto.OverSamplingDetailsUploadDTO">
+        SELECT ID_CDS AS 'complianceDetailId',NAME_TERRITORY_CDS AS 'territoryName',ID_TERRITORY_CDS AS 'territoryId',
+                ID_PERSON_CDS AS 'personId',NAME_PERSON_CDS AS 'personName',ID_LOCATION_CDS AS 'locationId',
+                NAME_LOCATION_CDS AS 'locationName',FORMAT(VISITED_CDS,'yyyy-MM-dd') AS 'visited',ITEMCATEGORY_CDS AS 'itemCategory',
+                ID_ITEM_CDS AS 'itemId',NAME_ITEM_CDS AS 'nameItem',BATCH_NO_CDS AS 'batchNo',QUANTITY_CDS AS 'quantity',
+                SUBTEAM_CDS AS 'subTeam',TEAM_CDS AS 'team',AM_CDS AS 'am',RBM_CDS AS 'rbm',ID_UPLOAD_CDS AS 'complianceDetailUploadId',
+                ERROR_TXT AS 'errorText',MONTH_CDS AS 'month' FROM TEMP_DETAILS_COMPLIANCE_CDS
+        WHERE ID_UPLOAD_CDS = #{id}
+
+    </select>
+
+
+    <select id="materialExpiryExcelData" resultType="com.squer.promobee.controller.dto.OptimaMiUploadDTO">
+        SELECT ID_TMI AS 'optimaId', ID_UPLOAD_TMI AS 'optimaUploadId', EMPLOYEE_CODE_TMI AS 'empCode',
+                MATERIAL_CODE_TMI AS 'materialCode', BATCH_NO_TMI AS 'batchNo', MONTH_TMI AS 'month', YEAR_TMI AS 'year',
+                QTY_DISPATHCED_TMI AS 'qtyDispatched',QTY_VALIDATED_TMI AS 'qtyValidated', QTY_TRANSFERED_TMI AS 'qtyTransfered',
+                QTY_BALANCE_TMI AS 'qtyBalance' , EXPIRY_DATE_TMI AS 'expiryDate' , ERROR_TEXT_TMI AS 'errorText', isvalidated AS 'isvalidated'
+        FROM TEMP_UPLOAD_OPTIMA_MATERIAL_TMI
+        WHERE ID_UPLOAD_TMI = #{id}
+
+
+    </select>
+
+
 
 
 
