@@ -145,6 +145,7 @@ open class UIController @Autowired constructor(
                     UserMenuEnum.ALLOCATION,
 //                    UserMenuEnum.ITEM_REVALIDATION,
 //                    UserMenuEnum.MASS_REVALIDATION,
+                    UserMenuEnum.ADMIN,
                     UserMenuEnum.REPORT
                 ),
             UserRoleEnum.BEX_ID.id to listOf<UserMenuEnum>(

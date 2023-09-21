@@ -57,6 +57,11 @@ open class NewAllocationServiceImpl @Autowired constructor(
     }
 
     override fun getTeamForCommonAllocation(ccmId: String): List<CommonAllocationTeamDTO> {
+//        val data =  newAllocationRepository.getTeamForCommonAllocation(ccmId)
+//        data.forEach {
+//            it.team=it.team+" - "+it.designation
+//        }
+//        return data
         return newAllocationRepository.getTeamForCommonAllocation(ccmId)
     }
 

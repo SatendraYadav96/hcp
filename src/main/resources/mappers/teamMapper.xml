@@ -131,7 +131,7 @@
             distinct
             tem.ID_tem as 'TeamId',
             tem.NAME_TEM as 'Team',
-            ulv.ID_ULV as 'DesignationId'
+            ulv.ID_ULV as 'DesignationId',
                 ulv.NAME_ULV as 'Designation',
                 rct.ID_RCT as 'RecipientId',
                 COUNT(rct.NAME_RCT) OVER (PARTITION BY ulv.NAME_ULV) AS 'RecipientCount'
