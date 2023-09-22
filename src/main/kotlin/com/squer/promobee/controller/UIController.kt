@@ -63,15 +63,17 @@ open class UIController @Autowired constructor(
                         UserMenuEnum.SPECIAL_ALLOCATION,
                         UserMenuEnum.VIRTUAL_ALLOCATION,
                         UserMenuEnum.PICKING_SLIP,
+                        UserMenuEnum.VIRTUAL_DISPATCHE,
                         UserMenuEnum.FF_REPORT,
                         UserMenuEnum.INVENTORY_REPORT,
                         UserMenuEnum.PURCHASE_REPORT,
-                        UserMenuEnum.NEAR_TO_EXPIRY_REPORT,
+                        //UserMenuEnum.NEAR_TO_EXPIRY_REPORT,
                         UserMenuEnum.DISPATCH_REPORT,
                         UserMenuEnum.DISPATCH_REGISTERS,
-                        UserMenuEnum.ITEM_CONSUMPTION_REPORT,
-                        UserMenuEnum.INVENTORY_REVERSAL_REPORT,
-                        UserMenuEnum.ALLOCATION_REPORT
+                       // UserMenuEnum.ITEM_CONSUMPTION_REPORT,
+                        //UserMenuEnum.INVENTORY_REVERSAL_REPORT,
+                    UserMenuEnum.VIRTUAL_RECONCILIATION,
+                       // UserMenuEnum.ALLOCATION_REPORT
                 ),
             UserRoleEnum.BEX_ID.id to listOf<UserMenuEnum>(
                 UserMenuEnum.BUSINESS_UNITS,

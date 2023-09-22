@@ -61,6 +61,7 @@ enum class UserMenuEnum(val label: String, val key: String, val title: String, v
     MONTHLY_INPUT_PLAN("Monthly Input Plan", "monthly_input_plan", "monthly_input_plan", "/home/approvals/monthlyInputPlan", "approvals"),
     SPECIAL_DISPATCHES("Special Dispatches", "special_dispatches", "special_dispatches", "/home/approvals/specialDispatches", "approvals"),
     VIRTUAL_DISPATCHES("Virtual Dispatches", "virtual_dispatches", "virtual_dispatches", "/home/approvals/virtualDispatches", "approvals"),
+    VIRTUAL_DISPATCHE("Virtual Dispatche", "virtual_dispatche", "virtual_dispatche", "/home/approvals/virtualDispatches", "report"),
     FF_UPLOAD("FF Master Upload ", "ff_master", "ff_master", "/home/upload/ffMasterUplaod", ""),
     VIRTUAL_SAMPLE_UPLOAD("Virtual Sample Upload", "virtual_Sample_Upload", "virtual_Sample_Upload", "/home/upload/virtualSampleUpload", ""),
     COMPLIANCE_PROCESS("Compliance Process", "compliance_Process", "compliance_Process", "/home/master/ffUnBlockList", ""),
