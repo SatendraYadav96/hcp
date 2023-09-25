@@ -51,6 +51,7 @@ enum class UserMenuEnum(val label: String, val key: String, val title: String, v
     INVENTORY_REVERSAL_REPORT("Inventory Reversal Report", "inventory_reversal_report", "inventory_reversal_report", "/home/report/inventoryReversalReport", "report"),
     SHIP_ROCKET_REPORT("Ship Rocket Report", "ship_rocket_report", "ship_rocket_report", "/home/report/shipRocketReport", "report"),
     ADMIN("Admin", "admin", "admin", "", ""),
+    TSE("Tse", "tse", "tse", "/home/admin/assign", "admin"),
     ALLOCATION("Allocation", "allocation", "allocation", "", ""),
     MONTHLY_ALLOCATION("Monthly Allocation", "monthly_allocation", "monthly_allocation", "/home/allocations/monthly/create","allocation"),
     SPECIAL_ALLOCATION("Special Allocation", "special_allocation", "special_allocation", "/home/allocations/special/create", "allocation"),
