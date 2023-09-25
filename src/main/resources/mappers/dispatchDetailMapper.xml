@@ -165,7 +165,7 @@
 
 
     <select id="getQuantityAllocatedOfUserToItemForBex" resultType="com.squer.promobee.controller.dto.DesignationWiseQuantityAllocatedDTO">
-        select ulv.name_ulv as 'Designation', COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity' from DISPATCH_PLAN_DIP dip
+        select ulv.name_ulv as 'Designation', ulv.id_ulv as 'DesignationId',COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity' from DISPATCH_PLAN_DIP dip
                                                                                       join DISPATCH_DETAIL_DID did on dip.ID_DIP = did.ID_DIP_DID
                                                                                       JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
                                                                                       JOIN USER_LOV_ULV ULV  ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT

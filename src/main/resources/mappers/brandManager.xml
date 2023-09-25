@@ -56,6 +56,12 @@
 
     </delete>
 
+    <delete id="deleteTse">
+
+        DELETE FROM USER_TSE_UST where ID_TSE_USR_UST = #{id} and ID_BM_USR_UST = #{bmID}
+
+    </delete>
+
     <select id="getBrandManagerForTse" resultType="com.squer.promobee.controller.dto.UserDTO" parameterType = "map" statementType = "CALLABLE">
         {call PROC_GETBMForTse (#{tseId, jdbcType = VARCHAR , mode = IN} )}
     </select>

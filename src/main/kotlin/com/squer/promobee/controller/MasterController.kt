@@ -241,6 +241,15 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getTseDropdown")
+    fun getTseDropdown(): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getTseDropdown()
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
 
 
 

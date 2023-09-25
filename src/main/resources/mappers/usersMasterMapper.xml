@@ -83,6 +83,13 @@
     </select>
 
 
+    <select id="getTseDropdown" resultType="com.squer.promobee.controller.dto.ApproverDropdownDTO">
+
+        SELECT ID_USR AS 'userId',NAME_USR AS 'userName',EMAIL_BUH_USR AS 'userEmail' FROM USER_MASTER_USR WHERE ID_DESG_ULV_USR = '20B61A71-6102-4E3D-9871-711D205DD0E7'
+
+    </select>
+
+
 
     <insert id="addUser">
         INSERT INTO USER_MASTER_USR (ID_USR,NAME_USR,CI_NAME_USR,LOGIN_NAME_USR,EMPLOYEE_CODE_USR,ID_DESG_ULV_USR,ACTIVE_FROM_USR,ACTIVE_TO_USR,ID_STATUS_SLV_USR,ID_ETY_USR,EMAIL_ADDRESS_USR,

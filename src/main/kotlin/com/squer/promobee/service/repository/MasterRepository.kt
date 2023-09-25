@@ -421,6 +421,11 @@ class MasterRepository
         return sqlSessionTemplate.selectList("UsersMasterMapper.getOwnerDropdown")
     }
 
+    fun getTseDropdown( ): List<ApproverDropdownDTO> {
+
+        return sqlSessionTemplate.selectList("UsersMasterMapper.getTseDropdown")
+    }
+
 
     //BU REPOSITORY
 

@@ -24,13 +24,13 @@ open class NewAllocationController @Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
-    @GetMapping("/assignTse/{id}")
+    @PostMapping("/assignTse/{id}")
     open fun assignTse(@PathVariable id: String): ResponseEntity<*> {
         val data = newAllocationService.assignTse(id)
         return ResponseEntity(data, HttpStatus.OK)
     }
 
-    @GetMapping("/unAssignTse/{id}")
+    @PostMapping("/unAssignTse/{id}")
     open fun unAssignTse(@PathVariable id: String): ResponseEntity<*> {
         val data = newAllocationService.unAssignTse(id)
         return ResponseEntity(data, HttpStatus.OK)

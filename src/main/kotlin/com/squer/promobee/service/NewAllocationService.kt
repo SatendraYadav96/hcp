@@ -11,9 +11,9 @@ interface NewAllocationService {
 
    fun getTseList( id: String): List<TseListDTO>
 
-   fun assignTse( id: String): List<TseListDTO>
+   fun assignTse( id: String)
 
-   fun unAssignTse( id: String): List<TseListDTO>
+   fun unAssignTse( id: String)
 
    fun getBrandManagerForTse( id: String): List<UserDTO>
 

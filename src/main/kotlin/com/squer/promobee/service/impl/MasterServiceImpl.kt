@@ -137,6 +137,10 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getOwnerDropdown()
     }
 
+    override fun getTseDropdown(): List<ApproverDropdownDTO> {
+        return masterRepository.getTseDropdown()
+    }
+
 
     // BUSINESS UNIT IMPL
 

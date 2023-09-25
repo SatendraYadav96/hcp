@@ -48,13 +48,20 @@ class NewAllocationRepository(
 
     }
 
-    fun assignTse(id: String): List<TseListDTO> {
+    fun assignTse(id: String) {
 
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
+        var data1: MutableMap<String, Any> = mutableMapOf()
+
+        data1.put("tseID",id)
+        data1.put("bmID",user.id)
+
+        sqlSessionFactory.openSession().delete("BrandManagerMapper.deleteTse",data1)
+
+
+
         var data: MutableMap<String, Any> = mutableMapOf()
-
-
 
         data.put("id",UUID.randomUUID().toString())
         data.put("bmID",user.id)
@@ -63,16 +70,16 @@ class NewAllocationRepository(
         sqlSessionFactory.openSession().insert("BrandManagerMapper.assignTse",data)
 
 
-        var data0: MutableMap<String, Any> = mutableMapOf()
-        data0.put("bmID",user.id)
-
-
-        return sqlSessionFactory.openSession().selectList<TseListDTO>("BrandManagerMapper.getTseList",data0)
+//        var data0: MutableMap<String, Any> = mutableMapOf()
+//        data0.put("bmID",user.id)
+//
+//
+//        return sqlSessionFactory.openSession().selectList<TseListDTO>("BrandManagerMapper.getTseList",data0)
 
     }
 
 
-    fun unAssignTse(id: String): List<TseListDTO> {
+    fun unAssignTse(id: String) {
 
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
@@ -86,11 +93,11 @@ class NewAllocationRepository(
         sqlSessionFactory.openSession().delete("BrandManagerMapper.unAssignTse",data)
 
 
-        var data0: MutableMap<String, Any> = mutableMapOf()
-        data0.put("bmID",user.id)
-
-
-        return sqlSessionFactory.openSession().selectList<TseListDTO>("BrandManagerMapper.getTseList",data0)
+//        var data0: MutableMap<String, Any> = mutableMapOf()
+//        data0.put("bmID",user.id)
+//
+//
+//        return sqlSessionFactory.openSession().selectList<TseListDTO>("BrandManagerMapper.getTseList",data0)
 
     }
 

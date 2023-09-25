@@ -32,11 +32,11 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getTseList(id)
     }
 
-    override fun assignTse(id: String): List<TseListDTO> {
+    override fun assignTse(id: String) {
         return newAllocationRepository.assignTse(id)
     }
 
-    override fun unAssignTse(id: String): List<TseListDTO> {
+    override fun unAssignTse(id: String) {
         return newAllocationRepository.unAssignTse(id)
     }
 

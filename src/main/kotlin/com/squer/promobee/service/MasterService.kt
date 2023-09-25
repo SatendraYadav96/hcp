@@ -68,6 +68,8 @@ interface MasterService {
 
     fun getOwnerDropdown(): List<ApproverDropdownDTO>
 
+    fun getTseDropdown(): List<ApproverDropdownDTO>
+
 
 
 
