@@ -27,6 +27,7 @@ enum class UserMenuEnum(val label: String, val key: String, val title: String, v
     BRAND("Brand", "brand", "brand", "/home/masters/brand", "masters"),
     FF_MASTER("FF Master", "ff master", "ff master", "/home/masters/ffMaster", "masters"),
     BUSINESS_UNITS("Business Unit", "business Unit", "business Unit", "/home/masters/businessUnit", "masters"),
+    COMMON_MASTER("Common Master", "common master", "common master", "/home/masters/commonMaster", "masters"),
     COST_CENTER("costCenter", "costCenter", "costCenter", "/home/masters/costCenter", "masters"),
     SAMPLE("sample", "sample", "sample", "/home/masters/samples", "masters"),
     INVENTORY("Inventory", "inventory", "inventory","", ""),

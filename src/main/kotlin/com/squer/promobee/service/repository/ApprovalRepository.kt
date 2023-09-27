@@ -92,6 +92,7 @@ class ApprovalRepository(
             allocationDetails = return sqlSessionFactory.openSession().selectList("ApprovalMapper.allocationDetailsBrandManager", data)
         }
 
+        var allocationData = allocationDetails.qtyAllocated
 
         return allocationDetails
 

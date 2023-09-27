@@ -77,6 +77,7 @@ open class UIController @Autowired constructor(
                        // UserMenuEnum.ALLOCATION_REPORT
                 ),
             UserRoleEnum.BEX_ID.id to listOf<UserMenuEnum>(
+                //UserMenuEnum.COMMON_MASTER,
                 UserMenuEnum.BUSINESS_UNITS,
                 UserMenuEnum.TEAM,
                 UserMenuEnum.USER,
