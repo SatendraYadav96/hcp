@@ -142,6 +142,8 @@ class InvoiceRepository(
 
         var finalArray = mutableListOf<ByteArray>()
 
+        var printInvoiceArray = mutableListOf<ByteArray>()
+
 
       inh.forEach { i ->
 
@@ -298,8 +300,14 @@ class InvoiceRepository(
 
 
 
+         //printInvoiceArray.addAll(finalArray)
+
+
+
 
       }
+       // return printInvoiceArray;
+
         return finalArray;
 
 

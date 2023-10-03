@@ -160,8 +160,8 @@
 
 
     <update  id="uploadVirtualSampleDetails" parameterType = "map" statementType = "CALLABLE">
-        { call PROC_VIRTUAL_UPLOAD (#{uploadid, jdbcType = VARCHAR, mode = IN}, #{createdBy, jdbcType = VARCHAR, mode = IN})
-            , #{frommonth, jdbcType = INTEGER, mode = IN}) , #{tomonth, jdbcType = INTEGER, mode = IN})}
+        { call PROC_VIRTUAL_UPLOAD (#{uploadid, jdbcType = VARCHAR, mode = IN}, #{createdBy, jdbcType = VARCHAR, mode = IN}
+            , #{frommonth, jdbcType = INTEGER, mode = IN} , #{tomonth, jdbcType = INTEGER, mode = IN} ) }
 
     </update>
 
