@@ -484,7 +484,42 @@ class NewAllocationRepository(
 
 
 
-     fun getTeamForDifferentialAllocation(planId: String, teamId: String, inventoryId: String): List<AllocationDataTeamPopupDetailsDTO> {
+    fun getQuantityAllocatedDifferentialRecipient(planId: String,inventoryId: String, recipientId: String): List<DifferentialRecipientAllocationDTO> {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+
+        var quantityDispatch = mutableListOf<DifferentialRecipientAllocationDTO>()
+
+        var i = 0
+
+        try {
+
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+
+                data.put("planId",planId)
+                data.put("inventoryId",inventoryId)
+                data.put("recipientId",recipientId)
+
+
+                quantityDispatch =  sqlSessionFactory.openSession().selectList<DifferentialRecipientAllocationDTO>("DispatchDetailMapper.getQuantityAllocatedDifferentialRecipient",data)
+
+
+            }
+        catch (e : Exception) {
+            e.printStackTrace()
+        }
+
+        return quantityDispatch
+    }
+
+
+
+
+
+
+    fun getTeamForDifferentialAllocation(planId: String, teamId: String, inventoryId: String): List<AllocationDataTeamPopupDetailsDTO> {
 
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 

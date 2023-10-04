@@ -187,6 +187,16 @@
     </select>
 
 
+    <select id="getQuantityAllocatedDifferentialRecipient" resultType="com.squer.promobee.controller.dto.DifferentialRecipientAllocationDTO">
+        SELECT RCT.ID_RCT as 'recipientId',RCT.NAME_RCT as 'recipientName' ,RCT.CODE_RCT as 'recipientCode',ULV.NAME_ULV as 'designation',DID.QUANTITY_DISPATCH_DID as 'allocatedQuantity' FROM DISPATCH_DETAIL_DID DID
+        JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
+        JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
+        WHERE DID.ID_INV_DID = #{inventoryId} AND DID.ID_RCT_DID = #{recipientId} AND DID.ID_DIP_DID = #{planId}
+          AND ID_STATUS_SLV_DID = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7' AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
+
+    </select>
+
+
     <insert id="saveCommonAllocation" >
         insert into DISPATCH_DETAIL_DID(ID_DID, ID_DIP_DID, ID_INV_DID, ID_RCT_DID, QUANTITY_DISPATCH_DID, ID_QTP_DID, ID_STATUS_SLV_DID,  CREATED_ON_DID, CREATED_BY_DID, UPDATED_ON_DID, UPDATED_BY_DID)
         values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})

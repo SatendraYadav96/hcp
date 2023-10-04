@@ -28,6 +28,8 @@ interface NewAllocationService {
    fun getQuantityAllocatedOfUserToItem( userId :String, inventoryId :String,  month :Int,
                                          year :Int,  isSpecialDispatch :Int): List<DesignationWiseQuantityAllocatedDTO>
 
+   fun getQuantityAllocatedDifferentialRecipient( planId:String,inventoryId :String,  recipientId :String): List<DifferentialRecipientAllocationDTO>
+
 
    fun getTeamForDifferentialAllocation( planId :String,  teamId :String,  inventoryId :String ): List<AllocationDataTeamPopupDetailsDTO>
 
