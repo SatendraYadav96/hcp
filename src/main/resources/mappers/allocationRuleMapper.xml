@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.squer.promobee.mapper.AllocationRuleMapper">
+<mapper namespace="AllocationRuleMapper">
     <resultMap id="allocationRuleResultMap" type="com.squer.promobee.service.repository.domain.AllocationRule">
         <id property="id" column="id_alr"/>
         <result property="unitAllocation" column="is_unit_allocation_alr"/>
@@ -23,4 +23,27 @@
             <result property="name" column="name_itc"/>
         </association>
     </resultMap>
+
+
+    <select id="getActiveUsers" resultType="com.squer.promobee.controller.dto.ActiveUsersDTO" parameterType = "map" statementType = "CALLABLE">
+        { call Get_activeuserforbrandmanager (  #{UserID, jdbcType = VARCHAR, mode = IN}  ) }
+    </select>
+
+    <select id="getDownloadAllocation" resultType="com.squer.promobee.controller.dto.DownloadAllocationDTO" parameterType = "map" statementType = "CALLABLE">
+        { call MonthlyAlloctionReport (  #{planid, jdbcType = VARCHAR, mode = IN}  ) }
+    </select>
+
+
+    <select id="getBlockedRecipients" resultType="com.squer.promobee.controller.dto.BlockedRecipientDTO" >
+        SELECT RCT.NAME_RCT AS 'RecipientName',RCT.CODE_RCT AS 'RecipientCode',SLV.NAME_SLV AS 'Status',RBL.REC_REMARKS_LOG AS 'Remark',RBL.REC_UPDATED_ON_LOG AS 'UpdatedOn'
+        FROM RECEPIENT_BLOCK_LOGS_RBL RBL
+                 JOIN RECIPIENT_MASTER_RCT RCT ON RCT.CODE_RCT = RBL.REC_CODE_LOG
+                 JOIN SYSTEM_LOV_SLV SLV ON SLV.ID_SLV = RCT.ID_STATUS_SLV_RCT
+        WHERE RBL.REC_CODE_LOG = #{code}
+        ORDER BY RBL.REC_UPDATED_ON_LOG DESC
+
+    </select>
+
+
+
 </mapper>

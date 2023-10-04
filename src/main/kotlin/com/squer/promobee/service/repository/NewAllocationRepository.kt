@@ -1780,6 +1780,44 @@ class NewAllocationRepository(
     }
 
 
+    fun getActiveUsers(userId: String) : List<ActiveUsersDTO>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("UserID",userId)
+
+       return  sqlSessionFactory.openSession().selectList<ActiveUsersDTO>("AllocationRuleMapper.getActiveUsers",data)
+
+
+    }
+
+
+
+    fun getDownloadAllocation(planId: String): List<DownloadAllocationDTO> {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("planid",planId)
+
+        return sqlSessionFactory.openSession().selectList<DownloadAllocationDTO>("AllocationRuleMapper.getDownloadAllocation",data)
+
+    }
+
+
+    fun getBlockedRecipients(code: String): List<BlockedRecipientDTO> {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("code",code)
+
+        return sqlSessionFactory.openSession().selectList<BlockedRecipientDTO>("AllocationRuleMapper.getBlockedRecipients",data)
+
+    }
 
 
 

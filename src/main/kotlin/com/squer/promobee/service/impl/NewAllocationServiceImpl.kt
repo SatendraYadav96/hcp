@@ -152,6 +152,18 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.submitVirtualAllocation(alloc)
     }
 
+    override fun getActiveUsers(userId: String): List<ActiveUsersDTO> {
+        return newAllocationRepository.getActiveUsers(userId)
+    }
+
+    override fun getDownloadAllocation(planId: String): List<DownloadAllocationDTO> {
+        return newAllocationRepository.getDownloadAllocation(planId)
+    }
+
+    override fun getBlockedRecipients(code: String): List<BlockedRecipientDTO> {
+        return newAllocationRepository.getBlockedRecipients(code)
+    }
+
 
 
 

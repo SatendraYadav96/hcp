@@ -222,6 +222,26 @@ open class NewAllocationController @Autowired constructor(
         return ResponseEntity(items, HttpStatus.OK)
     }
 
+    @GetMapping("/getActiveUsers/{userId}")
+    open fun getActiveUsers(@PathVariable userId: String): ResponseEntity<*> {
+        val data = newAllocationService.getActiveUsers(userId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getDownloadAllocation/{planId}")
+    open fun getDownloadAllocation(@PathVariable planId: String): ResponseEntity<*> {
+        val data = newAllocationService.getDownloadAllocation(planId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @GetMapping("/getBlockedRecipients/{code}")
+    open fun getBlockedRecipients(@PathVariable code: String): ResponseEntity<*> {
+        val data = newAllocationService.getBlockedRecipients(code)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
 
 
 

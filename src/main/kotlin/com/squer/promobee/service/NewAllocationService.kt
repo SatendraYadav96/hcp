@@ -72,6 +72,12 @@ interface NewAllocationService {
 
    fun submitVirtualAllocation (alloc : submitAllocationDTO)
 
+   fun getActiveUsers (userId: String): List<ActiveUsersDTO>
+
+   fun getDownloadAllocation (planId: String): List<DownloadAllocationDTO>
+
+   fun getBlockedRecipients (code: String): List<BlockedRecipientDTO>
+
 
 
 

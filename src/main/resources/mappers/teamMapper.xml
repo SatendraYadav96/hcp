@@ -14,7 +14,7 @@
         <result property="updatedAt" column="updated_on_tem"/>
         <result property="updatedBy" column="updated_by_tem"/>
         <association property="division" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
-            <id property="id" column="id_dim_tem"/>
+            <id property="id" column="id_dim"/>
             <result property="name" column="name_dim"/>
         </association>
         <association property="brand" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
