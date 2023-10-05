@@ -2,7 +2,6 @@ package com.squer.promobee.service.repository.domain
 
 import com.squer.promobee.security.domain.AuditableEntity
 import com.squer.promobee.security.domain.NamedSquerEntity
-import java.util.Date
 
 open class Recipient: AuditableEntity() {
     var name: String? = null
@@ -17,7 +16,8 @@ open class Recipient: AuditableEntity() {
     var designation: NamedSquerEntity?= null
     var headQuarter: String?= null
     var zone: String?= null
-    var joiningDate: Date?= null
+//    var joiningDate: Date?= null
+   var joiningDate: String?= null
     var team: NamedSquerEntity?= null
     var amName: String?= null
     var amCode: String?= null
@@ -27,7 +27,8 @@ open class Recipient: AuditableEntity() {
     var nsmCode: String?= null
     var cfa: String?= null
     var recipientStatus: NamedSquerEntity?= null
-    var statusChangeDate: Date?= null
+//    var statusChangeDate: Date?= null
+  var statusChangeDate: String?= null
     var loginId: String?= null
     var gender: String?= null
     var workId: String?= null
