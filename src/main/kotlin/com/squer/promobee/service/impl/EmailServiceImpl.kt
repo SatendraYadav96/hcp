@@ -6,7 +6,7 @@ import com.squer.promobee.service.repository.EmailRepository
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
+import javax.servlet.http.HttpServletResponse
 
 
 @Service
@@ -17,6 +17,13 @@ class EmailServiceImpl @Autowired constructor(
 
 ): EmailService {
 
+    override fun getConsolidateExpiryReport(response: HttpServletResponse, index1:Int, index2:Int): ByteArray
+    {
+        return emailRepository.getConsolidateExpiryReport(response, index1, index2)
+    }
 
+    override fun SendTestMailForItemExpiry(response: HttpServletResponse, index1: Int, index2: Int): ByteArray {
+        return emailRepository.SendTestMailForItemExpiry(response,index1,index2)
+    }
 
 }

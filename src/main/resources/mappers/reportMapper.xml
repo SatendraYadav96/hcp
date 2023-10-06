@@ -285,6 +285,20 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
     </select>
 
 
+    <select id="getConsolidateExpiryReport" resultType="com.squer.promobee.controller.dto.ItemExpireModel" parameterType="map" statementType="CALLABLE">
+        {call PROC_GET_ConsolidatedExpiryItems( #{fromdate, jdbcType = INTEGER, mode = IN},
+                                                #{Todate, jdbcType = INTEGER, mode = IN}
+            )}
+    </select>
+
+
+    <select id="SendTestMailForItemExpiry" resultType="com.squer.promobee.controller.dto.ItemExpireModel" parameterType="map" statementType="CALLABLE">
+        {call PROC_GET_BrandmangerforitemExpiryMail( #{itemID, jdbcType = VARCHAR, mode = IN} ,#{fromdate, jdbcType = INTEGER, mode = IN},
+                                                #{Todate, jdbcType = INTEGER, mode = IN}
+            )}
+    </select>
+
+
 
 
 </mapper>
