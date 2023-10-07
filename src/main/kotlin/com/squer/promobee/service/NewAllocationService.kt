@@ -31,7 +31,7 @@ interface NewAllocationService {
    fun getQuantityAllocatedDifferentialRecipient( planId:String,inventoryId :String,  recipientId :String): List<DifferentialRecipientAllocationDTO>
 
 
-   fun getTeamForDifferentialAllocation( planId :String,  teamId :String,  inventoryId :String ): List<AllocationDataTeamPopupDetailsDTO>
+   fun getTeamForDifferentialAllocation( planId :String,  teamId :String,  inventoryId :String ): List<AllocationDifferentialRecipientDTO>
 
    fun saveCommonAllocation (saveAlloc : List<saveCommonAllocationDTO>)
 

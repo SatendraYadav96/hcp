@@ -519,11 +519,11 @@ class NewAllocationRepository(
 
 
 
-    fun getTeamForDifferentialAllocation(planId: String, teamId: String, inventoryId: String): List<AllocationDataTeamPopupDetailsDTO> {
+    fun getTeamForDifferentialAllocation(planId: String, teamId: String, inventoryId: String): List<AllocationDifferentialRecipientDTO> {
 
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-         var teamPopupDetails = mutableListOf<AllocationDataTeamPopupDetailsDTO>()
+         var teamPopupDetails = mutableListOf<AllocationDifferentialRecipientDTO>()
 
          if(user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id ) {
              var data: MutableMap<String, Any> = mutableMapOf()
@@ -532,7 +532,7 @@ class NewAllocationRepository(
              data.put("TeamID",teamId)
              data.put("InventoryID",inventoryId)
 
-             teamPopupDetails = sqlSessionFactory.openSession().selectList<AllocationDataTeamPopupDetailsDTO>("TeamMapper.getTeamForDifferentialAllocation",data)
+             teamPopupDetails = sqlSessionFactory.openSession().selectList<AllocationDifferentialRecipientDTO>("TeamMapper.getTeamForDifferentialAllocation",data)
 
 
          } else {
@@ -542,7 +542,7 @@ class NewAllocationRepository(
              data.put("TeamID",teamId)
              data.put("InventoryID",inventoryId)
 
-             teamPopupDetails = sqlSessionFactory.openSession().selectList<AllocationDataTeamPopupDetailsDTO>("TeamMapper.getTeamForDifferentialAllocation",data)
+             teamPopupDetails = sqlSessionFactory.openSession().selectList<AllocationDifferentialRecipientDTO>("TeamMapper.getTeamForDifferentialAllocation",data)
          }
 
          return teamPopupDetails
@@ -1551,7 +1551,7 @@ class NewAllocationRepository(
             data.put("TeamID",teamId)
             data.put("InventoryID",inventoryId)
 
-            teamPopupDetails = sqlSessionFactory.openSession().selectList<AllocationDataTeamPopupDetailsDTO>("TeamMapper.getTeamForDifferentialAllocation",data)
+            teamPopupDetails = sqlSessionFactory.openSession().selectList<AllocationDataTeamPopupDetailsDTO>("TeamMapper.getVirtualTeamForDifferentialAllocation",data)
 
 
         } else {
@@ -1561,7 +1561,7 @@ class NewAllocationRepository(
             data.put("TeamID",teamId)
             data.put("InventoryID",inventoryId)
 
-            teamPopupDetails = sqlSessionFactory.openSession().selectList<AllocationDataTeamPopupDetailsDTO>("TeamMapper.getTeamForDifferentialAllocation",data)
+            teamPopupDetails = sqlSessionFactory.openSession().selectList<AllocationDataTeamPopupDetailsDTO>("TeamMapper.getVirtualTeamForDifferentialAllocation",data)
         }
 
         return teamPopupDetails

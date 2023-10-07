@@ -74,7 +74,7 @@ open class NewAllocationServiceImpl @Autowired constructor(
     }
 
 
-    override fun getTeamForDifferentialAllocation(planId: String, teamId: String, inventoryId: String): List<AllocationDataTeamPopupDetailsDTO> {
+    override fun getTeamForDifferentialAllocation(planId: String, teamId: String, inventoryId: String): List<AllocationDifferentialRecipientDTO> {
         return newAllocationRepository.getTeamForDifferentialAllocation(planId , teamId , inventoryId)
     }
 

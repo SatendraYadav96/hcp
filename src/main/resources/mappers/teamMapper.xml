@@ -188,9 +188,14 @@
 
 
 
-    <select id="getTeamForDifferentialAllocation" resultType="com.squer.promobee.controller.dto.AllocationDataTeamPopupDetailsDTO" parameterType = "map" statementType = "CALLABLE">
-        { call PROC_GetAllocationTeamUserDetails (#{PlanID, jdbcType = VARCHAR, mode = IN}, #{TeamID, jdbcType = VARCHAR, mode = IN}, #{InventoryID, jdbcType = VARCHAR, mode = IN}
+    <select id="getTeamForDifferentialAllocation" resultType="com.squer.promobee.controller.dto.AllocationDifferentialRecipientDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetAllocationTeamUserDetailsNEW (#{PlanID, jdbcType = VARCHAR, mode = IN}, #{TeamID, jdbcType = VARCHAR, mode = IN}, #{InventoryID, jdbcType = VARCHAR, mode = IN}
                                             ) }
+    </select>
+
+    <select id="getVirtualTeamForDifferentialAllocation" resultType="com.squer.promobee.controller.dto.AllocationDataTeamPopupDetailsDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetAllocationTeamUserDetails (#{PlanID, jdbcType = VARCHAR, mode = IN}, #{TeamID, jdbcType = VARCHAR, mode = IN}, #{InventoryID, jdbcType = VARCHAR, mode = IN}
+            ) }
     </select>
 
 
