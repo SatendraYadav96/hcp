@@ -78,6 +78,11 @@
     </select>
 
 
+    <select id="emailer" resultMap="usersResultMap">
+        select * from USER_MASTER_USR where ID_DESG_ULV_USR = #{designationId} and ID_STATUS_SLV_USR = #{statusId}
+    </select>
+
+
 
 
 

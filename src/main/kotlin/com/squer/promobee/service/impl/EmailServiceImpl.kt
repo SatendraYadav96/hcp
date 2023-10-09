@@ -26,4 +26,16 @@ class EmailServiceImpl @Autowired constructor(
         return emailRepository.SendTestMailForItemExpiry(response,index1,index2)
     }
 
+
+    override fun SendTestMailForSampleExpiry(response: HttpServletResponse, index1: Int, index2: Int): ByteArray {
+        return emailRepository.SendTestMailForSampleExpiry(response,index1,index2)
+    }
+
+
+    override fun Send_Mail_optima(response: HttpServletResponse, uploadId: String): ByteArray {
+        return emailRepository.Send_Mail_optima(response,uploadId)
+    }
+
+
+
 }

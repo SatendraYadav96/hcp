@@ -300,5 +300,16 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
 
 
 
+    <select id="GetBuChampionForCompliance" resultType="com.squer.promobee.security.domain.User" parameterType="map" statementType="CALLABLE">
+        {call PROC_GET_userBUC_compliance(  )}
+    </select>
+
+
+    <select id="GetunblockRequestforBUCdetails" resultType="com.squer.promobee.controller.dto.BlockedForBUCModel" parameterType="map" statementType="CALLABLE">
+        {call PROC_GET_FFBlockedforMailtoBUCdetails(  )}
+    </select>
+
+
+
 
 </mapper>
