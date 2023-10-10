@@ -6,5 +6,7 @@ class DifferentialRecipientAllocationDTO {
     var recipientCode:String? = null
     var designation:String? = null
     var allocatedQuantity:Int? = 0
+    var teamId:String? = null
+    var teamName:String? = null
 
 }

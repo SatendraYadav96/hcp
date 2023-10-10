@@ -484,7 +484,7 @@ class NewAllocationRepository(
 
 
 
-    fun getQuantityAllocatedDifferentialRecipient(planId: String,inventoryId: String, recipientId: String): List<DifferentialRecipientAllocationDTO> {
+    fun getQuantityAllocatedDifferentialRecipient(planId: String,inventoryId: String, teamId: String): List<DifferentialRecipientAllocationDTO> {
 
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
@@ -500,7 +500,7 @@ class NewAllocationRepository(
 
                 data.put("planId",planId)
                 data.put("inventoryId",inventoryId)
-                data.put("recipientId",recipientId)
+                data.put("teamId",teamId)
 
 
                 quantityDispatch =  sqlSessionFactory.openSession().selectList<DifferentialRecipientAllocationDTO>("DispatchDetailMapper.getQuantityAllocatedDifferentialRecipient",data)

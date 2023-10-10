@@ -3,7 +3,7 @@ package com.squer.promobee.api.v1.enums
 enum class UserMenuEnum(val label: String, val key: String, val title: String, val path: String, val parentId: String){
     DASHBOARD(" Dashboard", "dashboard", "dashboard", "", ""),
     BEX_DASHBOARD("BexDashboard", "bexdashboard", "bexdashboard", "/home/bexdashboard", ""),
-    BM_DASHBOARD("Bm Dashboard", "bm_dashboard", "bm_dashboard", "", ""),
+    BM_DASHBOARD("BmDashboard", "bmdashboard", "bmdashboard", "/home/bmdashboard", ""),
     BUHEAD_DASHBOARD("Buhead Dashboard", "buhead_dashboard", "buhead_dashboard", "", ""),
     COMPLIANCE_ADMIN_DASHBOARD("Compliance Admin Dashboard", "compliance_admin_dashboard", "compliance_admin_dashboard", "", ""),
     TSE_DASHBOARD("Tse Dashboard", "tse_dashboard", "tse_dashboard", "", ""),

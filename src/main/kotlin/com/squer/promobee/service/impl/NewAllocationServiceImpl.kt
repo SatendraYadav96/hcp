@@ -69,8 +69,8 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getQuantityAllocatedOfUserToItem(userId,inventoryId,month,year,isSpecialDispatch)
     }
 
-    override fun getQuantityAllocatedDifferentialRecipient(planId: String,inventoryId: String, recipientId: String): List<DifferentialRecipientAllocationDTO> {
-        return newAllocationRepository.getQuantityAllocatedDifferentialRecipient(planId,inventoryId,recipientId)
+    override fun getQuantityAllocatedDifferentialRecipient(planId: String,inventoryId: String, teamId: String): List<DifferentialRecipientAllocationDTO> {
+        return newAllocationRepository.getQuantityAllocatedDifferentialRecipient(planId,inventoryId,teamId)
     }
 
 
