@@ -22,9 +22,9 @@ class AllocationService @Autowired constructor(
         private val teamService: TeamService,
 ) {
 
-    fun createViewMonthlyPlan(yearMonth: Long): AllocationDetailsDTO {
-        val month = (yearMonth % 100).toInt()
-        val year = (yearMonth / 100).toInt()
+    fun createViewMonthlyPlan(year:Int,month:Int): AllocationDetailsDTO {
+//        val month = (yearMonth % 100).toInt()
+//        val year = (yearMonth / 100).toInt()
         var allocationDetailsDTO = AllocationDetailsDTO()
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var plan = dispatchPlanService.getPlanHeaderSelect(month, year, user.id)

@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import java.util.*
 
 @Slf4j
@@ -16,9 +14,9 @@ open class AllocationController @Autowired constructor(
         private val allocationService: AllocationService
 ){
 
-    @PostMapping("/monthly/createview")
-    open fun createViewMonthlyPlan(@RequestBody yearMonth: Long): ResponseEntity<*>{
-        val items = allocationService.createViewMonthlyPlan(yearMonth)
+    @GetMapping("/monthly/createview/{year}/{month}")
+    open fun createViewMonthlyPlan(@PathVariable year: Int , @PathVariable month: Int): ResponseEntity<*>{
+        val items = allocationService.createViewMonthlyPlan(year,month)
         return ResponseEntity(items, HttpStatus.OK)
     }
 

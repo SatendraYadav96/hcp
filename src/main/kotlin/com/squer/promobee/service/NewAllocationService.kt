@@ -78,6 +78,8 @@ interface NewAllocationService {
 
    fun getBlockedRecipients (code: String): List<BlockedRecipientDTO>
 
+   fun getMultipleAllocation (ccmId: Array<String>): List<MultipleAllocationDTO>
+
 
 
 

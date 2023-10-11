@@ -1,19 +1,17 @@
 package com.squer.promobee.service.repository
 
 import com.squer.promobee.api.v1.enums.InvoiceStatusEnum
-import com.squer.promobee.controller.dto.DataModelInvoiceDetailsDTO
-import com.squer.promobee.controller.dto.GroupingInvoiceDetailsDTO
-import com.squer.promobee.controller.dto.PickingSlipDTO
-import com.squer.promobee.controller.dto.TeamInvoiceDTO
-import com.squer.promobee.controller.dto.TeamPlanInvoiceDTO
-import com.squer.promobee.mapper.DispatchPlanMapper
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
+import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.DispatchPlan
 import org.apache.ibatis.session.SqlSessionFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
-import java.util.Date
+import java.util.*
 
 @Repository
 class DispatchPlanRepository(
@@ -25,14 +23,15 @@ class DispatchPlanRepository(
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
 
-    fun getPlanHeaderSelect(monthPlan: Int, yearPlan: Int, userId: String, isSpecial: Int ?= null): DispatchPlan?{
+    fun getPlanHeaderSelect(monthPlan: Int, yearPlan: Int, userId: String, isSpecial: Int ?= 0): DispatchPlan?{
       //  return dispatchPlanMapper.getPlanHeaderSelect(monthPlan, yearPlan, userId)
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data : MutableMap<String, Any> = mutableMapOf()
         data.put("monthPlan", monthPlan)
         data.put("yearPlan", yearPlan)
-        data.put("userId", userId)
-        if(isSpecial!=null)
-            data.put("isSpecial",isSpecial)
+        data.put("userId", user.id)
+//        if(isSpecial!=null)
+            data.put("isSpecial",0)
         return sqlSessionFactory.openSession().selectOne("DispatchPlanMapper.getPlanHeaderSelect", data)
     }
 

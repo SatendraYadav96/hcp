@@ -1826,6 +1826,20 @@ class NewAllocationRepository(
 
 
 
+    fun getMultipleAllocation(ccmId: Array<String>): List<MultipleAllocationDTO> {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("ccmId",ccmId)
+
+        return sqlSessionFactory.openSession().selectList<MultipleAllocationDTO>("AllocationRuleMapper.getMultipleAllocation",data)
+
+    }
+
+
+
 }
 
 

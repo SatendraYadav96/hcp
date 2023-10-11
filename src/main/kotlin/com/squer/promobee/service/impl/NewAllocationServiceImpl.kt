@@ -164,6 +164,10 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getBlockedRecipients(code)
     }
 
+    override fun getMultipleAllocation(ccmId: Array<String>): List<MultipleAllocationDTO> {
+        return newAllocationRepository.getMultipleAllocation(ccmId)
+    }
+
 
 
 
