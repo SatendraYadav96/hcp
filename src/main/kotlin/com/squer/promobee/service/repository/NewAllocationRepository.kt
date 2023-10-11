@@ -1132,7 +1132,15 @@ class NewAllocationRepository(
         data.put("year",year)
         data.put("owner",user.id)
 
-        plan = sqlSessionFactory.openSession().selectOne("DispatchPlanMapper.createVirtualPlan",data)
+          plan = sqlSessionFactory.openSession().selectOne<DispatchPlan>("DispatchPlanMapper.createVirtualPlan",data)
+
+//       var  planList = sqlSessionFactory.openSession().selectList<DispatchPlan>("DispatchPlanMapper.createVirtualPlan",data)
+
+//        if(planList.size > 0 ){
+//            plan = planList[0]
+//        } else{
+//
+//        }
 
         var isRbmOrNsm = false;
 
