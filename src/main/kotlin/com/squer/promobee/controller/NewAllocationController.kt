@@ -174,8 +174,8 @@ open class NewAllocationController @Autowired constructor(
 
 
     @PostMapping("/virtual/create")
-    open fun createVirtualPlan(@RequestBody yearMonth: Map<String , Long>): ResponseEntity<*>{
-        val items = newAllocationService.createVirtualPlan(yearMonth["yearMonth"]!!)
+    open fun createVirtualPlan(@RequestBody yearMonth: Long): ResponseEntity<*>{
+        val items = newAllocationService.createVirtualPlan(yearMonth)
         return ResponseEntity(items, HttpStatus.OK)
     }
 
