@@ -17,7 +17,7 @@ interface NewAllocationService {
 
    fun getBrandManagerForTse( id: String): List<UserDTO>
 
-   fun createMonthlyPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO>
+   fun createMonthlyPlan(year:Int,month: Int): List<AllocationInventoryDetailsWithCostCenterDTO>
 
    fun isPlanApprovedOrSubmitLock( month: String , year: String): ResponseEntity<out Any>
 
@@ -48,7 +48,7 @@ interface NewAllocationService {
 
    fun getTeamForSpecialAllocation( ccmId: String): List<Team>
 
-   fun getRecipientForSpecialAllocation( teamId: String): List<Recipient>
+   fun getRecipientForSpecialAllocation( ccmId: String): List<Recipient>
 
    fun saveSpecialAllocation (saveAlloc : List<saveDifferentialAllocation>)
 
@@ -57,7 +57,7 @@ interface NewAllocationService {
    fun deleteSpecialAllocationDID( dipId: String): Map<String, Any>
 
 
-   fun createVirtualPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO>
+   fun createVirtualPlan(year:Int,month: Int): List<VirtualAllocationInventoryDetailsWithCostCenterDTO>
 
    fun isVirtualPlanApprovedOrSubmitLock( month: String , year: String):Map<String , Any>
 

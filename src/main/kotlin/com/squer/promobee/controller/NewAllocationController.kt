@@ -52,9 +52,9 @@ open class NewAllocationController @Autowired constructor(
 
     //MONTHLY ALLOCATION
 
-    @PostMapping("/monthly/create")
-    open fun createMonthlyPlan(@RequestBody yearMonth: Map<String , Long>): ResponseEntity<*>{
-        val items = newAllocationService.createMonthlyPlan(yearMonth["yearMonth"]!!)
+    @GetMapping("/monthly/create/{year}/{month}")
+    open fun createMonthlyPlan(@PathVariable year: Int , @PathVariable month: Int): ResponseEntity<*>{
+        val items = newAllocationService.createMonthlyPlan(year,month)
         return ResponseEntity(items, HttpStatus.OK)
     }
 
@@ -132,7 +132,7 @@ open class NewAllocationController @Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
-    @GetMapping("/searchSpecialPlan/{planId}")
+    @GetMapping("/searchSpecialPlan/{month}/{year}/{status}/{remark}")
     open fun searchSpecialPlan(@PathVariable month: Int, @PathVariable year: Int,@PathVariable status: String,@PathVariable remark: String): ResponseEntity<*> {
         val data = newAllocationService.searchSpecialPlan(month,year,status,remark )
         return ResponseEntity(data, HttpStatus.OK)
@@ -145,9 +145,9 @@ open class NewAllocationController @Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
-    @GetMapping("/getRecipientForSpecialAllocation/{teamId}")
-    open fun getRecipientForSpecialAllocation(@PathVariable teamId: String): ResponseEntity<*> {
-        val data = newAllocationService.getRecipientForSpecialAllocation(teamId)
+    @GetMapping("/getRecipientForSpecialAllocation/{ccmId}")
+    open fun getRecipientForSpecialAllocation(@PathVariable ccmId: String): ResponseEntity<*> {
+        val data = newAllocationService.getRecipientForSpecialAllocation(ccmId)
         return ResponseEntity(data, HttpStatus.OK)
     }
 
@@ -173,9 +173,9 @@ open class NewAllocationController @Autowired constructor(
     //VIRTUAL ALLOCATION
 
 
-    @PostMapping("/virtual/create")
-    open fun createVirtualPlan(@RequestBody yearMonth: Long): ResponseEntity<*>{
-        val items = newAllocationService.createVirtualPlan(yearMonth)
+    @GetMapping("/virtual/create/{year}/{month}")
+    open fun createVirtualPlan(@PathVariable year: Int , @PathVariable month: Int): ResponseEntity<*>{
+        val items = newAllocationService.createVirtualPlan(year,month)
         return ResponseEntity(items, HttpStatus.OK)
     }
 

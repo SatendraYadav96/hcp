@@ -44,8 +44,8 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getBrandManagerForTse(id)
     }
 
-    override fun createMonthlyPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO> {
-        return newAllocationRepository.createMonthlyPlan(yearMonth)
+    override fun createMonthlyPlan(year: Int, month: Int): List<AllocationInventoryDetailsWithCostCenterDTO> {
+        return newAllocationRepository.createMonthlyPlan(year,month)
     }
 
     override fun isPlanApprovedOrSubmitLock(month: String, year: String): ResponseEntity<out Any> {
@@ -107,8 +107,8 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getTeamForSpecialAllocation(ccmId)
     }
 
-    override fun getRecipientForSpecialAllocation(teamId: String): List<Recipient> {
-        return newAllocationRepository.getRecipientForSpecialAllocation(teamId)
+    override fun getRecipientForSpecialAllocation(ccmId: String): List<Recipient> {
+        return newAllocationRepository.getRecipientForSpecialAllocation(ccmId)
     }
 
     override fun saveSpecialAllocation(saveAlloc: List<saveDifferentialAllocation>) {
@@ -124,8 +124,8 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.deleteSpecialAllocationDID(dipId)
     }
 
-    override fun createVirtualPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO> {
-        return newAllocationRepository.createVirtualPlan(yearMonth)
+    override fun createVirtualPlan(year:Int,month: Int): List<VirtualAllocationInventoryDetailsWithCostCenterDTO> {
+        return newAllocationRepository.createVirtualPlan(year,month)
     }
 
     override fun isVirtualPlanApprovedOrSubmitLock(month: String, year: String): Map<String, Any> {

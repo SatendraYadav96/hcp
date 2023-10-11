@@ -142,10 +142,14 @@
 
 
     <select id="getRecipientForSpecialAllocation" resultMap="recipientResultMap">
-        SELECT RCT.*,TEM.ID_TEM,TEM.NAME_TEM,ULV.ID_ULV,ULV.NAME_ULV FROM RECIPIENT_MASTER_RCT RCT
-        JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = RCT.ID_TEM_RCT
-        JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
-        WHERE TEM.ID_TEM = #{id} AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
+
+        SELECT RCT.* FROM COST_CENTER_MASTER_CCM CCM
+                              JOIN COSTCENTER_BRAND_CBR CBR ON CBR.ID_CCM_CBR = CCM.ID_CCM
+                              JOIN BRAND_MASTER_BRD BRD ON BRD.ID_BRD = CBR.ID_BRD_CBR
+                              JOIN TEAM_BRAND_TBR TBR ON TBR.ID_BRD_TBR = BRD.ID_BRD
+                              JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = TBR.ID_TEM_TBR
+                              JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_TEM_RCT = TEM.ID_TEM
+        WHERE ID_CCM = #{ccmId} AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
     </select>
 
     <select id="getRecipientForVirtualTeamForCommonAllocation" resultMap="recipientResultMap">

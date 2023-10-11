@@ -121,12 +121,12 @@ class NewAllocationRepository(
     }
 
 
-    fun createMonthlyPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO> {
+    fun createMonthlyPlan(year: Int, month: Int): List<AllocationInventoryDetailsWithCostCenterDTO> {
 
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-        val month = (yearMonth % 100).toInt()
-        val year = (yearMonth / 100).toInt()
+//        val month = (yearMonth % 100).toInt()
+//        val year = (yearMonth / 100).toInt()
 
 
 
@@ -932,12 +932,12 @@ class NewAllocationRepository(
     }
 
 
-    fun getRecipientForSpecialAllocation(teamId: String): List<Recipient>{
+    fun getRecipientForSpecialAllocation(ccmId: String): List<Recipient>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var data: MutableMap<String, Any> = mutableMapOf()
 
-        data.put("id",teamId)
+        data.put("ccmId",ccmId)
 
         return sqlSessionFactory.openSession().selectList<Recipient>("RecipientMapper.getRecipientForSpecialAllocation",data)
 
@@ -1110,17 +1110,19 @@ class NewAllocationRepository(
 
 
 
-    fun createVirtualPlan(yearMonth: Long): List<AllocationInventoryDetailsWithCostCenterDTO> {
+    fun createVirtualPlan(year: Int, month: Int): List<VirtualAllocationInventoryDetailsWithCostCenterDTO> {
 
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-        val month = (yearMonth % 100).toInt()
-        val year = (yearMonth / 100).toInt()
+//        val month = (yearMonth % 100).toInt()
+//        val year = (yearMonth / 100).toInt()
 
 
         var tseID = getTseList(user.id)
 
-        var allocationInventoryDetails = mutableListOf<AllocationInventoryDetailsWithCostCenterDTO>()
+        var allocationInventoryDetails = mutableListOf<VirtualAllocationInventoryDetailsWithCostCenterDTO>()
+
+        var virtualAllocationInventoryDetails = mutableListOf<VirtualAllocationInventoryDetailsWithCostCenterDTO>()
 
         var plan = DispatchPlan()
 
@@ -1247,16 +1249,16 @@ class NewAllocationRepository(
             data7.put("UserID", user.userRecipientId!!)
             data7.put("PlanID", plan.id)
 
-            allocationInventoryDetails = sqlSessionFactory.openSession().selectList<AllocationInventoryDetailsWithCostCenterDTO>("ReportMapper.GetVirtualAllocationDetailsforRbm",data7)
+            allocationInventoryDetails = sqlSessionFactory.openSession().selectList<VirtualAllocationInventoryDetailsWithCostCenterDTO>("ReportMapper.GetVirtualAllocationDetailsforRbm",data7)
 
 
         } else {
             var data8: MutableMap<String, Any> = mutableMapOf()
 
-            data8.put("UserID", user.userRecipientId!!)
+            data8.put("UserID", user.id)
             data8.put("PlanID", plan.id)
 
-            allocationInventoryDetails = sqlSessionFactory.openSession().selectList<AllocationInventoryDetailsWithCostCenterDTO>("ReportMapper.GetVirtualAllocationInventoryWithCostCenter",data8)
+            allocationInventoryDetails = sqlSessionFactory.openSession().selectList<VirtualAllocationInventoryDetailsWithCostCenterDTO>("ReportMapper.GetVirtualAllocationInventoryWithCostCenter",data8)
 
 
         }
@@ -1265,6 +1267,8 @@ class NewAllocationRepository(
 
             allocationInventoryDetails = allocationInventoryDetails.filter { it.qtyAllocated != null && it.qtyAllocated!! > 0  }.sortedByDescending { it.qtyAllocated }.toMutableList()
         }
+
+
 
         return  allocationInventoryDetails
 
