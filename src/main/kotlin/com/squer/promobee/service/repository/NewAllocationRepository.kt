@@ -1281,6 +1281,12 @@ class NewAllocationRepository(
     }
 
 
+    fun getAllocationStatusDropdown( ): List<AllocationStatusDropdownDTO> {
+
+        return sqlSessionFactory.openSession().selectList<AllocationStatusDropdownDTO>("InvoiceHeaderMapper.getAllocationStatusDropdown")
+    }
+
+
 
 
 
@@ -1857,49 +1863,102 @@ class NewAllocationRepository(
 
         var recipient = mutableListOf<Recipient>()
 
-        if (user.userDesignation!!.id != UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id) {
-            saveAlloc.forEach { it ->
-                var data: MutableMap<String, Any> = mutableMapOf()
-                var virtualDispatchDetail = VirtualDispatchDetail()
-                var vidId = UUID.randomUUID().toString()
-                data.put("id", vidId)
-                data.put("planId", it.dispatchPlanId!!)
-                data.put("inventoryId", it.inventoryId!!)
-                data.put("recipientId", it.recipientId!!)
-                data.put("qtyDispatch", it.quantity!!)
-                data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                data.put("createdBy", user.id)
-                data.put("updatedBy", user.id)
 
-                sqlSessionFactory.openSession().insert("VirtualDispatchDetailMapper.insertVid", data)
+
+        if (user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id) {
+
+            var i = 0
+
+            saveAlloc.forEach {
+
+                var data2: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> = kotlin.collections.mutableMapOf()
+
+                data2.put("teamId", it.teamID!!)
+                data2.put("designationId",it.designationId!!)
+
+                recipient = sqlSessionFactory.openSession()
+                    .selectList<com.squer.promobee.service.repository.domain.Recipient>(
+                        "RecipientMapper.getRecipientToSaveAllocation",
+                        data2
+                    )
+
+                recipient.forEach {it ->
+
+                    var data: MutableMap<String, Any> = mutableMapOf()
+                    var virtualDispatchDetail = VirtualDispatchDetail()
+                    var vidId = UUID.randomUUID().toString()
+                    data.put("id", vidId)
+                    data.put("planId", saveAlloc[i].dispatchPlanId!!)
+                    data.put("inventoryId", saveAlloc[i].inventoryId!!)
+                    data.put("recipientId", it.id)
+                    data.put("qtyDispatch", saveAlloc[i].quantity!!)
+                    data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+                    data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+                    data.put("createdBy", user.id)
+                    data.put("updatedBy", user.id)
+
+                    sqlSessionFactory.openSession().insert("VirtualDispatchDetailMapper.insertDid", data)
+
+
+//                    var data1: MutableMap<String, Any> = mutableMapOf()
+//                    data1.put("id", saveAlloc[i].dispatchPlanId!!)
+//                    data1.put("qtyDispatch", 0)
+//                    data1.put("updatedBy", user.id)
+//
+//                    sqlSessionFactory.openSession().update("DispatchDetailMapper.saveVirtualCommonAllocationBM", data1)
+
+
+                }
+
+
+                i++
 
 
             }
+
+
         } else {
+
+            var i = 0
+
             saveAlloc.forEach {
-                var data0: MutableMap<String, Any> = mutableMapOf()
-                var virtualDispatchDetail = VirtualDispatchDetail()
-                var vidId = UUID.randomUUID().toString()
-                data0.put("id", vidId)
-                data0.put("planId", it.dispatchPlanId!!)
-                data0.put("inventoryId", it.inventoryId!!)
-                data0.put("recipientId", it.recipientId!!)
-                data0.put("qtyDispatch", it.quantity!!)
-                data0.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                data0.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                data0.put("createdBy", user.id)
-                data0.put("updatedBy", user.id)
 
-                sqlSessionFactory.openSession().insert("VirtualDispatchDetailMapper.insertVid", data0)
+                var data3: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> = kotlin.collections.mutableMapOf()
+
+                data3.put("teamId", it.teamID!!)
+                data3.put("designationId",it.designationId!!)
+
+                recipient = sqlSessionFactory.openSession()
+                    .selectList<com.squer.promobee.service.repository.domain.Recipient>(
+                        "RecipientMapper.getRecipientToSaveAllocation",
+                        data3
+                    )
+
+                recipient.forEach {it ->
 
 
-                var data1: MutableMap<String, Any> = mutableMapOf()
-                data1.put("id", it.dispatchPlanId!!)
-                data1.put("qtyDispatch", 0)
-                data1.put("updatedBy", user.id)
+                    var data0: MutableMap<String, Any> = mutableMapOf()
+                    var virtualDispatchDetail = VirtualDispatchDetail()
+                    var vidId = UUID.randomUUID().toString()
+                    data0.put("id", vidId)
+                    data0.put("planId", saveAlloc[i].dispatchPlanId!!)
+                    data0.put("inventoryId", saveAlloc[i].inventoryId!!)
+                    data0.put("recipientId", it.id)
+                    data0.put("qtyDispatch", saveAlloc[i].quantity!!)
+                    data0.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+                    data0.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+                    data0.put("createdBy", user.id)
+                    data0.put("updatedBy", user.id)
 
-                sqlSessionFactory.openSession().update("DispatchDetailMapper.saveVirtualCommonAllocation", data1)
+                    sqlSessionFactory.openSession().insert("VirtualDispatchDetailMapper.insertVid", data0)
+
+
+
+
+                }
+
+
+              i++
 
             }
 
@@ -1917,7 +1976,7 @@ class NewAllocationRepository(
 
         var dispatchDetails = DispatchDetail()
 
-        if (user.userDesignation!!.id != UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id) {
+        if (user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id) {
 
             saveAlloc.forEach { it ->
                 data.put("id", UUID.randomUUID().toString())

@@ -1,11 +1,14 @@
 package com.squer.promobee.controller
 
 import com.squer.promobee.controller.dto.*
+import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.NewAllocationService
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -185,6 +188,16 @@ open class NewAllocationController @Autowired constructor(
         val items = newAllocationService.submitSpecialAllocation(alloc)
         return ResponseEntity(items, HttpStatus.OK)
     }
+
+
+    @GetMapping("/getAllocationStatusDropdown")
+    fun getAllocationStatusDropdown(): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = newAllocationService.getAllocationStatusDropdown()
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
 
 
 

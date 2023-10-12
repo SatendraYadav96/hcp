@@ -59,6 +59,12 @@
         values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})
     </insert>
 
+
+    <insert id="insertDid" >
+        insert into VIRTUAL_DISPATCH_VID(ID_DID, ID_DIP_DID, ID_INV_DID, ID_RCT_DID, QUANTITY_DISPATCH_DID, ID_QTP_DID, ID_STATUS_SLV_DID,  CREATED_ON_DID, CREATED_BY_DID, UPDATED_ON_DID, UPDATED_BY_DID)
+        values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})
+    </insert>
+
     <select id="submitVirtualAllocation" resultMap="virtualDispatchDetailResultMap">
         select * from VIRTUAL_DISPATCH_VID
         WHERE ID_DIP_DID = #{id}

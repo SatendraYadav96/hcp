@@ -412,6 +412,11 @@
     </select>
 
 
+    <select id="getAllocationStatusDropdown" resultType="com.squer.promobee.controller.dto.AllocationStatusDropdownDTO">
+        SELECT ID_SLV AS 'allocationStatusId',NAME_SLV AS 'allocationStatusName' FROM SYSTEM_LOV_SLV WHERE TYPE_SLV = 'MONTHLY_PLAN_STATUS'
+    </select>
+
+
 
 
 

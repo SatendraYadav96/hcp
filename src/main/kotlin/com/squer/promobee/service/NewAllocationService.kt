@@ -60,6 +60,8 @@ interface NewAllocationService {
 
    fun submitSpecialAllocation (alloc : submitAllocationDTO)
 
+   fun getAllocationStatusDropdown(): List<AllocationStatusDropdownDTO>
+
 
    fun createVirtualPlan(year:Int,month: Int): List<VirtualAllocationInventoryDetailsWithCostCenterDTO>
 

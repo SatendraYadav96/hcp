@@ -132,6 +132,10 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.submitSpecialAllocation(alloc)
     }
 
+    override fun getAllocationStatusDropdown(): List<AllocationStatusDropdownDTO> {
+        return newAllocationRepository.getAllocationStatusDropdown()
+    }
+
     override fun createVirtualPlan(year:Int,month: Int): List<VirtualAllocationInventoryDetailsWithCostCenterDTO> {
         return newAllocationRepository.createVirtualPlan(year,month)
     }
