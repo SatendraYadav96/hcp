@@ -201,8 +201,51 @@
     </select>
 
 
+
+    <select id="getVirtualQuantityAllocatedDifferentialRecipientRBM" resultType="com.squer.promobee.controller.dto.DifferentialRecipientAllocationDTO">
+        select RCT.ID_RCT as 'recipientId',RCT.NAME_RCT as 'recipientName' ,RCT.CODE_RCT as 'recipientCode',ULV.NAME_ULV as 'designation',DID.QUANTITY_DISPATCH_DID as 'allocatedQuantity',
+                TEM.ID_TEM as 'teamId',tem.NAME_TEM as 'teamName'
+        from DISPATCH_DETAIL_DID DID
+                 join RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
+                 JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
+                 JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = RCT.ID_TEM_RCT
+        where DID.ID_DIP_DID = #{planId} and DID.ID_INV_DID = #{inventoryId} and
+            tem.ID_TEM = #{teamId} AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73' and did.ID_STATUS_SLV_DID = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7'
+
+
+    </select>
+
+
+
+    <select id="getVirtualQuantityAllocatedDifferentialRecipientBM" resultType="com.squer.promobee.controller.dto.DifferentialRecipientAllocationDTO">
+        select RCT.ID_RCT as 'recipientId',RCT.NAME_RCT as 'recipientName' ,RCT.CODE_RCT as 'recipientCode',ULV.NAME_ULV as 'designation',DID.QUANTITY_DISPATCH_DID as 'allocatedQuantity',
+                TEM.ID_TEM as 'teamId',tem.NAME_TEM as 'teamName'
+        from VIRTUAL_DISPATCH_VID DID
+                 join RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
+                 JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
+                 JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = RCT.ID_TEM_RCT
+        where DID.ID_DIP_DID = #{planId} and DID.ID_INV_DID = #{inventoryId} and
+            tem.ID_TEM = #{teamId} AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73' and did.ID_STATUS_SLV_DID = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7'
+
+
+    </select>
+
+
     <insert id="saveCommonAllocation" >
         insert into DISPATCH_DETAIL_DID(ID_DID, ID_DIP_DID, ID_INV_DID, ID_RCT_DID, QUANTITY_DISPATCH_DID, ID_QTP_DID, ID_STATUS_SLV_DID,  CREATED_ON_DID, CREATED_BY_DID, UPDATED_ON_DID, UPDATED_BY_DID)
+        values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})
+    </insert>
+
+
+
+    <insert id="saveVirtualCommonAllocationRBM" >
+        insert into DISPATCH_DETAIL_DID(ID_DID, ID_DIP_DID, ID_INV_DID, ID_RCT_DID, QUANTITY_DISPATCH_DID, ID_QTP_DID, ID_STATUS_SLV_DID,  CREATED_ON_DID, CREATED_BY_DID, UPDATED_ON_DID, UPDATED_BY_DID)
+        values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})
+    </insert>
+
+
+    <insert id="saveVirtualCommonAllocationBM" >
+        insert into VIRTUAL_DISPATCH_VID(ID_DID, ID_DIP_DID, ID_INV_DID, ID_RCT_DID, QUANTITY_DISPATCH_DID, ID_QTP_DID, ID_STATUS_SLV_DID,  CREATED_ON_DID, CREATED_BY_DID, UPDATED_ON_DID, UPDATED_BY_DID)
         values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})
     </insert>
 
@@ -238,13 +281,26 @@
 
 
     <select id="getVirtualQuantityAllocatedToUserForRbm" resultType="com.squer.promobee.controller.dto.DesignationWiseQuantityAllocatedDTO">
-        select ulv.name_ulv as 'Designation', COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity' from DISPATCH_PLAN_DIP dip
-                                                                                                                          join DISPATCH_DETAIL_DID did on dip.ID_DIP = did.ID_DIP_DID
-                                                                                                                          JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
-                                                                                                                          JOIN USER_LOV_ULV ULV  ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
+        select ulv.name_ulv as 'Designation', ulv.id_ulv as 'DesignationId',COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity' from DISPATCH_PLAN_DIP dip
+                                                                                                                                                        join DISPATCH_DETAIL_DID did on dip.ID_DIP = did.ID_DIP_DID
+                                                                                                                                                        JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
+                                                                                                                                                        JOIN USER_LOV_ULV ULV  ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
         where dip.MONTH_DIP = #{month} AND dip.YEAR_DIP = #{year} AND did.ID_INV_DID = #{inventoryId} AND dip.IS_SPECIAL_DIP = #{isSpecialDispatch} AND did.ID_DIP_DID = #{planId}
-        AND dip.IS_VIRTUAL_DIP = 1
-        group by ulv.name_ulv
+          AND dip.IS_VIRTUAL_DIP = 1
+        group by ulv.name_ulv,ulv.ID_ULV,did.QUANTITY_DISPATCH_DID
+
+    </select>
+
+
+
+    <select id="getVirtualQuantityAllocatedToUserByBM" resultType="com.squer.promobee.controller.dto.DesignationWiseQuantityAllocatedDTO">
+        select ulv.name_ulv as 'Designation', ulv.id_ulv as 'DesignationId',COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity' from DISPATCH_PLAN_DIP dip
+                                                                                                                                                        join VIRTUAL_DISPATCH_VID did on dip.ID_DIP = did.ID_DIP_DID
+                                                                                                                                                        JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
+                                                                                                                                                        JOIN USER_LOV_ULV ULV  ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
+        where dip.MONTH_DIP = #{month} AND dip.YEAR_DIP = #{year} AND did.ID_INV_DID = #{inventoryId} AND dip.IS_SPECIAL_DIP = #{isSpecialDispatch} AND did.ID_DIP_DID = #{planId}
+          AND dip.IS_VIRTUAL_DIP = 1
+        group by ulv.name_ulv,ulv.ID_ULV,did.QUANTITY_DISPATCH_DID
 
     </select>
 

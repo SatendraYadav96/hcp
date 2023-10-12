@@ -111,6 +111,10 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getRecipientForSpecialAllocation(ccmId)
     }
 
+    override fun getSpecialQuantityAllocatedDifferentialRecipient(planId: String, inventoryId: String, teamId: String): List<DifferentialRecipientAllocationDTO> {
+        return newAllocationRepository.getSpecialQuantityAllocatedDifferentialRecipient(planId,inventoryId,teamId)
+    }
+
     override fun saveSpecialAllocation(saveAlloc: List<saveDifferentialAllocation>) {
         return newAllocationRepository.saveSpecialAllocation(saveAlloc)
     }
@@ -122,6 +126,10 @@ open class NewAllocationServiceImpl @Autowired constructor(
 
     override fun deleteSpecialAllocationDID(dipId: String): Map<String, Any> {
         return newAllocationRepository.deleteSpecialAllocationDID(dipId)
+    }
+
+    override fun submitSpecialAllocation(alloc: submitAllocationDTO) {
+        return newAllocationRepository.submitSpecialAllocation(alloc)
     }
 
     override fun createVirtualPlan(year:Int,month: Int): List<VirtualAllocationInventoryDetailsWithCostCenterDTO> {
@@ -144,13 +152,22 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getVirtualTeamForDifferentialAllocation(planId,teamId,inventoryId)
     }
 
+    override fun getVirtualQuantityAllocatedDifferentialRecipient(planId: String, inventoryId: String, teamId: String): List<DifferentialRecipientAllocationDTO> {
+        return newAllocationRepository.getVirtualQuantityAllocatedDifferentialRecipient(planId,inventoryId,teamId)
+    }
+
     override fun saveVirtualCommonAllocation(saveAlloc: List<saveVirtualCommonAllocationDTO>) {
         return newAllocationRepository.saveVirtualCommonAllocation(saveAlloc)
+    }
+
+    override fun saveVirtualDifferentialAllocation(saveAlloc: List<saveDifferentialAllocation>) {
+        return newAllocationRepository.saveVirtualDifferentialAllocation(saveAlloc)
     }
 
     override fun submitVirtualAllocation(alloc: submitAllocationDTO) {
         return newAllocationRepository.submitVirtualAllocation(alloc)
     }
+
 
     override fun getActiveUsers(userId: String): List<ActiveUsersDTO> {
         return newAllocationRepository.getActiveUsers(userId)

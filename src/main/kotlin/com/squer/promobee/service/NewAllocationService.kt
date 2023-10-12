@@ -50,11 +50,15 @@ interface NewAllocationService {
 
    fun getRecipientForSpecialAllocation( ccmId: String): List<Recipient>
 
+   fun getSpecialQuantityAllocatedDifferentialRecipient( planId:String,inventoryId :String,  teamId :String): List<DifferentialRecipientAllocationDTO>
+
    fun saveSpecialAllocation (saveAlloc : List<saveDifferentialAllocation>)
 
    fun deleteSpecialAllocation( dipId: String): Map<String, Any>
 
    fun deleteSpecialAllocationDID( dipId: String): Map<String, Any>
+
+   fun submitSpecialAllocation (alloc : submitAllocationDTO)
 
 
    fun createVirtualPlan(year:Int,month: Int): List<VirtualAllocationInventoryDetailsWithCostCenterDTO>
@@ -67,6 +71,10 @@ interface NewAllocationService {
                                          year :Int,  isSpecialDispatch :Int,planId: String): List<DesignationWiseQuantityAllocatedDTO>
 
    fun getVirtualTeamForDifferentialAllocation( planId :String,  teamId :String,  inventoryId :String ): List<AllocationDataTeamPopupDetailsDTO>
+
+   fun getVirtualQuantityAllocatedDifferentialRecipient( planId:String,inventoryId :String,  teamId :String): List<DifferentialRecipientAllocationDTO>
+
+   fun saveVirtualDifferentialAllocation (saveAlloc : List<saveDifferentialAllocation>)
 
    fun saveVirtualCommonAllocation (saveAlloc : List<saveVirtualCommonAllocationDTO>)
 

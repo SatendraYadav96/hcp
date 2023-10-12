@@ -151,11 +151,21 @@ open class NewAllocationController @Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getSpecialQuantityAllocatedDifferentialRecipient/{planId}/{inventoryId}/{teamId}")
+    open fun getSpecialQuantityAllocatedDifferentialRecipient(@PathVariable planId :String,@PathVariable inventoryId :String,@PathVariable teamId :String): ResponseEntity<*> {
+        val data = newAllocationService.getSpecialQuantityAllocatedDifferentialRecipient(planId,inventoryId,teamId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+
+
     @PostMapping("/saveSpecialAllocation")
     open fun saveSpecialAllocation(@RequestBody saveAlloc : List<saveDifferentialAllocation>): ResponseEntity<*>{
         val items = newAllocationService.saveSpecialAllocation(saveAlloc)
         return ResponseEntity(items, HttpStatus.OK)
     }
+
 
     @PostMapping("/deleteSpecialAllocation/{dipId}")
     open fun deleteSpecialAllocation(@PathVariable dipId: String): ResponseEntity<*> {
@@ -168,6 +178,14 @@ open class NewAllocationController @Autowired constructor(
         val data = newAllocationService.deleteSpecialAllocationDID(dipId)
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+
+    @PostMapping("/submitSpecialAllocation")
+    open fun submitSpecialAllocation(@RequestBody alloc : submitAllocationDTO): ResponseEntity<*>{
+        val items = newAllocationService.submitSpecialAllocation(alloc)
+        return ResponseEntity(items, HttpStatus.OK)
+    }
+
 
 
     //VIRTUAL ALLOCATION
@@ -209,9 +227,23 @@ open class NewAllocationController @Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+
+    @GetMapping("/getVirtualQuantityAllocatedDifferentialRecipient/{planId}/{inventoryId}/{teamId}")
+    open fun getVirtualQuantityAllocatedDifferentialRecipient(@PathVariable planId :String,@PathVariable inventoryId :String,@PathVariable teamId :String): ResponseEntity<*> {
+        val data = newAllocationService.getVirtualQuantityAllocatedDifferentialRecipient(planId,inventoryId,teamId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
     @PostMapping("/saveVirtualCommonAllocation")
     open fun saveVirtualCommonAllocation(@RequestBody saveAlloc : List<saveVirtualCommonAllocationDTO>): ResponseEntity<*>{
         val items = newAllocationService.saveVirtualCommonAllocation(saveAlloc)
+        return ResponseEntity(items, HttpStatus.OK)
+    }
+
+
+    @PostMapping("/saveVirtualDifferentialAllocation")
+    open fun saveVirtualDifferentialAllocation(@RequestBody saveAlloc : List<saveDifferentialAllocation>): ResponseEntity<*>{
+        val items = newAllocationService.saveVirtualDifferentialAllocation(saveAlloc)
         return ResponseEntity(items, HttpStatus.OK)
     }
 
