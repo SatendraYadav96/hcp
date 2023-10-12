@@ -36,9 +36,15 @@
         </where>
     </select>
 
+
     <select id="getApprovalChainById" resultMap="approvalChainTransactionResultMap">
         select * from APPROVAL_CHAIN_TRANSACTION_API
         where ID_OWNER_API = #{id}
+    </select>
+
+    <select id="getSpecialApprovalChainById" resultMap="approvalChainTransactionResultMap">
+        select * from APPROVAL_CHAIN_TRANSACTION_API
+        where ID_OWNER_API = #{id} and ID_DESG_ULV_API = #{desginationId}
     </select>
 
 

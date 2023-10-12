@@ -1206,9 +1206,10 @@ class NewAllocationRepository(
             var approvalChainTransaction = ApprovalChainTransaction()
             var data3: MutableMap<String, Any> = mutableMapOf()
             data3.put("id", plan.id)
+            data3.put("desginationId",UserRoleEnum.BEX_ID.id)
 
             approvalChainTransaction =
-                sqlSessionFactory.openSession().selectOne("ApprovalChainTransactionMapper.getApprovalChainById", data3)
+                sqlSessionFactory.openSession().selectOne("ApprovalChainTransactionMapper.getSpecialApprovalChainById", data3)
 
             if (approvalChainTransaction != null) {
                 var data4: MutableMap<String, Any> = mutableMapOf()
@@ -1236,7 +1237,40 @@ class NewAllocationRepository(
 
 
 
-            
+            var approvalChainTransactionBUHead = ApprovalChainTransaction()
+            var data4: MutableMap<String, Any> = mutableMapOf()
+            data4.put("id", plan.id)
+            data4.put("desginationId",UserRoleEnum.BEX_ID.id)
+
+            approvalChainTransactionBUHead =
+                sqlSessionFactory.openSession().selectOne("ApprovalChainTransactionMapper.getSpecialApprovalChainById", data4)
+
+            if (approvalChainTransactionBUHead != null) {
+                var data5: MutableMap<String, Any> = mutableMapOf()
+
+                data5.put("owner", plan.id)
+                data5.put("apiStatus", ApprovalStatusEnum.PENDING_APPROVAL.id)
+                data5.put("updatedBy", user.id)
+
+                sqlSessionFactory.openSession()
+                    .update("ApprovalChainTransactionMapper.updateSaveMonthlyToSpecial", data5)
+
+            } else {
+                var data6: MutableMap<String, Any> = mutableMapOf()
+
+                data6.put("id", UUID.randomUUID().toString())
+                data6.put("owner", plan.id)
+                data6.put("designation", UserRoleEnum.BU_HEAD_ID.id)
+                data6.put("apiStatus", ApprovalStatusEnum.PENDING_APPROVAL.id)
+                data6.put("createdBy", user.id)
+                data6.put("updatedBy", user.id)
+
+                sqlSessionFactory.openSession()
+                    .update("ApprovalChainTransactionMapper.insertSaveMonthlyToSpecial", data6)
+            }
+
+
+
 
 
         } catch (e: Exception) {
