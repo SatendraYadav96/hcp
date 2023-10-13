@@ -285,7 +285,7 @@ open class NewAllocationController @Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
-    @GetMapping("/getMultipleAllocation")
+    @PostMapping("/getMultipleAllocation")
     open fun getMultipleAllocation(@RequestBody ccmId: Array<String>): ResponseEntity<*> {
         val data = newAllocationService.getMultipleAllocation(ccmId)
         return ResponseEntity(data, HttpStatus.OK)

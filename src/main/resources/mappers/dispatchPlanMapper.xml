@@ -174,10 +174,12 @@
 
     <select id="searchSpecialPlanWithoutRemarks" resultMap="dispatchPlanResultMap" >
         SELECT * FROM DISPATCH_PLAN_DIP WHERE MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND ID_STATUS_SLV_DIP = #{status}
+                                          AND IS_SPECIAL_DIP = 1
     </select>
 
     <select id="searchSpecialPlanWithRemarks" resultMap="dispatchPlanResultMap" >
-        SELECT * FROM DISPATCH_PLAN_DIP WHERE MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND ID_STATUS_SLV_DIP = #{status} AND REMARKS_DIP = {remark}
+        SELECT * FROM DISPATCH_PLAN_DIP WHERE MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND ID_STATUS_SLV_DIP = #{status} AND REMARKS_DIP = #{remark}
+        AND IS_SPECIAL_DIP = 1
     </select>
 
     <delete id="deleteSpecialAllocation">

@@ -908,7 +908,7 @@ class NewAllocationRepository(
             data.put("status", status)
 
             plan =
-                sqlSessionFactory.openSession().selectList("DispatchPlanMapper.searchSpecialPlanWithoutRemarks", data)
+                sqlSessionFactory.openSession().selectList<DispatchPlan>("DispatchPlanMapper.searchSpecialPlanWithoutRemarks", data)
 
         } else {
             var data0: MutableMap<String, Any> = mutableMapOf()
@@ -916,8 +916,9 @@ class NewAllocationRepository(
             data0.put("month", month)
             data0.put("year", year)
             data0.put("status", status)
+            data0.put("remark",remark)
 
-            plan = sqlSessionFactory.openSession().selectList("DispatchPlanMapper.searchSpecialPlanWithRemarks", data0)
+            plan = sqlSessionFactory.openSession().selectList<DispatchPlan>("DispatchPlanMapper.searchSpecialPlanWithRemarks", data0)
         }
 
 
