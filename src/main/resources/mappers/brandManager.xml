@@ -67,14 +67,19 @@
     </select>
 
 
-    <select id="submitMonthlyAllocation" resultMap="brandManagerResultMap">
-        select * from BRANDMANAGER_BRAND_BBR where ID_USR_BBR = #{id}
+    <select id="submitMonthlyAllocation" resultType="com.squer.promobee.controller.dto.SpecialBrandManagerDTO">
+        select ID_BBR AS 'id',ID_USR_BBR AS 'userId',ID_BRD_BBR AS 'brandId' from BRANDMANAGER_BRAND_BBR where ID_USR_BBR = #{id}
+
+    </select>
+
+    <select id="submitSpecialAllocation" resultType="com.squer.promobee.controller.dto.SpecialBrandManagerDTO" >
+        select ID_BBR AS 'id',ID_USR_BBR AS 'userId',ID_BRD_BBR AS 'brandId' from BRANDMANAGER_BRAND_BBR where ID_USR_BBR = #{userId}
 
     </select>
 
 
-    <select id="submitVirtualAllocation" resultMap="brandManagerResultMap">
-        select * from BRANDMANAGER_BRAND_BBR where ID_USR_BBR = #{id}
+    <select id="submitVirtualAllocation" resultType="com.squer.promobee.controller.dto.SpecialBrandManagerDTO">
+        select ID_BBR AS 'id',ID_USR_BBR AS 'userId',ID_BRD_BBR AS 'brandId' from BRANDMANAGER_BRAND_BBR where ID_USR_BBR = #{id}
 
     </select>
 

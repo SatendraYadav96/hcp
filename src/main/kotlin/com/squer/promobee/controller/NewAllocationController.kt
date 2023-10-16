@@ -184,7 +184,7 @@ open class NewAllocationController @Autowired constructor(
 
 
     @PostMapping("/submitSpecialAllocation")
-    open fun submitSpecialAllocation(@RequestBody alloc : submitAllocationDTO): ResponseEntity<*>{
+    open fun submitSpecialAllocation(@RequestBody alloc : submitSpecialAllocationDTO): ResponseEntity<*>{
         val items = newAllocationService.submitSpecialAllocation(alloc)
         return ResponseEntity(items, HttpStatus.OK)
     }
@@ -288,16 +288,23 @@ open class NewAllocationController @Autowired constructor(
 
 
 
-    @PostMapping("/getMultipleAllocation")
-    open fun getMultipleAllocation(@RequestBody mulAlloc: List<MultipleAllocationExcelDTO>): ResponseEntity<*> {
-        val data = newAllocationService.getMultipleAllocation(mulAlloc)
+    @PostMapping("/getMultipleAllocationCostCenter")
+    open fun getMultipleAllocationCostCenter(@RequestBody mulAlloc: List<MultipleAllocationExcelDTO>): ResponseEntity<*> {
+        val data = newAllocationService.getMultipleAllocationCostCenter(mulAlloc)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @PostMapping("/getMultipleAllocationAll")
+    open fun getMultipleAllocationAll(@RequestBody mulAlloc: List<MultipleAllocationExcelDTO>): ResponseEntity<*> {
+        val data = newAllocationService.getMultipleAllocationAll(mulAlloc)
         return ResponseEntity(data, HttpStatus.OK)
     }
 
 
     @PostMapping("/getMultipleAllocationExcel")
-    open fun getMultipleAllocationExcel(@RequestBody mulAlloc: List<MultipleAllocationExcelDTO>): ResponseEntity<*> {
-        val data = newAllocationService.getMultipleAllocationExcel(mulAlloc)
+    open fun getMultipleAllocationInventory(@RequestBody mulAlloc: List<MultipleAllocationExcelDTO>): ResponseEntity<*> {
+        val data = newAllocationService.getMultipleAllocationInventory(mulAlloc)
         return ResponseEntity(data, HttpStatus.OK)
     }
 

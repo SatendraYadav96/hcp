@@ -29,12 +29,12 @@
 
     <insert id="submitMonthlyAllocation">
         INSERT INTO DISPATCH_PLAN_BRAND_DPBT (ID_DPBT,ID_DIP_DPBT,ID_BRD_DPBT,ID_DIP_OWNER_DPBT,CREATED_ON_DPBT,CREATED_BY_DPBT,UPDATED_ON_DPBT,UPDATED_BY_DPBT)
-        values(#{id},#{dipId},#{brdId},#{dipOwnerId},GETDTE(),#{createdBy},GETDTE(),#{updatedBy})
+        values(#{id},#{dipId},#{brdId},#{dipOwnerId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy})
     </insert>
 
     <insert id="submitVirtualAllocation">
         INSERT INTO DISPATCH_PLAN_BRAND_DPBT (ID_DPBT,ID_DIP_DPBT,ID_BRD_DPBT,ID_DIP_OWNER_DPBT,CREATED_ON_DPBT,CREATED_BY_DPBT,UPDATED_ON_DPBT,UPDATED_BY_DPBT)
-        values(#{id},#{dipId},#{brdId},#{dipOwnerId},GETDTE(),#{createdBy},GETDTE(),#{updatedBy})
+        values(#{id},#{dipId},#{brdId},#{dipOwnerId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy})
     </insert>
 
 

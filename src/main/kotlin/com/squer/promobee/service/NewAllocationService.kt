@@ -58,7 +58,7 @@ interface NewAllocationService {
 
    fun deleteSpecialAllocationDID( dipId: String): Map<String, Any>
 
-   fun submitSpecialAllocation (alloc : submitAllocationDTO)
+   fun submitSpecialAllocation (alloc : submitSpecialAllocationDTO)
 
    fun getAllocationStatusDropdown(): List<AllocationStatusDropdownDTO>
 
@@ -88,9 +88,11 @@ interface NewAllocationService {
 
    fun getBlockedRecipients (code: String): List<BlockedRecipientDTO>
 
-   fun getMultipleAllocation (mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationDTO>
+   fun getMultipleAllocationCostCenter (mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationDTO>
 
-   fun getMultipleAllocationExcel (mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationInventoryDTO>
+   fun getMultipleAllocationAll (mulAlloc: List<MultipleAllocationExcelDTO>): List<CompleteMultipleAllocationDTO>
+
+   fun getMultipleAllocationInventory (mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationInventoryDTO>
 
 
 

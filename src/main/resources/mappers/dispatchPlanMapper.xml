@@ -77,6 +77,11 @@
         where MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND ID_OWNER_USR_DIP = #{owner} AND IS_SPECIAL_DIP = 0
     </select>
 
+    <select id="getSpecialDispatchPlanForAllocation" resultMap="dispatchPlanResultMap" >
+        select * from DISPATCH_PLAN_DIP
+        where MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND REMARKS_DIP = #{name} AND IS_SPECIAL_DIP = 1
+    </select>
+
 
     <update id="generateInvoiceDispatchPlanFullyInvoiced">
 
@@ -157,7 +162,7 @@
 
     <update id="submitMonthlyAllocation">
 
-        UPDATE DISPATCH_PLAN_DIP SET   SUBMISSION_DATE_DIP = GETDATE() , ID_STATUS_SLV_DIP = #{planStatus} ,, ID_INVOICE_STATUS_SLV_DIP = #{invoiceStatus} ,UPDATED_ON_DIP = GETDATE(), UPDATED_BY_DIP = #{updatedBy}
+        UPDATE DISPATCH_PLAN_DIP SET   SUBMISSION_DATE_DIP = GETDATE() , ID_STATUS_SLV_DIP = #{planStatus} , ID_INVOICE_STATUS_SLV_DIP = #{invoiceStatus} ,UPDATED_ON_DIP = GETDATE(), UPDATED_BY_DIP = #{updatedBy}
          WHERE ID_DIP = #{id}
     </update>
 

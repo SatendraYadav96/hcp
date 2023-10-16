@@ -1,6 +1,7 @@
 package com.squer.promobee.controller.dto
 
 class MultipleAllocationInventoryDTO {
+
     var inventoryId: String? = null
     var productName: String? = null
     var productCode: String? = null

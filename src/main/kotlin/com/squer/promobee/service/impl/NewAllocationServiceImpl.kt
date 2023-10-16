@@ -128,7 +128,7 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.deleteSpecialAllocationDID(dipId)
     }
 
-    override fun submitSpecialAllocation(alloc: submitAllocationDTO) {
+    override fun submitSpecialAllocation(alloc: submitSpecialAllocationDTO) {
         return newAllocationRepository.submitSpecialAllocation(alloc)
     }
 
@@ -185,12 +185,16 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getBlockedRecipients(code)
     }
 
-    override fun getMultipleAllocation(mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationDTO> {
-        return newAllocationRepository.getMultipleAllocation(mulAlloc)
+    override fun getMultipleAllocationCostCenter(mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationDTO> {
+        return newAllocationRepository.getMultipleAllocationCostCenter(mulAlloc)
     }
 
-    override fun getMultipleAllocationExcel(mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationInventoryDTO> {
-        return newAllocationRepository.getMultipleAllocationExcel(mulAlloc)
+    override fun getMultipleAllocationAll(mulAlloc: List<MultipleAllocationExcelDTO>): List<CompleteMultipleAllocationDTO> {
+        return newAllocationRepository.getMultipleAllocationAll(mulAlloc)
+    }
+
+    override fun getMultipleAllocationInventory(mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationInventoryDTO> {
+        return newAllocationRepository.getMultipleAllocationInventory(mulAlloc)
     }
 
 
