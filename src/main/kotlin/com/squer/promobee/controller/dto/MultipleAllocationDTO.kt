@@ -10,4 +10,17 @@ class MultipleAllocationDTO {
     var designationId:String?= null
     var designationName:String?= null
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

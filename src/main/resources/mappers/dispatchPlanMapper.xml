@@ -177,6 +177,13 @@
                                           AND IS_SPECIAL_DIP = 1
     </select>
 
+
+
+    <select id="createSpecialPlan" resultMap="dispatchPlanResultMap" >
+        SELECT * FROM DISPATCH_PLAN_DIP WHERE MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND REMARKS_DIP = #{name}
+                                          AND IS_SPECIAL_DIP = 1
+    </select>
+
     <select id="searchSpecialPlanWithRemarks" resultMap="dispatchPlanResultMap" >
         SELECT * FROM DISPATCH_PLAN_DIP WHERE MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND ID_STATUS_SLV_DIP = #{status} AND REMARKS_DIP = #{remark}
         AND IS_SPECIAL_DIP = 1

@@ -271,6 +271,8 @@ open class EmailController@Autowired constructor(
 
     // BU CHAMP COMPLAINCE MAIL
 
+
+
     @GetMapping("/Send_Mail_optima/{uploadId}")
     fun Send_Mail_optima  (response: HttpServletResponse,uploadId:String): ResponseEntity<*> {
 

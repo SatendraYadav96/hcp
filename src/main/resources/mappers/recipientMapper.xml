@@ -53,21 +53,21 @@
 <!--        <result property="team.id" column="id_tem_rct"/>-->
 <!--        <result property="team.name" column="name_tem"/>-->
         <association property="designation" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
-            <id property="id" column="id_desg_ulv_rct"/>
+            <id property="id" column="ID_DESG_ULV_RCT"/>
             <result property="name" column="name_ulv"/>
         </association>
         <association property="team" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
-            <id property="id" column="id_tem_rct"/>
+            <id property="id" column="ID_TEM_RCT"/>
             <result property="name" column="name_tem"/>
         </association>
 
         <association property="recipientStatus" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
-            <id property="id" column="id_status_slv_rct"/>
+            <id property="id" column="ID_STATUS_SLV_RCT"/>
             <result property="name" column="name_slv"/>
         </association>
 
         <association property="businessUnit" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
-            <id property="id" column="id_bum_rct"/>
+            <id property="id" column="ID_BUM_RCT"/>
             <result property="name" column="name_bum"/>
         </association>
 
@@ -151,6 +151,18 @@
                               JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_TEM_RCT = TEM.ID_TEM
         WHERE ID_CCM = #{ccmId} AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
     </select>
+
+
+    <select id="getRecipientSpecialAllocation" resultMap="recipientResultMap">
+
+        SELECT RCT.* from BRAND_MASTER_BRD BRD
+                              JOIN TEAM_BRAND_TBR TBR ON TBR.ID_BRD_TBR = BRD.ID_BRD
+                              JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = TBR.ID_TEM_TBR
+                              JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_TEM_RCT = TEM.ID_TEM
+        WHERE ID_brd = #{ccmId} AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
+    </select>
+
+
 
     <select id="getRecipientForVirtualTeamForCommonAllocation" resultMap="recipientResultMap">
         select RCT.* from USER_MASTER_USR USR

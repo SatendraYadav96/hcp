@@ -66,4 +66,27 @@
 
 
 
+
+<!--    <select id="getMultipleAllocation" resultType="com.squer.promobee.controller.dto.MultipleAllocationDTO" >-->
+<!--        SELECT distinct  tem.ID_TEM as 'teamId',tem.NAME_TEM as 'teamName',rct.ID_RCT as 'recipientId',rct.NAME_RCT as 'recipientName',rct.CODE_RCT as 'recipientCode',-->
+<!--                ulv.ID_ULV as 'designationId',ulv.NAME_ULV as 'designationName',SUM_INV.productName as 'productName',SUM_INV.productCode as 'productCode',SUM_INV.poNo as 'poNo',SUM_INV.basepack as 'basepack'-->
+<!--				,SUM_INV.bacthNo as 'batchNo',SUM_INV.invId as 'invId'-->
+<!--        FROM  COST_CENTER_MASTER_CCM CCM-->
+<!--                  JOIN COSTCENTER_BRAND_CBR CBR ON CBR.ID_CCM_CBR = ccm.ID_CCM-->
+<!--                  JOIN BRAND_MASTER_BRD BRD ON BRD.ID_BRD = CBR.ID_BRD_CBR-->
+<!--                  JOIN TEAM_BRAND_TBR TBR ON TBR.ID_BRD_TBR = BRD.ID_BRD-->
+<!--                  JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = TBR.ID_TEM_TBR-->
+<!--                  JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_TEM_RCT = TEM.ID_TEM-->
+<!--                  JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT-->
+<!--                  left join ( SELECT ITM.NAME_ITM as 'productName',itm.CODE_ITM as 'productCode',inv.PO_NO_INV as 'poNo',-->
+<!--                                      inv.PACK_SIZE_INV as 'basepack',inv.BATCH_NO_INV as 'bacthNo',inv.ID_CCM_INV as 'invId'  FROM INVENTORY_INV INV-->
+<!--                                                                                                                                        JOIN ITEM_MASTER_ITM ITM ON ITM.ID_ITM = INV.ID_ITM_INV-->
+<!--                              WHERE INV.ID_INV = #{inventoryId}) as SUM_INV ON SUM_INV.invId = ccm.ID_CCM-->
+
+<!--        WHERE CCM.ID_CCM = #{ccmId} and rct.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'-->
+
+<!--    </select>-->
+
+
+
 </mapper>
