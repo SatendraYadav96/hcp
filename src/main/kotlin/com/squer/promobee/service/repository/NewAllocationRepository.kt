@@ -2331,32 +2331,45 @@ class NewAllocationRepository(
 
             var allocation = mutableListOf<MultipleAllocationDTO>()
 
-            var multiAllocation = mutableListOf<MultipleAllocationDTO>()
 
             var costCenterIds = mulAlloc.map { it.ccmId }
 
             data.put("ccmId", costCenterIds.distinct())
 
-            return sqlSessionFactory.openSession()
-                .selectList<MultipleAllocationDTO>("AllocationRuleMapper.getMultipleAllocation", data)
-//            mulAlloc.forEach {it ->
-//
-//
-//                data.put("ccmId",it.ccmId!!)
-//                data.put("inventoryId",it.inventoryId!!)
-//
-//                allocation = sqlSessionFactory.openSession().selectList<MultipleAllocationDTO>("AllocationRuleMapper.getMultipleAllocation", data)
-//
-//
-//
-//                multiAllocation.addAll(allocation)
-//
-//            }
-//
-//            return  multiAllocation
+            return sqlSessionFactory.openSession().selectList<MultipleAllocationDTO>("AllocationRuleMapper.getMultipleAllocation", data)
+
 
 
         }
+
+
+
+
+
+    fun getMultipleAllocationExcel(mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationInventoryDTO> {
+
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        var allocation = mutableListOf<MultipleAllocationInventoryDTO>()
+
+
+
+        var inventoryIds = mulAlloc.map { it.inventoryId }
+
+        data.put("inventoryId", inventoryIds.distinct())
+
+        return sqlSessionFactory.openSession().selectList<MultipleAllocationInventoryDTO>("AllocationRuleMapper.getMultipleAllocationExcel", data)
+
+
+
+    }
+
+
+
 
 
 

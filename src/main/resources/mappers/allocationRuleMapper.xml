@@ -89,4 +89,27 @@
 
 
 
+
+    <select id="getMultipleAllocationExcel" resultType="com.squer.promobee.controller.dto.MultipleAllocationInventoryDTO" >
+        SELECT inv.ID_INV as 'inventoryId',itm.NAME_ITM as 'productName',itm.CODE_ITM as 'productCode',inv.PO_NO_INV as 'poNo',inv.PACK_SIZE_INV as 'basepack',inv.BATCH_NO_INV as 'batchNo'
+        FROM INVENTORY_INV INV
+        JOIN ITEM_MASTER_ITM ITM ON ITM.ID_ITM = INV.ID_ITM_INV
+        WHERE INV.ID_INV in<foreach item="item" index="index" collection="inventoryId"
+                                    open="(" separator="," close=")">
+        #{item}
+    </foreach>
+    UNION
+        SELECT inv.ID_INV as 'inventoryId',smp.NAME_SMP as 'productName',smp.LMID_SMP as 'productCode',inv.PO_NO_INV as 'poNo',inv.PACK_SIZE_INV as 'basepack',inv.BATCH_NO_INV as 'batchNo'
+        FROM INVENTORY_INV INV
+        JOIN SAMPLE_MASTER_SMP SMP ON SMP.ID_SMP = INV.ID_ITM_INV
+        WHERE INV.ID_INV in<foreach item="item" index="index" collection="inventoryId"
+                                    open="(" separator="," close=")">
+        #{item}
+    </foreach>
+
+
+    </select>
+
+
+
 </mapper>

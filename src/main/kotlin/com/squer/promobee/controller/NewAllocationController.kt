@@ -289,8 +289,15 @@ open class NewAllocationController @Autowired constructor(
 
 
     @PostMapping("/getMultipleAllocation")
-    open fun getMultipleAllocationExcel(@RequestBody mulAlloc: List<MultipleAllocationExcelDTO>): ResponseEntity<*> {
+    open fun getMultipleAllocation(@RequestBody mulAlloc: List<MultipleAllocationExcelDTO>): ResponseEntity<*> {
         val data = newAllocationService.getMultipleAllocation(mulAlloc)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @PostMapping("/getMultipleAllocationExcel")
+    open fun getMultipleAllocationExcel(@RequestBody mulAlloc: List<MultipleAllocationExcelDTO>): ResponseEntity<*> {
+        val data = newAllocationService.getMultipleAllocationExcel(mulAlloc)
         return ResponseEntity(data, HttpStatus.OK)
     }
 

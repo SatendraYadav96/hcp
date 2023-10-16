@@ -189,6 +189,9 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getMultipleAllocation(mulAlloc)
     }
 
+    override fun getMultipleAllocationExcel(mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationInventoryDTO> {
+        return newAllocationRepository.getMultipleAllocationExcel(mulAlloc)
+    }
 
 
 
