@@ -8,10 +8,14 @@ import com.squer.promobee.security.util.SecurityUtility
 import com.squer.promobee.service.repository.domain.*
 import org.apache.ibatis.session.SqlSessionFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
+import java.io.ByteArrayOutputStream
+import java.io.FileOutputStream
+import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -34,6 +38,9 @@ class NewAllocationRepository(
 
     @Autowired
     lateinit var masterRepository: MasterRepository
+
+    @Value("C:\\upload\\transporter\\csv\\file.csv")
+    private lateinit var csvPath: String
 
 
     fun getTseList(id: String): List<TseListDTO> {
@@ -433,7 +440,7 @@ class NewAllocationRepository(
         inventoryId: String,
         month: Int,
         year: Int,
-        isSpecialDispatch: Int
+        isSpecialDispatch: Int,
     ): List<DesignationWiseQuantityAllocatedDTO> {
 
         val user =
@@ -523,7 +530,7 @@ class NewAllocationRepository(
     fun getTeamForDifferentialAllocation(
         planId: String,
         teamId: String,
-        inventoryId: String
+        inventoryId: String,
     ): List<AllocationDifferentialRecipientDTO> {
 
         val user =
@@ -1802,7 +1809,7 @@ class NewAllocationRepository(
         month: Int,
         year: Int,
         isSpecialDispatch: Int,
-        planId: String
+        planId: String,
     ): List<DesignationWiseQuantityAllocatedDTO> {
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -1847,7 +1854,7 @@ class NewAllocationRepository(
     fun getVirtualTeamForDifferentialAllocation(
         planId: String,
         teamId: String,
-        inventoryId: String
+        inventoryId: String,
     ): List<AllocationDataTeamPopupDetailsDTO> {
 
         val user =
@@ -1889,7 +1896,7 @@ class NewAllocationRepository(
     fun getVirtualQuantityAllocatedDifferentialRecipient(
         planId: String,
         inventoryId: String,
-        teamId: String
+        teamId: String,
     ): List<DifferentialRecipientAllocationDTO> {
 
         val user =
@@ -2317,8 +2324,8 @@ class NewAllocationRepository(
 
             var data: MutableMap<String, Any> = mutableMapOf()
 
-            data.put("code", code)
 
+            data.put("code", code)
             return sqlSessionFactory.openSession()
                 .selectList<BlockedRecipientDTO>("AllocationRuleMapper.getBlockedRecipients", data)
 
@@ -2345,16 +2352,22 @@ class NewAllocationRepository(
     }
 
 
-        fun getMultipleAllocationAll(mulAlloc: List<MultipleAllocationExcelDTO>): List<CompleteMultipleAllocationDTO> {
+        fun getMultipleAllocationAll(mulAlloc: List<MultipleAllocationExcelDTO>): ByteArray {
 
             val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-            var multipleAllocation = mutableListOf<CompleteMultipleAllocationDTO>()
+            var multipleAllocations = mutableListOf<CompleteMultipleAllocationDTO>()
+
+            var bytes = byteArrayOf()
+
+            val bos = ByteArrayOutputStream()
 
 
             var data: MutableMap<String, Any> = mutableMapOf()
 
             var allocation = mutableListOf<CompleteMultipleAllocationDTO>()
+
+            var MultiAlloca = mutableListOf<CompleteMultipleAllocationDTO>()
 
 
             var costCenterIds = mulAlloc.map { it.ccmId }
@@ -2363,7 +2376,7 @@ class NewAllocationRepository(
 
 //            return sqlSessionFactory.openSession().selectList<MultipleAllocationDTO>("AllocationRuleMapper.getMultipleAllocation", data)
 
-            allocation = sqlSessionFactory.openSession().selectList<CompleteMultipleAllocationDTO>("AllocationRuleMapper.getMultipleAllocation", data)
+            allocation = sqlSessionFactory.openSession().selectList<CompleteMultipleAllocationDTO>("AllocationRuleMapper.getMultipleAllocationAll", data)
 
 
 
@@ -2376,16 +2389,107 @@ class NewAllocationRepository(
 
             data.put("inventoryId", inventoryIds.distinct())
 
-            allocationInventory =  sqlSessionFactory.openSession().selectList<CompleteMultipleAllocationDTO>("AllocationRuleMapper.getMultipleAllocationExcel", data)
+            allocationInventory =  sqlSessionFactory.openSession().selectList<CompleteMultipleAllocationDTO>("AllocationRuleMapper.getMultipleAllocationExcelAll", data)
 
 
-            multipleAllocation = allocation.plus(allocationInventory) as MutableList<CompleteMultipleAllocationDTO>
-
-            return multipleAllocation
+            multipleAllocations = allocation.plus(allocationInventory).toMutableList<CompleteMultipleAllocationDTO>()
 
 
+
+            fun OutputStream.writeCsv(allocation: List<CompleteMultipleAllocationDTO>) {
+
+                val writer = bufferedWriter()
+                writer.write(""""team", "ffName", "ffCode","designation" """)
+                writer.newLine()
+                allocation.forEach {
+                    writer.write("${it.teamName},${it.recipientName},${it.recipientCode},${it.designationName}")
+                    writer.newLine()
+                }
+
+                writer.flush()
+            }
+
+            var csvByteArray =  FileOutputStream("D:\\UNS_MAILS\\Allocation.csv").apply { writeCsv(allocation) }.toString().toByteArray()
+
+            fun csvByteArrayToByteArray(csvByteArray: ByteArray): ByteArray {
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                byteArrayOutputStream.write(csvByteArray)
+                return byteArrayOutputStream.toByteArray()
+
+            }
+            var byteArray = csvByteArrayToByteArray(csvByteArray)
+
+
+
+
+            return byteArray
 
         }
+
+
+
+
+
+
+//            val xlwb = XSSFWorkbook()
+//
+//            val xlws = xlwb.createSheet("Multiple Allocation")
+//            var row = xlws.createRow(0)
+//            row.createCell(0).setCellValue("team")
+//            row.createCell(1).setCellValue("ffName")
+//            row.createCell(2).setCellValue("ffCode")
+//            row.createCell(3).setCellValue("designation")
+//            row.createCell(4).setCellValue("productCode/productName/basePack/poNo/batchNo")
+//            var rowCount = 1
+//
+//
+//            allocation.forEach {
+//
+//                var columnCount = 0
+//                var row = xlws.createRow(rowCount++)
+//                row.createCell(columnCount++).setCellValue("${it.teamName}")
+//                row.createCell(columnCount++).setCellValue("${it.recipientName}")
+//                row.createCell(columnCount++).setCellValue("${it.recipientCode}")
+//                row.createCell(columnCount++).setCellValue("${it.designationName}")
+//
+//            }
+//
+//            allocationInventory.forEach {
+//                var columnCount = 0
+//                var row = xlws.createRow(rowCount++)
+//                row.createCell(columnCount++).setCellValue("${it.productCode+"/"!!.plus(it.productName+"/").plus(it.basepack+"/").plus(it.poNo+"/").plus(it.batchNo)}")
+//            }
+
+
+
+
+//            try {
+//                xlwb.write(bos)
+//            } finally {
+//                bos.close()
+//            }
+
+
+
+
+//         bytes = bos.toByteArray()
+//
+//            var file = File("D:\\UNS_MAILS\\Multiple Allocation.xlsx");
+
+
+
+
+
+   // return bytes
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2414,10 +2518,16 @@ class NewAllocationRepository(
 
 
 
+}
 
 
 
-    }
+
+
+
+
+
+
 
 
 

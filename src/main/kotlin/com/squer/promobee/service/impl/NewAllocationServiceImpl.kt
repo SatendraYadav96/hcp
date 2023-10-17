@@ -189,7 +189,7 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getMultipleAllocationCostCenter(mulAlloc)
     }
 
-    override fun getMultipleAllocationAll(mulAlloc: List<MultipleAllocationExcelDTO>): List<CompleteMultipleAllocationDTO> {
+    override fun getMultipleAllocationAll(mulAlloc: List<MultipleAllocationExcelDTO>): ByteArray {
         return newAllocationRepository.getMultipleAllocationAll(mulAlloc)
     }
 
