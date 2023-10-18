@@ -13,15 +13,12 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
-import java.io.ByteArrayOutputStream
-import java.io.FileOutputStream
-import java.io.OutputStream
+import java.io.*
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
-
 
 @Repository
 class NewAllocationRepository(
@@ -39,7 +36,7 @@ class NewAllocationRepository(
     @Autowired
     lateinit var masterRepository: MasterRepository
 
-    @Value("C:\\upload\\transporter\\csv\\file.csv")
+    @Value("C:\\UNS_MAILS\\Allocation.csv")
     private lateinit var csvPath: String
 
 
@@ -2360,7 +2357,7 @@ class NewAllocationRepository(
 
             var bytes = byteArrayOf()
 
-            val bos = ByteArrayOutputStream()
+            var bos = ByteArrayOutputStream()
 
 
             var data: MutableMap<String, Any> = mutableMapOf()
@@ -2395,11 +2392,22 @@ class NewAllocationRepository(
             multipleAllocations = allocation.plus(allocationInventory).toMutableList<CompleteMultipleAllocationDTO>()
 
 
+            var header = ""
+
 
             fun OutputStream.writeCsv(allocation: List<CompleteMultipleAllocationDTO>) {
 
-                val writer = bufferedWriter()
-                writer.write(""""team", "ffName", "ffCode","designation" """)
+//                var byteArrayOutputStream = ByteArrayOutputStream()
+//                var writer = byteArrayOutputStream.bufferedWriter()
+
+                var writer = bufferedWriter()
+
+
+                 header = """" team", ffName, ffCode,designation, """
+                allocationInventory.forEach {
+                    header = header + """ ${it.productCode}/${it.productName}/${it.basepack}/${it.poNo}/${it.batchNo}, """
+                }
+                writer.write(header)
                 writer.newLine()
                 allocation.forEach {
                     writer.write("${it.teamName},${it.recipientName},${it.recipientCode},${it.designationName}")
@@ -2407,88 +2415,43 @@ class NewAllocationRepository(
                 }
 
                 writer.flush()
+
+//                var byteArray = byteArrayOutputStream.toByteArray() // Convert data to ByteArray
+//                this.write(byteArray)
+
+
             }
 
-            var csvByteArray =  FileOutputStream("D:\\UNS_MAILS\\Allocation.csv").apply { writeCsv(allocation) }.toString().toByteArray()
+//            var byteArrayOutputStream = ByteArrayOutputStream()
+//
+//            byteArrayOutputStream.writeCsv(allocation)
+//
+//            var byteArray = byteArrayOutputStream.toByteArray()
+//
+//            return byteArray
 
-            fun csvByteArrayToByteArray(csvByteArray: ByteArray): ByteArray {
-                val byteArrayOutputStream = ByteArrayOutputStream()
-                byteArrayOutputStream.write(csvByteArray)
-                return byteArrayOutputStream.toByteArray()
+           // var csvFile =  FileOutputStream("D:\\UNS_MAILS\\Allocation.csv").apply { writeCsv(allocation) }
 
-            }
-            var byteArray = csvByteArrayToByteArray(csvByteArray)
+          //  var tempCsvFile = File("D:\\UNS_MAILS\\Allocation.csv")
 
 
 
+            var tempCsvFile = File(csvPath)
 
-            return byteArray
+            var csvFile = FileOutputStream(tempCsvFile).use {it.writeCsv(allocation) }
+
+
+
+
+          var result =  File(csvPath).readBytes()
+
+            File(csvPath).delete()
+
+            return result
+
+
 
         }
-
-
-
-
-
-
-//            val xlwb = XSSFWorkbook()
-//
-//            val xlws = xlwb.createSheet("Multiple Allocation")
-//            var row = xlws.createRow(0)
-//            row.createCell(0).setCellValue("team")
-//            row.createCell(1).setCellValue("ffName")
-//            row.createCell(2).setCellValue("ffCode")
-//            row.createCell(3).setCellValue("designation")
-//            row.createCell(4).setCellValue("productCode/productName/basePack/poNo/batchNo")
-//            var rowCount = 1
-//
-//
-//            allocation.forEach {
-//
-//                var columnCount = 0
-//                var row = xlws.createRow(rowCount++)
-//                row.createCell(columnCount++).setCellValue("${it.teamName}")
-//                row.createCell(columnCount++).setCellValue("${it.recipientName}")
-//                row.createCell(columnCount++).setCellValue("${it.recipientCode}")
-//                row.createCell(columnCount++).setCellValue("${it.designationName}")
-//
-//            }
-//
-//            allocationInventory.forEach {
-//                var columnCount = 0
-//                var row = xlws.createRow(rowCount++)
-//                row.createCell(columnCount++).setCellValue("${it.productCode+"/"!!.plus(it.productName+"/").plus(it.basepack+"/").plus(it.poNo+"/").plus(it.batchNo)}")
-//            }
-
-
-
-
-//            try {
-//                xlwb.write(bos)
-//            } finally {
-//                bos.close()
-//            }
-
-
-
-
-//         bytes = bos.toByteArray()
-//
-//            var file = File("D:\\UNS_MAILS\\Multiple Allocation.xlsx");
-
-
-
-
-
-   // return bytes
-
-
-
-
-
-
-
-
 
 
 
@@ -2517,8 +2480,21 @@ class NewAllocationRepository(
     }
 
 
+    fun byteArrayToByteArrayOutputStream(byteArray: ByteArray): ByteArrayOutputStream {
+        return ByteArrayOutputStream().apply {
+            write(byteArray)
+        }
+    }
+
+
 
 }
+
+private fun ByteArrayOutputStream.write(bos: ByteArrayOutputStream) {
+
+}
+
+
 
 
 

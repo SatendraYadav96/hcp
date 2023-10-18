@@ -94,6 +94,18 @@
         #{item}
     </foreach>
         AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
+        UNION
+        SELECT distinct  tem.ID_TEM as 'teamId',tem.NAME_TEM as 'teamName',rct.ID_RCT as 'recipientId',rct.NAME_RCT as 'recipientName',rct.CODE_RCT as 'recipientCode',
+        ulv.ID_ULV as 'designationId',ulv.NAME_ULV as 'designationName' FROM BRAND_MASTER_BRD BRD
+        JOIN TEAM_BRAND_TBR TBR ON TBR.ID_BRD_TBR = BRD.ID_BRD
+        JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = TBR.ID_TEM_TBR
+        JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_TEM_RCT = TEM.ID_TEM
+        JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
+        WHERE BRD.ID_BRD in<foreach item="item" index="index" collection="ccmId"
+                                    open="(" separator="," close=")">
+        #{item}
+    </foreach>
+        AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
 
     </select>
 
@@ -152,6 +164,14 @@
         SELECT inv.ID_INV as 'inventoryId',itm.NAME_ITM as 'productName',itm.CODE_ITM as 'productCode',inv.PO_NO_INV as 'poNo',inv.PACK_SIZE_INV as 'basepack',inv.BATCH_NO_INV as 'batchNo'
         FROM INVENTORY_INV INV
         JOIN ITEM_MASTER_ITM ITM ON ITM.ID_ITM = INV.ID_ITM_INV
+        WHERE INV.ID_INV in<foreach item="item" index="index" collection="inventoryId"
+                                    open="(" separator="," close=")">
+        #{item}
+    </foreach>
+        UNION
+        SELECT inv.ID_INV as 'inventoryId',smp.NAME_SMP as 'productName',smp.LMID_SMP as 'productCode',inv.PO_NO_INV as 'poNo',inv.PACK_SIZE_INV as 'basepack',inv.BATCH_NO_INV as 'batchNo'
+        FROM INVENTORY_INV INV
+        JOIN SAMPLE_MASTER_SMP SMP ON SMP.ID_SMP = INV.ID_ITM_INV
         WHERE INV.ID_INV in<foreach item="item" index="index" collection="inventoryId"
                                     open="(" separator="," close=")">
         #{item}

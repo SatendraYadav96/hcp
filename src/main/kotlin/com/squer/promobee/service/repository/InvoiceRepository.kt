@@ -47,6 +47,8 @@ class InvoiceRepository(
     @Value("./src/main/resources/htmlPrint/promoPrintInvoice.vm")
     private lateinit var vmConfigPath: String
 
+    @Value("./src/main/resources/htmlPrint/promoPrintLabel.vm")
+    private lateinit var vmConfigPathLabel: String
 
 
     fun getInvoiceHeaderById(id: String): InvoiceHeader {
@@ -542,7 +544,7 @@ class InvoiceRepository(
         ve.init()
         /*  next, get the Template  */
         /*  next, get the Template  */
-        val t: Template = ve.getTemplate("src/main/resources/htmlPrint/promoPrintLabel.vm")
+        val t: Template = ve.getTemplate(vmConfigPathLabel)
         /*  create a context and add data */
         /*  create a context and add data */
         val context = VelocityContext()
