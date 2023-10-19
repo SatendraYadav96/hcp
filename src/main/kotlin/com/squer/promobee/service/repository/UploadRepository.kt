@@ -1737,6 +1737,88 @@ class UploadRepository(
 
 
 
+    fun multipleAllocationUpload(dto: MultipleAllocationUploadDTO) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        val filePath = "${configPath}/multipleAllocationUpload/${dto.fileName}"
+
+        File(filePath).writeBytes(Base64.getDecoder().decode(dto.byteCode.toString()))
+
+        var counter = 0
+
+        val validHeader: Boolean = true
+
+        val line  = ""
+
+        val successCount = 0
+
+        var upl = UploadLog()
+
+        var uplId =  UUID.randomUUID().toString()
+
+        if(dto.byteCode.isEmpty() || dto.byteCode.isBlank()){
+            data.put("id",uplId)
+            data.put("type",UploadTypeEnum.MULTIPLE_ALLOCATION.id)
+            data.put("totalRecord",counter)
+            data.put("recordUpload",counter)
+            data.put("statusId",UploadStatusEnum.FILE_NOT_FOUND.id)
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            data.put("parentId",uplId)
+
+            sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogFileNotFound", data)
+        }
+
+        else{
+            data.put("id",uplId)
+            data.put("type",UploadTypeEnum.MULTIPLE_ALLOCATION.id)
+            data.put("recordUpload",counter)
+            data.put("statusId",UploadStatusEnum.QUEUED.id)
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            data.put("parentId",uplId)
+
+
+            sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogQueued", data)
+        }
+
+
+
+
+
+
+        var headers = mutableListOf<String>("team","ffName","ffCode","designation" )
+
+        var csvReader = CsvReader()
+        csvReader.autoRenameDuplicateHeaders
+        var rows = CsvReader().readAllWithHeader(File(filePath))
+
+
+
+        var i = 0
+
+        rows.forEach {
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+
+
+
+
+        }
+
+
+
+
+    }
+
+
+
+
+
+
 
 }
 

@@ -146,5 +146,9 @@ class UploadServiceImpl @Autowired constructor(
         return uploadRepository.materialExpiryExcelData(uplId)
     }
 
+    override fun multipleAllocationUpload(dto: MultipleAllocationUploadDTO) {
+        return uploadRepository.multipleAllocationUpload(dto)
+    }
+
 
 }

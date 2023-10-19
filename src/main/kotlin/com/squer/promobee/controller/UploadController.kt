@@ -2,6 +2,7 @@ package com.squer.promobee.controller
 
 
 import com.squer.promobee.controller.dto.FileUploadDto
+import com.squer.promobee.controller.dto.MultipleAllocationUploadDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.UploadService
 import lombok.extern.slf4j.Slf4j
@@ -249,6 +250,11 @@ open class UploadController@Autowired constructor(
         return ResponseEntity(excel, HttpStatus.OK)
     }
 
+
+    @PostMapping("/multipleAllocationUpload")
+    fun multipleAllocationUpload(@RequestBody dto: MultipleAllocationUploadDTO) {
+        return uploadService.multipleAllocationUpload(dto)
+    }
 
 
 
