@@ -486,6 +486,13 @@
     </select>
 
 
+    <insert id="insertUploadLogSuccessfully">
+        INSERT INTO UPLOAD_LOG_UPL (ID_UPL,IDTYPESLV_UPL,START_TIME_UPL,END_TIME_UPL,TOTAL_RECORDS_UPL,RECORDS_UPLOAD_UPL,ID_STATUS_SLV_UPL,CREATED_ON_UPL,CREATED_BY_UPL,UPDATED_ON_UPL,UPDATED_BY_UPL,PARENT_ID_UPL)
+        VALUES(#{id},#{type},GETDATE(),GETDATE(),#{totalRecord},#{recordUpload},#{statusId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{parentId})
+    </insert>
+
+
+
 
 
 

@@ -59,5 +59,17 @@
     </select>
 
 
+    <select id="multipleAllocation" resultMap="itemResultMap">
+        SELECT * FROM ITEM_MASTER_ITM WHERE CODE_ITM = #{itemCode}
+
+
+
+
+
+
+    </select>
+
+
+
 
 </mapper>

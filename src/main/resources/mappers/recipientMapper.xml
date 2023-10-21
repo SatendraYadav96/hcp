@@ -170,4 +170,10 @@
         where ID_USR = #{id}
     </select>
 
+    <select id="multipleAllocation" resultMap="recipientResultMap">
+        SELECT * FROM RECIPIENT_MASTER_RCT WHERE CODE_RCT = #{code}
+
+    </select>
+
+
 </mapper>

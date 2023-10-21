@@ -2,14 +2,17 @@ package com.squer.promobee.service.repository
 
 
 import com.github.doyaaaaaken.kotlincsv.client.CsvReader
+import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import com.squer.promobee.api.v1.enums.DispatchDetailStatusEnum
 import com.squer.promobee.api.v1.enums.UploadStatusEnum
 import com.squer.promobee.api.v1.enums.UploadTypeEnum
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
-import com.squer.promobee.service.repository.domain.UploadLog
+import com.squer.promobee.service.repository.domain.*
 import org.apache.ibatis.session.SqlSessionFactory
+import org.springdoc.core.ReturnTypeParser
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -28,6 +31,9 @@ class UploadRepository(
 ): BaseRepository<UploadLog>(
     securityUtility = securityUtility
 ) {
+
+    @Autowired
+    private lateinit var genericReturnTypeParser: ReturnTypeParser
 
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
@@ -1747,6 +1753,8 @@ class UploadRepository(
 
         File(filePath).writeBytes(Base64.getDecoder().decode(dto.byteCode.toString()))
 
+
+
         var counter = 0
 
         val validHeader: Boolean = true
@@ -1785,29 +1793,135 @@ class UploadRepository(
             sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogQueued", data)
         }
 
+        var allocationInventory = mutableListOf<MultipleAllocationInventoryDTO>()
 
 
 
 
+      // var headers = mutableListOf<String>("Team Name","Recipient Name","Recipient Code","Designation" ,"productName/porductCode/basePack/poNo/batchNo\n")
 
-        var headers = mutableListOf<String>("team","ffName","ffCode","designation" )
+           csvReader().readAllWithHeader(filePath)
+
+
+//        var headers = mutableListOf<String>()
+//
+//        headers[0] = "Team Name"
+//        headers[1] = "Recipient Name"
+//        headers[2] = "Recipient Code"
+//        headers[3] = "Designation"
+
+        // Read CSV file
+        var csvReaders = CsvReader()
+        var csvData = csvReaders.readAll(File(filePath))
+
+        // Extract headers horizontally
+        var headerRow = csvData.firstOrNull() ?: emptyList()
+
+
+        println("Headers: $headerRow")
+
+
+
 
         var csvReader = CsvReader()
-        csvReader.autoRenameDuplicateHeaders
+       csvReader.autoRenameDuplicateHeaders
+
+
+
+
+
+
         var rows = CsvReader().readAllWithHeader(File(filePath))
 
+        var i = 4
+
+        var invOG = mutableListOf<Inventory>()
+
+        var inv1 = mutableListOf<Inventory>()
+
+        if(headerRow[i].length!! >= i ) {
 
 
-        var i = 0
 
-        rows.forEach {
             var data: MutableMap<String, Any> = mutableMapOf()
 
+            var item = Item()
+
+            var inv = mutableListOf<Inventory>()
 
 
+
+            var text = headerRow[i]
+
+          var  itemCode = text.split("-")
+
+            data.put("itemCode", itemCode[1])
+
+            item = sqlSessionFactory.openSession().selectOne<Item>("ItemMapper.multipleAllocation",data)
+
+
+            var data1: MutableMap<String, Any> = mutableMapOf()
+
+            data1.put("id",item.id!!)
+
+            inv = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data1)
+
+            invOG.addAll(inv)
+
+
+            i++
 
 
         }
+
+
+        invOG.forEach {
+       var inventoryId = it.id
+
+            rows.forEach {
+
+                var data2: MutableMap<String, Any> = mutableMapOf()
+
+                var dispatchDetail = DispatchDetail()
+
+                var ff = Recipient()
+
+                data2.put("id",UUID.randomUUID().toString())
+                data2.put("planId",dto.planId)
+
+                var data3: MutableMap<String, Any> = mutableMapOf()
+                it.get(headerRow[2].toString().trim())?.let { it1 -> data3.put("code", it1) }
+                ff = sqlSessionFactory.openSession().selectOne<Recipient>("RecipientMapper.multipleAllocation",data3)
+
+                data2.put("inventoryId",inventoryId)
+                data2.put("recipientId",ff.id)
+                it.get(headerRow[4].toString().trim())?.let { it1 -> data2.put("qtyDispatch", it1) }
+                data2.put("quarterlyPlanId","00000000-0000-0000-0000-000000000000")
+                data2.put("detailStatus",DispatchDetailStatusEnum.ALLOCATED.id)
+                data2.put("createdBy",user.id)
+                data2.put("updatedBy",user.id)
+
+                sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocation",data2)
+
+
+
+            }
+            var data: MutableMap<String, Any> = mutableMapOf()
+            data.put("id",uplId)
+            data.put("type",UploadTypeEnum.MULTIPLE_ALLOCATION.id)
+            data.put("totalRecord",rows)
+            data.put("recordUpload",rows)
+            data.put("statusId",UploadStatusEnum.COMPLETED_SUCCESSFULLY.id)
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            data.put("parentId",uplId)
+
+
+            sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogSuccessfully", data)
+
+        }
+
+
 
 
 

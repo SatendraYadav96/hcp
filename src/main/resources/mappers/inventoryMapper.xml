@@ -322,4 +322,11 @@
     </update>
 
 
+
+    <select id="multipleAllocation" resultMap="inventoryResultMap">
+        select * from INVENTORY_INV where ID_ITM_INV = #{id}
+    </select>
+
+
+
 </mapper>
