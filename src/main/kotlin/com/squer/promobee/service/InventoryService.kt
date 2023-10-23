@@ -26,7 +26,7 @@ interface InventoryService {
 
     fun getMaxInvoiceNo( ): Int?
 
-    fun reverseInventory(inv:List<InventoryReversalDTO>)
+    fun reverseInventory(inv:List<ReverseInventoryDTO>)
 
     fun switchInventory(inv: SwitchInventoryDTO)
 

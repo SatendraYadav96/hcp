@@ -72,6 +72,13 @@
         WHERE ID_DIP =  #{id}
     </select>
 
+
+    <select id="reverseInventoryPlan" resultMap="dispatchPlanResultMap" >
+        SELECT * FROM DISPATCH_PLAN_DIP
+        WHERE MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND REMARKS_DIP = #{remarks}
+    </select>
+
+
     <select id="getDispatchPlanForAllocation" resultMap="dispatchPlanResultMap" >
         select * from DISPATCH_PLAN_DIP
         where MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND ID_OWNER_USR_DIP = #{owner} AND IS_SPECIAL_DIP = 0

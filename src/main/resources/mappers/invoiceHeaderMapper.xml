@@ -123,6 +123,12 @@
     </select>
 
 
+    <select id="reverseInventoryInvoice" resultMap="invoiceHeaderResultMap">
+        SELECT INH.* FROM INVOICE_DISPATCH_PLAN_IDP IDP
+                              JOIN INVOICE_HEADER_INH INH ON INH.ID_INH = IDP.ID_INH_IDP
+        WHERE IDP.ID_PLAN_IDP = #{planId}
+    </select>
+
 
     <select id="getVirtualPrintInvoiceHeaders" resultType="com.squer.promobee.controller.dto.InvoicePrintDetailsDTO">
         SELECT  distinct inh.ID_INH as 'inhId',

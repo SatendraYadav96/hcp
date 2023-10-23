@@ -58,7 +58,7 @@ class InventoryServiceImpl @Autowired constructor(
     }
 
 
-    override fun reverseInventory(inv: List<InventoryReversalDTO>) {
+    override fun reverseInventory(inv: List<ReverseInventoryDTO>) {
         inventoryRepository.reverseInventory(inv)
     }
 
