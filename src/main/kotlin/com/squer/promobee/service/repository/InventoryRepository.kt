@@ -203,6 +203,7 @@ class InventoryRepository @Autowired constructor(
             data7.put("year", year)
             data7.put("remarks", reversalRemarks)
 
+
             plan = sqlSessionFactory.openSession().selectList<DispatchPlan>("DispatchPlanMapper.reverseInventoryPlan",data7)
 
             var plans = plan[0]

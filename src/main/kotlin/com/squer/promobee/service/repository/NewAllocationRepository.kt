@@ -2398,7 +2398,7 @@ class NewAllocationRepository(
 
         var header = ""
 
-        var stringArray = ""
+        var stringArray = ByteArray(1000)
 
 
         fun OutputStream.writeCsv(allocation: List<CompleteMultipleAllocationDTO>) {
@@ -2422,7 +2422,9 @@ class NewAllocationRepository(
 
             writer.flush()
 
-            stringArray = writer.toString()
+            stringArray = writer.toString().toByteArray()
+
+            //stringArray.toByteArray()
 
         }
 //
@@ -2432,6 +2434,10 @@ class NewAllocationRepository(
 
         var csvFile = FileOutputStream(tempCsvFile).use { it.writeCsv(allocation) }
 
+//        return stringArray
+
+
+
         var result = File(csvPath).readBytes()
 
         File(csvPath).delete()
@@ -2440,6 +2446,8 @@ class NewAllocationRepository(
 
 
     }
+
+
 //    fun convertDataToCSV(allocation: List<CompleteMultipleAllocationDTO>): String {
 //        var csvHeader = "team, ffName ,ffCode , designation" // Replace with your column names
 //

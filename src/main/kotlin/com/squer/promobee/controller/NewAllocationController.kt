@@ -2,11 +2,15 @@ package com.squer.promobee.controller
 
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.security.domain.User
+import com.squer.promobee.service.EmailService
 import com.squer.promobee.service.NewAllocationService
 import lombok.extern.slf4j.Slf4j
+import org.apache.ibatis.session.SqlSessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
@@ -17,8 +21,13 @@ import java.util.*
 
 @Slf4j
 open class NewAllocationController @Autowired constructor(
-    private val newAllocationService: NewAllocationService
+    private val newAllocationService: NewAllocationService,
+    private val emailService: EmailService,
+    private val mailSender: JavaMailSender
 ){
+
+    @Autowired
+    lateinit var sqlSessionFactory: SqlSessionFactory
 
 
     @GetMapping("/getTseList/{id}")
@@ -185,7 +194,41 @@ open class NewAllocationController @Autowired constructor(
 
     @PostMapping("/submitSpecialAllocation")
     open fun submitSpecialAllocation(@RequestBody alloc : submitSpecialAllocationDTO): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
         val items = newAllocationService.submitSpecialAllocation(alloc)
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("UserID",user.id)
+
+
+        var buHead = sqlSessionFactory.openSession().selectList<ApprovalUserDetailsDTO>("ApprovalMapper.specialPlanSubmitMail",data)
+
+        if(buHead.size > 0) {
+
+            buHead.forEach {
+
+                val calendar = Calendar.getInstance()
+                val mimeMessage = mailSender.createMimeMessage()
+                val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
+                mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
+                mimeMessageHelper.setTo(it.UserEmailAddress!!)
+                mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+                mimeMessageHelper.setText("Hi, ", user.name +
+
+                        "\n has submitted the Special Dispatch Plan for Month - #Month Year - #Year(#Remarks), Kindly look into this and take further actions \n" +
+
+                        "\nThank You.\n" +
+                        " ")
+                mimeMessageHelper.setSubject("Approval Notification Mail")
+
+
+                mailSender.send(mimeMessage)
+                println("Mail Sent!")
+            }
+
+        }
         return ResponseEntity(items, HttpStatus.OK)
     }
 
@@ -298,7 +341,14 @@ open class NewAllocationController @Autowired constructor(
     @PostMapping("/getMultipleAllocationAll")
     open fun getMultipleAllocationAll(@RequestBody mulAlloc: List<MultipleAllocationExcelDTO>): ResponseEntity<*> {
         val data = newAllocationService.getMultipleAllocationAll(mulAlloc)
-        return ResponseEntity(data, HttpStatus.OK)
+        var fileContentList = mutableListOf<FileContentPOJO>()
+
+            fileContentList.add(
+                FileContentPOJO(fileName = "multipleAllocation",
+                    String(Base64.getEncoder().encode(data)))
+            )
+
+        return ResponseEntity(fileContentList, HttpStatus.OK)
     }
 
 

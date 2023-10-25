@@ -59,6 +59,13 @@
     </select>
 
 
+    <select id="specialPlanSubmitMail" resultType="com.squer.promobee.controller.dto.ApprovalUserDetailsDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_GetTeamHeadDetailsForAllocationApproval ( #{UserID, jdbcType = VARCHAR, mode = IN}  ) }
+
+    </select>
+
+
+
 
 
 

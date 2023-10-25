@@ -83,6 +83,18 @@
     </select>
 
 
+    <select id="buChampionData" resultType="com.squer.promobee.controller.dto.ComplianceBuChampionDTO">
+        SELECT ID_USR,NAME_USR,EMAIL_ADDRESS_USR FROM USER_MASTER_USR
+        WHERE ID_DESG_ULV_USR = '24720986-A3EE-4DCA-9538-36F52625EB70' AND ID_STATUS_SLV_USR = '1D2F12F3-F84A-4200-9590-70680528779B'
+    </select>
+
+
+    <select id="buNameData" resultType="com.squer.promobee.controller.dto.ComplianceModeldeDTO" parameterType = "map" statementType = "CALLABLE">
+        { call GET_BU_FOR_BUC ( #{usr, jdbcType = VARCHAR, mode = IN}   ) }
+
+    </select>
+
+
 
 
 

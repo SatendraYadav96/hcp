@@ -14,4 +14,6 @@ interface EmailService {
     fun Send_Mail_optima(response: HttpServletResponse,uploadId:String ):ByteArray
 
 
+
+
 }

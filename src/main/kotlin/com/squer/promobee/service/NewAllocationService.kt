@@ -90,7 +90,7 @@ interface NewAllocationService {
 
    fun getMultipleAllocationCostCenter (mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationDTO>
 
-   fun getMultipleAllocationAll (mulAlloc: List<MultipleAllocationExcelDTO>): ByteArray
+   fun getMultipleAllocationAll (mulAlloc: List<MultipleAllocationExcelDTO>):ByteArray
 
    fun getMultipleAllocationInventory (mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationInventoryDTO>
 

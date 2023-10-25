@@ -2,6 +2,7 @@ package com.squer.promobee.controller
 
 
 import com.squer.promobee.api.v1.enums.UserRoleEnum
+import com.squer.promobee.controller.dto.ComplianceBuChampionDTO
 import com.squer.promobee.controller.dto.FileContentPOJO
 import com.squer.promobee.controller.dto.MailContentPOJO
 import com.squer.promobee.security.domain.User
@@ -338,6 +339,50 @@ open class EmailController@Autowired constructor(
         }
 
         return ResponseEntity(fileContentList, HttpStatus.OK)
+
+    }
+
+
+    @GetMapping("/Send_Mail_oversampling")
+    fun Send_Mail_oversampling  (): ResponseEntity<*> {
+
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data = sqlSessionFactory.openSession().selectList<ComplianceBuChampionDTO>("ComplianceDetailsMapper.buChampionData")
+
+        data.forEach {
+
+            val calendar = Calendar.getInstance()
+            val mimeMessage = mailSender.createMimeMessage()
+            val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
+            mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
+            mimeMessageHelper.setTo(it.EMAIL_ADDRESS_USR!!)
+            mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+            mimeMessageHelper.setText("Hi, ", it.NAME_USR +
+
+                "\n Below are the doctors who have been given more than 120 units of medicine samples in a quarter. As per SOP, you need to give the reason for this over sampling. \n" +
+                    "Kindly click on the below link and then select the reasons from the dropdown for each doctor. \n" +
+
+                    "\nclick on the \n" +
+
+                    "LINK :#linkClick\n" +
+
+                    "\nKindly do the needful\n" +
+                    "\nThank You.\n" +
+                        " ")
+            mimeMessageHelper.setSubject("Compliance Remarks not submitted")
+
+
+            mailSender.send(mimeMessage)
+            println("Mail Sent!")
+
+
+
+
+        }
+
+
+        return ResponseEntity(data, HttpStatus.OK)
 
     }
 

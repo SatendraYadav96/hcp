@@ -26,11 +26,9 @@ class EmailRepository(
     lateinit var sqlSessionFactory: SqlSessionFactory
 
 
-    fun getConsolidateExpiryReport(response: HttpServletResponse, index1:Int, index2:Int):ByteArray
-    {
+    fun getConsolidateExpiryReport(response: HttpServletResponse, index1: Int, index2: Int): ByteArray {
 
         ///listItem.put("filter",count)
-
 
 
         var data1 = mutableListOf<ItemExpireModel>()
@@ -41,10 +39,11 @@ class EmailRepository(
         listItem.put("Todate", index2)
 
 
-        data1= sqlSessionFactory.openSession().selectList<ItemExpireModel>("ReportMapper.getConsolidateExpiryReport", listItem)
+        data1 = sqlSessionFactory.openSession()
+            .selectList<ItemExpireModel>("ReportMapper.getConsolidateExpiryReport", listItem)
         val xlwb = XSSFWorkbook()
         val xlws = xlwb.createSheet("ExpiryReportIn${index1}-${index2}days")
-        var row= xlws.createRow(0)
+        var row = xlws.createRow(0)
         row.createCell(0).setCellValue("ITEM_NAME")
         row.createCell(1).setCellValue("ITEM_CODE")
         row.createCell(2).setCellValue("Batch_No")
@@ -52,13 +51,13 @@ class EmailRepository(
         row.createCell(4).setCellValue("EXPIRY_DATE")
         row.createCell(5).setCellValue("STOCK")
         row.createCell(6).setCellValue("VALUE")
-        var rowCount= 1
+        var rowCount = 1
 
         //write
 
         data1.forEach {
             var columnCount = 0
-            var row= xlws.createRow(rowCount++)
+            var row = xlws.createRow(rowCount++)
             row.createCell(columnCount++).setCellValue("${it.name_ITM}")
             row.createCell(columnCount++).setCellValue("${it.code_ITM}")
             row.createCell(columnCount++).setCellValue("${it.batch_NO}")
@@ -85,12 +84,10 @@ class EmailRepository(
     }
 
 
-
     // BRAND MANAGER ITEM MAIL
 
 
-    fun SendTestMailForItemExpiry(response: HttpServletResponse, index1:Int, index2:Int):ByteArray
-    {
+    fun SendTestMailForItemExpiry(response: HttpServletResponse, index1: Int, index2: Int): ByteArray {
 
         ///listItem.put("filter",count)
 
@@ -167,11 +164,7 @@ class EmailRepository(
     }
 
 
-
-
-
-    fun SendTestMailForSampleExpiry(response: HttpServletResponse, index1:Int, index2:Int):ByteArray
-    {
+    fun SendTestMailForSampleExpiry(response: HttpServletResponse, index1: Int, index2: Int): ByteArray {
 
         ///listItem.put("filter",count)
 
@@ -249,12 +242,10 @@ class EmailRepository(
     }
 
 
-
     // BU CHAMP COMPLIANCE MAIL
 
 
-    fun Send_Mail_optima(response: HttpServletResponse, uploadId:String):ByteArray
-    {
+    fun Send_Mail_optima(response: HttpServletResponse, uploadId: String): ByteArray {
 
 
         var brandManager = sqlSessionFactory.openSession().selectList<User>("ReportMapper.GetBuChampionForCompliance")
@@ -264,7 +255,7 @@ class EmailRepository(
         val bos = ByteArrayOutputStream()
 
 
-        brandManager.forEach {  it ->
+        brandManager.forEach { it ->
 
 
             var listItem: MutableMap<String, Any> = mutableMapOf()
@@ -315,7 +306,6 @@ class EmailRepository(
         return bytes
 
     }
-
 
 
 
