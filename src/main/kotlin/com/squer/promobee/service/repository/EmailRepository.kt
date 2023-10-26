@@ -2,15 +2,13 @@ package com.squer.promobee.service.repository
 
 import com.squer.promobee.api.v1.enums.UserRoleEnum
 import com.squer.promobee.controller.dto.BlockedForBUCModel
+import com.squer.promobee.controller.dto.ComplianceSampleInputNearExpiryDTO
 import com.squer.promobee.controller.dto.ItemExpireModel
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.domain.enum.UserStatusEnum
 import com.squer.promobee.security.util.SecurityUtility
-import com.squer.promobee.service.repository.domain.DispatchDetail
-import com.squer.promobee.service.repository.domain.DispatchPlan
-import com.squer.promobee.service.repository.domain.HSN
-import com.squer.promobee.service.repository.domain.Inventory
+import com.squer.promobee.service.repository.domain.*
 import org.apache.ibatis.session.SqlSessionFactory
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.beans.factory.annotation.Autowired
@@ -351,11 +349,11 @@ class EmailRepository(
         }
 
         val currentDate = LocalDate.now()
-        val currentMonth = currentDate.monthValue
-        val currentYear = currentDate.year
-        var twentyFifthDay = currentDate.withDayOfMonth(25)
+        val currentMonth = currentDate.monthValue - 1
+        val currentYear = currentDate.year - 1
+       // var twentyFifthDay = currentDate.withDayOfMonth(25)
 
-        val twentyThirdDay = currentDate.withDayOfMonth(26)
+        val twentyThirdDay = currentDate.withDayOfMonth(23)
 
         val twentyEightDay = currentDate.withDayOfMonth(28)
 
@@ -458,6 +456,185 @@ class EmailRepository(
 
 
 
+    // Mail trigger to FF for Sample/Input Near expiry
+
+
+    fun SendMailFFSampleInputNearExpiry(uploadId: String):ByteArray {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("uploadId",uploadId)
+
+        var recipient = sqlSessionFactory.openSession().selectList<Recipient>("RecipientMapper.SendMailFFSampleInputNearExpiry",data)
+
+        var bytes = byteArrayOf()
+        val bos = ByteArrayOutputStream()
+
+
+        recipient.forEach { it ->
+
+
+            var listItem: MutableMap<String, Any> = mutableMapOf()
+
+            listItem.put("uploadId",uploadId)
+
+          var data1 = sqlSessionFactory.openSession()
+                .selectList<ComplianceSampleInputNearExpiryDTO>("ReportMapper.SendMailFFSampleInputNearExpiry",listItem)
+
+            var currentDate = LocalDate.now()
+
+            var oneEightyDays = currentDate.plusDays(180)
+
+
+
+            var productData = data1.filter {it.expiryDate!! < oneEightyDays.toString() || it.expiryDate!! > currentDate.toString() }
+
+
+
+
+//                val xlwb = XSSFWorkbook()
+//                val xlws = xlwb.createSheet("Near Expiry Product")
+
+               val xlwb = XSSFWorkbook()
+               val xlws = xlwb.createSheet("Near Expiry Product")
+
+            var row = xlws.createRow(0)
+                row.createCell(0).setCellValue("EmployeeCode")
+                row.createCell(1).setCellValue("EmployeeName")
+                row.createCell(2).setCellValue("ProductName")
+                row.createCell(3).setCellValue("ProductCode")
+                row.createCell(4).setCellValue("BatchNo")
+                row.createCell(5).setCellValue("BalancedQty")
+                row.createCell(6).setCellValue("Expiry")
+                var rowCount = 1
+
+                //write
+
+            productData.forEach {
+                    var columnCount = 0
+                    var row = xlws.createRow(rowCount++)
+                row.createCell(columnCount++).setCellValue("${it.empCode}")
+                row.createCell(columnCount++).setCellValue("${it.empName}")
+                row.createCell(columnCount++).setCellValue("${it.productName}")
+                row.createCell(columnCount++).setCellValue("${it.productCode}")
+                row.createCell(columnCount).setCellValue("${it.batchNo}")
+                row.createCell(columnCount).setCellValue("${it.qtyBalanced}")
+                row.createCell(columnCount).setCellValue("${it.expiryDate}")
+
+
+                try {
+                    xlwb.write(bos)
+                } finally {
+                    bos.close()
+                }
+
+
+            }
+
+
+        }
+        bytes = bos.toByteArray()
+
+
+
+        return bytes
+
+
+
+        }
+
+
+
+
+
+
+    // Mail trigger to FF for Expired Sample/Input
+
+
+
+
+    fun SendMailFFSampleInputExpired(uploadId: String):ByteArray {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("uploadId",uploadId)
+
+        var recipient = sqlSessionFactory.openSession().selectList<Recipient>("RecipientMapper.SendMailFFSampleInputNearExpiry",data)
+
+        var bytes = byteArrayOf()
+        val bos = ByteArrayOutputStream()
+
+
+        recipient.forEach { it ->
+
+
+            var listItem: MutableMap<String, Any> = mutableMapOf()
+
+            listItem.put("uploadId",uploadId)
+
+            var data1 = sqlSessionFactory.openSession()
+                .selectList<ComplianceSampleInputNearExpiryDTO>("ReportMapper.SendMailFFSampleInputNearExpiry",listItem)
+
+            var currentDate = LocalDate.now()
+
+            var oneEightyDays = currentDate.plusDays(180)
+
+
+
+            var productData = data1.filter {it.expiryDate!! > currentDate.toString() }
+
+
+
+
+
+            val xlwb = XSSFWorkbook()
+            val xlws = xlwb.createSheet("Expired Products")
+            var row = xlws.createRow(0)
+                row.createCell(0).setCellValue("EmployeeCode")
+                row.createCell(1).setCellValue("EmployeeName")
+                row.createCell(2).setCellValue("ProductName")
+                row.createCell(3).setCellValue("ProductCode")
+                row.createCell(4).setCellValue("BatchNo")
+                row.createCell(5).setCellValue("BalancedQty")
+                row.createCell(6).setCellValue("Expiry")
+                var rowCount = 1
+
+                //write
+
+            productData.forEach {
+                var columnCount = 0
+                var row = xlws.createRow(rowCount++)
+                row.createCell(columnCount++).setCellValue("${it.empCode}")
+                row.createCell(columnCount++).setCellValue("${it.empName}")
+                row.createCell(columnCount++).setCellValue("${it.productName}")
+                row.createCell(columnCount++).setCellValue("${it.productCode}")
+                row.createCell(columnCount).setCellValue("${it.batchNo}")
+                row.createCell(columnCount).setCellValue("${it.qtyBalanced}")
+                row.createCell(columnCount).setCellValue("${it.expiryDate}")
+
+
+                try {
+                    xlwb.write(bos)
+                } finally {
+                    bos.close()
+                }
+
+
+            }
+
+
+        }
+        bytes = bos.toByteArray()
+
+
+
+        return bytes
+
+
+
+    }
 
 
 
@@ -466,4 +643,24 @@ class EmailRepository(
 
 
 
-}
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import javax.servlet.http.HttpServletResponse
+import kotlin.system.measureTimeMillis
 
 
 @Service
@@ -39,6 +40,14 @@ class EmailServiceImpl @Autowired constructor(
 
     override fun SpecialDraftPlanReminder() {
         return emailRepository.SpecialDraftPlanReminder()
+    }
+
+    override fun SendMailFFSampleInputNearExpiry( uploadId: String):ByteArray {
+        return emailRepository.SendMailFFSampleInputNearExpiry(uploadId)
+    }
+
+    override fun SendMailFFSampleInputExpired(uploadId: String): ByteArray {
+        return emailRepository.SendMailFFSampleInputExpired(uploadId)
     }
 
 

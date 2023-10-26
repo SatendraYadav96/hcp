@@ -15,6 +15,10 @@ interface EmailService {
 
     fun SpecialDraftPlanReminder()
 
+    fun SendMailFFSampleInputNearExpiry(uploadId:String ):ByteArray
+
+    fun SendMailFFSampleInputExpired(uploadId:String ):ByteArray
+
 
 
 

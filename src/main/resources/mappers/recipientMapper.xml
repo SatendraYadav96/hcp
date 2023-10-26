@@ -95,6 +95,14 @@
 
     </select>
 
+
+    <select id="SendMailFFSampleInputNearExpiry" resultMap="recipientResultMap">
+        SELECT RCT.* FROM OPTIMA_MATERIAL_DATA_OMD OMD
+        JOIN RECIPIENT_MASTER_RCT RCT ON RCT.CODE_RCT = OMD.EMPLOYEE_CODE_OMD
+        WHERE ID_UPLOAD_OMD = #{uploadId}
+
+    </select>
+
     <select id="getRecipientDesignationDropdown" resultType="com.squer.promobee.controller.dto.RecipientDesignationDropdownDTO">
 
         SELECT ID_ULV as 'recipientDesignationId',NAME_ULV as 'recipientDesignationName' FROM USER_LOV_ULV WHERE TYPE_ULV = 'DESIGNATION'

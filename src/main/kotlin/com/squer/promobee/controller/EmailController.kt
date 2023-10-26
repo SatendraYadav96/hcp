@@ -9,6 +9,7 @@ import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.domain.enum.UserStatusEnum
 import com.squer.promobee.service.EmailService
 import com.squer.promobee.service.repository.EmailRepository
+import com.squer.promobee.service.repository.domain.Recipient
 import lombok.extern.slf4j.Slf4j
 import org.apache.ibatis.session.SqlSessionFactory
 import org.slf4j.LoggerFactory
@@ -22,6 +23,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -401,6 +403,156 @@ open class EmailController@Autowired constructor(
         var data = emailService.SpecialDraftPlanReminder()
 
         return ResponseEntity(data, HttpStatus.OK)
+
+    }
+
+
+
+
+    @GetMapping("/SendMailFFSampleInputNearExpiry/{uploadId}")
+    fun SendMailFFSampleInputNearExpiry  (@PathVariable uploadId:String): ResponseEntity<*> {
+
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data1: MutableMap<String, Any> = mutableMapOf()
+
+        data1.put("uploadId",uploadId)
+
+        var recipient = sqlSessionFactory.openSession().selectList<Recipient>("RecipientMapper.SendMailFFSampleInputNearExpiry",data1)
+
+
+
+        lateinit var data: ByteArray
+        var fileContentList = mutableListOf<MailContentPOJO>()
+
+        recipient.forEach { it ->
+
+                data = emailService.SendMailFFSampleInputNearExpiry(uploadId)
+
+
+                fileContentList.add(
+                    MailContentPOJO(
+                        fileName = "Near Expiry Product",
+                        String(Base64.getEncoder().encode(data))
+                    )
+                )
+                val file = File("D:\\UNS_MAILS\\NearExpiryProduct.xlsx");
+
+                val os = FileOutputStream(file)
+
+                // Starting writing the bytes in it
+
+                // Starting writing the bytes in it
+                os.write(data)
+                println(
+                    "Successfully"
+                            + " byte inserted"
+                )
+                os.close()
+
+            val calendar = Calendar.getInstance()
+            val mimeMessage = mailSender.createMimeMessage()
+            val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
+            mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
+            mimeMessageHelper.setTo(it.email!!)
+            mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+            mimeMessageHelper.setText("Hi, ${it.name} \n \nThe Below Table has details of Physician Samples and Inputs having near expiry as per system. \n \nYou are requested to utilize at the earliest.\n\n" +
+                    " \n \nThank You\n ")
+            mimeMessageHelper.setSubject("Near Expiry Products" )
+            val fileSystemResource =
+                FileSystemResource(File("D:\\UNS_MAILS\\NearExpiryProduct.xlsx"))
+            mimeMessageHelper.addAttachment(fileSystemResource.filename, fileSystemResource)
+
+            mailSender.send(mimeMessage)
+            println("Mail Sent!")
+
+        }
+
+        return ResponseEntity(fileContentList, HttpStatus.OK)
+
+    }
+
+
+
+    @GetMapping("/SendMailFFSampleInputExpired/{uploadId}")
+    fun SendMailFFSampleInputExpired  (@PathVariable uploadId:String): ResponseEntity<*> {
+
+        val user =
+            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data1: MutableMap<String, Any> = mutableMapOf()
+
+        data1.put("uploadId",uploadId)
+
+        var recipient = sqlSessionFactory.openSession().selectList<Recipient>("RecipientMapper.SendMailFFSampleInputNearExpiry",data1)
+
+
+
+        lateinit var data: ByteArray
+        var fileContentList = mutableListOf<MailContentPOJO>()
+
+        recipient.forEach { it ->
+
+            data = emailService.SendMailFFSampleInputExpired(uploadId)
+
+
+            fileContentList.add(
+                MailContentPOJO(
+                    fileName = "Near Expiry Product",
+                    String(Base64.getEncoder().encode(data))
+                )
+            )
+            val file = File("D:\\UNS_MAILS\\ExpiredProduct.xlsx");
+
+            val os = FileOutputStream(file)
+
+            // Starting writing the bytes in it
+
+            // Starting writing the bytes in it
+            os.write(data)
+            println(
+                "Successfully"
+                        + " byte inserted"
+            )
+            os.close()
+
+            val calendar = Calendar.getInstance()
+            val mimeMessage = mailSender.createMimeMessage()
+            val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
+            mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
+            mimeMessageHelper.setTo(it.email!!)
+            mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+            mimeMessageHelper.setText("Hi, ${it.name} \n\n<h3>Action for Expired Samples</h3>\n" +
+                    "  <ul>\n" +
+                    "    <li>You are requested to send the expired samples to the nearest C&F by courier.</li>\n" +
+                    "    <li>Please enter the quantity sent to C&F in the \"Qty sent To CFA\" column.</li>\n" +
+                    "    <li>If the quantity is different from the balance quantity, please mention the reason for this in the \"Reason for Diff in Qty\" column.</li>\n" +
+                    "  </ul>\n\n" +
+                    "  <h3>Action for Expired Inputs</h3>\n" +
+                    "  <ul>\n" +
+                    "    <li>Please destroy the expired inputs at your end.</li>\n" +
+                    "    <li>Please indicate whether you have destroyed the expired inputs in the \"Destroyed (Yes/No)\" column.</li>\n" +
+                    "  </ul>\n\n" +
+                    "  <p>Once you have entered the above details for all rows, please enter the courier details and click on \"SUBMIT\".</p>\n\n" +
+                    "  <p>Please note that if you do not take action on this email, your access to future samples will be blocked.</p>\n\n" +
+                    "  <p>To check the expiry of samples and inputs and take appropriate action, please click on the following links:</p>\n" +
+                    "  <ul>\n" +
+                    "    <li><a href=\"http://aspire-squer.com:8080/webapp/index.jsp#/home/promobee/details?cert=X7e2zG9Hpp%2Fy8rpePCaByjtjEXMqvWNXG%2BlfWQ3zt93NRRo8Y%2FFFaK7IBXADbzVxqG%2BjHhfQRwnizfA8UmNPjqoXPRj3fkLctlf%2FcbnBuHLYgUjxIufcuIcmZfNmUjuX2AQqngja%2B6qh1Zkz4PD20Xb0%2FU9Kn6cbxk9aKlEx%2FjzgikTU3YSg%2FOOGFxigWxsV&empid=84ea02b6-fe27-4b0f-b964-3debd95b2729&type=sample\">Click here To Check The Samples Expiry And Take Appropriate Action</a></li>\n" +
+                    "    <li><a href=\"http://aspire-squer.com:8080/webapp/index.jsp#/home/promobee/details?cert=X7e2zG9Hpp%2Fy8rpePCaByjtjEXMqvWNXG%2BlfWQ3zt93NRRo8Y%2FFFaK7IBXADbzVxqG%2BjHhfQRwnizfA8UmNPjqoXPRj3fkLctlf%2FcbnBuHLYgUjxIufcuIcmZfNmUjuX2AQqngja%2B6qh1Zkz4PD20Xb0%2FU9Kn6cbxk9aKlEx%2FjzgikTU3YSg%2FOOGFxigWxsV&empid=0c8c111a-bc40-42d4-9b14-cb848dab0b51&type=input\">Click here To Check The Inputs </ul>"
+            )
+
+            mimeMessageHelper.setSubject("Expired Sample and Inputs" )
+            val fileSystemResource =
+                FileSystemResource(File("D:\\UNS_MAILS\\ExpiredProduct.xlsx"))
+            mimeMessageHelper.addAttachment(fileSystemResource.filename, fileSystemResource)
+
+            mailSender.send(mimeMessage)
+            println("Mail Sent!")
+
+        }
+
+        return ResponseEntity(fileContentList, HttpStatus.OK)
 
     }
 

@@ -310,6 +310,25 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
     </select>
 
 
+    <select id="SendMailFFSampleInputNearExpiry" resultType="com.squer.promobee.controller.dto.ComplianceSampleInputNearExpiryDTO" >
+        SELECT OMD.EMPLOYEE_CODE_OMD as 'empCode',RCT.NAME_RCT as 'empName', SMP.NAME_SMP as 'productName',OMD.MATERIAL_CODE_OMD as 'productCode',
+               OMD.BATCH_NO_OMD as 'batchNo',OMD.QTY_BALANCE_OMD as 'qtyBalanced',OMD.EXPIRY_DATE_OMD as 'expiryDate',ITC.NAME_ITC as 'category' FROM OPTIMA_MATERIAL_DATA_OMD OMD
+             JOIN SAMPLE_MASTER_SMP SMP ON SMP.LMID_SMP =  OMD.MATERIAL_CODE_OMD
+             JOIN RECIPIENT_MASTER_RCT RCT ON RCT.CODE_RCT = OMD.EMPLOYEE_CODE_OMD
+             JOIN INVENTORY_INV INV ON INV.ID_ITM_INV = SMP.ID_SMP
+             JOIN ITEM_CATEGORY_MASTER_ITC ITC ON ITC.ID_ITC = INV.ID_ITC_INV
+        WHERE ID_UPLOAD_OMD = #{uploadId}
+        UNION
+        SELECT OMD.EMPLOYEE_CODE_OMD as 'empCode',RCT.NAME_RCT as 'empName', ITM.NAME_ITM as 'productName',OMD.MATERIAL_CODE_OMD as 'productCode',
+               OMD.BATCH_NO_OMD as 'batchNo',OMD.QTY_BALANCE_OMD as 'qtyBalanced',OMD.EXPIRY_DATE_OMD as 'expiryDate',ITC.NAME_ITC as 'category'FROM OPTIMA_MATERIAL_DATA_OMD OMD
+             JOIN ITEM_MASTER_ITM ITM ON ITM.CODE_ITM =  OMD.MATERIAL_CODE_OMD
+             JOIN RECIPIENT_MASTER_RCT RCT ON RCT.CODE_RCT = OMD.EMPLOYEE_CODE_OMD
+             JOIN INVENTORY_INV INV ON INV.ID_ITM_INV = ITM.ID_ITM
+             JOIN ITEM_CATEGORY_MASTER_ITC ITC ON ITC.ID_ITC = INV.ID_ITC_INV
+        WHERE ID_UPLOAD_OMD = #{uploadId}
+    </select>
+
+
 
 
 </mapper>
