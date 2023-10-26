@@ -340,15 +340,19 @@ open class NewAllocationController @Autowired constructor(
 
     @PostMapping("/getMultipleAllocationAll")
     open fun getMultipleAllocationAll(@RequestBody mulAlloc: List<MultipleAllocationExcelDTO>): ResponseEntity<*> {
-        val data = newAllocationService.getMultipleAllocationAll(mulAlloc)
-        var fileContentList = mutableListOf<FileContentPOJO>()
+        var data = newAllocationService.getMultipleAllocationAll(mulAlloc)
 
-            fileContentList.add(
-                FileContentPOJO(fileName = "multipleAllocation",
-                    String(Base64.getEncoder().encode(data)))
-            )
+        var byteData = String(Base64.getEncoder().encode(data))
 
-        return ResponseEntity(fileContentList, HttpStatus.OK)
+        return ResponseEntity(byteData , HttpStatus.OK)
+//        var fileContentList = mutableListOf<FileContentPOJO>()
+//
+//            fileContentList.add(
+//                FileContentPOJO(fileName = "multipleAllocation",
+//                    String(Base64.getEncoder().encode(data)))
+//            )
+//
+//        return ResponseEntity(fileContentList, HttpStatus.OK)
     }
 
 

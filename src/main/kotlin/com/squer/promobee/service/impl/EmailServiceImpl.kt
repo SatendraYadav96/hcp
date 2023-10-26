@@ -15,7 +15,8 @@ class EmailServiceImpl @Autowired constructor(
     private val emailRepository: EmailRepository
 
 
-): EmailService {
+
+    ): EmailService {
 
     override fun getConsolidateExpiryReport(response: HttpServletResponse, index1:Int, index2:Int): ByteArray
     {
@@ -34,6 +35,10 @@ class EmailServiceImpl @Autowired constructor(
 
     override fun Send_Mail_optima(response: HttpServletResponse, uploadId: String): ByteArray {
         return emailRepository.Send_Mail_optima(response,uploadId)
+    }
+
+    override fun SpecialDraftPlanReminder() {
+        return emailRepository.SpecialDraftPlanReminder()
     }
 
 

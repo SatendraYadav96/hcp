@@ -7,23 +7,49 @@ import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.domain.enum.UserStatusEnum
 import com.squer.promobee.security.util.SecurityUtility
+import com.squer.promobee.service.repository.domain.DispatchDetail
+import com.squer.promobee.service.repository.domain.DispatchPlan
 import com.squer.promobee.service.repository.domain.HSN
+import com.squer.promobee.service.repository.domain.Inventory
 import org.apache.ibatis.session.SqlSessionFactory
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.mail.javamail.MimeMessageHelper
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.io.ByteArrayOutputStream
+import java.time.LocalDate
+import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import javax.servlet.http.HttpServletResponse
+
+
 
 @Repository
 class EmailRepository(
-    securityUtility: SecurityUtility
+    securityUtility: SecurityUtility,
+    private val mailSender: JavaMailSender
+
 ): BaseRepository<HSN>(
     securityUtility = securityUtility
+
+
+
+
+
 ) {
+
+    private val scheduler = Executors.newSingleThreadScheduledExecutor()
+
+
 
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
+
+
 
 
     fun getConsolidateExpiryReport(response: HttpServletResponse, index1: Int, index2: Int): ByteArray {
@@ -306,6 +332,135 @@ class EmailRepository(
         return bytes
 
     }
+
+
+    fun SpecialDraftPlanReminder() {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        fun startSpecialDraftReversalEmail() {
+            scheduler.scheduleAtFixedRate(
+                { SpecialDraftPlanReminder() },
+                0,
+                1,
+                TimeUnit.DAYS
+            )
+        }
+
+        fun startSpecialMail(){
+            startSpecialDraftReversalEmail()
+        }
+
+        val currentDate = LocalDate.now()
+        val currentMonth = currentDate.monthValue
+        val currentYear = currentDate.year
+        var twentyFifthDay = currentDate.withDayOfMonth(25)
+
+        val twentyThirdDay = currentDate.withDayOfMonth(26)
+
+        val twentyEightDay = currentDate.withDayOfMonth(28)
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("month",currentMonth)
+        data.put("year",currentYear)
+
+        var plan = sqlSessionFactory.openSession().selectList<DispatchPlan>("DispatchPlanMapper.SpecialDraftPlanReminder",data)
+
+        plan.forEach{
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            data.put("userId",it.owner!!.id)
+
+            var brandManager = sqlSessionFactory.openSession().selectOne<User>("UserMapper.SpecialDraftPlanReminder",data)
+
+
+            if(currentDate == twentyThirdDay){
+
+                val calendar = Calendar.getInstance()
+                val mimeMessage = mailSender.createMimeMessage()
+                val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
+                mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
+                mimeMessageHelper.setTo(brandManager.email!!)
+                mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+                mimeMessageHelper.setText(
+                    """
+        Hi, ${brandManager.name!!.trim()},
+
+        Please note you have not submitted your special dispatch for month ${it.month} year ${it.year}. Remarks: ${it.remarks!!.trim()}
+
+        If you don't submit your special plan, the plan will get deleted after 5 days and allocated quantity will automatically get reversed in inventory.
+
+        Kindly do the needful.
+
+        Thank You.
+    """.trim()
+                )
+                mimeMessageHelper.setSubject("Special Plan Nullify")
+
+
+                mailSender.send(mimeMessage)
+                println("Mail Sent!")
+            }
+
+            if(currentDate == twentyEightDay){
+                plan.forEach {
+                    var data: MutableMap<String, Any> = mutableMapOf()
+                    data.put("planId",it.id)
+
+                    var dispatchDetail = sqlSessionFactory.openSession().selectList<DispatchDetail>("DispatchDetailMapper.SpecialDraftPlanReminder",data)
+
+                    dispatchDetail.forEach {
+                        var data1: MutableMap<String, Any> = mutableMapOf()
+
+                        var allocatedQty = it.qtyDispatch
+
+                        data1.put("invId",it.inventoryId!!)
+
+                        var inv = sqlSessionFactory.openSession().selectOne<Inventory>("InventoryMapper.SpecialDraftPlanReminder",data1)
+
+
+                        var data2: MutableMap<String, Any> = mutableMapOf()
+
+                        var invQty = inv.qtyAllocated?.minus(allocatedQty!!)
+
+                        data2.put("invId",inv.id)
+                        data2.put("qty",invQty!!)
+                        data2.put("updatedBy",user.id)
+
+                        sqlSessionFactory.openSession().update("InventoryMapper.SpecialDraftPlanReminderInventory",data2)
+
+                        var data3: MutableMap<String, Any> = mutableMapOf()
+
+                        data3.put("planId",it.planId!!.id)
+
+                        sqlSessionFactory.openSession().delete("DispatchDetailMapper.SpecialDraftPlanReminderDelete",data3)
+
+                    }
+                    var data4: MutableMap<String, Any> = mutableMapOf()
+
+                    data4.put("planId",it.id)
+
+                    sqlSessionFactory.openSession().delete("DispatchPlanMapper.SpecialDraftPlanReminderDelete",data4)
+
+                }
+
+            }
+
+
+
+
+
+        }
+
+
+
+    }
+
+
+
+
+
+
 
 
 

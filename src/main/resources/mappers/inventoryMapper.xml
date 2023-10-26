@@ -327,6 +327,18 @@
         select * from INVENTORY_INV where ID_ITM_INV = #{id}
     </select>
 
+    <select id="SpecialDraftPlanReminder" resultMap="inventoryResultMap">
+        select * from INVENTORY_INV where ID_ITM_INV = #{id}
+    </select>
+
+
+    <update id="SpecialDraftPlanReminderInventory">
+
+        UPDATE INVENTORY_INV SET QTY_ALLOCATED_INV = #{qty},   UPDATED_BY_INV = #{updatedBy} , UPDATED_ON_INV = GETDATE()
+        WHERE ID_INV = #{invId}
+
+    </update>
+
 
 
 </mapper>

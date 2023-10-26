@@ -19,13 +19,11 @@ import org.springframework.web.bind.annotation.RestController
 
 
 class EmailApiV1(
-    emailService: EmailService,
-
-
-    mailSender: JavaMailSender
+   emailService: EmailService,
+   mailSender: JavaMailSender
 ): EmailController(
-    emailService = emailService,
-    mailSender = mailSender
+   emailService = emailService,
+   mailSender = mailSender
 ) {
 
 

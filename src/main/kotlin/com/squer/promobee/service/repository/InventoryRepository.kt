@@ -206,11 +206,11 @@ class InventoryRepository @Autowired constructor(
 
             plan = sqlSessionFactory.openSession().selectList<DispatchPlan>("DispatchPlanMapper.reverseInventoryPlan",data7)
 
-            var plans = plan[0]
+
 
             if(plan.size > 0 ){
 
-
+                var plans = plan[0]
                 //dispatch detail reversal
 
                 var planDetail = DispatchDetail()
@@ -312,7 +312,7 @@ class InventoryRepository @Autowired constructor(
                 val planDetailId1 = UUID.randomUUID().toString()
 
                 data2.put("id", planDetailId1)
-                data2.put("planId", plans.id)
+                data2.put("planId", planId1)
                 inv.get(i).invId?.let { data2.put("inventoryId", it) }
                 data2.put("recipientId", RecipientEnum.HUB_MANAGER.id)
                 inv.get(i).quantity?.let { data2.put("qtyDispatch", it) }

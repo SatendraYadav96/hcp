@@ -8,6 +8,7 @@ import com.squer.promobee.controller.dto.MailContentPOJO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.domain.enum.UserStatusEnum
 import com.squer.promobee.service.EmailService
+import com.squer.promobee.service.repository.EmailRepository
 import lombok.extern.slf4j.Slf4j
 import org.apache.ibatis.session.SqlSessionFactory
 import org.slf4j.LoggerFactory
@@ -30,6 +31,7 @@ import javax.servlet.http.HttpServletResponse
 @Slf4j
 open class EmailController@Autowired constructor(
     private val emailService: EmailService,
+
     private val mailSender:JavaMailSender
 ) {
 
@@ -350,6 +352,7 @@ open class EmailController@Autowired constructor(
 
         var data = sqlSessionFactory.openSession().selectList<ComplianceBuChampionDTO>("ComplianceDetailsMapper.buChampionData")
 
+
         data.forEach {
 
             val calendar = Calendar.getInstance()
@@ -390,15 +393,16 @@ open class EmailController@Autowired constructor(
 
 
 
+    @GetMapping("/SpecialDraftPlanReminder")
+    fun SpecialDraftPlanReminder  (): ResponseEntity<*> {
 
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
+        var data = emailService.SpecialDraftPlanReminder()
 
+        return ResponseEntity(data, HttpStatus.OK)
 
-
-
-
-
-
+    }
 
 
 

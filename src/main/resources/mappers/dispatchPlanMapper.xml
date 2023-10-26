@@ -70,6 +70,11 @@
     <select id="getDispatchPlanById" resultMap="dispatchPlanResultMap" >
         SELECT * FROM DISPATCH_PLAN_DIP
         WHERE ID_DIP =  #{id}
+
+    </select>
+    <select id="SpecialDraftPlanReminder" resultMap="dispatchPlanResultMap" >
+        SELECT * FROM DISPATCH_PLAN_DIP WHERE ID_STATUS_SLV_DIP = '00000000-0000-0000-0000-000000000022' and
+            IS_SPECIAL_DIP = 1 AND MONTH_DIP = #{month} AND YEAR_DIP = #{year}
     </select>
 
 
@@ -225,6 +230,11 @@
         WHERE ID_DIP = #{id}
     </update>
 
+
+    <delete id="SpecialDraftPlanReminderDelete">
+        DELETE FROM DISPATCH_PLAN_DIP WHERE ID_DIP = #{planId}
+
+    </delete>
 
 
 

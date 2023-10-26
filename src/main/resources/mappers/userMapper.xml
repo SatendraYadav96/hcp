@@ -47,6 +47,11 @@
         SELECT * from USER_MASTER_USR where login_name_usr = #{username}
     </select>
 
+
+    <select id="SpecialDraftPlanReminder" resultMap="usersResultMap">
+        SELECT * from USER_MASTER_USR where ID_USR = #{userId}
+    </select>
+
     <insert id="insertUser">
         INSERT INTO USER_MASTER_USR(name_usr, ci_name_usr, employee_code_usr, id_desg_ulv_usr, active_from_usr, active_to_usr, id_ety_usr,
         email_address_usr, login_name_usr, last_logged_in_usr, id_status_slv_usr, created_on_usr, created_by_usr, updated_on_usr, updated_by_usr)

@@ -138,6 +138,15 @@
         join DISPATCH_DETAIL_DID DID on DIP.ID_DIP = DID.ID_DIP_DID
         where DID.ID_RCT_DID = #{rbmId} AND DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year}
 
+
+    </select>
+
+
+    <select id="SpecialDraftPlanReminder"  resultMap="dispatchDetailResultMap">
+        SELECT *
+        FROM DISPATCH_DETAIL_DID
+        where ID_DIP_DID = #{planId}
+
     </select>
 
 
@@ -320,6 +329,10 @@
         values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})
     </insert>
 
+    <delete id="SpecialDraftPlanReminderDelete">
+DELETE FROM DISPATCH_DETAIL_DID WHERE ID_DIP_DID = #{planId}
+
+    </delete>
 
 
 
