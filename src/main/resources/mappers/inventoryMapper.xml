@@ -121,6 +121,14 @@
     </update>
 
 
+    <update id="multipleAllocationQtyAllocated">
+
+        UPDATE INVENTORY_INV SET QTY_ALLOCATED_INV = #{qtyAllocated},   UPDATED_BY_INV = #{updatedBy} , UPDATED_ON_INV = GETDATE()
+        WHERE ID_INV = #{id}
+
+    </update>
+
+
     <select id="searchInventory" resultType="com.squer.promobee.controller.dto.InventoryDTO" parameterType = "map" statementType = "CALLABLE">
         { call PROC_GET_INVENTORY_ITEMS_NEW_PLATFORM ( #{isExhausted, jdbcType = INTEGER  , mode = IN} ) }
 
@@ -330,6 +338,12 @@
     <select id="SpecialDraftPlanReminder" resultMap="inventoryResultMap">
         select * from INVENTORY_INV where ID_ITM_INV = #{id}
     </select>
+
+
+    <select id="multipleAllocation" resultMap="inventoryResultMap">
+        select * from INVENTORY_INV where ID_INV = #{id}
+    </select>
+
 
 
     <update id="SpecialDraftPlanReminderInventory">

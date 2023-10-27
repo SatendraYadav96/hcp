@@ -982,6 +982,17 @@ class NewAllocationRepository(
 
         var plan = mutableListOf<DispatchPlan>()
         if (remark.isNullOrEmpty()) {
+            var data0: MutableMap<String, Any> = mutableMapOf()
+
+            data0.put("month", month)
+            data0.put("year", year)
+            data0.put("status", status)
+            data0.put("remark", remark)
+
+            plan = sqlSessionFactory.openSession()
+                .selectList<DispatchPlan>("DispatchPlanMapper.searchSpecialPlanWithRemarks", data0)
+
+        } else {
             var data: MutableMap<String, Any> = mutableMapOf()
 
             data.put("month", month)
@@ -992,16 +1003,6 @@ class NewAllocationRepository(
                 sqlSessionFactory.openSession()
                     .selectList<DispatchPlan>("DispatchPlanMapper.searchSpecialPlanWithoutRemarks", data)
 
-        } else {
-            var data0: MutableMap<String, Any> = mutableMapOf()
-
-            data0.put("month", month)
-            data0.put("year", year)
-            data0.put("status", status)
-            data0.put("remark", remark)
-
-            plan = sqlSessionFactory.openSession()
-                .selectList<DispatchPlan>("DispatchPlanMapper.searchSpecialPlanWithRemarks", data0)
         }
 
 

@@ -491,6 +491,13 @@
         VALUES(#{id},#{type},GETDATE(),GETDATE(),#{totalRecord},#{recordUpload},#{statusId},GETDATE(),#{createdBy},GETDATE(),#{updatedBy},#{parentId})
     </insert>
 
+    <update id="multipleAllocation">
+        update UPLOAD_LOG_UPL set IDTYPESLV_UPL = #{type}, START_TIME_UPL = GETDATE() , END_TIME_UPL = GETDATE() , TOTAL_RECORDS_UPL = #{totalRecord} , RECORDS_UPLOAD_UPL = #{recordUpload}, ID_STATUS_SLV_UPL = #{statusId},
+                                  CREATED_ON_UPL = GETDATE(), CREATED_BY_UPL = #{createdBy}, UPDATED_ON_UPL = GETDATE() , UPDATED_BY_UPL = #{updatedBy} , PARENT_ID_UPL = #{parentId}
+        where ID_UPL = #{id}
+    </update>
+
+
 
 
 
