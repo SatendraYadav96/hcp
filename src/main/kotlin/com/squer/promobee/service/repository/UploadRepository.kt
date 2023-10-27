@@ -1916,22 +1916,22 @@ class UploadRepository(
                     data2.put("updatedBy", user.id)
 
                     sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocation", data2)
-
-                    var data4: MutableMap<String, Any> = mutableMapOf()
-                    data4.put("id",inventoryId)
-                    var inv = sqlSessionFactory.openSession().selectOne<Inventory>("InventoryMapper.multipleAllocation",data4)
-
-                    var didQty = it.get(headerRow[i])!!.toInt()
-
-                    var qtyAlloc = inv.qtyAllocated!!.plus(didQty)
-
-                    var data5: MutableMap<String, Any> = mutableMapOf()
-
-                    data5.put("id",inventoryId)
-                    data5.put("qtyAllocated", qtyAlloc)
-                    data5.put("updatedBy",user.id)
-
-                    sqlSessionFactory.openSession().update("InventoryMapper.multipleAllocationQtyAllocated",data5)
+//
+//                    var data4: MutableMap<String, Any> = mutableMapOf()
+//                    data4.put("id",inventoryId)
+//                    var inv = sqlSessionFactory.openSession().selectOne<Inventory>("InventoryMapper.multipleAllocation",data4)
+//
+//                    var didQty = it.get(headerRow[i])!!.toInt()
+//
+//                    var qtyAlloc = inv.qtyAllocated!!.plus(didQty)
+//
+//                    var data5: MutableMap<String, Any> = mutableMapOf()
+//
+//                    data5.put("id",inventoryId)
+//                    data5.put("qtyAllocated", qtyAlloc)
+//                    data5.put("updatedBy",user.id)
+//
+//                    sqlSessionFactory.openSession().update("InventoryMapper.multipleAllocationQtyAllocated",data5)
 
 
 

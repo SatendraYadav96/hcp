@@ -340,7 +340,7 @@
     </select>
 
 
-    <select id="multipleAllocation" resultMap="inventoryResultMap">
+    <select id="multipleAllocations" resultMap="inventoryResultMap">
         select * from INVENTORY_INV where ID_INV = #{id}
     </select>
 
