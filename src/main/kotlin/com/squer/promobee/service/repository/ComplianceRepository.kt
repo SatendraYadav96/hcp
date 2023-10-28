@@ -4,10 +4,7 @@ package com.squer.promobee.service.repository
 
 
 
-import com.squer.promobee.controller.dto.OptimaDataLogsDTO
-import com.squer.promobee.controller.dto.OverSamplingDetaislDTO
-import com.squer.promobee.controller.dto.RecipientBlockLogsDTO
-import com.squer.promobee.controller.dto.RecipientUnblockingPartialDTO
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.util.SecurityUtility
@@ -22,7 +19,7 @@ import java.util.*
 
 @Repository
 class ComplianceRepository(
-    securityUtility: SecurityUtility
+    securityUtility: SecurityUtility,
 ): BaseRepository<Users>(
     securityUtility = securityUtility
 ) {
@@ -144,13 +141,50 @@ class ComplianceRepository(
     }
 
 
-    fun masterBlockedList(year: String): List<RecipientBlockLogsDTO> {
+    fun masterBlockedList(year: String): List<RecipientBlockedListCrudDTO> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
 
+
+
         data.put("year",year)
 
-        return  sqlSessionFactory.openSession().selectList("ComplianceDetailsMapper.masterBlockedList",data)
+        var recipientBlockedlist =   sqlSessionFactory.openSession().selectList<RecipientBlockLogsDTO>("ComplianceDetailsMapper.masterBlockedList",data)
+
+        var blockedListRecipient = mutableListOf<RecipientBlockedListCrudDTO>()
+
+        var i = 1
+
+        recipientBlockedlist.forEach {
+            var teamId = ""
+            var blockedList = RecipientBlockedListCrudDTO()
+            var ffCode = it.REC_CODE_LOG
+            blockedList.ID = it.ID_REC_LOG
+            blockedList.EmployeeCode = it.REC_CODE_LOG
+            blockedList.EmployeeName = sqlSessionFactory.openSession().selectOne("RecipientMapper.masterBlockedListFFName",ffCode)
+             teamId = sqlSessionFactory.openSession().selectOne("RecipientMapper.masterBlockedListTeamId",ffCode)
+            blockedList.Team = sqlSessionFactory.openSession().selectOne("RecipientMapper.masterBlockedListTeam",teamId)
+            blockedList.Headquarter = sqlSessionFactory.openSession().selectOne("RecipientMapper.masterBlockedListHq",ffCode)
+            blockedList.AM = sqlSessionFactory.openSession().selectOne("RecipientMapper.masterBlockedListAm",ffCode)
+            blockedList.RBM = sqlSessionFactory.openSession().selectOne("RecipientMapper.masterBlockedListRbm",ffCode)
+            var dateString = it.REC_UPDATED_ON_LOG
+            var calendar = Calendar.getInstance()
+            calendar.time = it.REC_UPDATED_ON_LOG
+            var monthValue = calendar.get(Calendar.MONTH) + 1
+            var yearValue = calendar.get(Calendar.YEAR)
+            blockedList.Month = monthValue.toString()
+            blockedList.Year = yearValue.toString()
+            blockedList.Blocked_On = it.REC_BLOCKED_ON_LOG
+            blockedList.IsBockedFF = it.REC_ISBLOCKED_LOG
+            blockedList.Remark = it.REC_REMARKS_LOG
+            blockedList.Blocked_type = it.REC_BLOCKEDTYPE_LOG
+
+            blockedListRecipient.addAll(listOf(blockedList))
+
+            i++
+        }
+
+      return blockedListRecipient
 
     }
 

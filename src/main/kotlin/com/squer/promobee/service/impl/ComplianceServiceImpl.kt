@@ -2,10 +2,7 @@ package com.squer.promobee.service.impl
 
 
 
-import com.squer.promobee.controller.dto.OptimaDataLogsDTO
-import com.squer.promobee.controller.dto.OverSamplingDetaislDTO
-import com.squer.promobee.controller.dto.RecipientBlockLogsDTO
-import com.squer.promobee.controller.dto.RecipientUnblockingPartialDTO
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.ComplianceService
 import com.squer.promobee.service.repository.ComplianceRepository
 import lombok.extern.slf4j.Slf4j
@@ -37,7 +34,7 @@ class ComplianceServiceImpl @Autowired constructor(
         return complianceRepository.overSamplingDetails(month,year)
     }
 
-    override fun masterBlockedList(year: String): List<RecipientBlockLogsDTO> {
+    override fun masterBlockedList(year: String): List<RecipientBlockedListCrudDTO> {
         return complianceRepository.masterBlockedList(year)
     }
 

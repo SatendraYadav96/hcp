@@ -193,4 +193,36 @@ UNION
     </select>
 
 
+    <select id="masterBlockedListFFName" resultType="string" >
+        SELECT NAME_RCT FROM RECIPIENT_MASTER_RCT WHERE CODE_RCT = #{ffCode}
+
+    </select>
+
+    <select id="masterBlockedListTeamId" resultType="string"  >
+        SELECT ID_TEM_RCT FROM RECIPIENT_MASTER_RCT WHERE CODE_RCT = #{ffCode}
+
+    </select>
+
+    <select id="masterBlockedListTeam" resultType="string" >
+        SELECT NAME_TEM FROM TEAM_MASTER_TEM WHERE ID_TEM = #{teamId}
+
+    </select>
+
+    <select id="masterBlockedListHq" resultType="string"  >
+        SELECT HEAD_QUARTER_RCT FROM RECIPIENT_MASTER_RCT WHERE  CODE_RCT = #{ffCode}
+
+    </select>
+
+    <select id="masterBlockedListAm" resultType="string"  >
+        SELECT EMAIL_AM FROM RECIPIENT_MASTER_RCT WHERE CODE_RCT = #{ffCode}
+
+    </select>
+
+
+    <select id="masterBlockedListRbm" resultType="string"   >
+        SELECT EMAIL_RM FROM RECIPIENT_MASTER_RCT WHERE CODE_RCT = #{ffCode}
+
+    </select>
+
+
 </mapper>
