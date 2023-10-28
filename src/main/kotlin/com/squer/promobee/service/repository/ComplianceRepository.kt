@@ -122,14 +122,21 @@ class ComplianceRepository(
         val calendar = Calendar.getInstance()
         calendar.time = date
         calendar.set(Calendar.DAY_OF_MONTH, 1)
-        val firstDayOfMonth = calendar.time
+        var firstDayOfMonth = calendar.time
 
-        // Calculate the last day of the month
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
-        val lastDayOfMonth = calendar.time
+        calendar.add(Calendar.MONTH, 2)
+
+        var firstDayOfThirdMonth = calendar.time
+
+        // Calculate the first day of the third month
+//        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+//        calendar.set(Calendar.MONTH, )
+//        calendar.set(Calendar.DAY_OF_MONTH, 1)
+//        val firstDayOfThirdMonth = calendar.time
+
 
         data.put("month", firstDayOfMonth)
-        data.put("year", lastDayOfMonth)
+        data.put("year", firstDayOfThirdMonth)
 
 
 

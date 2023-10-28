@@ -129,6 +129,11 @@ open class UIController @Autowired constructor(
 
             ),
 
+            UserRoleEnum.NATIONAL_SALES_MANAGER_ID.id to listOf<UserMenuEnum>(
+
+
+                ),
+
 
 
         )
@@ -200,6 +205,13 @@ open class UIController @Autowired constructor(
                 UserMenuEnum.BM_DASHBOARD,
                 UserMenuEnum.ALLOCATION,
                 UserMenuEnum.DISPATCH_AND_INVOICING
+            ),
+
+            UserRoleEnum.NATIONAL_SALES_MANAGER_ID.id to listOf<UserMenuEnum>(
+                UserMenuEnum.COMPLIANCE_ADMIN_DASHBOARD,
+                UserMenuEnum.NON_COMPLIANCE_UNBLOCK,
+                UserMenuEnum.OVERSAMPLING_DETAILS,
+
             ),
         )
     }
