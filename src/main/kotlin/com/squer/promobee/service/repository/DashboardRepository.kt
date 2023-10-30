@@ -56,7 +56,7 @@ DashboardRepository(
         return sqlSessionFactory.openSession().selectList("DashboardMapper.getHubPendingRevalidation", data)
     }
 
-    fun getHubGrnErrorLog (): List<HubGrnErrorLogDashboardDTO> {
+        fun getHubGrnErrorLog (): List<HubGrnErrorLogDashboardDTO> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var data: MutableMap<String, Any> = mutableMapOf()

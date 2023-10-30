@@ -50,6 +50,13 @@
 
     </update>
 
+
+    <update id="deleteCostCenterBrand">
+
+       DELETE FROM COSTCENTER_BRAND_CBR WHERE ID_CCM_CBR = #{ccmId}
+
+    </update>
+
     <select id="getCostCenterById" resultMap="costCenterResultMap" >
         select ccm.*,brd.id_brd,brd.name_brd
         from COST_CENTER_MASTER_CCM ccm

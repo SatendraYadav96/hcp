@@ -276,7 +276,7 @@ class GRNServiceImpl @Autowired constructor(
                 addInventoryParam.qtyReceived = grn.qty
                 addInventoryParam.qtyAllocated = 0
                 addInventoryParam.qtyDispatched = 0
-                addInventoryParam.numBoxes = data.numBoxes?.toDouble()
+                addInventoryParam.numBoxes = data.numBoxes
                 addInventoryParam.isUnitAllocation = null
                 addInventoryParam.batchNo = grn.batchNo
                 addInventoryParam.hsnCode = grn.hsnCode

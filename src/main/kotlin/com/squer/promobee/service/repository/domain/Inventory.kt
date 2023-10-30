@@ -1,10 +1,9 @@
 package com.squer.promobee.service.repository.domain
 
-import com.fasterxml.jackson.databind.util.Named
 import com.squer.promobee.security.domain.AuditableEntity
 import com.squer.promobee.security.domain.NamedSquerEntity
 import com.squer.promobee.security.domain.SquerEntity
-import java.util.Date
+import java.util.*
 
 class Inventory: AuditableEntity() {
     var item: NamedSquerEntity?= null

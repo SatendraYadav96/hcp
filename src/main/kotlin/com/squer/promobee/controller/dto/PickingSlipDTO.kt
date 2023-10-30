@@ -1,8 +1,5 @@
 package com.squer.promobee.controller.dto
 
-import java.time.YearMonth
-import java.util.Date
-
 
 class PickingSlipDTO {
     lateinit var team : String
@@ -15,7 +12,7 @@ class PickingSlipDTO {
     lateinit var planName: String
     lateinit var planID: String
     lateinit var planInvoiceStatus: String
-    var approvalDate: Date?= null
+    var approvalDate: String?= null
 }
 
 class PickListDetailsDTO{
@@ -29,5 +26,5 @@ class PickListDetailsDTO{
     lateinit var planName: String
     lateinit var planID: String
     lateinit var planInvoiceStatus: String
-    var approvalDate: Date?= null
+    var approvalDate: String?= null
 }

@@ -11,6 +11,7 @@ class   DataModelInvoiceDetailsDTO {
     var invoiceStatusID: String ?= null
     var boxes: Int ?= null
     var weight: Double ?= null
+    var transporter: String ?= null
     var transporterID: String ?= null
     var lrNumber : String ?= null
     var dimension: String ?= null

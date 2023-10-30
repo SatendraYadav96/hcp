@@ -8,7 +8,7 @@ class GRNAckDTO {
     var itemCode: String ?= null
     var medicalCode: String?= null
     var basePack: Int?= null
-    var numBoxes: Int?= null
+    var numBoxes: Double?= null
     var hsnCode: String?= null
     var ratePer: Int?= null
     var units: Int ?= null

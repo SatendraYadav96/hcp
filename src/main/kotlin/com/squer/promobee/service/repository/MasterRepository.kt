@@ -208,10 +208,20 @@ class MasterRepository
 
         sqlSessionTemplate.update("CostCenterMapper.editCostCenter",data)
         var ccmId2 = ccm.id
+
+        var data0 : MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("ccmId",ccmId2)
+
+        sqlSessionTemplate.delete("CostCenterMapper.deleteCostCenterBrand",data0)
+
+
         var cbr = CostCenterBrand()
 
         var i = 0
         ccm.brandId.forEach {
+
+
 
             var cbrId = UUID.randomUUID().toString()
 
