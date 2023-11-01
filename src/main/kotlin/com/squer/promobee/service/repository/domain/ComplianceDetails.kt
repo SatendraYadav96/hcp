@@ -1,13 +1,11 @@
 package com.squer.promobee.service.repository.domain
 
-import java.util.Date
-
 class ComplianceDetails {
     var id: String?= null
     var ff: String?= null
     var drId: String?= null
-    var startDate: Date?= null
-    var endDate: Date?= null
+    var startDate: String?= null
+    var endDate: String?= null
     var drName: String?= null
     var totSampleGiven: Int?= null
     var bu : String?= null

@@ -1,10 +1,7 @@
 package com.squer.promobee.service
 
 
-import com.squer.promobee.controller.dto.OptimaDataLogsDTO
-import com.squer.promobee.controller.dto.OverSamplingDetaislDTO
-import com.squer.promobee.controller.dto.RecipientBlockedListCrudDTO
-import com.squer.promobee.controller.dto.RecipientUnblockingPartialDTO
+import com.squer.promobee.controller.dto.*
 
 
 interface ComplianceService {
@@ -13,10 +10,13 @@ interface ComplianceService {
 
     fun optimaMailLogs (type : String, month : String,  year : String) : List<OptimaDataLogsDTO>
 
-    fun overSamplingDetails (month : String,  year : String) : List<OverSamplingDetaislDTO>
+    fun overSamplingDetails (month : String,  year : String) : List<ComplianceListCrudDTO>
 
     fun masterBlockedList (year : String) : List<RecipientBlockedListCrudDTO>
 
+    fun saveMasterBlockedRecipient (blockRecp : List<SaveRecipientBlockedmasterDTO>)
+
+    fun saveOverSampling (comp :List<SaveOverSamplingDTO>)
 
 
 

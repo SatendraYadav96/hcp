@@ -30,7 +30,7 @@ class ComplianceServiceImpl @Autowired constructor(
         return complianceRepository.optimaMailLogs(type,month,year)
     }
 
-    override fun overSamplingDetails(month: String, year: String): List<OverSamplingDetaislDTO> {
+    override fun overSamplingDetails(month: String, year: String): List<ComplianceListCrudDTO> {
         return complianceRepository.overSamplingDetails(month,year)
     }
 
@@ -38,6 +38,12 @@ class ComplianceServiceImpl @Autowired constructor(
         return complianceRepository.masterBlockedList(year)
     }
 
+    override fun saveMasterBlockedRecipient(blockRecp: List<SaveRecipientBlockedmasterDTO>) {
+        return complianceRepository.saveMasterBlockedRecipient(blockRecp)
+    }
 
+    override fun saveOverSampling(comp: List<SaveOverSamplingDTO>) {
+        return complianceRepository.saveOverSampling(comp)
+    }
 
 }

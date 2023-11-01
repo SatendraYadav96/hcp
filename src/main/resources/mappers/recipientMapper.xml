@@ -216,13 +216,42 @@ UNION
     <select id="masterBlockedListAm" resultType="string"  >
         SELECT EMAIL_AM FROM RECIPIENT_MASTER_RCT WHERE CODE_RCT = #{ffCode}
 
-    </select>
 
+    </select>
 
     <select id="masterBlockedListRbm" resultType="string"   >
         SELECT EMAIL_RM FROM RECIPIENT_MASTER_RCT WHERE CODE_RCT = #{ffCode}
 
     </select>
+
+    <select id="overSamplingDetailsRecipient" resultType="string" >
+        SELECT NAME_RCT FROM RECIPIENT_MASTER_RCT WHERE CODE_RCT = #{ffCode}
+
+    </select>
+
+
+    <select id="SaveMasterBlockedRecipientLog" resultType="com.squer.promobee.controller.dto.RecipientBlockLogsDTO" >
+        SELECT ID_REC_LOG as 'ID_REC_LOG',REC_CODE_LOG as 'REC_CODE_LOG',REC_ISBLOCKED_LOG as 'REC_ISBLOCKED_LOG',REC_BLOCKED_BY_LOG as 'REC_BLOCKED_BY_LOG',
+        REC_BLOCKED_ON_LOG as 'REC_BLOCKED_ON_LOG',REC_UPDATED_BY_LOG as 'REC_UPDATED_BY_LOG',REC_UPDATED_ON_LOG as 'REC_UPDATED_ON_LOG',REC_REMARKS_LOG as 'REC_REMARKS_LOG',
+               REC_BLOCKEDTYPE_LOG as 'REC_BLOCKEDTYPE_LOG' FROM RECEPIENT_BLOCK_LOGS_RBL WHERE ID_REC_LOG = #{cdId}
+
+    </select>
+
+
+    <select id="SaveMasterBlockedRecipientBlockedDate" resultType="string" >
+        SELECT REC_BLOCKED_ON_LOG AS 'REC_BLOCKED_ON_LOG' FROM RECEPIENT_BLOCK_LOGS_RBL WHERE REC_CODE_LOG = #{code} AND REC_BLOCKEDTYPE_LOG = #{blockedType}
+        ORDER BY REC_UPDATED_ON_LOG DESC
+
+    </select>
+
+    <insert id="insertMasterBlockedRecipient">
+        INSERT INTO RECEPIENT_BLOCK_LOGS_RBL (ID_REC_LOG ,REC_CODE_LOG ,REC_ISBLOCKED_LOG ,REC_BLOCKED_BY_LOG ,
+                                              REC_BLOCKED_ON_LOG,REC_UPDATED_BY_LOG,REC_UPDATED_ON_LOG ,REC_REMARKS_LOG,
+                                              REC_BLOCKEDTYPE_LOG )
+VALUES (#{ID_REC_LOG},#{REC_CODE_LOG},#{REC_ISBLOCKED_LOG},#{REC_BLOCKED_BY_LOG},#{REC_BLOCKED_ON_LOG},#{REC_UPDATED_BY_LOG},#{REC_UPDATED_ON_LOG},#{REC_REMARKS_LOG},#{REC_BLOCKEDTYPE_LOG})
+
+    </insert>
+
 
 
 </mapper>

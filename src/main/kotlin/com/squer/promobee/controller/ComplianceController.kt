@@ -3,6 +3,8 @@ package com.squer.promobee.controller
 
 
 
+import com.squer.promobee.controller.dto.SaveOverSamplingDTO
+import com.squer.promobee.controller.dto.SaveRecipientBlockedmasterDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.ComplianceService
 import lombok.extern.slf4j.Slf4j
@@ -14,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 
 
 @Slf4j
@@ -49,6 +53,20 @@ open class ComplianceController@Autowired constructor(
     fun masterBlockedList(@PathVariable year : String   ): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = complianceService.masterBlockedList(year)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PostMapping("/SaveMasterBlockedRecipient")
+    fun saveMasterBlockedRecipient(@RequestBody blockRecp :List<SaveRecipientBlockedmasterDTO>  ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = complianceService.saveMasterBlockedRecipient(blockRecp)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PostMapping("/saveOverSampling")
+    fun saveOverSampling(@RequestBody comp :List<SaveOverSamplingDTO>  ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = complianceService.saveOverSampling(comp)
         return ResponseEntity(data, HttpStatus.OK)
     }
 

@@ -86,13 +86,52 @@
     <select id="buChampionData" resultType="com.squer.promobee.controller.dto.ComplianceBuChampionDTO">
         SELECT ID_USR,NAME_USR,EMAIL_ADDRESS_USR FROM USER_MASTER_USR
         WHERE ID_DESG_ULV_USR = '24720986-A3EE-4DCA-9538-36F52625EB70' AND ID_STATUS_SLV_USR = '1D2F12F3-F84A-4200-9590-70680528779B'
-    </select>
 
+    </select>
 
     <select id="buNameData" resultType="com.squer.promobee.controller.dto.ComplianceModeldeDTO" parameterType = "map" statementType = "CALLABLE">
         { call GET_BU_FOR_BUC ( #{usr, jdbcType = VARCHAR, mode = IN}   ) }
 
     </select>
+
+
+    <select id="overSamplingDetailsComplianceData" resultMap="complianceDetailsResultMap">
+
+        SELECT * FROM COMPLIANCE_DETAILS_CD
+        WHERE START_DATE = #{searchFromDate} AND END_DATE = #{searchToDate}
+        ORDER BY START_DATE DESC
+
+    </select>
+
+
+    <select id="SearchCompliance" resultMap="complianceDetailsResultMap" parameterType = "map" statementType = "CALLABLE">
+        { call GET_COMPLIANCE_DETAILS_LIST ( #{usr, jdbcType = VARCHAR, mode = IN} , #{FromDate, jdbcType = VARCHAR, mode = IN} , #{ToDate, jdbcType = VARCHAR, mode = IN}   ) }
+
+    </select>
+
+
+    <select id="saveOverSampling" resultMap="complianceDetailsResultMap">
+
+        SELECT * FROM COMPLIANCE_DETAILS_CD
+        WHERE ID_CM = #{cdId}
+
+    </select>
+
+    <update id="saveOverSamplingRemark">
+
+UPDATE COMPLIANCE_DETAILS_CD SET REMARKS = #{remark} WHERE ID_CM = #{id}
+
+    </update>
+
+    <update id="saveOverSamplingReason">
+
+        UPDATE COMPLIANCE_DETAILS_CD SET REASON = #{reason} WHERE ID_CM = #{id}
+
+    </update>
+
+
+
+
 
 
 

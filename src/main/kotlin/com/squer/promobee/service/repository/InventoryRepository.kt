@@ -651,6 +651,9 @@ class InventoryRepository @Autowired constructor(
             data.put("Plan_ID", planId)
             data.put("StatusSLV", status)
 
+
+
+
             if(status == InvoiceStatusEnum.GENERATED_PRINTED.id || status == InvoiceStatusEnum.CANCELLED.id || status == InvoiceStatusEnum.REDIRECTED.id){
 
                 return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getVirtualDispatchInvoicingListForGeneratedPrinted", data)

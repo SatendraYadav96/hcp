@@ -30,6 +30,18 @@
         select * from USER_LOV_ULV where id_ulv=#{id}
     </select>
 
+    <select id="overSamplingDetailsReason" resultMap="userDesignationResultMap">
+
+        SELECT * FROM USER_LOV_ULV WHERE   ID_ULV = #{id} and TYPE_ULV = #{type}
+
+    </select>
+
+    <select id="overSamplingDetailsReasonList" resultMap="userDesignationResultMap">
+
+        SELECT * FROM USER_LOV_ULV WHERE TYPE_ULV = #{type}
+
+    </select>
+
 
 
 

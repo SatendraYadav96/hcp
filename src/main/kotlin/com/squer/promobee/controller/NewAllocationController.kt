@@ -345,14 +345,7 @@ open class NewAllocationController @Autowired constructor(
         var byteData = String(Base64.getEncoder().encode(data))
 
         return ResponseEntity(byteData , HttpStatus.OK)
-//        var fileContentList = mutableListOf<FileContentPOJO>()
-//
-//            fileContentList.add(
-//                FileContentPOJO(fileName = "multipleAllocation",
-//                    String(Base64.getEncoder().encode(data)))
-//            )
-//
-//        return ResponseEntity(fileContentList, HttpStatus.OK)
+
     }
 
 
