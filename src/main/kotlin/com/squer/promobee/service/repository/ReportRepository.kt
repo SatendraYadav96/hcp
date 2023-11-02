@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 @Repository
@@ -249,18 +251,19 @@ class ReportRepository
         dest.divison.forEach {
             var data1: MutableMap<String, Any> = mutableMapOf()
 
-            data1.put("Division",dest.divison.get(i))
+//            data1.put("Division",dest.divison.get(i))
 
+            data1.put("Division",it)
             buId = sqlSessionFactory.openSession().selectOne("ReportMapper.getBusinessUnitForReport",data1)
 
             buId.buId?.let { it1 -> data1.put("BusinessUnit", it1.toString()) }
             dest.fromDate?.let { data1.put("FromDate", it) }
             dest.toDate?.let { data1.put("ToDate", it) }
-            dest.userId?.let { data1.put("UserID", it) }
-            dest.userDesgId?.let { data1.put("UserDesgID", it) }
+//            dest.userId?.let { data1.put("UserID", it) }
+//            dest.userDesgId?.let { data1.put("UserDesgID", it) }
             dest.statusId?.let { it1 -> data1.put("StatusID", it1) }
 
-            result =  sqlSessionFactory.openSession().selectList<DestructionReportDTO>("ReportMapper.getReportDestruction", data1)
+            result =  sqlSessionFactory.openSession().selectList<DestructionReportDTO>("ReportMapper.getReportDestructionNew", data1)
 
 
             finalResult.addAll(result)
@@ -564,10 +567,35 @@ class ReportRepository
     }
 
 
-    fun getVirtualReconciliationReport(fromDate: String, toDate: String, businessUnit: String): List<VirtualReconciliationDTO>{
+    fun getVirtualReconciliationReport(quarter: String, year: String, businessUnit: String): List<VirtualReconciliationDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
-        data.put("fromdate", fromDate)
-        data.put("enddate", toDate)
+
+        var (fromDate, toDate) = getDates(quarter, year)
+
+        var sdf = SimpleDateFormat(
+            "EE MMM dd HH:mm:ss z yyyy",
+            Locale.ENGLISH
+        )
+
+        var parsedDate: Date = sdf.parse(fromDate.toString())
+
+        var startDate = SimpleDateFormat("yyyy-MM-dd")
+
+        var startDate1 = startDate.format(parsedDate)
+
+
+
+        var parsedDate1: Date = sdf.parse(toDate.toString())
+
+        var endDate = SimpleDateFormat("yyyy-MM-dd")
+
+        var endDate1 = endDate.format(parsedDate1)
+
+
+
+
+      data.put("fromdate", startDate1)
+       data.put("enddate", endDate1)
         data.put("BusinessUnit", businessUnit)
 
 
@@ -581,6 +609,35 @@ class ReportRepository
 
         return sqlSessionFactory.openSession().selectList<BatchReconciliationDTO>("ReportMapper.getBatchReconciliation")
     }
+
+
+
+
+    fun getDates(quarter: String, year: String): Pair<Date, Date> {
+        val cal = Calendar.getInstance()
+        cal.set(Calendar.YEAR, year.toInt())
+        cal.set(Calendar.MONTH, when (quarter) {
+            "001" -> Calendar.JANUARY
+            "002" -> Calendar.APRIL
+            "003" -> Calendar.JULY
+            "004" -> Calendar.OCTOBER
+            else -> throw IllegalArgumentException("Invalid quarter: $quarter")
+        })
+        cal.set(Calendar.DAY_OF_MONTH, 1)
+        val fromDate = cal.time
+        cal.add(Calendar.MONTH, 2)
+        cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH))
+        val toDate = cal.time
+        return Pair(fromDate, toDate)
+    }
+
+
+
+
+
+
+
+
 
 
 }
