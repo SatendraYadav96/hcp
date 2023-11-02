@@ -16,9 +16,9 @@ class ShiprocketReportDTO {
     val  brandName : String? = null
     val  brandCode : String? = null
     val  itemCategory : String? = null
-    val  BatchNo : String? = null
+    val  batchNo : String? = null
     val  dispatchedQuantity : String? = null
-    val  Expiry : String? = null
+    val  expiry : String? = null
     val  team : String? = null
     val  length : String? = null
     val  height : String? = null
