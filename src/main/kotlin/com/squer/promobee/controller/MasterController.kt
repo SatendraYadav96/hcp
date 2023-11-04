@@ -7,6 +7,7 @@ import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.MasterService
 import com.squer.promobee.service.repository.domain.*
 import lombok.extern.slf4j.Slf4j
+import org.mybatis.spring.SqlSessionTemplate
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @Slf4j
 open class MasterController@Autowired constructor(
@@ -22,6 +24,9 @@ open class MasterController@Autowired constructor(
 
 
     private val log = LoggerFactory.getLogger(javaClass)
+
+    @Autowired
+    lateinit var sqlSessionTemplate: SqlSessionTemplate
 
 
     //VENDOR MASTER CONTROLLER
@@ -47,6 +52,56 @@ open class MasterController@Autowired constructor(
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val insertVendor = masterService.addVendor(vnd)
         return ResponseEntity(insertVendor, HttpStatus.OK)
+    }
+
+
+    @PostMapping("/addVendors")
+    open fun addVendors(@RequestBody vnd: Vendor): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        var errorMap: MutableMap<String, String> = HashMap()
+
+        lateinit var jsonResult : Map<String, Any>
+
+        var vendorCode = 0;
+        vnd.code?.let { data0.put("code", it) }
+
+        vendorCode = sqlSessionTemplate.selectOne("VendorMapper.vendorExist",data0)
+
+        if(vendorCode > 0 ){
+            errorMap["message"] = "Vendor Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        }else {
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+            data.put("id", UUID.randomUUID().toString())
+            vnd.name?.let { data.put("name", it.uppercase()) }
+            vnd.name?.let { data.put("ciName", it.lowercase()) }
+            vnd.code?.let { data.put("code", it.uppercase()) }
+            vnd.addressLine1?.let { data.put("addressLine1", it) }
+            vnd.addressLine2?.let { data.put("addressLine2", it) }
+            vnd.city?.let { data.put("city", it) }
+            vnd.state?.let { data.put("state", it) }
+            vnd.zip?.let { data.put("zip", it) }
+            vnd.active?.let { data.put("active", it) }
+            data.put("createdBy", user.id)
+            data.put("updatedBy", user.id)
+
+            sqlSessionTemplate.insert("VendorMapper.addVendor", data)
+
+            errorMap["message"] = "Vendor created successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+
+        }
+
     }
 
     @PutMapping("/editVendor/{id}")
