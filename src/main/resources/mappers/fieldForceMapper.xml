@@ -161,6 +161,13 @@
     </select>
 
 
+    <select id="checkFieldWorkId" resultMap="fieldForceResultMap">
+        SELECT * FROM RECIPIENT_MASTER_RCT
+        WHERE WorkId = #{workId}
+
+    </select>
+
+
 
 
 

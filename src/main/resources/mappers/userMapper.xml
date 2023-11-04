@@ -82,6 +82,22 @@
         select * from USER_MASTER_USR where ID_DESG_ULV_USR = #{designationId} and ID_STATUS_SLV_USR = #{statusId}
     </select>
 
+    <select id="checkUserCode" resultMap="usersResultMap" >
+        SELECT * FROM USER_MASTER_USR
+        WHERE EMPLOYEE_CODE_USR = #{code}
+    </select>
+
+    <select id="checkUserLogin" resultMap="usersResultMap" >
+        SELECT * FROM USER_MASTER_USR
+        WHERE LOGIN_NAME_USR = #{login}
+    </select>
+
+
+    <select id="checkUserEmail" resultMap="usersResultMap" >
+        SELECT * FROM USER_MASTER_USR
+        WHERE EMAIL_ADDRESS_USR = #{email}
+    </select>
+
 
 
 

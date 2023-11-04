@@ -197,7 +197,7 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.editUser(usr)
     }
 
-    override fun addUser(usr: MasterUsers) {
+    override fun addUser(usr: MasterUsers): Map<String, Any> {
         return masterRepository.addUser(usr)
     }
 

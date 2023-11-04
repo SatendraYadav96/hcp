@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Slf4j
@@ -331,12 +333,103 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @PutMapping("/editBusinessUnits")
+    open fun editBusinessUnits(@RequestBody bu: BU): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var businessUnit = BU()
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        var errorMap: MutableMap<String, String> = HashMap()
+
+        data0.put("code",bu.code!!)
+
+        businessUnit = sqlSessionTemplate.selectOne("BUMapper.checkBUCode",data0)
+
+        if(businessUnit.code == bu.code){
+            errorMap["message"] = "Team Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+
+        } else{
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+
+            data.put("id", bu.id)
+            bu.name?.let { data.put("name", it.uppercase()) }
+            bu.name?.let { data.put("ciName", it.lowercase()) }
+            bu.active?.let { data.put("active", it) }
+            data.put("updatedBy",user.id)
+
+
+
+
+            sqlSessionTemplate.update("BUMapper.editBusinessUnit",data)
+
+            errorMap["message"] = "Team updated successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+        }
+    }
+
 
     @PostMapping("/addBusinessUnit")
     open fun addBusinessUnit(@RequestBody bu: BU): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = masterService.addBusinessUnit(bu)
+
         return ResponseEntity(data, HttpStatus.OK)
+
+
+    }
+
+
+    @PostMapping("/addBusinessUnits")
+    open fun addBusinessUnits(@RequestBody bu: BU): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var businessUnit = BU()
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        var errorMap: MutableMap<String, String> = HashMap()
+
+        data0.put("code",bu.code!!)
+
+        businessUnit = sqlSessionTemplate.selectOne("BUMapper.checkBUCode",data0)
+
+        if(businessUnit.code == bu.code){
+            errorMap["message"] = "Team Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        }else {
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var buId = UUID.randomUUID().toString()
+
+            data.put("id",buId)
+            bu.name?.let { data.put("name", it.uppercase()) }
+            bu.name?.let { data.put("ciName", it.lowercase()) }
+            bu.code?.let { data.put("code", it) }
+            bu.active?.let { data.put("active", it) }
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+
+
+            sqlSessionTemplate.insert("BUMapper.addBusinessUnit",data)
+            errorMap["message"] = "Team created successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+        }
+
     }
 
 
@@ -370,11 +463,209 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+
+    @PutMapping("/editTeams")
+    open fun editTeams(@RequestBody tem: MasterTeam): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var team = Team()
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+        var errorMap: MutableMap<String, String> = HashMap()
+
+        data0.put("code",tem.code!!)
+
+        team = sqlSessionTemplate.selectOne("TeamMapper.checkTeamCode",data0)
+
+        if(team.code == tem.code){
+
+            errorMap["message"] = "Sub Team Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+
+        } else{
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            // add team
+
+            data.put("id",tem.id)
+            tem.name?.let { data.put("name", it) }
+            tem.name?.let { data.put("ciName", it.lowercase()) }
+            tem.code?.let { data.put("code", it) }
+            tem.active?.let { data.put("active", it) }
+            tem.division?.let { data.put("division", it.id) }
+            data.put("updatedBy",user.id)
+
+            sqlSessionTemplate.update("TeamMapper.editTeam",data)
+
+            //delete existing brand mapped to team
+
+            data.put("id",tem.id)
+
+            sqlSessionTemplate.delete("TeamBrandMapper.deleteBrandByTeamId",data)
+
+
+            // mapped requested brand to team
+
+            var tbr =  mutableListOf<MutableList<TeamBrand>>()
+
+            var i = 0
+
+            tem.brand.forEach {
+
+
+
+                var tbrId = UUID.randomUUID().toString()
+
+                data.put("id",tbrId)
+                data.put("teamId",tem.id)
+                data.put("brandId",tem.brand.get(i))
+
+                sqlSessionTemplate.insert("TeamBrandMapper.addBrandByTeamId",data)
+
+                i++
+            }
+
+            //delete existing entity mapped to team
+
+            data.put("id",tem.id)
+
+            sqlSessionTemplate.delete("TeamLegalEntityMapper.deleteEntityByTeamId",data)
+
+            //mapped requested entity to team
+
+            var tet = TeamLegalEntity()
+
+            i = 0
+
+            tem.ety.forEach {
+
+
+                var tetId = UUID.randomUUID().toString()
+
+                data.put("id",tetId)
+                data.put("team",tem.id)
+                data.put("legalEntity",tem.ety.get(i))
+
+                sqlSessionTemplate.insert("TeamLegalEntityMapper.addEntityByTeamId",data)
+
+                i++
+
+            }
+            errorMap["message"] = "Sub Team Updated successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+
+
+        }
+    }
+
+
     @PostMapping("/addTeam")
     open fun addTeam(@RequestBody tem: MasterTeam): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = masterService.addTeam(tem)
         return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PostMapping("/addTeams")
+    open fun addTeams(@RequestBody tem: MasterTeam): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+
+        var team = Team()
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+        var errorMap: MutableMap<String, String> = HashMap()
+
+        data0.put("code",tem.code!!)
+
+        team = sqlSessionTemplate.selectOne("TeamMapper.checkTeamCode",data0)
+
+        if(team.code == tem.code){
+
+            errorMap["message"] = "Sub Team Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+
+        } else {
+            // add team
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+            var temId = UUID.randomUUID().toString()
+
+            data.put("id",temId)
+            tem.name?.let { data.put("name", it) }
+            tem.name?.let { data.put("ciName", it.lowercase()) }
+            tem.code?.let { data.put("code", it) }
+            tem.active?.let { data.put("active", it) }
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            tem.division?.id.let { it?.let { it1 -> data.put("division", it1) } }
+
+            sqlSessionTemplate.insert("TeamMapper.addTeam",data)
+
+
+
+            // mapped requested brand to team
+
+            var tbr =  TeamBrand()
+
+            var i = 0
+
+            tem.brand.forEach {
+
+
+
+                var tbrId = UUID.randomUUID().toString()
+
+                data.put("id",tbrId)
+                data.put("teamId",temId)
+                data.put("brandId",tem.brand.get(i))
+
+                sqlSessionTemplate.insert("TeamBrandMapper.addBrandByTeamId",data)
+
+                i++
+
+            }
+
+
+
+            //mapped requested entity to team
+
+            var tet = TeamLegalEntity()
+
+            i = 0
+
+            tem.ety.forEach {
+
+
+                var tetId = UUID.randomUUID().toString()
+
+                data.put("id",tetId)
+                data.put("team",temId)
+                data.put("legalEntity",tem.ety.get(i))
+
+                sqlSessionTemplate.insert("TeamLegalEntityMapper.addEntityByTeamId",data)
+
+                i++
+
+            }
+
+
+            println("Team Added Successfully !")
+
+            errorMap["message"] = "Sub Team created successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+        }
     }
 
 
@@ -401,11 +692,205 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+
+    @PutMapping("/editUsers")
+    open fun editUsers(@RequestBody usr: MasterUsers): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var errorMap: MutableMap<String, String> = HashMap()
+        var usrCode = User()
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("code",usr.employeeCode!!)
+
+        usrCode = sqlSessionTemplate.selectOne("UserMapper.checkUserCode",data0)
+
+        var usrLogin = User()
+        var data1: MutableMap<String, Any> = mutableMapOf()
+
+        data1.put("login",usr.username!!)
+
+        usrLogin = sqlSessionTemplate.selectOne("UserMapper.checkUserLogin",data1)
+
+
+        var usrEmail = User()
+        var data2: MutableMap<String, Any> = mutableMapOf()
+
+        data2.put("email",usr.email!!)
+
+        usrEmail = sqlSessionTemplate.selectOne("UserMapper.checkUserEmail",data2)
+
+        if(usrCode.employeeCode == usr.employeeCode){
+            errorMap["message"] = "User's Employee Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+
+        } else if (usrLogin.username == usr.username){
+            errorMap["message"] = "User's LoginId Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        }else{
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            // update user
+
+            data.put("id",usr.id)
+            usr.email?.let { data.put("email", it) }
+            usr.legalEntity?.let { data.put("legalEntity", it.id) }
+            usr.userDesignation?.let { data.put("userDesignation", it.id) }
+            usr.userStatus?.let { data.put("userStatus", it.id) }
+            usr.approver?.let { data.put("approver", it) }
+
+            sqlSessionTemplate.update("UsersMasterMapper.editUser",data)
+
+
+            var bbr = BrandManager()
+
+            // delete existing brand mapped to user
+
+
+            data.put("id",usr.id)
+
+            sqlSessionTemplate.delete("BrandManagerMapper.deleteBrandByUserId",data)
+
+            var i = 0
+
+            usr.brand.forEach {
+
+                var bbrId = UUID.randomUUID().toString()
+
+                data.put("id",bbrId)
+                data.put("userId",usr.id)
+                data.put("brandId",usr.brand.get(i))
+
+                sqlSessionTemplate.insert("BrandManagerMapper.addBrandByUserId",data)
+
+                i++
+
+            }
+
+
+            println("User Updated Successfully !")
+            errorMap["message"] = "User updated successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+
+        }
+    }
+
+
+
     @PostMapping("/addUser")
     open fun addUser(@RequestBody usr: MasterUsers): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = masterService.addUser(usr)
         return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PostMapping("/addUsers")
+    open fun addUsers(@RequestBody usr: MasterUsers): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var errorMap: MutableMap<String, String> = HashMap()
+        var usrCode = User()
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("code",usr.employeeCode!!)
+
+        usrCode = sqlSessionTemplate.selectOne("UserMapper.checkUserCode",data0)
+
+        var usrLogin = User()
+        var data1: MutableMap<String, Any> = mutableMapOf()
+
+        data1.put("login",usr.username!!)
+
+        usrLogin = sqlSessionTemplate.selectOne("UserMapper.checkUserLogin",data1)
+
+
+        var usrEmail = User()
+        var data2: MutableMap<String, Any> = mutableMapOf()
+
+        data2.put("email",usr.email!!)
+
+        usrEmail = sqlSessionTemplate.selectOne("UserMapper.checkUserEmail",data2)
+
+        if(usrCode.employeeCode == usr.employeeCode){
+            errorMap["message"] = "User's Employee Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+
+        } else if (usrLogin.username == usr.username){
+            errorMap["message"] = "User's LoginId Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        } else{
+            // add user
+            var data: MutableMap<String, Any> = mutableMapOf()
+            var usrId = UUID.randomUUID().toString()
+
+            val ldt: LocalDateTime = LocalDateTime.now()
+            var actFrm = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH).format(ldt)
+            System.out.println(ldt)
+
+            data.put("id",usrId)
+            usr.name?.let { data.put("name", it.uppercase()) }
+            usr.name?.let { data.put("ciName", it.lowercase()) }
+            usr.username?.let { data.put("username", it) }
+            usr.employeeCode?.let { data.put("employeeCode", it) }
+            usr.userDesignation?.let { data.put("userDesignation", it.id) }
+            data.put("activeFrom", actFrm)
+//        usr.activeTo?.let { data.put("activeTo", it) }
+            usr.userStatus?.let { data.put("userStatus", it.id) }
+            usr.legalEntity?.let { data.put("legalEntity", it.id) }
+            usr.email?.let { data.put("email", it) }
+            // usr.lastLoggedIn?.let { data.put("lastLoggedIn", it) }
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            usr.appBu?.let { data.put("appBu", it.id) }
+            //usr.userRecipientId?.let { data.put("userRecipientId", it) }
+            usr.approver?.let { data.put("approver", it) }
+
+            sqlSessionTemplate.insert("UsersMasterMapper.addUser",data)
+
+
+            //map brand to new user
+
+            var bbr = BrandManager()
+
+            var i = 0
+
+            usr.brand.forEach {
+
+                var bbrId = UUID.randomUUID().toString()
+
+                data.put("id",bbrId)
+                data.put("userId",usrId)
+                data.put("brandId",usr.brand.get(i))
+
+                sqlSessionTemplate.insert("BrandManagerMapper.addBrandByUserId",data)
+
+                i++
+
+            }
+
+
+            println("User Added Successfully !")
+
+            errorMap["message"] = "User created successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+
+
+        }
+
     }
 
 
@@ -433,11 +918,304 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+
+    @PutMapping("/editBrands")
+    open fun editBrands(@RequestBody brd: MasterBrand): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var errorMap: MutableMap<String, String> = HashMap()
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+
+        var brand = BrandMaster()
+
+        data0.put("code",brd.code!!)
+
+        brand = sqlSessionTemplate.selectOne("BrandMasterMapper.checkBrandCode",data0)
+
+        if(brand.code == brd.code){
+            errorMap["message"] = "Brand Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        } else{
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            // update brand
+
+            data.put("id",brd.id)
+            brd.name?.let { data.put("name", it.uppercase()) }
+            brd.name?.let { data.put("ciName", it.lowercase()) }
+            brd.active?.let { data.put("active", it) }
+            data.put("updatedBy",user.id)
+
+            sqlSessionTemplate.update("BrandMasterMapper.editBrand",data)
+
+            // delete existing division mapped to brand
+
+            data.put("id",brd.id)
+
+            sqlSessionTemplate.delete("DivisionBrandMapper.deleteBrandByBrandId",data)
+
+            //map selected division to brand
+
+            var dbr = DivisionBrand()
+
+            var dbrId = UUID.randomUUID().toString()
+
+            data.put("id",dbrId)
+            brd.division?.let { data.put("divisionId", it.id) }
+            data.put("brandId", brd.id)
+
+            sqlSessionTemplate.insert("DivisionBrandMapper.addBrandByBrandId",data)
+
+
+            // delete existing user mapped to brand
+
+            data.put("id",brd.id)
+
+            sqlSessionTemplate.delete("BrandManagerMapper.deleteBrandByBrandId",data)
+
+            // map selected user to brand
+
+            var bbr = BrandManager()
+
+            var i = 0
+
+            brd.user.forEach {
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                var bbrId = UUID.randomUUID().toString()
+
+                data.put("id",bbrId)
+                data.put("userId",brd.user.get(i))
+                data.put("brandId",brd.id)
+
+                sqlSessionTemplate.insert("BrandManagerMapper.addBrandByBrandId",data)
+
+                i++
+
+
+            }
+
+
+            // delete existing team mapped to brand
+
+            data.put("id",brd.id)
+
+            sqlSessionTemplate.delete("TeamBrandMapper.deleteBrandByBrandId",data)
+
+            // map requested team to brand
+
+            var tbr = TeamBrand()
+
+            i = 0
+
+            brd.team.forEach {
+
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                var tbrId = UUID.randomUUID().toString()
+
+                data.put("id",tbrId)
+                data.put("teamId",brd.team.get(i))
+                data.put("brandId",brd.id)
+
+                sqlSessionTemplate.insert("TeamBrandMapper.addBrandByBrandId",data)
+
+                i++
+
+
+
+            }
+
+            // delete existing cost center mapped to brand
+
+            data.put("id",brd.id)
+
+            sqlSessionTemplate.delete("CostCenterBrandMapper.deleteBrandByBrandId",data)
+
+
+            // map requested cost center  to brand
+
+            var cbr = CostCenterBrand()
+
+            i = 0
+
+            brd.costCenter.forEach {
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                var cbrId = UUID.randomUUID().toString()
+
+                data.put("id",cbrId)
+                data.put("costCenter",brd.costCenter.get(i))
+                data.put("brand",brd.id)
+
+                sqlSessionTemplate.insert("CostCenterBrandMapper.addBrandByBrandId",data)
+
+                i++
+
+            }
+
+
+            println("Brand Updated Successfully !")
+            errorMap["message"] = "Brand updated successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+
+        }
+    }
+
+
+
     @PostMapping("/addBrand")
     open fun addBrand(@RequestBody brd: MasterBrand): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = masterService.addBrand(brd)
         return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @PostMapping("/addBrands")
+    open fun addBrands(@RequestBody brd: MasterBrand): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var errorMap: MutableMap<String, String> = HashMap()
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+
+        var brand = BrandMaster()
+
+        data0.put("code",brd.code!!)
+
+        brand = sqlSessionTemplate.selectOne("BrandMasterMapper.checkBrandCode",data0)
+
+        if(brand.code == brd.code){
+            errorMap["message"] = "Brand Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        } else{
+            // add brand
+
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var brdId = UUID.randomUUID().toString()
+
+            data.put("id",brdId)
+            brd.name?.let { data.put("name", it.uppercase()) }
+            brd.name?.let { data.put("ciName", it.lowercase()) }
+            brd.code?.let { data.put("code", it) }
+            brd.active?.let { data.put("active", it) }
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+
+            sqlSessionTemplate.insert("BrandMasterMapper.addBrand",data)
+
+
+
+
+            //map selected division to brand
+
+            var dbr = DivisionBrand()
+
+            var dbrId = UUID.randomUUID().toString()
+
+            data.put("id",dbrId)
+            brd.division?.let { data.put("divisionId", it.id) }
+            data.put("brandId", brdId)
+
+            sqlSessionTemplate.insert("DivisionBrandMapper.addBrandByBrandId",data)
+
+
+
+
+            // map selected user to brand
+
+            var bbr = BrandManager()
+
+            var i = 0
+
+            brd.user.forEach {
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                var bbrId = UUID.randomUUID().toString()
+
+                data.put("id",bbrId)
+                data.put("userId",brd.user.get(i))
+                data.put("brandId",brdId)
+
+                sqlSessionTemplate.insert("BrandManagerMapper.addBrandByBrandId",data)
+
+                i++
+
+
+            }
+
+
+
+
+            // map requested team to brand
+
+            var tbr = TeamBrand()
+
+            i = 0
+
+            brd.team.forEach {
+
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                var tbrId = UUID.randomUUID().toString()
+
+                data.put("id",tbrId)
+                data.put("teamId",brd.team.get(i))
+                data.put("brandId",brdId)
+
+                sqlSessionTemplate.insert("TeamBrandMapper.addBrandByBrandId",data)
+
+                i++
+
+
+
+            }
+
+
+
+
+            // map requested cost center  to brand
+
+            var cbr = CostCenterBrand()
+
+            i = 0
+
+            brd.costCenter.forEach {
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                var cbrId = UUID.randomUUID().toString()
+
+                data.put("id",cbrId)
+                data.put("costCenter",brd.costCenter.get(i))
+                data.put("brand",brdId)
+
+                sqlSessionTemplate.insert("CostCenterBrandMapper.addBrandByBrandId",data)
+
+                i++
+
+            }
+
+
+            println("Brand Added Successfully !")
+            errorMap["message"] = "Brand created successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+
+        }
+
+
     }
 
 
@@ -472,11 +1250,232 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @PutMapping("/editFieldForces")
+    open fun editFieldForces(@RequestBody ff: MasterFF): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var errorMap: MutableMap<String, String> = HashMap()
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        var recipient = Recipient()
+
+        data0.put("code",ff.code!!)
+
+        recipient = sqlSessionTemplate.selectOne("FieldForceMapper.checkFieldForceCode",data0)
+
+
+        var data1: MutableMap<String, Any> = mutableMapOf()
+
+        var recipientWork = Recipient()
+
+        data0.put("code",ff.code!!)
+
+        recipientWork = sqlSessionTemplate.selectOne("FieldForceMapper.checkFieldWorkId",data1)
+
+        if(recipient.code == ff.code){
+            errorMap["message"] = "FF Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        } else if (recipientWork.workId == ff.workId){
+            errorMap["message"] = "FF WorkId Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        }
+        else{
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+
+            // update ff
+
+            data.put("id", ff.id)
+            ff.name?.let { data.put("name", it.uppercase()) }
+            ff.name?.let { data.put("ciName", it.lowercase()) }
+            ff.code?.let { data.put("code", it) }
+            ff.address?.let { data.put("address", it) }
+            ff.city?.let { data.put("city", it) }
+            ff.state?.let { data.put("state", it) }
+            ff.zip?.let { data.put("zip", it) }
+            ff.email?.let { data.put("email", it) }
+            ff.mobile?.let { data.put("mobile", it) }
+            ff.designation?.let { data.put("designation", it.id) }
+            ff.headQuarter?.let { data.put("headQuarter", it) }
+            ff.zone?.let { data.put("zone", it) }
+            ff.joiningDate?.let { data.put("joiningDate", it) }
+            ff.team?.let { data.put("team", it.id) }
+            ff.cfa?.let { data.put("cfa", it) }
+            ff.recipientStatus?.let { data.put("recipientStatus", it.id) }
+            data.put("updatedBy",user.id)
+            ff.loginId?.let { data.put("loginId", it) }
+            ff.gender?.let { data.put("gender", it) }
+            ff.workId?.let { data.put("workId", it) }
+            ff.emailRBM?.let { data.put("emailRBM", it) }
+            ff.emailAM?.let { data.put("emailAM", it) }
+            ff.businessUnit?.let { data.put("businessUnit", it.id) }
+
+            sqlSessionTemplate.update("FieldForceMapper.editFieldForce",data)
+
+
+            //insert ff history
+
+            var recpHist =  RecipientHistory()
+            var repHisId =  UUID.randomUUID().toString()
+
+            data.put("id",repHisId)
+            data.put("recipientId",ff.id)
+            ff.name?.let { data.put("name", it.uppercase()) }
+            ff.name?.let { data.put("ciName", it.lowercase()) }
+            ff.code?.let { data.put("code", it) }
+            ff.address?.let { data.put("address", it) }
+            ff.city?.let { data.put("city", it) }
+            ff.state?.let { data.put("state", it) }
+            ff.zip?.let { data.put("zip", it) }
+            ff.email?.let { data.put("email", it) }
+            ff.mobile?.let { data.put("mobile", it) }
+            ff.designation?.let { data.put("designation", it.id) }
+            ff.headQuarter?.let { data.put("headQuarter", it) }
+            ff.zone?.let { data.put("zone", it) }
+            ff.joiningDate?.let { data.put("joiningDate", it) }
+            ff.team?.let { data.put("team", it.id) }
+            ff.cfa?.let { data.put("cfa", it) }
+            ff.recipientStatus?.let { data.put("status", it.id) }
+            ff.statusChangeDate?.let { data.put("changedOnDate", it) }
+            data.put("createdBy", user.id)
+            data.put("updatedBy", user.id)
+            ff.remarks?.let { data.put("remarks", it) }
+            ff.emailRBM?.let { data.put("emailRBM", it) }
+            ff.emailAM?.let { data.put("emailAM", it) }
+            ff.businessUnit?.let { data.put("businessUnit", it.id) }
+
+            sqlSessionTemplate.insert("FieldForceMapper.insertFieldForceHistory",data)
+
+            errorMap["message"] = "FF updated successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+
+
+        }
+    }
+
+
     @PostMapping("/addFieldForce")
     open fun addFieldForce(@RequestBody ff: MasterFF): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = masterService.addFieldForce(ff)
         return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
+    @PostMapping("/addFieldForces")
+    open fun addFieldForces(@RequestBody ff: MasterFF): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var errorMap: MutableMap<String, String> = HashMap()
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        var recipient = Recipient()
+
+        data0.put("code",ff.code!!)
+
+        recipient = sqlSessionTemplate.selectOne("FieldForceMapper.checkFieldForceCode",data0)
+
+
+        var data1: MutableMap<String, Any> = mutableMapOf()
+
+        var recipientWork = Recipient()
+
+        data0.put("code",ff.code!!)
+
+        recipientWork = sqlSessionTemplate.selectOne("FieldForceMapper.checkFieldWorkId",data1)
+
+        if(recipient.code == ff.code){
+            errorMap["message"] = "FF Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        } else if (recipientWork.workId == ff.workId){
+            errorMap["message"] = "FF WorkId Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        }
+        else{
+            // insert ff
+            var data: MutableMap<String, Any> = mutableMapOf()
+            var recId = UUID.randomUUID().toString()
+
+            data.put("id", recId)
+            ff.name?.let { data.put("name", it.uppercase()) }
+            ff.name?.let { data.put("ciName", it.lowercase()) }
+            ff.code?.let { data.put("code", it) }
+            ff.address?.let { data.put("address", it) }
+            ff.city?.let { data.put("city", it) }
+            ff.state?.let { data.put("state", it) }
+            ff.zip?.let { data.put("zip", it) }
+            ff.email?.let { data.put("email", it) }
+            ff.mobile?.let { data.put("mobile", it) }
+            ff.designation?.let { data.put("designation", it.id) }
+            ff.headQuarter?.let { data.put("headQuarter", it) }
+            ff.zone?.let { data.put("zone", it) }
+            ff.joiningDate?.let { data.put("joiningDate", it) }
+            ff.team?.let { data.put("team", it.id) }
+            ff.cfa?.let { data.put("cfa", it) }
+            ff.recipientStatus?.let { data.put("recipientStatus", it.id) }
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            ff.loginId?.let { data.put("loginId", it) }
+            ff.gender?.let { data.put("gender", it) }
+            ff.workId?.let { data.put("workId", it) }
+            ff.emailRBM?.let { data.put("emailRBM", it) }
+            ff.emailAM?.let { data.put("emailAM", it) }
+            ff.businessUnit?.let { data.put("businessUnit", it.id) }
+
+            sqlSessionTemplate.insert("FieldForceMapper.addFieldForce",data)
+
+
+            //insert ff history
+
+            var recpHist =  RecipientHistory()
+            var repHisId =  UUID.randomUUID().toString()
+
+            data.put("id",repHisId)
+            data.put("recipientId",recId)
+            ff.name?.let { data.put("name", it.uppercase()) }
+            ff.name?.let { data.put("ciName", it.lowercase()) }
+            ff.code?.let { data.put("code", it) }
+            ff.address?.let { data.put("address", it) }
+            ff.city?.let { data.put("city", it) }
+            ff.state?.let { data.put("state", it) }
+            ff.zip?.let { data.put("zip", it) }
+            ff.email?.let { data.put("email", it) }
+            ff.mobile?.let { data.put("mobile", it) }
+            ff.designation?.let { data.put("designation", it.id) }
+            ff.headQuarter?.let { data.put("headQuarter", it) }
+            ff.zone?.let { data.put("zone", it) }
+            ff.joiningDate?.let { data.put("joiningDate", it) }
+            ff.team?.let { data.put("team", it.id) }
+            ff.cfa?.let { data.put("cfa", it) }
+            ff.recipientStatus?.let { data.put("status", it.id) }
+            ff.statusChangeDate?.let { data.put("changedOnDate", it) }
+            data.put("createdBy", user.id)
+            data.put("updatedBy", user.id)
+            ff.remarks?.let { data.put("remarks", it) }
+            ff.emailRBM?.let { data.put("emailRBM", it) }
+            ff.emailAM?.let { data.put("emailAM", it) }
+            ff.businessUnit?.let { data.put("businessUnit", it.id) }
+
+            sqlSessionTemplate.insert("FieldForceMapper.insertFieldForceHistory",data)
+
+            errorMap["message"] = "FF created successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+
+        }
     }
 
 

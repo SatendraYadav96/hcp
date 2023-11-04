@@ -105,7 +105,7 @@ interface MasterService {
 
     fun editUser(usr: MasterUsers)
 
-    fun addUser(usr: MasterUsers)
+    fun addUser(usr: MasterUsers): Map<String, Any>
 
     //BRAND SERVICES
 

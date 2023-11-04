@@ -265,6 +265,7 @@ class MasterRepository
 
 
     fun addSample(smp: SampleMaster): Map<String, Any> {
+
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         lateinit var jsonResult : Map<String, Any>
@@ -550,13 +551,10 @@ class MasterRepository
 
     fun editTeam(tem: MasterTeam) {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
         var data: MutableMap<String, Any> = mutableMapOf()
 
-
-
-
         // add team
-
 
         data.put("id",tem.id)
         tem.name?.let { data.put("name", it) }
@@ -803,64 +801,107 @@ class MasterRepository
 
 
 
-    fun addUser(usr: MasterUsers) {
+    fun addUser(usr: MasterUsers): Map<String, Any> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var data: MutableMap<String, Any> = mutableMapOf()
+        lateinit var jsonResult : Map<String, Any>
+
+        var usrCode = User()
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("code",usr.employeeCode!!)
+
+        usrCode = sqlSessionTemplate.selectOne("UserMapper.checkUserCode",data0)
+
+        var usrLogin = User()
+        var data1: MutableMap<String, Any> = mutableMapOf()
+
+        data1.put("login",usr.username!!)
+
+        usrLogin = sqlSessionTemplate.selectOne("UserMapper.checkUserLogin",data1)
 
 
+        var usrEmail = User()
+        var data2: MutableMap<String, Any> = mutableMapOf()
 
+        data2.put("email",usr.email!!)
 
-        // add user
+        usrEmail = sqlSessionTemplate.selectOne("UserMapper.checkUserEmail",data2)
 
-        var usrId = UUID.randomUUID().toString()
+        if(usrCode.employeeCode == usr.employeeCode){
+            jsonResult = mapOf("success" to false, "message" to "User Code Already Exist !")
 
-        val ldt: LocalDateTime = LocalDateTime.now()
-        var actFrm = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH).format(ldt)
-        System.out.println(ldt)
+            return jsonResult
+        } else if (usrLogin.username == usr.username){
+            jsonResult = mapOf("success" to false, "message" to "User LoginName Already Exist !")
 
-        data.put("id",usrId)
-        usr.name?.let { data.put("name", it.uppercase()) }
-        usr.name?.let { data.put("ciName", it.lowercase()) }
-        usr.username?.let { data.put("username", it) }
-        usr.employeeCode?.let { data.put("employeeCode", it) }
-        usr.userDesignation?.let { data.put("userDesignation", it.id) }
-       data.put("activeFrom", actFrm)
+            return jsonResult
+        }else if (usrEmail.email == usr.email){
+            jsonResult = mapOf("success" to false, "message" to "User Email Already Exist !")
+
+            return jsonResult
+        } else{
+            // add user
+            var data: MutableMap<String, Any> = mutableMapOf()
+            var usrId = UUID.randomUUID().toString()
+
+            val ldt: LocalDateTime = LocalDateTime.now()
+            var actFrm = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH).format(ldt)
+            System.out.println(ldt)
+
+            data.put("id",usrId)
+            usr.name?.let { data.put("name", it.uppercase()) }
+            usr.name?.let { data.put("ciName", it.lowercase()) }
+            usr.username?.let { data.put("username", it) }
+            usr.employeeCode?.let { data.put("employeeCode", it) }
+            usr.userDesignation?.let { data.put("userDesignation", it.id) }
+            data.put("activeFrom", actFrm)
 //        usr.activeTo?.let { data.put("activeTo", it) }
-        usr.userStatus?.let { data.put("userStatus", it.id) }
-        usr.legalEntity?.let { data.put("legalEntity", it.id) }
-        usr.email?.let { data.put("email", it) }
-       // usr.lastLoggedIn?.let { data.put("lastLoggedIn", it) }
-        data.put("createdBy",user.id)
-        data.put("updatedBy",user.id)
-        usr.appBu?.let { data.put("appBu", it.id) }
-        //usr.userRecipientId?.let { data.put("userRecipientId", it) }
-        usr.approver?.let { data.put("approver", it) }
+            usr.userStatus?.let { data.put("userStatus", it.id) }
+            usr.legalEntity?.let { data.put("legalEntity", it.id) }
+            usr.email?.let { data.put("email", it) }
+            // usr.lastLoggedIn?.let { data.put("lastLoggedIn", it) }
+            data.put("createdBy",user.id)
+            data.put("updatedBy",user.id)
+            usr.appBu?.let { data.put("appBu", it.id) }
+            //usr.userRecipientId?.let { data.put("userRecipientId", it) }
+            usr.approver?.let { data.put("approver", it) }
 
-        sqlSessionTemplate.insert("UsersMasterMapper.addUser",data)
+            sqlSessionTemplate.insert("UsersMasterMapper.addUser",data)
 
 
-        //map brand to new user
+            //map brand to new user
 
-        var bbr = BrandManager()
+            var bbr = BrandManager()
 
-        var i = 0
+            var i = 0
 
-        usr.brand.forEach {
+            usr.brand.forEach {
 
-            var bbrId = UUID.randomUUID().toString()
+                var bbrId = UUID.randomUUID().toString()
 
-            data.put("id",bbrId)
-            data.put("userId",usrId)
-            data.put("brandId",usr.brand.get(i))
+                data.put("id",bbrId)
+                data.put("userId",usrId)
+                data.put("brandId",usr.brand.get(i))
 
-            sqlSessionTemplate.insert("BrandManagerMapper.addBrandByUserId",data)
+                sqlSessionTemplate.insert("BrandManagerMapper.addBrandByUserId",data)
 
-            i++
+                i++
+
+            }
+
+
+            println("User Added Successfully !")
+
+            jsonResult = mapOf("success" to true, "message" to "User created successfully !")
+
+            return jsonResult
+
 
         }
 
 
-        println("User Added Successfully !")
+        return jsonResult
+
 
 
 
@@ -893,9 +934,6 @@ class MasterRepository
     fun editBrand(brd: MasterBrand)  {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
-
-
-
 
         // update brand
 
@@ -1304,9 +1342,10 @@ class MasterRepository
 
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-        var data0: MutableMap<String, Any> = mutableMapOf()
+
 
         lateinit var jsonResult : Map<String, Any>
+        var data0: MutableMap<String, Any> = mutableMapOf()
 
         var recipient = Recipient()
 
@@ -1314,11 +1353,25 @@ class MasterRepository
 
         recipient = sqlSessionTemplate.selectOne("FieldForceMapper.checkFieldForceCode",data0)
 
+
+        var data1: MutableMap<String, Any> = mutableMapOf()
+
+        var recipientWork = Recipient()
+
+        data0.put("code",ff.code!!)
+
+        recipientWork = sqlSessionTemplate.selectOne("FieldForceMapper.checkFieldWorkId",data1)
+
         if(recipient.code == ff.code){
             jsonResult = mapOf("success" to false, "message" to "Recipient Code Already Exist !")
 
             return jsonResult
-        } else{
+        } else if (recipientWork.workId == ff.workId){
+            jsonResult = mapOf("success" to false, "message" to "Recipient WorkId Already Exist !")
+
+            return jsonResult
+        }
+        else{
             // insert ff
             var data: MutableMap<String, Any> = mutableMapOf()
             var recId = UUID.randomUUID().toString()
