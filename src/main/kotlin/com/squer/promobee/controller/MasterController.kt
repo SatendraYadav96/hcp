@@ -3,6 +3,7 @@ package com.squer.promobee.controller
 
 
 import com.squer.promobee.controller.dto.FieldForceDTO
+import com.squer.promobee.security.domain.NamedSquerEntity
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.MasterService
 import com.squer.promobee.service.repository.domain.*
@@ -114,6 +115,53 @@ open class MasterController@Autowired constructor(
     }
 
 
+    @PutMapping("/editVendors/{id}")
+    open fun editVendors(@PathVariable id: String,@RequestBody vnd: Vendor): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        var errorMap: MutableMap<String, String> = HashMap()
+
+        lateinit var jsonResult : Map<String, Any>
+
+        var vendorCode = 0;
+        vnd.code?.let { data0.put("code", it) }
+
+        vendorCode = sqlSessionTemplate.selectOne("VendorMapper.vendorExist",data0)
+
+        if(vendorCode > 0 ){
+            errorMap["message"] = "Vendor Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        }else {
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            data.put("id", vnd.id)
+            vnd.name?.let { data.put("name", it.uppercase()) }
+            vnd.name?.let { data.put("ciName", it.lowercase()) }
+            vnd.code?.let { data.put("code", it.uppercase()) }
+            vnd.addressLine1?.let { data.put("addressLine1", it) }
+            vnd.addressLine2?.let { data.put("addressLine2", it) }
+            vnd.city?.let { data.put("city", it) }
+            vnd.state?.let { data.put("state", it) }
+            vnd.zip?.let { data.put("zip", it) }
+            vnd.active?.let { data.put("active", it) }
+            data.put("updatedBy", user.id)
+
+            sqlSessionTemplate.update("VendorMapper.editVendor",data)
+
+            errorMap["message"] = "Vendor updated successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+
+        }
+    }
+
+
 
 
 
@@ -134,12 +182,148 @@ open class MasterController@Autowired constructor(
     }
 
 
+    @PostMapping("/addCostCenters")
+    open fun addCostCenters(@RequestBody ccm: MasterCostCenter): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        var errorMap: MutableMap<String, String> = HashMap()
+
+        var costCenter = CostCenter()
+
+        var data0 : MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("code", ccm.code!!)
+
+        costCenter = sqlSessionTemplate.selectOne("CostCenterMapper.checkCostCenterCode",data0)
+
+
+        if(costCenter.code == ccm.code){
+            errorMap["message"] = "Cost Center Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        }else{
+            var ccmId5 = UUID.randomUUID().toString()
+
+            data.put("id",ccmId5 )
+            ccm.name?.let { data.put("name", it.uppercase()) }
+            ccm.name?.let { data.put("ciName", it.lowercase()) }
+            ccm.code?.let { data.put("code", it.uppercase()) }
+            ccm.active?.let { data.put("active", it) }
+            data.put("createdBy", user.id )
+            data.put("updatedBy", user.id)
+
+
+
+            sqlSessionTemplate.insert("CostCenterMapper.addCostCenter",data)
+
+
+
+            var i = 0
+
+            ccm.brandId.forEach {
+                var cbr = CostCenterBrand()
+                var cbrId = UUID.randomUUID().toString()
+
+                data.put("id", cbrId)
+                data.put("ccmId", ccmId5)
+                data.put("brandId",ccm.brandId.get(i))
+
+                sqlSessionTemplate.insert("CostCenterBrandMapper.addCostCenterBrand", data)
+
+                i++
+            }
+
+            errorMap["message"] = "Cost Center created successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+        }
+    }
+
+
     @PutMapping("/editCostCenter/{id}")
     open fun editCostCenter(@PathVariable id: String , @RequestBody ccm: MasterCostCenter): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = masterService.editCostCenter(ccm)
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+
+    @PutMapping("/editCostCenters/{id}")
+    open fun editCostCenters(@PathVariable id: String , @RequestBody ccm: MasterCostCenter): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        var errorMap: MutableMap<String, String> = HashMap()
+
+        var costCenter = CostCenter()
+
+        var data0 : MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("code", ccm.code!!)
+
+        costCenter = sqlSessionTemplate.selectOne("CostCenterMapper.checkCostCenterCode",data0)
+
+
+        if(costCenter.code == ccm.code){
+            errorMap["message"] = "Cost Center Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        }else{
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            ccm.id?.let { data.put("id", it) }
+            ccm.name?.let { data.put("name", it.uppercase()) }
+            ccm.name?.let { data.put("ciName", it.lowercase()) }
+            ccm.code?.let { data.put("code", it.uppercase()) }
+            ccm.active?.let { data.put("active", it) }
+            data.put("updatedBy", user.id)
+
+            sqlSessionTemplate.update("CostCenterMapper.editCostCenter",data)
+            var ccmId2 = ccm.id
+
+            var data0 : MutableMap<String, Any> = mutableMapOf()
+
+            data0.put("ccmId",ccmId2)
+
+            sqlSessionTemplate.delete("CostCenterMapper.deleteCostCenterBrand",data0)
+
+
+            var cbr = CostCenterBrand()
+
+            var i = 0
+            ccm.brandId.forEach {
+
+
+
+                var cbrId = UUID.randomUUID().toString()
+
+                data.put("id", cbrId)
+                ccmId2?.let { data.put("ccmId", it) }
+//        data.put("brandId",NamedSquerEntity(ccm.brandId?.id.toString(),""))
+                // ccm.brandId?.let { data.put("brandId", it) }
+                //data.put("brandId",NamedSquerEntity(ccm.brandId?id.toString(),""))
+                data.put("brandId", ccm.brandId.get(i))
+
+                sqlSessionTemplate.insert("CostCenterBrandMapper.editCostCenterBrand",data)
+
+                i++
+            }
+            errorMap["message"] = "Cost Center updated successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+        }
+    }
+
+
 
     @GetMapping("/getCostCenterById/{id}")
     fun getCostCenterById(@PathVariable id: String): ResponseEntity<*> {
@@ -167,12 +351,112 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(insertSample, HttpStatus.OK)
     }
 
+
+
+    @PostMapping("/addSamples")
+    open fun addSamples(@RequestBody smp: SampleMaster): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var errorMap: MutableMap<String, String> = HashMap()
+
+        var sample = SampleMaster()
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("lmid",smp.lmid!!)
+
+        sample = sqlSessionTemplate.selectOne("SampleMasterMapper.getSampleByLmid",data0)
+
+        if(sample.lmid == smp.lmid){
+            errorMap["message"] = "Sample Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        } else {
+            var data: MutableMap<String, Any> = mutableMapOf()
+            var smp1 = UUID.randomUUID().toString()
+
+            data.put("id",smp1 )
+            smp.lmid?.let { data.put("lmid", it.uppercase()) }
+            smp.name?.let { data.put("name", it.uppercase()) }
+            smp.name?.let { data.put("ciName", it.lowercase()) }
+            smp.description?.let { data.put("description", it) }
+            data.put("brandId", NamedSquerEntity(smp.brandId?.id.toString(),""))
+            smp.packSize?.let { data.put("packSize", it) }
+            smp.active?.let { data.put("active", it) }
+            smp.hsnCode?.let { data.put("hsnCode", it) }
+            smp.cap?.let { data.put("cap", it) }
+            data.put("createdBy", user.id )
+            data.put("updatedBy", user.id)
+
+
+            sqlSessionTemplate.insert("SampleMasterMapper.addSample",data)
+
+
+            errorMap["message"] = "Sample created successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+        }
+    }
+
+
     @PutMapping("/editSample/{id}")
     open fun editSample(@PathVariable id: String,@RequestBody smp: SampleMaster): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = masterService.editSample(smp)
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+
+    @PutMapping("/editSamples/{id}")
+    open fun editSamples(@PathVariable id: String,@RequestBody smp: SampleMaster): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var errorMap: MutableMap<String, String> = HashMap()
+
+        var sample = SampleMaster()
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("lmid",smp.lmid!!)
+
+        sample = sqlSessionTemplate.selectOne("SampleMasterMapper.getSampleByLmid",data0)
+
+        if(sample.lmid == smp.lmid){
+            errorMap["message"] = "Sample Code Already Exist !"
+            errorMap["error"] = "true"
+
+            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+        } else {
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            smp.id?.let { data.put("id", it) }
+
+            smp.lmid?.let { data.put("lmid", it.uppercase()) }
+            smp.name?.let { data.put("name", it.uppercase()) }
+            smp.name?.let { data.put("ciName", it.lowercase()) }
+            smp.description?.let { data.put("description", it) }
+            data.put("brandId",NamedSquerEntity(smp.brandId?.id.toString(),""))
+            smp.packSize?.let { data.put("packSize", it) }
+            smp.active?.let { data.put("active", it) }
+            smp.cap?.let { data.put("cap", it) }
+            data.put("updatedBy", user.id)
+
+
+
+            sqlSessionTemplate.update("SampleMasterMapper.editSample",data)
+
+            errorMap["message"] = "Sample updated successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+        }
+    }
+
+
 
     @GetMapping("/getSampleById/{id}")
     fun getSampleById(@PathVariable id: String): ResponseEntity<*> {
