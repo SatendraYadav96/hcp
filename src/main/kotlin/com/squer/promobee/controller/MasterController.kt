@@ -118,23 +118,11 @@ open class MasterController@Autowired constructor(
     @PutMapping("/editVendors/{id}")
     open fun editVendors(@PathVariable id: String,@RequestBody vnd: Vendor): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var data0: MutableMap<String, Any> = mutableMapOf()
+
 
         var errorMap: MutableMap<String, String> = HashMap()
 
-        lateinit var jsonResult : Map<String, Any>
 
-        var vendorCode = 0;
-        vnd.code?.let { data0.put("code", it) }
-
-        vendorCode = sqlSessionTemplate.selectOne("VendorMapper.vendorExist",data0)
-
-        if(vendorCode > 0 ){
-            errorMap["message"] = "Vendor Code Already Exist !"
-            errorMap["error"] = "true"
-
-            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
-        }else {
             var data: MutableMap<String, Any> = mutableMapOf()
 
             data.put("id", vnd.id)
@@ -158,7 +146,7 @@ open class MasterController@Autowired constructor(
 
             return ResponseEntity(errorMap ,HttpStatus.OK)
 
-        }
+
     }
 
 
@@ -189,16 +177,16 @@ open class MasterController@Autowired constructor(
 
         var errorMap: MutableMap<String, String> = HashMap()
 
-        var costCenter = CostCenter()
+        var costCenter = mutableListOf<CostCenter>()
 
         var data0 : MutableMap<String, Any> = mutableMapOf()
 
         data0.put("code", ccm.code!!)
 
-        costCenter = sqlSessionTemplate.selectOne("CostCenterMapper.checkCostCenterCode",data0)
+        costCenter = sqlSessionTemplate.selectList<CostCenter>("CostCenterMapper.checkCostCenterCode",data0)
 
 
-        if(costCenter.code == ccm.code){
+        if(costCenter.size > 0){
             errorMap["message"] = "Cost Center Code Already Exist !"
             errorMap["error"] = "true"
 
@@ -256,25 +244,13 @@ open class MasterController@Autowired constructor(
     @PutMapping("/editCostCenters/{id}")
     open fun editCostCenters(@PathVariable id: String , @RequestBody ccm: MasterCostCenter): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var data: MutableMap<String, Any> = mutableMapOf()
+
 
         var errorMap: MutableMap<String, String> = HashMap()
 
         var costCenter = CostCenter()
 
-        var data0 : MutableMap<String, Any> = mutableMapOf()
 
-        data0.put("code", ccm.code!!)
-
-        costCenter = sqlSessionTemplate.selectOne("CostCenterMapper.checkCostCenterCode",data0)
-
-
-        if(costCenter.code == ccm.code){
-            errorMap["message"] = "Cost Center Code Already Exist !"
-            errorMap["error"] = "true"
-
-            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
-        }else{
             var data: MutableMap<String, Any> = mutableMapOf()
 
             ccm.id?.let { data.put("id", it) }
@@ -320,7 +296,7 @@ open class MasterController@Autowired constructor(
 
 
             return ResponseEntity(errorMap ,HttpStatus.OK)
-        }
+
     }
 
 
@@ -358,15 +334,15 @@ open class MasterController@Autowired constructor(
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var errorMap: MutableMap<String, String> = HashMap()
 
-        var sample = SampleMaster()
+        var sample = mutableListOf<SampleMaster>()
 
         var data0: MutableMap<String, Any> = mutableMapOf()
 
         data0.put("lmid",smp.lmid!!)
 
-        sample = sqlSessionTemplate.selectOne("SampleMasterMapper.getSampleByLmid",data0)
+        sample = sqlSessionTemplate.selectList<SampleMaster>("SampleMasterMapper.getSampleByLmid",data0)
 
-        if(sample.lmid == smp.lmid){
+        if(sample.size > 0){
             errorMap["message"] = "Sample Code Already Exist !"
             errorMap["error"] = "true"
 
@@ -417,18 +393,6 @@ open class MasterController@Autowired constructor(
 
         var sample = SampleMaster()
 
-        var data0: MutableMap<String, Any> = mutableMapOf()
-
-        data0.put("lmid",smp.lmid!!)
-
-        sample = sqlSessionTemplate.selectOne("SampleMasterMapper.getSampleByLmid",data0)
-
-        if(sample.lmid == smp.lmid){
-            errorMap["message"] = "Sample Code Already Exist !"
-            errorMap["error"] = "true"
-
-            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
-        } else {
             var data: MutableMap<String, Any> = mutableMapOf()
 
             smp.id?.let { data.put("id", it) }
@@ -453,7 +417,7 @@ open class MasterController@Autowired constructor(
 
 
             return ResponseEntity(errorMap ,HttpStatus.OK)
-        }
+
     }
 
 
@@ -620,23 +584,12 @@ open class MasterController@Autowired constructor(
     @PutMapping("/editBusinessUnits")
     open fun editBusinessUnits(@RequestBody bu: BU): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var businessUnit = BU()
 
-        var data0: MutableMap<String, Any> = mutableMapOf()
+        var businessUnit = BU()
 
         var errorMap: MutableMap<String, String> = HashMap()
 
-        data0.put("code",bu.code!!)
 
-        businessUnit = sqlSessionTemplate.selectOne("BUMapper.checkBUCode",data0)
-
-        if(businessUnit.code == bu.code){
-            errorMap["message"] = "Team Code Already Exist !"
-            errorMap["error"] = "true"
-
-            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
-
-        } else{
 
             var data: MutableMap<String, Any> = mutableMapOf()
 
@@ -658,7 +611,9 @@ open class MasterController@Autowired constructor(
 
 
             return ResponseEntity(errorMap ,HttpStatus.OK)
-        }
+
+
+
     }
 
 
@@ -676,7 +631,7 @@ open class MasterController@Autowired constructor(
     @PostMapping("/addBusinessUnits")
     open fun addBusinessUnits(@RequestBody bu: BU): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var businessUnit = BU()
+        var businessUnit = mutableListOf<BU>()
 
         var data0: MutableMap<String, Any> = mutableMapOf()
 
@@ -684,9 +639,9 @@ open class MasterController@Autowired constructor(
 
         data0.put("code",bu.code!!)
 
-        businessUnit = sqlSessionTemplate.selectOne("BUMapper.checkBUCode",data0)
+        businessUnit = sqlSessionTemplate.selectList<BU>("BUMapper.checkBUCode",data0)
 
-        if(businessUnit.code == bu.code){
+        if(businessUnit.size > 0 ){
             errorMap["message"] = "Team Code Already Exist !"
             errorMap["error"] = "true"
 
@@ -753,21 +708,9 @@ open class MasterController@Autowired constructor(
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var team = Team()
 
-        var data0: MutableMap<String, Any> = mutableMapOf()
+
         var errorMap: MutableMap<String, String> = HashMap()
 
-        data0.put("code",tem.code!!)
-
-        team = sqlSessionTemplate.selectOne("TeamMapper.checkTeamCode",data0)
-
-        if(team.code == tem.code){
-
-            errorMap["message"] = "Sub Team Code Already Exist !"
-            errorMap["error"] = "true"
-
-            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
-
-        } else{
             var data: MutableMap<String, Any> = mutableMapOf()
 
             // add team
@@ -844,7 +787,7 @@ open class MasterController@Autowired constructor(
             return ResponseEntity(errorMap ,HttpStatus.OK)
 
 
-        }
+
     }
 
 
@@ -860,16 +803,16 @@ open class MasterController@Autowired constructor(
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
 
-        var team = Team()
+        var team = mutableListOf<Team>()
 
         var data0: MutableMap<String, Any> = mutableMapOf()
         var errorMap: MutableMap<String, String> = HashMap()
 
         data0.put("code",tem.code!!)
 
-        team = sqlSessionTemplate.selectOne("TeamMapper.checkTeamCode",data0)
+        team = sqlSessionTemplate.selectList<Team>("TeamMapper.checkTeamCode",data0)
 
-        if(team.code == tem.code){
+        if(team.size > 0){
 
             errorMap["message"] = "Sub Team Code Already Exist !"
             errorMap["error"] = "true"
@@ -981,40 +924,9 @@ open class MasterController@Autowired constructor(
     open fun editUsers(@RequestBody usr: MasterUsers): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var errorMap: MutableMap<String, String> = HashMap()
-        var usrCode = User()
-        var data0: MutableMap<String, Any> = mutableMapOf()
 
-        data0.put("code",usr.employeeCode!!)
+        var users = User()
 
-        usrCode = sqlSessionTemplate.selectOne("UserMapper.checkUserCode",data0)
-
-        var usrLogin = User()
-        var data1: MutableMap<String, Any> = mutableMapOf()
-
-        data1.put("login",usr.username!!)
-
-        usrLogin = sqlSessionTemplate.selectOne("UserMapper.checkUserLogin",data1)
-
-
-        var usrEmail = User()
-        var data2: MutableMap<String, Any> = mutableMapOf()
-
-        data2.put("email",usr.email!!)
-
-        usrEmail = sqlSessionTemplate.selectOne("UserMapper.checkUserEmail",data2)
-
-        if(usrCode.employeeCode == usr.employeeCode){
-            errorMap["message"] = "User's Employee Code Already Exist !"
-            errorMap["error"] = "true"
-
-            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
-
-        } else if (usrLogin.username == usr.username){
-            errorMap["message"] = "User's LoginId Already Exist !"
-            errorMap["error"] = "true"
-
-            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
-        }else{
             var data: MutableMap<String, Any> = mutableMapOf()
 
             // update user
@@ -1063,7 +975,7 @@ open class MasterController@Autowired constructor(
 
             return ResponseEntity(errorMap ,HttpStatus.OK)
 
-        }
+
     }
 
 
@@ -1079,35 +991,28 @@ open class MasterController@Autowired constructor(
     open fun addUsers(@RequestBody usr: MasterUsers): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var errorMap: MutableMap<String, String> = HashMap()
-        var usrCode = User()
+        var usrCode = mutableListOf<User>()
         var data0: MutableMap<String, Any> = mutableMapOf()
 
         data0.put("code",usr.employeeCode!!)
 
-        usrCode = sqlSessionTemplate.selectOne("UserMapper.checkUserCode",data0)
+        usrCode = sqlSessionTemplate.selectList<User>("UserMapper.checkUserCode",data0)
 
-        var usrLogin = User()
+        var usrLogin = mutableListOf<User>()
         var data1: MutableMap<String, Any> = mutableMapOf()
 
         data1.put("login",usr.username!!)
 
-        usrLogin = sqlSessionTemplate.selectOne("UserMapper.checkUserLogin",data1)
+        usrLogin = sqlSessionTemplate.selectList<User>("UserMapper.checkUserLogin",data1)
 
 
-        var usrEmail = User()
-        var data2: MutableMap<String, Any> = mutableMapOf()
-
-        data2.put("email",usr.email!!)
-
-        usrEmail = sqlSessionTemplate.selectOne("UserMapper.checkUserEmail",data2)
-
-        if(usrCode.employeeCode == usr.employeeCode){
+        if(usrCode.size > 0){
             errorMap["message"] = "User's Employee Code Already Exist !"
             errorMap["error"] = "true"
 
             return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
 
-        } else if (usrLogin.username == usr.username){
+        } else if (usrLogin.size > 0){
             errorMap["message"] = "User's LoginId Already Exist !"
             errorMap["error"] = "true"
 
@@ -1207,21 +1112,11 @@ open class MasterController@Autowired constructor(
     open fun editBrands(@RequestBody brd: MasterBrand): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var errorMap: MutableMap<String, String> = HashMap()
-        var data0: MutableMap<String, Any> = mutableMapOf()
+
 
 
         var brand = BrandMaster()
 
-        data0.put("code",brd.code!!)
-
-        brand = sqlSessionTemplate.selectOne("BrandMasterMapper.checkBrandCode",data0)
-
-        if(brand.code == brd.code){
-            errorMap["message"] = "Brand Code Already Exist !"
-            errorMap["error"] = "true"
-
-            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
-        } else{
             var data: MutableMap<String, Any> = mutableMapOf()
 
             // update brand
@@ -1349,7 +1244,7 @@ open class MasterController@Autowired constructor(
 
             return ResponseEntity(errorMap ,HttpStatus.OK)
 
-        }
+
     }
 
 
@@ -1369,13 +1264,13 @@ open class MasterController@Autowired constructor(
         var data0: MutableMap<String, Any> = mutableMapOf()
 
 
-        var brand = BrandMaster()
+        var brand = mutableListOf<BrandMaster>()
 
         data0.put("code",brd.code!!)
 
-        brand = sqlSessionTemplate.selectOne("BrandMasterMapper.checkBrandCode",data0)
+        brand = sqlSessionTemplate.selectList<BrandMaster>("BrandMasterMapper.checkBrandCode",data0)
 
-        if(brand.code == brd.code){
+        if(brand.size > 0){
             errorMap["message"] = "Brand Code Already Exist !"
             errorMap["error"] = "true"
 
@@ -1538,35 +1433,10 @@ open class MasterController@Autowired constructor(
     open fun editFieldForces(@RequestBody ff: MasterFF): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var errorMap: MutableMap<String, String> = HashMap()
-        var data0: MutableMap<String, Any> = mutableMapOf()
+
 
         var recipient = Recipient()
 
-        data0.put("code",ff.code!!)
-
-        recipient = sqlSessionTemplate.selectOne("FieldForceMapper.checkFieldForceCode",data0)
-
-
-        var data1: MutableMap<String, Any> = mutableMapOf()
-
-        var recipientWork = Recipient()
-
-        data0.put("code",ff.code!!)
-
-        recipientWork = sqlSessionTemplate.selectOne("FieldForceMapper.checkFieldWorkId",data1)
-
-        if(recipient.code == ff.code){
-            errorMap["message"] = "FF Code Already Exist !"
-            errorMap["error"] = "true"
-
-            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
-        } else if (recipientWork.workId == ff.workId){
-            errorMap["message"] = "FF WorkId Already Exist !"
-            errorMap["error"] = "true"
-
-            return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
-        }
-        else{
             var data: MutableMap<String, Any> = mutableMapOf()
 
 
@@ -1641,7 +1511,7 @@ open class MasterController@Autowired constructor(
             return ResponseEntity(errorMap ,HttpStatus.OK)
 
 
-        }
+
     }
 
 
@@ -1659,27 +1529,27 @@ open class MasterController@Autowired constructor(
         var errorMap: MutableMap<String, String> = HashMap()
         var data0: MutableMap<String, Any> = mutableMapOf()
 
-        var recipient = Recipient()
+        var recipient = mutableListOf<Recipient>()
 
         data0.put("code",ff.code!!)
 
-        recipient = sqlSessionTemplate.selectOne("FieldForceMapper.checkFieldForceCode",data0)
+        recipient = sqlSessionTemplate.selectList<Recipient>("FieldForceMapper.checkFieldForceCode",data0)
 
 
         var data1: MutableMap<String, Any> = mutableMapOf()
 
-        var recipientWork = Recipient()
+        var recipientWork = mutableListOf<Recipient>()
 
         data0.put("code",ff.code!!)
 
-        recipientWork = sqlSessionTemplate.selectOne("FieldForceMapper.checkFieldWorkId",data1)
+        recipientWork = sqlSessionTemplate.selectList<Recipient>("FieldForceMapper.checkFieldWorkId",data1)
 
-        if(recipient.code == ff.code){
+        if(recipient.size > 0){
             errorMap["message"] = "FF Code Already Exist !"
             errorMap["error"] = "true"
 
             return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
-        } else if (recipientWork.workId == ff.workId){
+        } else if (recipientWork.size > 0){
             errorMap["message"] = "FF WorkId Already Exist !"
             errorMap["error"] = "true"
 

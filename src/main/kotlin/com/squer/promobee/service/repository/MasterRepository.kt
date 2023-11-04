@@ -1247,11 +1247,11 @@ class MasterRepository
     }
 
 
-    fun getFieldForceHistory(id: String):List<RecipientHistoryDTO>{
+    fun getFieldForceHistory(id: String):List<RecipientHistoryDataDTO>{
         var data: MutableMap<String,Any> = mutableMapOf()
         data.put("id",id)
 
-        return sqlSessionTemplate.selectList<RecipientHistoryDTO>("FieldForceMapper.getFieldForceHistory",data)
+        return sqlSessionTemplate.selectList<RecipientHistoryDataDTO>("FieldForceMapper.getFieldForceHistory",data)
     }
 
     fun getFieldForceById(id: String):FF{

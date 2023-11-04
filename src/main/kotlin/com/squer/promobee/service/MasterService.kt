@@ -121,7 +121,7 @@ interface MasterService {
 
     fun getFieldForce( ff : FieldForceDTO): List<FF>
 
-    fun getFieldForceHistory (id: String): List<RecipientHistoryDTO>
+    fun getFieldForceHistory (id: String): List<RecipientHistoryDataDTO>
 
     fun getFieldForceById (id: String): FF
 
