@@ -493,6 +493,49 @@ class ComplianceRepository(
     }
 
 
+    fun saveNonComplianceAdminRemark(nonComp: List<SaveNonComplianceAdminRemarkDTO>) {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+
+
+        nonComp.forEach {
+            if(user.userDesignation!!.id == UserLovEnum.COMPLIANCE_ADMIN.id) {
+                if (it.isRejected!!.equals("0")) {
+                    var data: MutableMap<String, Any> = mutableMapOf()
+                    data.put("id", it.id!!)
+                    data.put("isBlocked", it.isBlocked!!)
+                    data.put("adminRemark", it.adminRemark!!)
+
+
+                    sqlSessionFactory.openSession()
+                        .update("ComplianceDetailsMapper.saveNonComplianceAdminRemarkWithoutReject", data)
+                } else {
+                    var data: MutableMap<String, Any> = mutableMapOf()
+                    data.put("id", it.id!!)
+                    data.put("isBlocked", it.isBlocked!!)
+                    data.put("adminRemark", it.adminRemark!!)
+                    data.put("isRejected", it.isRejected!!)
+
+                    sqlSessionFactory.openSession().update("ComplianceDetailsMapper.saveNonComplianceAdminRemark", data)
+
+                }
+
+            } else {
+
+                var data: MutableMap<String, Any> = mutableMapOf()
+                data.put("id", it.id!!)
+                data.put("adminRemark", it.adminRemark!!)
+
+                sqlSessionFactory.openSession().update("ComplianceDetailsMapper.saveNonComplianceNSMRemark", data)
+
+
+
+            }
+
+
+        }
+    }
+
 
 
 

@@ -20,5 +20,6 @@ class RecipientUnblockingPartialDTO {
     var  remarkByAdmin :String? = null
     var  batchNo :String? = null
     var  materialCode :String? = null
+    var blockedOn:String? = null
 
 }

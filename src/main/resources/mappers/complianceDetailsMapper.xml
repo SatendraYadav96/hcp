@@ -131,6 +131,33 @@ UPDATE COMPLIANCE_DETAILS_CD SET REMARKS = #{remark} WHERE ID_CM = #{id}
 
 
 
+    <update id="saveNonComplianceAdminRemarkWithoutReject">
+
+        UPDATE RECOMMENDED_LIST_FORBLOCK_FF_RLFF SET ISBLOCK = #{isBlocked} , ADMIN_REMARK_RLFF = #{adminRemark}
+        WHERE ID_RLFF = #{id}
+
+    </update>
+
+
+
+
+    <update id="saveNonComplianceAdminRemark">
+
+        UPDATE RECOMMENDED_LIST_FORBLOCK_FF_RLFF SET ISBLOCK = #{isBlocked} , ADMIN_REMARK_RLFF = #{adminRemark} , ISREJECTED = #{isRejected}
+        WHERE ID_RLFF = #{id}
+
+    </update>
+
+    <update id="saveNonComplianceNSMRemark">
+
+        UPDATE RECOMMENDED_LIST_FORBLOCK_FF_RLFF SET REMARK = #{adminRemark}
+        WHERE ID_RLFF = #{id}
+
+    </update>
+
+
+
+
 
 
 

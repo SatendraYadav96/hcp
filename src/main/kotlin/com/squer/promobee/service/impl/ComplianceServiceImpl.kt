@@ -46,4 +46,8 @@ class ComplianceServiceImpl @Autowired constructor(
         return complianceRepository.saveOverSampling(comp)
     }
 
+    override fun saveNonComplianceAdminRemark(nonComp: List<SaveNonComplianceAdminRemarkDTO>) {
+        return complianceRepository.saveNonComplianceAdminRemark(nonComp)
+    }
+
 }

@@ -618,10 +618,10 @@ class ReportRepository
         val cal = Calendar.getInstance()
         cal.set(Calendar.YEAR, year.toInt())
         cal.set(Calendar.MONTH, when (quarter) {
-            "001" -> Calendar.JANUARY
-            "002" -> Calendar.APRIL
-            "003" -> Calendar.JULY
-            "004" -> Calendar.OCTOBER
+            "0001" -> Calendar.JANUARY
+            "0002" -> Calendar.APRIL
+            "0003" -> Calendar.JULY
+            "0004" -> Calendar.OCTOBER
             else -> throw IllegalArgumentException("Invalid quarter: $quarter")
         })
         cal.set(Calendar.DAY_OF_MONTH, 1)

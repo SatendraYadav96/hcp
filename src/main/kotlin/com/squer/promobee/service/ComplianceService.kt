@@ -18,6 +18,8 @@ interface ComplianceService {
 
     fun saveOverSampling (comp :List<SaveOverSamplingDTO>)
 
+    fun saveNonComplianceAdminRemark (nonComp :List<SaveNonComplianceAdminRemarkDTO> )
+
 
 
 

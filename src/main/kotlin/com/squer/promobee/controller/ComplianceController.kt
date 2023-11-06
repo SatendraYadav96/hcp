@@ -3,6 +3,7 @@ package com.squer.promobee.controller
 
 
 
+import com.squer.promobee.controller.dto.SaveNonComplianceAdminRemarkDTO
 import com.squer.promobee.controller.dto.SaveOverSamplingDTO
 import com.squer.promobee.controller.dto.SaveRecipientBlockedmasterDTO
 import com.squer.promobee.security.domain.User
@@ -69,6 +70,16 @@ open class ComplianceController@Autowired constructor(
         val data = complianceService.saveOverSampling(comp)
         return ResponseEntity(data, HttpStatus.OK)
     }
+
+
+    @PostMapping("/saveNonComplianceAdminRemark")
+    fun saveNonComplianceAdminRemark(@RequestBody nonComp :List<SaveNonComplianceAdminRemarkDTO>  ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = complianceService.saveNonComplianceAdminRemark(nonComp)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
 
 
 
