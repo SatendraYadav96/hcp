@@ -24,8 +24,8 @@
 
     <select id="recipientBlocked" resultType="com.squer.promobee.controller.dto.RecipientUnblockingPartialDTO">
         SELECT rlff.ID_RLFF as 'IdRlf',rct.CODE_RCT as 'EmployeeCode',rct.NAME_RCT as 'EmployeeName',rlff.MONTH as 'Month',rlff.YEAR as 'Year',tem.NAME_TEM as 'Team',rct.HEAD_QUARTER_RCT as 'Headquarter',
-                rct.EMAIL_AM as 'EmailAM',rct.EMAIL_RM as 'EmailRM',rlff.ISBLOCK as  'IsBockedFF', rlff.ISVALIDATED as 'IsValidated',rlff.ISEXPIRED as 'IsExpired',rlff.ISREJECTED as 'IsRejected',rlff.REASON as 'Reason',
-                rlff.REMARK as 'Remark',rlff.ADMIN_REMARK_RLFF as 'RemarkByAdmin',rlff.BATCH_NO_RLFF as 'BatchNo',rlff.MATERIAL_CODE_RLFF as 'MaterialCode'
+                rct.EMAIL_AM as 'EmailAM',rct.EMAIL_RM as 'EmailRM',rlff.ISBLOCK as  'BlockedFF', rlff.ISVALIDATED as 'Validated',rlff.ISEXPIRED as 'Expired',rlff.ISREJECTED as 'Rejected',rlff.REASON as 'Reason',
+                rlff.REMARK as 'Remark',rlff.ADMIN_REMARK_RLFF as 'RemarkByAdmin',rlff.BATCH_NO_RLFF as 'BatchNo',rlff.MATERIAL_CODE_RLFF as 'MaterialCode',rlff.UPDATED_ON_RLFF as 'BlockedOn'
         FROM RECOMMENDED_LIST_FORBLOCK_FF_RLFF rlff
         join RECIPIENT_MASTER_RCT rct on rlff.EMPLOYEE_CODE_RLFF = rct.CODE_RCT
         join TEAM_MASTER_TEM tem on rct.ID_TEM_RCT = tem.ID_TEM
@@ -35,8 +35,8 @@
 
     <select id="recipientUnblocked" resultType="com.squer.promobee.controller.dto.RecipientUnblockingPartialDTO">
         SELECT rlff.ID_RLFF as 'IdRlf',rct.CODE_RCT as 'EmployeeCode',rct.NAME_RCT as 'EmployeeName',rlff.MONTH as 'Month',rlff.YEAR as 'Year',tem.NAME_TEM as 'Team',rct.HEAD_QUARTER_RCT as 'Headquarter',
-                rct.EMAIL_AM as 'EmailAM',rct.EMAIL_RM as 'EmailRM',rlff.ISBLOCK as  'IsBockedFF', rlff.ISVALIDATED as 'IsValidated',rlff.ISEXPIRED as 'IsExpired',rlff.ISREJECTED as 'IsRejected',rlff.REASON as 'Reason',
-                rlff.REMARK as 'Remark',rlff.ADMIN_REMARK_RLFF as 'RemarkByAdmin',rlff.BATCH_NO_RLFF as 'BatchNo',rlff.MATERIAL_CODE_RLFF as 'MaterialCode'
+                rct.EMAIL_AM as 'EmailAM',rct.EMAIL_RM as 'EmailRM',rlff.ISBLOCK as  'BlockedFF', rlff.ISVALIDATED as 'Validated',rlff.ISEXPIRED as 'Expired',rlff.ISREJECTED as 'Rejected',rlff.REASON as 'Reason',
+                rlff.REMARK as 'Remark',rlff.ADMIN_REMARK_RLFF as 'RemarkByAdmin',rlff.BATCH_NO_RLFF as 'BatchNo',rlff.MATERIAL_CODE_RLFF as 'MaterialCode',rlff.UPDATED_ON_RLFF as 'BlockedOn'
         FROM RECOMMENDED_LIST_FORBLOCK_FF_RLFF rlff
                  join RECIPIENT_MASTER_RCT rct on rlff.EMPLOYEE_CODE_RLFF = rct.CODE_RCT
                  join TEAM_MASTER_TEM tem on rct.ID_TEM_RCT = tem.ID_TEM
@@ -46,8 +46,8 @@
 
     <select id="recipientRejected" resultType="com.squer.promobee.controller.dto.RecipientUnblockingPartialDTO">
         SELECT rlff.ID_RLFF as 'IdRlf',rct.CODE_RCT as 'EmployeeCode',rct.NAME_RCT as 'EmployeeName',rlff.MONTH as 'Month',rlff.YEAR as 'Year',tem.NAME_TEM as 'Team',rct.HEAD_QUARTER_RCT as 'Headquarter',
-                rct.EMAIL_AM as 'EmailAM',rct.EMAIL_RM as 'EmailRM',rlff.ISBLOCK as  'IsBockedFF', rlff.ISVALIDATED as 'IsValidated',rlff.ISEXPIRED as 'IsExpired',rlff.ISREJECTED as 'IsRejected',rlff.REASON as 'Reason',
-                rlff.REMARK as 'Remark',rlff.ADMIN_REMARK_RLFF as 'RemarkByAdmin',rlff.BATCH_NO_RLFF as 'BatchNo',rlff.MATERIAL_CODE_RLFF as 'MaterialCode'
+                rct.EMAIL_AM as 'EmailAM',rct.EMAIL_RM as 'EmailRM',rlff.ISBLOCK as  'BlockedFF', rlff.ISVALIDATED as 'Validated',rlff.ISEXPIRED as 'Expired',rlff.ISREJECTED as 'Rejected',rlff.REASON as 'Reason',
+                rlff.REMARK as 'Remark',rlff.ADMIN_REMARK_RLFF as 'RemarkByAdmin',rlff.BATCH_NO_RLFF as 'BatchNo',rlff.MATERIAL_CODE_RLFF as 'MaterialCode',rlff.UPDATED_ON_RLFF as 'BlockedOn'
         FROM RECOMMENDED_LIST_FORBLOCK_FF_RLFF rlff
                  join RECIPIENT_MASTER_RCT rct on rlff.EMPLOYEE_CODE_RLFF = rct.CODE_RCT
                  join TEAM_MASTER_TEM tem on rct.ID_TEM_RCT = tem.ID_TEM
@@ -154,6 +154,15 @@ UPDATE COMPLIANCE_DETAILS_CD SET REMARKS = #{remark} WHERE ID_CM = #{id}
         WHERE ID_RLFF = #{id}
 
     </update>
+
+
+
+    <select id="overSamplingDetailsData" resultType="com.squer.promobee.controller.dto.OverSamplingDetailsDataDTO">
+        SELECT MONTH_CD AS 'month' ,NAME_TERRITORY_CD as 'territoryName' , ID_PERSON_CD as 'personId', NAME_PERSON_CD as 'personName',
+                ITEMCATEGORY_CD as 'itemCategory',ID_ITEM_CD as 'itemId',NAME_ITEM_CD as 'itemName',BATCH_NO_CD as 'batchNo',QUANTITY_CD as 'quantity'
+        FROM DETAILS_COMPLIANCE_CD WHERE NAME_TERRITORY_CD = #{ffTerritory} AND
+            ID_PERSON_CD = #{personCode} AND START_DATE_CD = #{month} AND END_DATE_CD = #{year}
+    </select>
 
 
 

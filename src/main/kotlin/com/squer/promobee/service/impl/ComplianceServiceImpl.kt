@@ -50,4 +50,8 @@ class ComplianceServiceImpl @Autowired constructor(
         return complianceRepository.saveNonComplianceAdminRemark(nonComp)
     }
 
+    override fun overSamplingDetailsData(month: String, year: String, ffTerritory: String, personCode: String): List<OverSamplingDetailsDataDTO> {
+        return complianceRepository.overSamplingDetailsData(month,year,ffTerritory,personCode)
+    }
+
 }

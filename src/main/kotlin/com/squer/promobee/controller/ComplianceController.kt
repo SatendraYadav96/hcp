@@ -80,6 +80,14 @@ open class ComplianceController@Autowired constructor(
     }
 
 
+    @GetMapping("/overSamplingDetailsData/{month}/{year}/{ffTerritory}/{personCode}")
+    fun overSamplingDetailsData(@PathVariable month : String ,@PathVariable year : String ,@PathVariable ffTerritory : String  ,@PathVariable personCode : String   ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = complianceService.overSamplingDetailsData(month,year,ffTerritory,personCode)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+
 
 
 

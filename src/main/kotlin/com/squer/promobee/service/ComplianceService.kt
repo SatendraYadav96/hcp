@@ -20,6 +20,8 @@ interface ComplianceService {
 
     fun saveNonComplianceAdminRemark (nonComp :List<SaveNonComplianceAdminRemarkDTO> )
 
+    fun overSamplingDetailsData (month : String,  year : String , ffTerritory : String ,  personCode : String ) : List<OverSamplingDetailsDataDTO>
+
 
 
 

@@ -14,6 +14,7 @@ import com.squer.promobee.service.repository.domain.UserDesignation
 import com.squer.promobee.service.repository.domain.Users
 import org.apache.ibatis.session.SqlSessionFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
@@ -23,12 +24,16 @@ import java.util.*
 @Repository
 class ComplianceRepository(
     securityUtility: SecurityUtility,
+    private val mailSender: JavaMailSender
 ): BaseRepository<Users>(
     securityUtility = securityUtility
+
 ) {
 
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
+
+
 
     fun recipientUnblockingPartial(statusType: String, month: String, year: String): List<RecipientUnblockingPartialDTO> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -37,22 +42,23 @@ class ComplianceRepository(
         data.put("month", month)
         data.put("year", year)
 
-        var recipient : List<RecipientUnblockingPartialDTO> = ArrayList<RecipientUnblockingPartialDTO>()
+        var recipient = mutableListOf<RecipientUnblockingPartialDTO>()
+
         if(statusType == "1"){
             data.put("month", month)
             data.put("year", year)
-            recipient =  sqlSessionFactory.openSession().selectList ("ComplianceDetailsMapper.recipientBlocked", data)
+            recipient =  sqlSessionFactory.openSession().selectList<RecipientUnblockingPartialDTO> ("ComplianceDetailsMapper.recipientBlocked", data)
         }
 
         else if(statusType == "0"){
             data.put("month", month)
             data.put("year", year)
-            recipient =  sqlSessionFactory.openSession().selectList("ComplianceDetailsMapper.recipientUnblocked", data)
+            recipient =  sqlSessionFactory.openSession().selectList<RecipientUnblockingPartialDTO>("ComplianceDetailsMapper.recipientUnblocked", data)
         }
         else {
             data.put("month", month)
             data.put("year", year)
-            recipient =  sqlSessionFactory.openSession().selectList("ComplianceDetailsMapper.recipientRejected", data)
+            recipient =  sqlSessionFactory.openSession().selectList<RecipientUnblockingPartialDTO>("ComplianceDetailsMapper.recipientRejected", data)
         }
 
         return recipient
@@ -534,6 +540,35 @@ class ComplianceRepository(
 
 
         }
+    }
+
+
+    fun overSamplingDetailsData(month: String, year: String, ffTerritory: String, personCode: String): List<OverSamplingDetailsDataDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        val format = SimpleDateFormat("MM/yyyy", Locale.US)
+        val date = format.parse("$month/$year")
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        var firstDayOfMonth = calendar.time
+
+        calendar.add(Calendar.MONTH, 2)
+
+
+
+
+
+        var firstDayOfThirdMonth = calendar.time
+
+        data.put("month",firstDayOfMonth)
+        data.put("year",firstDayOfThirdMonth)
+        data.put("ffTerritory",ffTerritory)
+        data.put("personCode",personCode)
+
+        return sqlSessionFactory.openSession().selectList<OverSamplingDetailsDataDTO>("ComplianceDetailsMapper.overSamplingDetailsData",data)
     }
 
 
