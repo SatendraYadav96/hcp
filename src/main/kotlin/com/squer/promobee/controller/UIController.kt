@@ -164,9 +164,9 @@ open class UIController @Autowired constructor(
                 UserMenuEnum.REPORT,
                 UserMenuEnum.FF_UPLOAD,
                 UserMenuEnum.VIRTUAL_SAMPLE_UPLOAD,
-                UserMenuEnum.COMPLIANCE_PROCESS,
-                UserMenuEnum.OPTIMA_MAIL_LOGS,
-                UserMenuEnum.OVERSAMPLING_DETAILS,
+//                UserMenuEnum.COMPLIANCE_PROCESS,
+//                UserMenuEnum.OPTIMA_MAIL_LOGS,
+//                UserMenuEnum.OVERSAMPLING_DETAILS,
                 UserMenuEnum.MANAGEMENT_DASHBOARD,
                 UserMenuEnum.BATCH_RECONCILIATION,
 

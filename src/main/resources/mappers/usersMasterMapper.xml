@@ -111,6 +111,19 @@
 
     </delete>
 
+    <delete id="deleteUserEntity" >
+
+        DELETE FROM USER_LEGAL_ENTITY_ULE WHERE ID_USR_ULE = #{id}
+
+    </delete>
+
+    <delete id="deleteUserTeamSupport" >
+
+        DELETE FROM USER_TSE_UST WHERE ID_BM_USR_UST = #{id}
+
+    </delete>
+
+
 
 
 </mapper>
