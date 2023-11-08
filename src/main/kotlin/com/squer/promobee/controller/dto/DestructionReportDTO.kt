@@ -4,6 +4,7 @@ class DestructionReportDTO {
 
     val businessUnit:String ?= null
     val division:String ?= null
+    val costCenterId:String ?= null
     val costCenter:String ?= null
     val itemName:String ?= null
     val itemCode:String ?= null

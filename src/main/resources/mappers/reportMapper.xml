@@ -170,7 +170,7 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
 
 
     <select id="getReportDestructionNew" resultType="com.squer.promobee.controller.dto.DestructionReportDTO" parameterType = "map" statementType = "CALLABLE">
-        SELECT distinct bum.NAME_BUM as 'businessUnit',dim.NAME_DIM as 'division',CCM.ID_CCM 'CostCenterID',CCM.NAME_CCM 'CostCenter',ITM.NAME_ITM 'ItemName',ITM.CODE_ITM 'ItemCode',ITC.NAME_ITC 'ItemType',CONVERT(NVARCHAR,INV.EXPIRY_DATE_INV,103) 'ExpiryDate',
+        SELECT distinct bum.NAME_BUM as 'businessUnit',dim.NAME_DIM as 'division',CCM.ID_CCM 'CostCenterId',CCM.NAME_CCM 'CostCenter',ITM.NAME_ITM 'ItemName',ITM.CODE_ITM 'ItemCode',ITC.NAME_ITC 'ItemType',CONVERT(NVARCHAR,INV.EXPIRY_DATE_INV,103) 'ExpiryDate',
         CONVERT(NVARCHAR,INH.CREATED_ON_INH,103) 'ReversalDate',IND.QUANTITY_IND 'QuantityReversed',INV.RATE_PER_UNIT_INV 'Rate',(IND.VALUE_IND) 'Value',INH.NOTES_INH 'Remarks',inh.ID_INH as 'InvoiceHeaderID',inh.INVOICE_NO_INH as 'InvoiceNo'
         FROM INVOICE_HEADER_INH INH JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
         JOIN INVENTORY_INV INV ON IND.ID_INV_IND = INV.ID_INV
@@ -182,12 +182,12 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
         join DIVISION_BRAND_DBR DBR on BRD.ID_BRD= dbr.ID_BRD_DBR
         join DIVISION_MASTER_DIM DIM on dbr.ID_DIM_DBR =Dim.ID_DIM
         join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
-        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt; CAST(#{FromDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt; CAST(#{ToDate} AS DATE)
+        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{FromDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{ToDate} AS DATE)
         AND INH.ID_TYPE_SLV_INH = #{StatusID} AND BUM.ID_BUM = #{BusinessUnit} AND DIM.ID_DIM = #{Division}
 
         UNION ALL
         --Removed distinct
-        SELECT bum.NAME_BUM as 'businessUnit',dim.NAME_DIM as 'division',BRD.ID_BRD 'CostCenterID',BRD.NAME_BRD 'CostCenter',SMP.NAME_SMP 'ItemName',SMP.LMID_SMP 'ItemCode','Samples' 'ItemType',CONVERT(NVARCHAR,INV.EXPIRY_DATE_INV,103) 'ExpiryDate',
+        SELECT bum.NAME_BUM as 'businessUnit',dim.NAME_DIM as 'division',BRD.ID_BRD 'CostCenterId',BRD.NAME_BRD 'CostCenter',SMP.NAME_SMP 'ItemName',SMP.LMID_SMP 'ItemCode','Samples' 'ItemType',CONVERT(NVARCHAR,INV.EXPIRY_DATE_INV,103) 'ExpiryDate',
         CONVERT(NVARCHAR,INH.CREATED_ON_INH,103) 'ReversalDate',IND.QUANTITY_IND 'QuantityReversed',INV.RATE_PER_UNIT_INV 'Rate',(IND.VALUE_IND) 'Value',INH.NOTES_INH 'Remarks',inh.ID_INH as 'InvoiceHeaderID',inh.INVOICE_NO_INH as 'InvoiceNo'
         FROM INVOICE_HEADER_INH INH JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
         JOIN INVENTORY_INV INV ON IND.ID_INV_IND = INV.ID_INV
@@ -196,7 +196,7 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
         join DIVISION_BRAND_DBR DBR on BRD.ID_BRD= dbr.ID_BRD_DBR
         join DIVISION_MASTER_DIM DIM on dbr.ID_DIM_DBR =Dim.ID_DIM
         join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
-        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt; CAST(#{FromDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt; CAST(#{ToDate} AS DATE)
+        WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{FromDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{ToDate} AS DATE)
         AND INH.ID_TYPE_SLV_INH = #{StatusID} AND BUM.ID_BUM = #{BusinessUnit} AND DIM.ID_DIM = #{Division}
 
 

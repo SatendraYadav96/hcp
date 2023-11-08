@@ -208,79 +208,79 @@ class InventoryRepository @Autowired constructor(
 
 
 
-            if(plan.size > 0 ){
-
-                var plans = plan[0]
-                //dispatch detail reversal
-
-                var planDetail = DispatchDetail()
-
-                var data2: MutableMap<String, Any> = mutableMapOf()
-
-                val planDetailId1 = UUID.randomUUID().toString()
-
-                data2.put("id", planDetailId1)
-                data2.put("planId", plans.id)
-                inv.get(i).invId?.let { data2.put("inventoryId", it) }
-                data2.put("recipientId", RecipientEnum.HUB_MANAGER.id)
-                inv.get(i).quantity?.let { data2.put("qtyDispatch", it) }
-                data2.put("quarterlyPlanId", QtpEnum.QTP.id)
-                data2.put("detailStatus", DispatchDetailStatusEnum.INVOICED.id)
-                data2.put("createdBy", user.id)
-                data2.put("updatedBy", user.id)
-
-                sqlSessionFactory.openSession().insert("DispatchDetailMapper.insertReversalPlanDetail", data2)
-
-
-                //invoice header reversal
-
-                var invoiceHeader = mutableListOf<InvoiceHeader>();
-
-                var data8: MutableMap<String, Any> = mutableMapOf()
-
-                data8.put("planId", plans.id)
-
-                invoiceHeader = sqlSessionFactory.openSession().selectList<InvoiceHeader>("InvoiceHeaderMapper.reverseInventoryInvoice",data8)
-
-                var invoiceHeaders = invoiceHeader[0]
-
-
-                //invoice detail reversal
-
-
-
-                var invoiceDetail = InvoiceDetail()
-
-                var data4: MutableMap<String, Any> = mutableMapOf()
-
-                val indId1 = UUID.randomUUID().toString()
-
-
-                var valueResult = inv.get(i).quantity?.let { inv1.ratePerUnit?.times(it.toDouble()) }
-
-
-
-
-                data4.put("id", indId1)
-                data4.put("headerId", invoiceHeaders.id)
-                inv1.item?.let { data4.put("item", it.id) }
-                inv.get(i).quantity?.let { data4.put("quantity", it) }
-                data4.put("didId", planDetailId1)
-                valueResult?.let { data4.put("value", it) }
-                data4.put("createdBy", user.id)
-                data4.put("updatedBy", user.id)
-                inv.get(i).invId?.let { data4.put("inventoryId", it) }
-
-                sqlSessionFactory.openSession().insert("InvoiceDetailMapper.insertReversalInvoiceDetail", data4)
-
-
-
-                i++
-
-
-
-
-            } else{
+//            if(plan.size > 0 ){
+//
+//                var plans = plan[0]
+//                //dispatch detail reversal
+//
+//                var planDetail = DispatchDetail()
+//
+//                var data2: MutableMap<String, Any> = mutableMapOf()
+//
+//                val planDetailId1 = UUID.randomUUID().toString()
+//
+//                data2.put("id", planDetailId1)
+//                data2.put("planId", plans.id)
+//                inv.get(i).invId?.let { data2.put("inventoryId", it) }
+//                data2.put("recipientId", RecipientEnum.HUB_MANAGER.id)
+//                inv.get(i).quantity?.let { data2.put("qtyDispatch", it) }
+//                data2.put("quarterlyPlanId", QtpEnum.QTP.id)
+//                data2.put("detailStatus", DispatchDetailStatusEnum.INVOICED.id)
+//                data2.put("createdBy", user.id)
+//                data2.put("updatedBy", user.id)
+//
+//                sqlSessionFactory.openSession().insert("DispatchDetailMapper.insertReversalPlanDetail", data2)
+//
+//
+//                //invoice header reversal
+//
+//                var invoiceHeader = mutableListOf<InvoiceHeader>();
+//
+//                var data8: MutableMap<String, Any> = mutableMapOf()
+//
+//                data8.put("planId", plans.id)
+//
+//                invoiceHeader = sqlSessionFactory.openSession().selectList<InvoiceHeader>("InvoiceHeaderMapper.reverseInventoryInvoice",data8)
+//
+//                var invoiceHeaders = invoiceHeader[0]
+//
+//
+//                //invoice detail reversal
+//
+//
+//
+//                var invoiceDetail = InvoiceDetail()
+//
+//                var data4: MutableMap<String, Any> = mutableMapOf()
+//
+//                val indId1 = UUID.randomUUID().toString()
+//
+//
+//                var valueResult = inv.get(i).quantity?.let { inv1.ratePerUnit?.times(it.toDouble()) }
+//
+//
+//
+//
+//                data4.put("id", indId1)
+//                data4.put("headerId", invoiceHeaders.id)
+//                inv1.item?.let { data4.put("item", it.id) }
+//                inv.get(i).quantity?.let { data4.put("quantity", it) }
+//                data4.put("didId", planDetailId1)
+//                valueResult?.let { data4.put("value", it) }
+//                data4.put("createdBy", user.id)
+//                data4.put("updatedBy", user.id)
+//                inv.get(i).invId?.let { data4.put("inventoryId", it) }
+//
+//                sqlSessionFactory.openSession().insert("InvoiceDetailMapper.insertReversalInvoiceDetail", data4)
+//
+//
+//
+//                i++
+//
+//
+//
+//
+//            } else{
 
                 var data1: MutableMap<String, Any> = mutableMapOf()
 
@@ -342,7 +342,7 @@ class InventoryRepository @Autowired constructor(
                 invoiceHeader.states?.let { data3.put("states", it) }
                 invoiceHeader.city?.let { data3.put("city", it) }
                 invoiceHeader.zip?.let { data3.put("zip", it) }
-                data3.put("notes", ReversalRemarkEnum.PRUNED.name)
+                data3.put("notes", it.remarks!!)
                 data3.put("transporterId", TeamEnum.HUB_TRANSPORTER.id)
                 data3.put("createdBy", user.id)
                 data3.put("updatedBy", user.id)
@@ -392,7 +392,7 @@ class InventoryRepository @Autowired constructor(
                 i++
 
 
-            }
+
 
 
 

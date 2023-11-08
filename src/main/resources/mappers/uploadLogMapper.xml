@@ -139,7 +139,7 @@
     <select id="recipientExcelData" resultType="com.squer.promobee.controller.dto.RecipientUploadDTO">
         select NAME_RTT as 'name',CODE_RTT as 'code',ADDRESS_RTT as 'address', CITY_RTT as 'city', STATE_RTT as 'state',ZIP_RTT as 'zip',EMAIL_RTT as 'email',
                 MOBILE_RTT as 'mobile',DESIGNATION_RTT as 'designation',HQ_RTT as 'headquarter',ZONE_RTT as 'zone', JOINING_DATE_RTT as 'joiningDate',TEAM_RTT as 'team',
-                STATUS_RTT as 'status',REMARKS_RTT as 'remarks',WORKID_RTT as 'workId',GENDER_RTT as 'gender',EMAIL_RM_RTT as 'emailRM', EMAIL_AM_RTT as 'emailAM',BUM_RTT as 'bu'
+                STATUS_RTT as 'status',REMARKS_RTT as 'remarks',WORKID_RTT as 'workId',GENDER_RTT as 'gender',EMAIL_RM_RTT as 'emailRM', EMAIL_AM_RTT as 'emailAM',BUM_RTT as 'bu',ERROR_TEXT_RTT as 'errorText'
         from TEMP_RECIPIENT_RTT where ID_UPLOAD_UPL_RTT = #{id}
 
 

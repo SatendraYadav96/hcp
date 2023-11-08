@@ -29,7 +29,7 @@
     </select>
 
     <select id="getSampleByLmid" resultMap="sampleMasterResultMap">
-        select * from SAMPLE_MASTER_SMP where LMID_SMP = #{lmId}
+        select * from SAMPLE_MASTER_SMP where LMID_SMP = #{lmid}
     </select>
 
     <select id="getSample" resultMap="sampleMasterResultMap" >

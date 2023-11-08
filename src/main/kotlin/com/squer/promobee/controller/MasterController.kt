@@ -1047,6 +1047,8 @@ open class MasterController@Autowired constructor(
             sqlSessionTemplate.insert("UsersMasterMapper.addUser",data)
 
 
+
+
             //map brand to new user
 
             var bbr = BrandManager()
