@@ -74,7 +74,9 @@ class ApprovalRepository(
 
         //var isuserRbm = (plan.owner!!.id == UserLovEnum.REGIONAL_BUSINESS_MANAGER.id  || plan.owner!!.id == UserLovEnum.NATIONAL_SALES_MANAGER.id)
 
-        var allocationDetails = AllocationInventoryDetailsWithCostCenterDTO()
+        var allocationDetails = mutableListOf<AllocationInventoryDetailsWithCostCenterDTO>()
+
+        var filteredAllocationDetails = mutableListOf<AllocationInventoryDetailsWithCostCenterDTO>()
 
         if(isuserRbm){
 
@@ -82,19 +84,23 @@ class ApprovalRepository(
             data.put("RBMPLANID", planId)
 
 
-            allocationDetails = return sqlSessionFactory.openSession().selectList("ApprovalMapper.allocationDetailsRbm",data)
+            allocationDetails =  sqlSessionFactory.openSession().selectList("ApprovalMapper.allocationDetailsRbm",data)
+
+
 
         }else{
 
             data.put("UserID", userId)
             data.put("PlanID", planId)
 
-            allocationDetails = return sqlSessionFactory.openSession().selectList("ApprovalMapper.allocationDetailsBrandManager", data)
+            allocationDetails =  sqlSessionFactory.openSession().selectList("ApprovalMapper.allocationDetailsBrandManager", data)
         }
 
-        var allocationData = allocationDetails.qtyAllocated
+        // Filter allocation details based on quantityAllocated
+         filteredAllocationDetails = allocationDetails.filter { (it.quantityAllocated ?: 0) > 0 }.toMutableList()
 
-        return allocationDetails
+
+        return filteredAllocationDetails
 
 
 
@@ -569,7 +575,13 @@ class ApprovalRepository(
         var data: MutableMap<String, Any> = mutableMapOf()
         data.put("DipID", planId)
 
-        return sqlSessionFactory.openSession().selectList("ApprovalMapper.getSpecialPlanApprovalDetails",data)
+        var specialAllocationDetails = mutableListOf<SpecialAllocationDetailsForApprovalDTO>()
+
+        specialAllocationDetails =  sqlSessionFactory.openSession().selectList<SpecialAllocationDetailsForApprovalDTO>("ApprovalMapper.getSpecialPlanApprovalDetails",data)
+
+        var filteredSpecialAllocation = specialAllocationDetails.filter { (it.quantity ?: 0) > 0 }.toMutableList()
+
+        return filteredSpecialAllocation
     }
 
 
@@ -601,6 +613,30 @@ class ApprovalRepository(
 
         return sqlSessionFactory.openSession().selectList("ApprovalMapper.getVirtualPlanApprovalDetails",data)
     }
+
+
+      fun virtualAllocationDownload(vrl: List<VirtualAllocationDownloadDTO>):List<VirtualAllocationDetailsDTO> {
+
+          val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+          var virtualAllocationDetails = mutableListOf<VirtualAllocationDetailsDTO>()
+          var finalList = mutableListOf<VirtualAllocationDetailsDTO>()
+          vrl.forEach {
+              var data: MutableMap<String, Any> = mutableMapOf()
+              data.put("month",it.month!!)
+              data.put("year",it.year!!)
+              data.put("planid",it.planId!!)
+
+              virtualAllocationDetails = sqlSessionFactory.openSession().selectList<VirtualAllocationDetailsDTO>("ApprovalMapper.virtualAllocationDownload",data)
+
+              finalList.addAll(virtualAllocationDetails)
+
+
+          }
+
+        return finalList
+    }
+
+
 
 
 

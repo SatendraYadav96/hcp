@@ -1,10 +1,7 @@
 package com.squer.promobee.controller
 
 
-import com.squer.promobee.controller.dto.ApproveRejectPlanDto
-import com.squer.promobee.controller.dto.FieldForceDTO
-import com.squer.promobee.controller.dto.SaveMonthlyToSpecialDTO
-import com.squer.promobee.controller.dto.UnlockPlanDto
+import com.squer.promobee.controller.dto.*
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.ApprovalService
 import lombok.extern.slf4j.Slf4j
@@ -14,11 +11,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.*
 
 
 @Slf4j
@@ -154,6 +147,13 @@ open class ApprovalController@Autowired constructor(
     fun getVirtualPlanApprovalDetails(@PathVariable planId : String , @PathVariable teamId : String ): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val data = approvalService.getVirtualPlanApprovalDetails(planId,teamId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
+    @PostMapping("/virtualAllocationDownload")
+    fun virtualAllocationDownload(@RequestBody vrl : List<VirtualAllocationDownloadDTO> ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = approvalService.virtualAllocationDownload(vrl)
         return ResponseEntity(data, HttpStatus.OK)
     }
 

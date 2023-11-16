@@ -51,6 +51,8 @@ interface ApprovalService {
 
     fun getVirtualPlanApprovalDetails(planId : String , teamId : String) : List<SpecialAllocationDetailsForApprovalDTO>
 
+    fun virtualAllocationDownload(vrl : List<VirtualAllocationDownloadDTO>) :List<VirtualAllocationDetailsDTO>
+
 
 
 
