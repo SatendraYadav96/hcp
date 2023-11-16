@@ -5,11 +5,13 @@ import com.squer.promobee.api.v1.enums.UserRoleEnum
 import com.squer.promobee.controller.dto.ComplianceBuChampionDTO
 import com.squer.promobee.controller.dto.FileContentPOJO
 import com.squer.promobee.controller.dto.MailContentPOJO
+import com.squer.promobee.controller.dto.UserEmailSendDTO
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.domain.enum.UserStatusEnum
 import com.squer.promobee.service.EmailService
 import com.squer.promobee.service.repository.EmailRepository
 import com.squer.promobee.service.repository.domain.Recipient
+import com.squer.promobee.service.repository.domain.Users
 import lombok.extern.slf4j.Slf4j
 import org.apache.ibatis.session.SqlSessionFactory
 import org.slf4j.LoggerFactory
@@ -78,8 +80,8 @@ open class EmailController@Autowired constructor(
         val mimeMessage= mailSender.createMimeMessage()
         val mimeMessageHelper= MimeMessageHelper(mimeMessage,true)
         mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
-        mimeMessageHelper.setTo("Dinesh.Sawant@sanofi.com")
-        mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+        mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
+      //  mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
         mimeMessageHelper.setText("Dear All,\n" +
                 "\n" +
                 "Attached are the Consolidated data of Inputs and Samples which are in “Near Expiry” Category.\n" +
@@ -281,13 +283,13 @@ open class EmailController@Autowired constructor(
 
 
     @GetMapping("/Send_Mail_optima/{uploadId}")
-    fun Send_Mail_optima  (response: HttpServletResponse,uploadId:String): ResponseEntity<*> {
+    fun Send_Mail_optima  (@PathVariable uploadId:String , response: HttpServletResponse): ResponseEntity<*> {
 
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
 
-        var brandManager = sqlSessionFactory.openSession().selectList<User>("ReportMapper.GetBuChampionForCompliance")
+        var brandManager = sqlSessionFactory.openSession().selectList<UserEmailSendDTO>("ReportMapper.GetBuChampionForCompliance")
 
 
         lateinit var data: ByteArray
@@ -296,7 +298,7 @@ open class EmailController@Autowired constructor(
         brandManager.forEach { it ->
 
 
-                data = emailService.Send_Mail_optima(response, uploadId)
+                data = emailService.Send_Mail_optima( uploadId , response)
 
 
                 fileContentList.add(
@@ -320,18 +322,31 @@ open class EmailController@Autowired constructor(
             val mimeMessage = mailSender.createMimeMessage()
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
-            mimeMessageHelper.setTo("Dinesh.Sawant@sanofi.com")
+           // mimeMessageHelper.setTo("Sanjeev.Bidi@sanofi.com")
             mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
-            mimeMessageHelper.setText("Hi, ",it.name +
+//            mimeMessageHelper.setText("Hi, ",it.name +
+//
+//                    "\n Following are the Names of FF/AM/RBM who have been blocked from receiving any further Medicine Samples since they have not Validated / Distributed 100% of samples received by them\n" +
+//
+//                    "\nIf any of them have not validated or distributed for a valid reason,you have to mention the reason for Non Validation/Distribution in PromoBee using below link within next 7 days. \n" +
+//                    "This will enable the Medicine Samples dispatch in the current month post admin authorization\n" +
+//
+//                    "\nKindly do the needful\n" +
+//                    "\nThank You.\n" +
+//                    " ")
 
-                    "\n Following are the Names of FF/AM/RBM who have been blocked from receiving any further Medicine Samples since they have not Validated / Distributed 100% of samples received by them\n" +
 
-                    "\nIf any of them have not validated or distributed for a valid reason,you have to mention the reason for Non Validation/Distribution in PromoBee using below link within next 7 days. \n" +
-                    "This will enable the Medicine Samples dispatch in the current month post admin authorization\n" +
+            mimeMessageHelper.setText(
+                "Hi, " + it.userName + "\n\n" +
+                        "Following are the Names of FF/AM/RBM who have been blocked from receiving any further Medicine Samples since they have not Validated / Distributed 100% of samples received by them.\n\n" +
 
-                    "\nKindly do the needful\n" +
-                    "\nThank You.\n" +
-                    " ")
+                        "If any of them have not validated or distributed for a valid reason, you have to mention the reason for Non Validation/Distribution in PromoBee using the link below within the next 7 days:\n\n" +
+                        "http://promobee-uat/#/login\n\n" +
+                        "This will enable the Medicine Samples dispatch in the current month post admin authorization.\n\n" +
+                        "Kindly do the needful.\n\n" +
+                        "Thank You.\n\n"
+            );
+
             mimeMessageHelper.setSubject("Blocked list of FF and Remarks not submitted")
 
                 val fileSystemResource =

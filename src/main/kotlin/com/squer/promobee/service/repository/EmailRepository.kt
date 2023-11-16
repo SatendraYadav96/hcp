@@ -4,6 +4,7 @@ import com.squer.promobee.api.v1.enums.UserRoleEnum
 import com.squer.promobee.controller.dto.BlockedForBUCModel
 import com.squer.promobee.controller.dto.ComplianceSampleInputNearExpiryDTO
 import com.squer.promobee.controller.dto.ItemExpireModel
+import com.squer.promobee.controller.dto.UserEmailSendDTO
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.domain.enum.UserStatusEnum
@@ -269,10 +270,10 @@ class EmailRepository(
     // BU CHAMP COMPLIANCE MAIL
 
 
-    fun Send_Mail_optima(response: HttpServletResponse, uploadId: String): ByteArray {
+    fun Send_Mail_optima( uploadId: String , response: HttpServletResponse): ByteArray {
 
 
-        var brandManager = sqlSessionFactory.openSession().selectList<User>("ReportMapper.GetBuChampionForCompliance")
+        var brandManager = sqlSessionFactory.openSession().selectList<UserEmailSendDTO>("ReportMapper.GetBuChampionForCompliance")
 
         var data1 = mutableListOf<BlockedForBUCModel>()
         var bytes = byteArrayOf()
@@ -285,8 +286,7 @@ class EmailRepository(
             var listItem: MutableMap<String, Any> = mutableMapOf()
 
 
-            data1 = sqlSessionFactory.openSession()
-                .selectList<BlockedForBUCModel>("ReportMapper.GetunblockRequestforBUCdetails")
+            data1 = sqlSessionFactory.openSession().selectList<BlockedForBUCModel>("ReportMapper.GetunblockRequestforBUCdetails")
 
 
             val xlwb = XSSFWorkbook()
@@ -294,9 +294,9 @@ class EmailRepository(
             var row = xlws.createRow(0)
             row.createCell(0).setCellValue("EmployeeCode")
             row.createCell(1).setCellValue("EmployeeName")
-            row.createCell(4).setCellValue("Month")
-            row.createCell(5).setCellValue("Year")
-            row.createCell(6).setCellValue("Designation")
+            row.createCell(2).setCellValue("Month")
+            row.createCell(3).setCellValue("Year")
+            row.createCell(4).setCellValue("Designation")
             var rowCount = 1
 
             //write

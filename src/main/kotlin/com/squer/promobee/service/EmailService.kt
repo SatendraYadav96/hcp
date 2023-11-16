@@ -11,7 +11,7 @@ interface EmailService {
     fun SendTestMailForSampleExpiry(response: HttpServletResponse, index1:Int, index2:Int ):ByteArray
 
 
-    fun Send_Mail_optima(response: HttpServletResponse,uploadId:String ):ByteArray
+    fun Send_Mail_optima(uploadId:String , response: HttpServletResponse):ByteArray
 
     fun SpecialDraftPlanReminder()
 

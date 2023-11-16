@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import javax.servlet.http.HttpServletResponse
-import kotlin.system.measureTimeMillis
 
 
 @Service
@@ -34,8 +33,8 @@ class EmailServiceImpl @Autowired constructor(
     }
 
 
-    override fun Send_Mail_optima(response: HttpServletResponse, uploadId: String): ByteArray {
-        return emailRepository.Send_Mail_optima(response,uploadId)
+    override fun Send_Mail_optima( uploadId: String , response: HttpServletResponse): ByteArray {
+        return emailRepository.Send_Mail_optima(uploadId , response)
     }
 
     override fun SpecialDraftPlanReminder() {
