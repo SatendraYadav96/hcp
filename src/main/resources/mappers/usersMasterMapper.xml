@@ -51,7 +51,7 @@
         where usr.ID_STATUS_SLV_USR = #{userStatus}
     </select>
 
-    <select id="getUserById" resultMap="usersMasterResultMap" >
+    <select id="getUserByIdBm" resultMap="usersMasterResultMap" >
         select usr.*,ulv.ID_ULV,ulv.NAME_ULV,slv.ID_SLV,slv.NAME_SLV,ety.ID_ETY,ety.NAME_ETY,brd.ID_BRD,brd.NAME_BRD,bum.ID_BUM,bum.NAME_BUM from USER_MASTER_USR usr
         join USER_LOV_ULV ulv on ulv.ID_ULV = usr.ID_DESG_ULV_USR
         join SYSTEM_LOV_SLV slv on slv.ID_SLV = usr.ID_STATUS_SLV_USR
@@ -62,6 +62,21 @@
         where usr.ID_USR = #{id}
     </select>
 
+
+    <select id="getUserByIds" resultMap="usersMasterResultMap" >
+        select usr.*,ulv.ID_ULV,ulv.NAME_ULV,slv.ID_SLV,slv.NAME_SLV,ety.ID_ETY,ety.NAME_ETY from USER_MASTER_USR usr
+         join USER_LOV_ULV ulv on ulv.ID_ULV = usr.ID_DESG_ULV_USR
+         join SYSTEM_LOV_SLV slv on slv.ID_SLV = usr.ID_STATUS_SLV_USR
+         join LEGAL_ENTITY_MASTER_ETY ety on ety.ID_ETY = usr.ID_ETY_USR
+        where usr.ID_USR = #{id}
+    </select>
+
+
+
+    <select id="getUserById" resultMap="usersMasterResultMap" >
+        select * from USER_MASTER_USR usr
+         where usr.ID_USR = #{id}
+    </select>
     <update id="editUser">
 
         UPDATE USER_MASTER_USR SET EMAIL_ADDRESS_USR = #{email}, ID_ETY_USR = #{legalEntity}, ID_DESG_ULV_USR = #{userDesignation}, ID_STATUS_SLV_USR = #{userStatus} , EMAIL_BUH_USR = #{approver}

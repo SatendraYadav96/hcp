@@ -1,6 +1,7 @@
 package com.squer.promobee.service.repository
 
 
+import com.squer.promobee.api.v1.enums.UserRoleEnum
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.NamedSquerEntity
@@ -740,9 +741,21 @@ class MasterRepository
 
     fun getUserById(id: String):Users{
         var data: MutableMap<String,Any> = mutableMapOf()
+
+        var usr = Users()
         data.put("id",id)
 
-        return sqlSessionTemplate.selectOne("UsersMasterMapper.getUserById",data)
+        usr =  sqlSessionTemplate.selectOne<Users>("UsersMasterMapper.getUserById",data)
+
+        if(usr.userDesignation!!.id == UserRoleEnum.PRODUCT_MANAGER_ID.id ){
+            var data: MutableMap<String,Any> = mutableMapOf()
+            data.put("id",id)
+            return sqlSessionTemplate.selectOne("UsersMasterMapper.getUserByIdBm",data)
+        }else{
+            var data: MutableMap<String,Any> = mutableMapOf()
+            data.put("id",id)
+            return sqlSessionTemplate.selectOne("UsersMasterMapper.getUserByIds",data)
+        }
     }
 
 

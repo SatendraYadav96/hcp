@@ -78,8 +78,8 @@ open class EmailController@Autowired constructor(
         val mimeMessage= mailSender.createMimeMessage()
         val mimeMessageHelper= MimeMessageHelper(mimeMessage,true)
         mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
-        mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
-        mimeMessageHelper.setCc("atharvdiagnostic@gmail.com")
+        mimeMessageHelper.setTo("Dinesh.Sawant@sanofi.com")
+        mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
         mimeMessageHelper.setText("Dear All,\n" +
                 "\n" +
                 "Attached are the Consolidated data of Inputs and Samples which are in “Near Expiry” Category.\n" +
@@ -159,7 +159,8 @@ open class EmailController@Autowired constructor(
             val mimeMessage = mailSender.createMimeMessage()
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
-            mimeMessageHelper.setTo(it.email!!)
+           // mimeMessageHelper.setTo(it.email!!)
+            mimeMessageHelper.setTo("Dinesh.Sawant@sanofi.com")
             mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
             mimeMessageHelper.setText("Hi, ",it.name +
 
@@ -245,8 +246,9 @@ open class EmailController@Autowired constructor(
             val mimeMessage = mailSender.createMimeMessage()
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
-            mimeMessageHelper.setTo(it.email!!)
-            mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+//            mimeMessageHelper.setTo(it.email!!)
+            mimeMessageHelper.setTo("Dinesh.Sawant@sanofi.com")
+           mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
             mimeMessageHelper.setText("Hi, ",it.name +
 
                     "\n You are advised to take necessary actions for utilization of these Inputs Before they got blocked\n" +
@@ -361,7 +363,8 @@ open class EmailController@Autowired constructor(
             val mimeMessage = mailSender.createMimeMessage()
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
-            mimeMessageHelper.setTo(it.EMAIL_ADDRESS_USR!!)
+           // mimeMessageHelper.setTo(it.EMAIL_ADDRESS_USR!!)
+            mimeMessageHelper.setTo("Dinesh.Sawant@sanofi.com")
             mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
             mimeMessageHelper.setText("Hi, ", it.NAME_USR +
 
@@ -456,7 +459,8 @@ open class EmailController@Autowired constructor(
             val mimeMessage = mailSender.createMimeMessage()
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
-            mimeMessageHelper.setTo(it.email!!)
+//            mimeMessageHelper.setTo(it.email!!)
+            mimeMessageHelper.setTo("Dinesh.Sawant@sanofi.com")
             mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
             mimeMessageHelper.setText("Hi, ${it.name} \n \nThe Below Table has details of Physician Samples and Inputs having near expiry as per system. \n \nYou are requested to utilize at the earliest.\n\n" +
                     " \n \nThank You\n ")
@@ -522,7 +526,8 @@ open class EmailController@Autowired constructor(
             val mimeMessage = mailSender.createMimeMessage()
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
-            mimeMessageHelper.setTo(it.email!!)
+//            mimeMessageHelper.setTo(it.email!!)
+            mimeMessageHelper.setTo("Dinesh.Sawant@sanofi.com")
             mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
             mimeMessageHelper.setText("Hi, ${it.name} \n\nAction for Expired Samples\n" +
                     "  \n" +
