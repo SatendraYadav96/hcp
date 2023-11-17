@@ -324,16 +324,7 @@ open class EmailController@Autowired constructor(
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
            // mimeMessageHelper.setTo("Sanjeev.Bidi@sanofi.com")
             mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
-//            mimeMessageHelper.setText("Hi, ",it.name +
-//
-//                    "\n Following are the Names of FF/AM/RBM who have been blocked from receiving any further Medicine Samples since they have not Validated / Distributed 100% of samples received by them\n" +
-//
-//                    "\nIf any of them have not validated or distributed for a valid reason,you have to mention the reason for Non Validation/Distribution in PromoBee using below link within next 7 days. \n" +
-//                    "This will enable the Medicine Samples dispatch in the current month post admin authorization\n" +
-//
-//                    "\nKindly do the needful\n" +
-//                    "\nThank You.\n" +
-//                    " ")
+
 
 
             mimeMessageHelper.setText(
@@ -379,21 +370,16 @@ open class EmailController@Autowired constructor(
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
            // mimeMessageHelper.setTo(it.EMAIL_ADDRESS_USR!!)
-            mimeMessageHelper.setTo("Dinesh.Sawant@sanofi.com")
-            mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
-            mimeMessageHelper.setText("Hi, ", it.NAME_USR +
-
-                "\n Below are the doctors who have been given more than 120 units of medicine samples in a quarter. " +
-                    " \n As per SOP, you need to give the reason for this over sampling. \n" +
-                    " \n Kindly click on the below link and then select the reasons from the dropdown for each doctor. \n" +
-
-                    "\nclick on the \n" +
-
-                    "LINK :#linkClick\n" +
-
-                    "\nKindly do the needful\n" +
-                    "\nThank You.\n" +
-                        " ")
+            mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
+            //mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+            mimeMessageHelper.setText("Hi, " + it.NAME_USR +
+                    "\n\nBelow are the doctors who have been given more than 120 units of medicine samples in a quarter. " +
+                    "\nAs per SOP, you need to give the reason for this over sampling. " +
+                    "\nKindly click on the below link and then select the reasons from the dropdown for each doctor. " +
+                    "\n\nclick on the " +
+                    "http://promobee-uat/#/login\n\n" +
+                    "\n\nKindly do the needful" +
+                    "\n\nThank You.");
             mimeMessageHelper.setSubject("Compliance Remarks not submitted")
 
 
@@ -475,10 +461,12 @@ open class EmailController@Autowired constructor(
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
 //            mimeMessageHelper.setTo(it.email!!)
-            mimeMessageHelper.setTo("Dinesh.Sawant@sanofi.com")
-            mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
-            mimeMessageHelper.setText("Hi, ${it.name} \n \nThe Below Table has details of Physician Samples and Inputs having near expiry as per system. \n \nYou are requested to utilize at the earliest.\n\n" +
-                    " \n \nThank You\n ")
+            mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
+            //mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+            mimeMessageHelper.setText("Hi, ${it.name} \n\n" +
+                    "The table below has details of Physician Samples and Inputs having near expiry as per system. \n\n" +
+                    "Please utilize these items at your earliest convenience.\n\n" +
+                    "Thank you.\n");
             mimeMessageHelper.setSubject("Near Expiry Products" )
             val fileSystemResource =
                 FileSystemResource(File("D:\\UNS_MAILS\\NearExpiryProduct.xlsx"))
@@ -542,25 +530,25 @@ open class EmailController@Autowired constructor(
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
 //            mimeMessageHelper.setTo(it.email!!)
-            mimeMessageHelper.setTo("Dinesh.Sawant@sanofi.com")
-            mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+            mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
+           // mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
             mimeMessageHelper.setText("Hi, ${it.name} \n\nAction for Expired Samples\n" +
                     "  \n" +
                     "    You are requested to send the expired samples to the nearest C&F by courier.\n" +
                     "    Please enter the quantity sent to C&F in the \"Qty sent To CFA\" column.\n" +
                     "    If the quantity is different from the balance quantity, please mention the reason for this in the \"Reason for Diff in Qty\" column.\n" +
-                    "  <\n\n" +
-                    "  Action for Expired Inputs</h3>\n" +
+                    "  \n\n" +
+                    "  Action for Expired Inputs\n" +
                     "  \n" +
-                    "    Please destroy the expired inputs at your end.</li>\n" +
+                    "    Please destroy the expired inputs at your end.\n" +
                     "    Please indicate whether you have destroyed the expired inputs in the \"Destroyed (Yes/No)\" column.\n" +
-                    "  <\n\n" +
+                    "  \n\n" +
                     " Once you have entered the above details for all rows, please enter the courier details and click on \"SUBMIT\"\n\n" +
                     " Please note that if you do not take action on this email, your access to future samples will be blocked\n\n" +
                     " To check the expiry of samples and inputs and take appropriate action, please click on the following links\n" +
                     "  \n" +
-                    "    <a href=\"http://aspire-squer.com:8080/webapp/index.jsp#/home/promobee/details?cert=X7e2zG9Hpp%2Fy8rpePCaByjtjEXMqvWNXG%2BlfWQ3zt93NRRo8Y%2FFFaK7IBXADbzVxqG%2BjHhfQRwnizfA8UmNPjqoXPRj3fkLctlf%2FcbnBuHLYgUjxIufcuIcmZfNmUjuX2AQqngja%2B6qh1Zkz4PD20Xb0%2FU9Kn6cbxk9aKlEx%2FjzgikTU3YSg%2FOOGFxigWxsV&empid=84ea02b6-fe27-4b0f-b964-3debd95b2729&type=sample\">Click here To Check The Samples Expiry And Take Appropriate Action</a>\n" +
-                    "    <a href=\"http://aspire-squer.com:8080/webapp/index.jsp#/home/promobee/details?cert=X7e2zG9Hpp%2Fy8rpePCaByjtjEXMqvWNXG%2BlfWQ3zt93NRRo8Y%2FFFaK7IBXADbzVxqG%2BjHhfQRwnizfA8UmNPjqoXPRj3fkLctlf%2FcbnBuHLYgUjxIufcuIcmZfNmUjuX2AQqngja%2B6qh1Zkz4PD20Xb0%2FU9Kn6cbxk9aKlEx%2FjzgikTU3YSg%2FOOGFxigWxsV&empid=0c8c111a-bc40-42d4-9b14-cb848dab0b51&type=input\">Click here To Check The Inputs"
+                    "     href=\"http://aspire-squer.com:8080/webapp/index.jsp#/home/promobee/details?cert=X7e2zG9Hpp%2Fy8rpePCaByjtjEXMqvWNXG%2BlfWQ3zt93NRRo8Y%2FFFaK7IBXADbzVxqG%2BjHhfQRwnizfA8UmNPjqoXPRj3fkLctlf%2FcbnBuHLYgUjxIufcuIcmZfNmUjuX2AQqngja%2B6qh1Zkz4PD20Xb0%2FU9Kn6cbxk9aKlEx%2FjzgikTU3YSg%2FOOGFxigWxsV&empid=84ea02b6-fe27-4b0f-b964-3debd95b2729&type=sample\"Click here To Check The Samples Expiry And Take Appropriate Action\n" +
+                    "     href=\"http://aspire-squer.com:8080/webapp/index.jsp#/home/promobee/details?cert=X7e2zG9Hpp%2Fy8rpePCaByjtjEXMqvWNXG%2BlfWQ3zt93NRRo8Y%2FFFaK7IBXADbzVxqG%2BjHhfQRwnizfA8UmNPjqoXPRj3fkLctlf%2FcbnBuHLYgUjxIufcuIcmZfNmUjuX2AQqngja%2B6qh1Zkz4PD20Xb0%2FU9Kn6cbxk9aKlEx%2FjzgikTU3YSg%2FOOGFxigWxsV&empid=0c8c111a-bc40-42d4-9b14-cb848dab0b51&type=input\"Click here To Check The Inputs"
             )
 
             mimeMessageHelper.setSubject("Expired Sample and Inputs" )
