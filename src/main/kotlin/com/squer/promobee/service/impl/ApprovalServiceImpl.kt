@@ -97,8 +97,8 @@ class ApprovalServiceImpl @Autowired constructor(
         return approvalRepository.getVirtualPlanForApproval(month,year,userId,userDesgId)
     }
 
-    override fun getVirtualPlanApprovalDetails(planId: String, teamId: String): List<SpecialAllocationDetailsForApprovalDTO> {
-        return approvalRepository.getVirtualPlanApprovalDetails(planId,teamId)
+    override fun getVirtualPlanApprovalDetails(planId: String): List<SpecialAllocationDetailsForApprovalDTO> {
+        return approvalRepository.getVirtualPlanApprovalDetails(planId)
     }
 
     override fun virtualAllocationDownload(vrl: List<VirtualAllocationDownloadDTO>):List<VirtualAllocationDetailsDTO> {

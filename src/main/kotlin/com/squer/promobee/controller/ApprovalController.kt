@@ -143,10 +143,10 @@ open class ApprovalController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
-    @GetMapping("/getVirtualPlanApprovalDetails/{planId}/{teamId}")
-    fun getVirtualPlanApprovalDetails(@PathVariable planId : String , @PathVariable teamId : String ): ResponseEntity<*> {
+    @GetMapping("/getVirtualPlanApprovalDetails/{planId}")
+    fun getVirtualPlanApprovalDetails(@PathVariable planId : String ): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        val data = approvalService.getVirtualPlanApprovalDetails(planId,teamId)
+        val data = approvalService.getVirtualPlanApprovalDetails(planId)
         return ResponseEntity(data, HttpStatus.OK)
     }
 

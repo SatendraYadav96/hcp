@@ -604,12 +604,12 @@ class ApprovalRepository(
     }
 
 
-    fun getVirtualPlanApprovalDetails(planId: String , teamId : String): List<SpecialAllocationDetailsForApprovalDTO> {
+    fun getVirtualPlanApprovalDetails(planId: String): List<SpecialAllocationDetailsForApprovalDTO> {
 
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
-        data.put("planid", planId)
-        data.put("teamid", teamId)
+        data.put("DipID", planId)
+
 
         return sqlSessionFactory.openSession().selectList("ApprovalMapper.getVirtualPlanApprovalDetails",data)
     }

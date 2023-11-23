@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import javax.mail.internet.InternetAddress
 import javax.servlet.http.HttpServletResponse
 
 
@@ -47,7 +48,7 @@ open class EmailController@Autowired constructor(
 
 
 
-    @GetMapping("/getConsolidatedExpiryReport")
+    @GetMapping("/getConsolidateExpiryReport")
     fun getConsolidateExpiryReport  (response: HttpServletResponse): ResponseEntity<*> {
 
         var intervals= mutableListOf<IntArray>()
@@ -80,8 +81,9 @@ open class EmailController@Autowired constructor(
         val mimeMessage= mailSender.createMimeMessage()
         val mimeMessageHelper= MimeMessageHelper(mimeMessage,true)
         mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
-        mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
-      //  mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+        mimeMessageHelper.setTo(InternetAddress.parse("dinesh.sawant@sanofi.com , sanjeev.bidi@sanofi.com"))
+        //mimeMessageHelper.setTo("sanjeev.bidi@sanofi.com")
+        mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
         mimeMessageHelper.setText("Dear All,\n" +
                 "\n" +
                 "Attached are the Consolidated data of Inputs and Samples which are in “Near Expiry” Category.\n" +
@@ -91,7 +93,14 @@ open class EmailController@Autowired constructor(
                 "Thank You\n" +
                 "\n" +
                 " ")
-        mimeMessageHelper.setSubject("Consolidated Expiry Mail for the Month-"+ calendar.get(Calendar.MONTH),)
+
+        var currentMonth = calendar.get(Calendar.MONTH)
+
+
+        var monthNames = arrayOf("JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER")
+        var currentMonthName = monthNames[currentMonth]
+
+        mimeMessageHelper.setSubject("Consolidated Expiry Mail for the Month-"+ currentMonthName,)
         intervals.forEach{
             val fileSystemResource= FileSystemResource(File("D:\\UNS_MAILS\\ExpiryReportIn${it[0]}-${it[1]}days.xlsx"))
             mimeMessageHelper.addAttachment(fileSystemResource.filename, fileSystemResource)
@@ -131,10 +140,13 @@ open class EmailController@Autowired constructor(
 
         brandManager.forEach { it ->
 
+            var userId = it.id
+
             intervals.forEach { it ->
+
                 var index1 = it[0]
                 var index2 = it[1]
-                data = emailService.SendTestMailForItemExpiry(response, it[0], it[1])
+                data = emailService.SendTestMailForItemExpiry(response,userId ,it[0], it[1])
 
 
                 fileContentList.add(
@@ -162,17 +174,21 @@ open class EmailController@Autowired constructor(
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
            // mimeMessageHelper.setTo(it.email!!)
-            mimeMessageHelper.setTo("Dinesh.Sawant@sanofi.com")
+            mimeMessageHelper.setTo(InternetAddress.parse("dinesh.sawant@sanofi.com , sanjeev.bidi@sanofi.com"))
             mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
-            mimeMessageHelper.setText("Hi, ",it.name +
-
+            mimeMessageHelper.setText("Hi, " + it.name +
                     "\n You are advised to take necessary actions for utilization of these Inputs Before they got blocked\n" +
+                "\nPS :- Due to brand alignment in Promobee few inputs are shown in the list might be from other brands. Requesting you to ignore the same.\n" +
+                "\nThank You\n" +
+                " ")
 
-                    "\nPS :- Due to brand alignment in Promobee few input / Sample are shown in the list might be from other brands. Requesting you to ignore the same.\n" +
 
-                    "\nThank You\n" +
-                    " ")
-            mimeMessageHelper.setSubject("Item Expiry Mail for the Month-" + calendar.get(Calendar.MONTH),)
+            var currentMonth = calendar.get(Calendar.MONTH)
+
+
+            var monthNames = arrayOf("JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER")
+            var currentMonthName = monthNames[currentMonth]
+            mimeMessageHelper.setSubject("Item Expiry Mail for the Month-" + currentMonthName)
             intervals.forEach {
                 val fileSystemResource =
                     FileSystemResource(File("D:\\UNS_MAILS\\ExpiryReportIn${it[0]}-${it[1]}days.xlsx"))
@@ -218,10 +234,12 @@ open class EmailController@Autowired constructor(
 
         brandManager.forEach { it ->
 
+            var userId = it.id
+
             intervals.forEach { it ->
                 var index1 = it[0]
                 var index2 = it[1]
-                data = emailService.SendTestMailForSampleExpiry(response, it[0], it[1])
+                data = emailService.SendTestMailForSampleExpiry(response, userId,it[0], it[1])
 
 
                 fileContentList.add(
@@ -249,17 +267,20 @@ open class EmailController@Autowired constructor(
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
 //            mimeMessageHelper.setTo(it.email!!)
-            mimeMessageHelper.setTo("Dinesh.Sawant@sanofi.com")
+            mimeMessageHelper.setTo(InternetAddress.parse("dinesh.sawant@sanofi.com , sanjeev.bidi@sanofi.com"))
            mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
-            mimeMessageHelper.setText("Hi, ",it.name +
-
-                    "\n You are advised to take necessary actions for utilization of these Inputs Before they got blocked\n" +
-
-                    "\nPS :- Due to brand alignment in Promobee few input / Sample are shown in the list might be from other brands. Requesting you to ignore the same.\n" +
-
+            mimeMessageHelper.setText("Hi, " + it.name +
+                    "\n You are advised to take necessary actions for utilization of these Samples Before they got blocked\n" +
+                    "\nPS :- Due to brand alignment in Promobee few Samples are shown in the list might be from other brands. Requesting you to ignore the same.\n" +
                     "\nThank You\n" +
                     " ")
-            mimeMessageHelper.setSubject("Sample Expiry Mail for the Month-" + calendar.get(Calendar.MONTH),)
+
+            var currentMonth = calendar.get(Calendar.MONTH)
+
+
+            var monthNames = arrayOf("JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER")
+            var currentMonthName = monthNames[currentMonth]
+            mimeMessageHelper.setSubject("Sample Expiry Mail for the Month-" + currentMonthName)
             intervals.forEach {
                 val fileSystemResource =
                     FileSystemResource(File("D:\\UNS_MAILS\\ExpiryReportIn${it[0]}-${it[1]}days.xlsx"))
@@ -298,7 +319,10 @@ open class EmailController@Autowired constructor(
         brandManager.forEach { it ->
 
 
-                data = emailService.Send_Mail_optima( uploadId , response)
+
+
+
+                data = emailService.Send_Mail_optima( uploadId, response)
 
 
                 fileContentList.add(
@@ -323,6 +347,7 @@ open class EmailController@Autowired constructor(
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
            // mimeMessageHelper.setTo("Sanjeev.Bidi@sanofi.com")
+            mimeMessageHelper.setTo(InternetAddress.parse("dinesh.sawant@sanofi.com , sanjeev.bidi@sanofi.com"))
             mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
 
 
@@ -370,8 +395,8 @@ open class EmailController@Autowired constructor(
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
            // mimeMessageHelper.setTo(it.EMAIL_ADDRESS_USR!!)
-            mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
-            //mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+            mimeMessageHelper.setTo(InternetAddress.parse("dinesh.sawant@sanofi.com , sanjeev.bidi@sanofi.com"))
+            mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
             mimeMessageHelper.setText("Hi, " + it.NAME_USR +
                     "\n\nBelow are the doctors who have been given more than 120 units of medicine samples in a quarter. " +
                     "\nAs per SOP, you need to give the reason for this over sampling. " +
@@ -433,6 +458,7 @@ open class EmailController@Autowired constructor(
 
         recipient.forEach { it ->
 
+
                 data = emailService.SendMailFFSampleInputNearExpiry(uploadId)
 
 
@@ -461,10 +487,10 @@ open class EmailController@Autowired constructor(
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
 //            mimeMessageHelper.setTo(it.email!!)
-            mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
-            //mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+            mimeMessageHelper.setTo(InternetAddress.parse("dinesh.sawant@sanofi.com , sanjeev.bidi@sanofi.com"))
+            mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
             mimeMessageHelper.setText("Hi, ${it.name} \n\n" +
-                    "The table below has details of Physician Samples and Inputs having near expiry as per system. \n\n" +
+                    "The attached excel has details of Physician Samples and Inputs having near expiry as per system. \n\n" +
                     "Please utilize these items at your earliest convenience.\n\n" +
                     "Thank you.\n");
             mimeMessageHelper.setSubject("Near Expiry Products" )
@@ -530,8 +556,8 @@ open class EmailController@Autowired constructor(
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
             mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
 //            mimeMessageHelper.setTo(it.email!!)
-            mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
-           // mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+            mimeMessageHelper.setTo(InternetAddress.parse("dinesh.sawant@sanofi.com , sanjeev.bidi@sanofi.com"))
+            mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
             mimeMessageHelper.setText("Hi, ${it.name} \n\nAction for Expired Samples\n" +
                     "  \n" +
                     "    You are requested to send the expired samples to the nearest C&F by courier.\n" +

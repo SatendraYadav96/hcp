@@ -112,7 +112,7 @@ class EmailRepository(
     // BRAND MANAGER ITEM MAIL
 
 
-    fun SendTestMailForItemExpiry(response: HttpServletResponse, index1: Int, index2: Int): ByteArray {
+    fun SendTestMailForItemExpiry(response: HttpServletResponse, userId:String, index1: Int, index2: Int): ByteArray {
 
         ///listItem.put("filter",count)
 
@@ -126,14 +126,14 @@ class EmailRepository(
 
         var data1 = mutableListOf<ItemExpireModel>()
         var bytes = byteArrayOf()
-        val bos = ByteArrayOutputStream()
 
-        brandManager.forEach { it ->
+
+
 
 
             var listItem: MutableMap<String, Any> = mutableMapOf()
 
-            listItem.put("itemID", it.id)
+            listItem.put("itemID",userId)
             listItem.put("fromdate", index1)
             listItem.put("Todate", index2)
 
@@ -148,11 +148,11 @@ class EmailRepository(
             var row = xlws.createRow(0)
             row.createCell(0).setCellValue("ITEM_NAME")
             row.createCell(1).setCellValue("ITEM_CODE")
-            // row.createCell(2).setCellValue("Batch_No")
-            // row.createCell(3).setCellValue("Category")
-            row.createCell(4).setCellValue("EXPIRY_DATE")
-            row.createCell(5).setCellValue("STOCK")
-            row.createCell(6).setCellValue("VALUE")
+           //  row.createCell(2).setCellValue("Batch_No")
+          //   row.createCell(3).setCellValue("Category")
+            row.createCell(2).setCellValue("EXPIRY_DATE")
+            row.createCell(3).setCellValue("STOCK")
+            row.createCell(4).setCellValue("VALUE")
             var rowCount = 1
 
             //write
@@ -162,34 +162,32 @@ class EmailRepository(
                 var row = xlws.createRow(rowCount++)
                 row.createCell(columnCount++).setCellValue("${it.name_ITM}")
                 row.createCell(columnCount++).setCellValue("${it.code_ITM}")
-                //row.createCell(columnCount++).setCellValue("${it.batch_NO}")
-                //row.createCell(columnCount++).setCellValue("${it.category}")
+               // row.createCell(columnCount++).setCellValue("${it.batch_NO}")
+               // row.createCell(columnCount++).setCellValue("${it.category}")
                 row.createCell(columnCount++).setCellValue("${it.expiry_date_inv}")
                 row.createCell(columnCount++).setCellValue("${it.stock}")
                 row.createCell(columnCount).setCellValue("${it.value}")
 
             }
 
-
-
+            val bos = ByteArrayOutputStream()
             try {
                 xlwb.write(bos)
             } finally {
                 bos.close()
             }
+            bytes = bos.toByteArray()
 
-        }
 
-        bytes = bos.toByteArray()
+
 
 
 
         return bytes
-
     }
 
 
-    fun SendTestMailForSampleExpiry(response: HttpServletResponse, index1: Int, index2: Int): ByteArray {
+    fun SendTestMailForSampleExpiry(response: HttpServletResponse, userId:String,  index1: Int, index2: Int): ByteArray {
 
         ///listItem.put("filter",count)
 
@@ -205,12 +203,11 @@ class EmailRepository(
         var bytes = byteArrayOf()
         val bos = ByteArrayOutputStream()
 
-        brandManager.forEach { it ->
 
 
             var listItem: MutableMap<String, Any> = mutableMapOf()
 
-            listItem.put("itemID", it.id)
+            listItem.put("itemID", userId)
             listItem.put("fromdate", index1)
             listItem.put("Todate", index2)
 
@@ -218,7 +215,7 @@ class EmailRepository(
 
 
             data1 = sqlSessionFactory.openSession()
-                .selectList<ItemExpireModel>("ReportMapper.GetunblockRequestforBUCdetails", listItem)
+                .selectList<ItemExpireModel>("ReportMapper.SendTestMailForSampleExpiry", listItem)
 
 
             val xlwb = XSSFWorkbook()
@@ -226,11 +223,11 @@ class EmailRepository(
             var row = xlws.createRow(0)
             row.createCell(0).setCellValue("ITEM_NAME")
             row.createCell(1).setCellValue("ITEM_CODE")
-            // row.createCell(2).setCellValue("Batch_No")
-            // row.createCell(3).setCellValue("Category")
-            row.createCell(4).setCellValue("EXPIRY_DATE")
-            row.createCell(5).setCellValue("STOCK")
-            row.createCell(6).setCellValue("VALUE")
+             row.createCell(2).setCellValue("Batch_No")
+           //  row.createCell(3).setCellValue("Category")
+            row.createCell(3).setCellValue("EXPIRY_DATE")
+            row.createCell(4).setCellValue("STOCK")
+            row.createCell(5).setCellValue("VALUE")
             var rowCount = 1
 
             //write
@@ -240,7 +237,7 @@ class EmailRepository(
                 var row = xlws.createRow(rowCount++)
                 row.createCell(columnCount++).setCellValue("${it.name_ITM}")
                 row.createCell(columnCount++).setCellValue("${it.code_ITM}")
-                //row.createCell(columnCount++).setCellValue("${it.batch_NO}")
+                row.createCell(columnCount++).setCellValue("${it.batch_NO}")
                 //row.createCell(columnCount++).setCellValue("${it.category}")
                 row.createCell(columnCount++).setCellValue("${it.expiry_date_inv}")
                 row.createCell(columnCount++).setCellValue("${it.stock}")
@@ -256,7 +253,7 @@ class EmailRepository(
                 bos.close()
             }
 
-        }
+
 
         bytes = bos.toByteArray()
 
@@ -280,13 +277,15 @@ class EmailRepository(
         val bos = ByteArrayOutputStream()
 
 
-        brandManager.forEach { it ->
+
 
 
             var listItem: MutableMap<String, Any> = mutableMapOf()
 
+        listItem.put("uploadId",uploadId)
 
-            data1 = sqlSessionFactory.openSession().selectList<BlockedForBUCModel>("ReportMapper.GetunblockRequestforBUCdetails")
+
+            data1 = sqlSessionFactory.openSession().selectList<BlockedForBUCModel>("ReportMapper.GetunblockRequestforBUCdetails",listItem)
 
 
             val xlwb = XSSFWorkbook()
@@ -320,7 +319,7 @@ class EmailRepository(
                 bos.close()
             }
 
-        }
+
 
 
         bytes = bos.toByteArray()
@@ -459,7 +458,7 @@ class EmailRepository(
     // Mail trigger to FF for Sample/Input Near expiry
 
 
-    fun SendMailFFSampleInputNearExpiry(uploadId: String):ByteArray {
+    fun SendMailFFSampleInputNearExpiry(uploadId: String ):ByteArray {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var data: MutableMap<String, Any> = mutableMapOf()
@@ -472,7 +471,7 @@ class EmailRepository(
         val bos = ByteArrayOutputStream()
 
 
-        recipient.forEach { it ->
+
 
 
             var listItem: MutableMap<String, Any> = mutableMapOf()
@@ -480,7 +479,7 @@ class EmailRepository(
             listItem.put("uploadId",uploadId)
 
           var data1 = sqlSessionFactory.openSession()
-                .selectList<ComplianceSampleInputNearExpiryDTO>("ReportMapper.SendMailFFSampleInputNearExpiry",listItem)
+                .selectList<ComplianceSampleInputNearExpiryDTO>("ReportMapper.SendMailFFSampleInputNearExpiryCompliance",listItem)
 
             var currentDate = LocalDate.now()
 
@@ -500,27 +499,31 @@ class EmailRepository(
                val xlws = xlwb.createSheet("Near Expiry Product")
 
             var row = xlws.createRow(0)
-                row.createCell(0).setCellValue("EmployeeCode")
-                row.createCell(1).setCellValue("EmployeeName")
-                row.createCell(2).setCellValue("ProductName")
-                row.createCell(3).setCellValue("ProductCode")
-                row.createCell(4).setCellValue("BatchNo")
-                row.createCell(5).setCellValue("BalancedQty")
-                row.createCell(6).setCellValue("Expiry")
+//                row.createCell(0).setCellValue("EmployeeCode")
+//                row.createCell(1).setCellValue("EmployeeName")
+                row.createCell(0).setCellValue("ProductName")
+                row.createCell(1).setCellValue("ProductCode")
+                row.createCell(2).setCellValue("BatchNo")
+                row.createCell(3).setCellValue("Category")
+                row.createCell(4).setCellValue("BalancedQty")
+                row.createCell(5).setCellValue("Expiry")
                 var rowCount = 1
 
                 //write
 
             productData.forEach {
-                    var columnCount = 0
-                    var row = xlws.createRow(rowCount++)
-                row.createCell(columnCount++).setCellValue("${it.empCode}")
-                row.createCell(columnCount++).setCellValue("${it.empName}")
+                var columnCount = 0
+                var row = xlws.createRow(rowCount++)
+//                row.createCell(columnCount++).setCellValue("${it.empCode}")
+//                row.createCell(columnCount++).setCellValue("${it.empName}")
                 row.createCell(columnCount++).setCellValue("${it.productName}")
                 row.createCell(columnCount++).setCellValue("${it.productCode}")
-                row.createCell(columnCount).setCellValue("${it.batchNo}")
-                row.createCell(columnCount).setCellValue("${it.qtyBalanced}")
+                row.createCell(columnCount++).setCellValue("${it.batchNo}")
+                row.createCell(columnCount++).setCellValue("${it.category}")
+                row.createCell(columnCount++).setCellValue("${it.qtyBalanced}")
                 row.createCell(columnCount).setCellValue("${it.expiryDate}")
+
+            }
 
 
                 try {
@@ -530,10 +533,10 @@ class EmailRepository(
                 }
 
 
-            }
 
 
-        }
+
+
         bytes = bos.toByteArray()
 
 
@@ -567,7 +570,7 @@ class EmailRepository(
         val bos = ByteArrayOutputStream()
 
 
-        recipient.forEach { it ->
+
 
 
             var listItem: MutableMap<String, Any> = mutableMapOf()
@@ -575,7 +578,7 @@ class EmailRepository(
             listItem.put("uploadId",uploadId)
 
             var data1 = sqlSessionFactory.openSession()
-                .selectList<ComplianceSampleInputNearExpiryDTO>("ReportMapper.SendMailFFSampleInputNearExpiry",listItem)
+                .selectList<ComplianceSampleInputNearExpiryDTO>("ReportMapper.SendMailFFSampleInputExpiredCompliance",listItem)
 
             var currentDate = LocalDate.now()
 
@@ -583,7 +586,7 @@ class EmailRepository(
 
 
 
-            var productData = data1.filter {it.expiryDate!! > currentDate.toString() }
+            var productData = data1.filter {it.expiryDate!! < currentDate.toString() }
 
 
 
@@ -592,13 +595,14 @@ class EmailRepository(
             val xlwb = XSSFWorkbook()
             val xlws = xlwb.createSheet("Expired Products")
             var row = xlws.createRow(0)
-                row.createCell(0).setCellValue("EmployeeCode")
-                row.createCell(1).setCellValue("EmployeeName")
-                row.createCell(2).setCellValue("ProductName")
-                row.createCell(3).setCellValue("ProductCode")
-                row.createCell(4).setCellValue("BatchNo")
-                row.createCell(5).setCellValue("BalancedQty")
-                row.createCell(6).setCellValue("Expiry")
+//                row.createCell(0).setCellValue("EmployeeCode")
+//                row.createCell(1).setCellValue("EmployeeName")
+                row.createCell(0).setCellValue("ProductName")
+                row.createCell(1).setCellValue("ProductCode")
+                row.createCell(2).setCellValue("BatchNo")
+                row.createCell(3).setCellValue("Category")
+                row.createCell(4).setCellValue("BalancedQty")
+                row.createCell(5).setCellValue("Expiry")
                 var rowCount = 1
 
                 //write
@@ -606,15 +610,16 @@ class EmailRepository(
             productData.forEach {
                 var columnCount = 0
                 var row = xlws.createRow(rowCount++)
-                row.createCell(columnCount++).setCellValue("${it.empCode}")
-                row.createCell(columnCount++).setCellValue("${it.empName}")
+//                row.createCell(columnCount++).setCellValue("${it.empCode}")
+//                row.createCell(columnCount++).setCellValue("${it.empName}")
                 row.createCell(columnCount++).setCellValue("${it.productName}")
                 row.createCell(columnCount++).setCellValue("${it.productCode}")
-                row.createCell(columnCount).setCellValue("${it.batchNo}")
-                row.createCell(columnCount).setCellValue("${it.qtyBalanced}")
+                row.createCell(columnCount++).setCellValue("${it.batchNo}")
+                row.createCell(columnCount++).setCellValue("${it.category}")
+                row.createCell(columnCount++).setCellValue("${it.qtyBalanced}")
                 row.createCell(columnCount).setCellValue("${it.expiryDate}")
 
-
+            }
                 try {
                     xlwb.write(bos)
                 } finally {
@@ -622,15 +627,15 @@ class EmailRepository(
                 }
 
 
-            }
 
 
-        }
+
+
         bytes = bos.toByteArray()
 
 
+return bytes
 
-        return bytes
 
 
 

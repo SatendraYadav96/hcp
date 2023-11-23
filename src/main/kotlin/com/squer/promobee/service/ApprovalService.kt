@@ -49,7 +49,7 @@ interface ApprovalService {
 
     fun getVirtualPlanForApproval(month : Int,  year : Int,  userId : String,  userDesgId : String) : List<MontlyApprovalBexDTO>
 
-    fun getVirtualPlanApprovalDetails(planId : String , teamId : String) : List<SpecialAllocationDetailsForApprovalDTO>
+    fun getVirtualPlanApprovalDetails(planId : String) : List<SpecialAllocationDetailsForApprovalDTO>
 
     fun virtualAllocationDownload(vrl : List<VirtualAllocationDownloadDTO>) :List<VirtualAllocationDetailsDTO>
 

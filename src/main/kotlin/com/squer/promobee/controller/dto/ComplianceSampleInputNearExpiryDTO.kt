@@ -7,8 +7,9 @@ class ComplianceSampleInputNearExpiryDTO {
     var productName :String? = null
     var productCode :String? = null
     var batchNo :String? = null
+    var category :String? = null
     var qtyBalanced :String? = null
     var expiryDate :String? = null
-    var category :String? = null
+
 
 }

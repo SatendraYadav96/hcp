@@ -338,13 +338,13 @@ open class NewAllocationController @Autowired constructor(
     }
 
 
-    @PostMapping("/getMultipleAllocationAll")
+    @GetMapping("/getMultipleAllocationAll")
     open fun getMultipleAllocationAll(@RequestBody mulAlloc: List<MultipleAllocationExcelDTO>): ResponseEntity<*> {
         var data = newAllocationService.getMultipleAllocationAll(mulAlloc)
 
-        var byteData = String(Base64.getEncoder().encode(data))
+       // var byteData = String(Base64.getEncoder().encode(data))
 
-        return ResponseEntity(byteData , HttpStatus.OK)
+        return ResponseEntity(data , HttpStatus.OK)
 
     }
 

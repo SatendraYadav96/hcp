@@ -23,13 +23,13 @@ class EmailServiceImpl @Autowired constructor(
         return emailRepository.getConsolidateExpiryReport(response, index1, index2)
     }
 
-    override fun SendTestMailForItemExpiry(response: HttpServletResponse, index1: Int, index2: Int): ByteArray {
-        return emailRepository.SendTestMailForItemExpiry(response,index1,index2)
+    override fun SendTestMailForItemExpiry(response: HttpServletResponse,  userId:String, index1: Int, index2: Int): ByteArray {
+        return emailRepository.SendTestMailForItemExpiry(response,userId,index1,index2)
     }
 
 
-    override fun SendTestMailForSampleExpiry(response: HttpServletResponse, index1: Int, index2: Int): ByteArray {
-        return emailRepository.SendTestMailForSampleExpiry(response,index1,index2)
+    override fun SendTestMailForSampleExpiry(response: HttpServletResponse,userId:String, index1: Int, index2: Int): ByteArray {
+        return emailRepository.SendTestMailForSampleExpiry(response,userId,index1,index2)
     }
 
 
@@ -41,7 +41,7 @@ class EmailServiceImpl @Autowired constructor(
         return emailRepository.SpecialDraftPlanReminder()
     }
 
-    override fun SendMailFFSampleInputNearExpiry( uploadId: String):ByteArray {
+    override fun SendMailFFSampleInputNearExpiry( uploadId: String  ):ByteArray {
         return emailRepository.SendMailFFSampleInputNearExpiry(uploadId)
     }
 
