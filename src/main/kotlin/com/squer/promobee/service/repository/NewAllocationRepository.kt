@@ -139,13 +139,25 @@ class NewAllocationRepository(
 
         var allocationInventoryDetails = mutableListOf<AllocationInventoryDetailsWithCostCenterDTO>()
 
+       var plan =  mutableListOf<DispatchPlan>()
+
         var data: MutableMap<String, Any> = mutableMapOf()
         data.put("month", month)
         data.put("year", year)
         data.put("owner", user.id)
 
-        var plan = sqlSessionFactory.openSession()
-            .selectOne<DispatchPlan>("DispatchPlanMapper.getDispatchPlanForAllocation", data)
+         plan = sqlSessionFactory.openSession()
+            .selectList<DispatchPlan>("DispatchPlanMapper.getDispatchPlanForAllocation", data)
+
+
+        var i = 0
+
+        var planDp = DispatchPlan()
+        if(plan.isNullOrEmpty()){
+            plan
+        } else{
+            planDp = plan[i]
+        }
 
         var isRbmOrNsm = false;
 
@@ -158,7 +170,7 @@ class NewAllocationRepository(
 
         var ulv = sqlSessionFactory.openSession().select("UserDesignationMapper.userDesignationForAllocation", data0)
 
-        if (plan == null) {
+        if (plan.isNullOrEmpty()) {
             var dispatchPlan = DispatchPlan()
 
             var data1: MutableMap<String, Any> = mutableMapOf()
@@ -199,7 +211,7 @@ class NewAllocationRepository(
             BmPlanId.forEach {
 
                 var data3: MutableMap<String, Any> = mutableMapOf()
-                data3.put("planId", plan.id)
+                data3.put("planId", planDp.id)
                 BmPlanId[i].inventoryId?.let { it1 -> data3.put("invId", it1) }
 
 
@@ -216,7 +228,7 @@ class NewAllocationRepository(
                         var didID = UUID.randomUUID().toString()
 
                         data4.put("id", didID)
-                        data4.put("planId", plan.id)
+                        data4.put("planId", planDp.id)
                         BmPlanId[i].inventoryId?.let { it1 -> data4.put("inventoryId", it1) }
                         BmPlanId[i].recipientId?.let { it1 -> data4.put("recipientId", it1) }
                         BmPlanId[i].qtyDispatch?.let { it1 -> data4.put("qtyDispatch", it1) }
@@ -248,12 +260,21 @@ class NewAllocationRepository(
 
         }
 
+        var data4: MutableMap<String, Any> = mutableMapOf()
+        data4.put("month", month)
+        data4.put("year", year)
+        data4.put("owner", user.id)
+
+     var planVir = sqlSessionFactory.openSession()
+            .selectOne<DispatchPlan>("DispatchPlanMapper.getDispatchPlanForAllocation", data4)
+
+
         if (isRbmOrNsm) {
 
             var data6: MutableMap<String, Any> = mutableMapOf()
 
             data6.put("UserID", user.id)
-            data6.put("RBMPlanID", plan.id)
+            data6.put("RBMPlanID", planVir.id)
 
 
             allocationInventoryDetails = sqlSessionFactory.openSession()
@@ -263,7 +284,7 @@ class NewAllocationRepository(
             var data7: MutableMap<String, Any> = mutableMapOf()
 
             data7.put("UserID", user.id)
-            data7.put("PlanID", plan.id)
+            data7.put("PlanID", planVir.id)
 
 
             allocationInventoryDetails = sqlSessionFactory.openSession()
@@ -1397,7 +1418,7 @@ class NewAllocationRepository(
 
         var virtualAllocationInventoryDetails = mutableListOf<VirtualAllocationInventoryDetailsWithCostCenterDTO>()
 
-        var plan = DispatchPlan()
+        var plan = mutableListOf<DispatchPlan>()
 
         var data: MutableMap<String, Any> = mutableMapOf()
 
@@ -1405,7 +1426,18 @@ class NewAllocationRepository(
         data.put("year", year)
         data.put("owner", user.id)
 
-        plan = sqlSessionFactory.openSession().selectOne<DispatchPlan>("DispatchPlanMapper.createVirtualPlan", data)
+        plan = sqlSessionFactory.openSession().selectList<DispatchPlan>("DispatchPlanMapper.createVirtualPlan", data)
+
+        var i = 0
+
+        var planDp = DispatchPlan()
+        if(plan.isNullOrEmpty()){
+            plan
+        } else{
+             planDp = plan[i]
+        }
+
+
 
 //       var  planList = sqlSessionFactory.openSession().selectList<DispatchPlan>("DispatchPlanMapper.createVirtualPlan",data)
 
@@ -1429,7 +1461,7 @@ class NewAllocationRepository(
 
         ulv = sqlSessionFactory.openSession().selectOne("UserDesignationMapper.createVirtualPlan", data0)
 
-        if (plan == null) {
+        if (plan.isNullOrEmpty()) {
 
             var data1: MutableMap<String, Any> = mutableMapOf()
 
@@ -1465,7 +1497,7 @@ class NewAllocationRepository(
             bmPlanId.forEach { it ->
                 var data3: MutableMap<String, Any> = mutableMapOf()
 
-                data3.put("id", plan.id)
+                data3.put("id", planDp.id)
                 data3.put("invId", it.inventoryId!!)
 
                 var rbmdetails = sqlSessionFactory.openSession()
@@ -1475,7 +1507,7 @@ class NewAllocationRepository(
 
                 var data4: MutableMap<String, Any> = mutableMapOf()
 
-                data4.put("id", plan.id)
+                data4.put("id", planDp.id)
 
                 var bmPlan = sqlSessionFactory.openSession()
                     .selectOne<DispatchPlan>("DispatchPlanMapper.getDispatchPlanById", data4)
@@ -1490,7 +1522,7 @@ class NewAllocationRepository(
                         var didId = UUID.randomUUID().toString()
 
                         data5.put("id", didId)
-                        data5.put("planId", plan.id)
+                        data5.put("planId", planDp.id)
                         data5.put("inventoryId", it.inventoryId!!)
                         data5.put("recipientId", it.recipientId!!)
                         data5.put("qtyDispatch", it.qtyDispatch!!)
@@ -1518,13 +1550,23 @@ class NewAllocationRepository(
 
         }
 
+        var data4: MutableMap<String, Any> = mutableMapOf()
+
+        data4.put("month", month)
+        data4.put("year", year)
+        data4.put("owner", user.id)
+
+
+
+        var planVir = sqlSessionFactory.openSession().selectOne<DispatchPlan>("DispatchPlanMapper.createVirtualPlan", data4)
+
 
         if (isRbmOrNsm) {
 
             var data7: MutableMap<String, Any> = mutableMapOf()
 
             data7.put("UserID", user.userRecipientId!!)
-            data7.put("PlanID", plan.id)
+            data7.put("PlanID", planVir.id)
 
             allocationInventoryDetails = sqlSessionFactory.openSession()
                 .selectList<VirtualAllocationInventoryDetailsWithCostCenterDTO>(
@@ -1537,7 +1579,7 @@ class NewAllocationRepository(
             var data8: MutableMap<String, Any> = mutableMapOf()
 
             data8.put("UserID", user.id)
-            data8.put("PlanID", plan.id)
+            data8.put("PlanID", planVir.id)
 
             allocationInventoryDetails = sqlSessionFactory.openSession()
                 .selectList<VirtualAllocationInventoryDetailsWithCostCenterDTO>(
@@ -1548,7 +1590,7 @@ class NewAllocationRepository(
 
         }
 
-        if (plan.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || plan.planStatus!!.id == AllocationStatusEnum.APPROVED.id) {
+        if (planDp.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || planDp.planStatus!!.id == AllocationStatusEnum.APPROVED.id) {
 
             allocationInventoryDetails =
                 allocationInventoryDetails.filter { it.qtyAllocated != null && it.qtyAllocated!! > 0 }

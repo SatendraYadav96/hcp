@@ -48,6 +48,8 @@
         WHERE VID.ID_RCT_DID = #{owner} AND DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND DIP.IS_VIRTUAL_DIP = 1
     </select>
 
+
+
     <update id="updateVirtualPlan">
         UPDATE VIRTUAL_DISPATCH_VID SET QUANTITY_DISPATCH_DID = {qtyDispatch}  , UPDATED_BY_DID = #{updatedBy} , UPDATED_ON_DID = GETDATE()
         WHERE ID_DID = #{id}
