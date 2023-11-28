@@ -16,12 +16,14 @@ import lombok.extern.slf4j.Slf4j
 import org.apache.ibatis.session.SqlSessionFactory
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Configuration
 import org.springframework.core.io.FileSystemResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.core.context.SecurityContextHolder
 
 import org.springframework.web.bind.annotation.GetMapping
@@ -380,7 +382,9 @@ open class EmailController@Autowired constructor(
     }
 
 
+
     @GetMapping("/Send_Mail_oversampling")
+
     fun Send_Mail_oversampling  (): ResponseEntity<*> {
 
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -393,10 +397,11 @@ open class EmailController@Autowired constructor(
             val calendar = Calendar.getInstance()
             val mimeMessage = mailSender.createMimeMessage()
             val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
-            mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
-           // mimeMessageHelper.setTo(it.EMAIL_ADDRESS_USR!!)
-            mimeMessageHelper.setTo(InternetAddress.parse("dinesh.sawant@sanofi.com , sanjeev.bidi@sanofi.com"))
-            mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+            mimeMessageHelper.setFrom("Ashutosh.Pavaskar@sanofi.com")
+            //mimeMessageHelper.setTo(it.EMAIL_ADDRESS_USR!!)
+            mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
+           // mimeMessageHelper.setTo(InternetAddress.parse("dinesh.sawant@sanofi.com , sanjeev.bidi@sanofi.com"))
+            //mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
             mimeMessageHelper.setText("Hi, " + it.NAME_USR +
                     "\n\nBelow are the doctors who have been given more than 120 units of medicine samples in a quarter. " +
                     "\nAs per SOP, you need to give the reason for this over sampling. " +
@@ -420,6 +425,10 @@ open class EmailController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
 
     }
+
+
+
+
 
 
 
