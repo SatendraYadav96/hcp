@@ -196,8 +196,8 @@ open class UIController @Autowired constructor(
             UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id to listOf<UserMenuEnum>(
                 UserMenuEnum.TSE_DASHBOARD,
                 UserMenuEnum.ALLOCATION,
-                UserMenuEnum.COMPLIANCE_PROCESS,
-                UserMenuEnum.OVERSAMPLING_DETAILS
+//                UserMenuEnum.COMPLIANCE_PROCESS,
+//                UserMenuEnum.OVERSAMPLING_DETAILS
 
             ),
 
