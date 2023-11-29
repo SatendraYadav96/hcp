@@ -762,14 +762,14 @@ class NewAllocationRepository(
             }
 
 
-            var approvalChainTransaction = ApprovalChainTransaction()
+            var approvalChainTransaction = mutableListOf<ApprovalChainTransaction>()
             var data3: MutableMap<String, Any> = mutableMapOf()
             data3.put("id", plan.id)
 
             approvalChainTransaction =
-                sqlSessionFactory.openSession().selectOne("ApprovalChainTransactionMapper.getApprovalChainById", data3)
+                sqlSessionFactory.openSession().selectList<ApprovalChainTransaction>("ApprovalChainTransactionMapper.getApprovalChainById", data3)
 
-            if (approvalChainTransaction != null) {
+            if (approvalChainTransaction.isNullOrEmpty()) {
                 var data4: MutableMap<String, Any> = mutableMapOf()
 
                 data4.put("owner", plan.id)

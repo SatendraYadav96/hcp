@@ -53,6 +53,8 @@
     </select>
 
     <select id="getAllocationInventoryWithCostcenter" parameterType="map" resultType="com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO" >
+        SELECT isItem, costCenterID, costCenterName,itemID,itemName,qtyReceived,qtyAllocated,qtyDispatched,stock,expiryDate,poNo,packSize,quantityAllocated,inventoryId,planId,isBlockItem from
+            (
         SELECT INV.ID_INV, 1 AS 'isItem',CCM.ID_CCM AS 'costCenterID',CCM.NAME_CCM AS 'costCenterName',ITM.ID_ITM AS 'itemID',ITM.NAME_ITM AS 'itemName',
         INV.QTY_RECEIVED_INV AS qtyReceived, INV.QTY_ALLOCATED_INV AS qtyAllocated, INV.QTY_DISPATCHED_INV AS qtyDispatched,
         isnull((INV.QTY_RECEIVED_INV - INV.QTY_ALLOCATED_INV - INV.QTY_DISPATCHED_INV),0) AS 'stock',INV.EXPIRY_DATE_INV AS 'expiryDate',
@@ -83,8 +85,9 @@
         JOIN BRAND_MASTER_BRD BRD1 ON BBR1.ID_BRD_BBR = BRD1.ID_BRD
         LEFT JOIN (SELECT DID.ID_INV_DID ID_INV_DID, SUM(QUANTITY_DISPATCH_DID) QUANTITY_DISPATCH_DID  from DISPATCH_DETAIL_DID DID where  DID.ID_DIP_DID = #{planId}  group by DID.ID_INV_DID) as SUM_DID on SUM_DID.ID_INV_DID = INV1.ID_INV
         WHERE BBR1.ID_USR_BBR = #{userId} AND DATEADD(DAY,ITC1.CUTOFF_BEFORE_DAYS_ITC,CONVERT(date, GETDATE())) &lt; INV1.EXPIRY_DATE_INV
-        AND SMP.IS_ACTIVE_SMP != 0 and INV1.IS_BLOCK_ITEM_INV=0
-        ORDER BY CCM.NAME_CCM,ITM.NAME_ITM
+        AND SMP.IS_ACTIVE_SMP != 0 and INV1.IS_BLOCK_ITEM_INV=0) as allocationInventory
+        ORDER BY stock DESC
+        -- ORDER BY CCM.NAME_CCM,ITM.NAME_ITM
     </select>
 
     <select id="planDistributionForItemSelect" resultType="Map">
