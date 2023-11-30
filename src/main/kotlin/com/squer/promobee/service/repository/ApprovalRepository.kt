@@ -272,20 +272,24 @@ class ApprovalRepository(
 
         var isSpecial: Int = plan.approvalType!!.toInt()
 
-        var approvalTransaction = plan.apiId?.let { getApprovalChainById(it) }
+       // var approvalTransaction = plan.apiId?.let { getApprovalChainById(it) }
 
         var dispatchPlan = plan.planId?.let { getDispatchPlanById(it) }
 
        var dispatchDetails = plan.planId?.let { getDispatchDetails(it) }
 
-        plan.apiId?.let { data.put("id", it) }
-        data.put("approvedByUser", user.id)
-        data.put("apiStatus", ApprovalStatusEnum.REJECTED.id)
-        plan.comment?.let { data.put("comments", it) }
-        data.put("updatedBy", user.id)
+        if(dispatchPlan!!.planStatus!!.id == AllocationStatusEnum.SUBMIT.id ){
+            plan.apiId?.let { data.put("id", it) }
+            data.put("approvedByUser", user.id)
+            data.put("apiStatus", ApprovalStatusEnum.REJECTED.id)
+            plan.comment?.let { data.put("comments", it) }
+            data.put("updatedBy", user.id)
 
 
-        sqlSessionFactory.openSession().update("ApprovalChainTransactionMapper.updateApprovalChainTransaction", data)
+            sqlSessionFactory.openSession().update("ApprovalChainTransactionMapper.updateApprovalChainTransaction", data)
+        }
+
+
 
 
         if(user.userDesignation!!.id == UserLovEnum.BUH.id && isSpecial == 1 ){
@@ -317,7 +321,7 @@ class ApprovalRepository(
 
         }
 
-        if(user.userDesignation!!.id == UserLovEnum.BEX.id || isSpecial == 0){
+        if(user.userDesignation!!.id == UserLovEnum.BEX.id && isSpecial == 0){
             var data: MutableMap<String, Any> = mutableMapOf()
 
             plan.planId?.let { data.put("id", it) }
@@ -346,7 +350,7 @@ class ApprovalRepository(
 
         }
 
-        if(user.userDesignation!!.id == UserLovEnum.BEX.id || isSpecial == 1){
+        if(user.userDesignation!!.id == UserLovEnum.BEX.id && isSpecial == 1){
             var data: MutableMap<String, Any> = mutableMapOf()
 
             plan.planId?.let { data.put("id", it) }
@@ -376,7 +380,7 @@ class ApprovalRepository(
         }
 
 
-        if(user.userDesignation!!.id == UserLovEnum.BEX.id || isSpecial == 2){
+        if(user.userDesignation!!.id == UserLovEnum.BEX.id && isSpecial == 2){
             var data: MutableMap<String, Any> = mutableMapOf()
 
             plan.planId?.let { data.put("id", it) }

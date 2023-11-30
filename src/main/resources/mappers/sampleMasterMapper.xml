@@ -70,6 +70,13 @@
 
 
 
+    <select id="multipleAllocation" resultMap="sampleMasterResultMap">
+        SELECT * FROM SAMPLE_MASTER_SMP WHERE LMID_SMP = #{itemCode}
+
+
+    </select>
+
+
 
 
 

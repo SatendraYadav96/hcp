@@ -329,11 +329,29 @@
         values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})
     </insert>
 
+
+
+    <insert id="multipleAllocationVirtualBM" >
+        insert into VIRTUAL_DISPATCH_VID(ID_DID, ID_DIP_DID, ID_INV_DID, ID_RCT_DID, QUANTITY_DISPATCH_DID, ID_QTP_DID, ID_STATUS_SLV_DID,  CREATED_ON_DID, CREATED_BY_DID, UPDATED_ON_DID, UPDATED_BY_DID)
+        values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})
+    </insert>
+
     <delete id="SpecialDraftPlanReminderDelete">
 DELETE FROM DISPATCH_DETAIL_DID WHERE ID_DIP_DID = #{planId}
 
     </delete>
 
+
+    <delete id="deleteZeroQuantityAllocation">
+        DELETE FROM DISPATCH_DETAIL_DID WHERE ID_DIP_DID = #{planId} AND ID_INV_DID = #{inventoryId} AND QUANTITY_DISPATCH_DID = 0
+
+    </delete>
+
+
+    <delete id="deleteZeroQuantityAllocationVirtualBM">
+        DELETE FROM VIRTUAL_DISPATCH_VID WHERE ID_DIP_DID = #{planId} AND ID_INV_DID = #{inventoryId} AND QUANTITY_DISPATCH_DID = 0
+
+    </delete>
 
 
 

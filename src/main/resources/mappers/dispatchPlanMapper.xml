@@ -236,6 +236,10 @@
 
     </delete>
 
+    <select id="multipleAllocationUploadPlan" resultMap="dispatchPlanResultMap" >
+        SELECT * FROM DISPATCH_PLAN_DIP WHERE ID_DIP = #{planId}
+    </select>
+
 
 
 

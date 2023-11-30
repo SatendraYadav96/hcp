@@ -33,6 +33,10 @@
         { call MonthlyAlloctionReport (  #{planid, jdbcType = VARCHAR, mode = IN}  ) }
     </select>
 
+    <select id="getDownloadAllocationVirtualBM" resultType="com.squer.promobee.controller.dto.DownloadAllocationDTO" parameterType = "map" statementType = "CALLABLE">
+        { call VirtualAlloctionReport (  #{planid, jdbcType = VARCHAR, mode = IN}  ) }
+    </select>
+
 
     <select id="getBlockedRecipients" resultType="com.squer.promobee.controller.dto.BlockedRecipientDTO" >
         SELECT RCT.NAME_RCT AS 'RecipientName',RCT.CODE_RCT AS 'RecipientCode',SLV.NAME_SLV AS 'Status',RBL.REC_REMARKS_LOG AS 'Remark',RBL.REC_UPDATED_ON_LOG AS 'UpdatedOn'

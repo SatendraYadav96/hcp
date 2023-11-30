@@ -747,7 +747,9 @@ class NewAllocationRepository(
                 .selectList<SpecialBrandManagerDTO>("BrandManagerMapper.submitMonthlyAllocation", data1)
 
             brandslist.forEach { it ->
+
                 var dpbt = DispatchPlanBrand()
+
 
                 var data2: MutableMap<String, Any> = mutableMapOf()
 
@@ -770,16 +772,6 @@ class NewAllocationRepository(
                 sqlSessionFactory.openSession().selectList<ApprovalChainTransaction>("ApprovalChainTransactionMapper.getApprovalChainById", data3)
 
             if (approvalChainTransaction.isNullOrEmpty()) {
-                var data4: MutableMap<String, Any> = mutableMapOf()
-
-                data4.put("owner", plan.id)
-                data4.put("apiStatus", ApprovalStatusEnum.PENDING_APPROVAL.id)
-                data4.put("updatedBy", user.id)
-
-                sqlSessionFactory.openSession()
-                    .update("ApprovalChainTransactionMapper.updateSaveMonthlyToSpecial", data4)
-
-            } else {
                 var data5: MutableMap<String, Any> = mutableMapOf()
 
                 data5.put("id", UUID.randomUUID().toString())
@@ -791,6 +783,17 @@ class NewAllocationRepository(
 
                 sqlSessionFactory.openSession()
                     .update("ApprovalChainTransactionMapper.insertSaveMonthlyToSpecial", data5)
+
+
+            } else {
+                var data4: MutableMap<String, Any> = mutableMapOf()
+
+                data4.put("owner", plan.id)
+                data4.put("apiStatus", ApprovalStatusEnum.PENDING_APPROVAL.id)
+                data4.put("updatedBy", user.id)
+
+                sqlSessionFactory.openSession()
+                    .update("ApprovalChainTransactionMapper.updateSaveMonthlyToSpecial", data4)
             }
 
 
@@ -1590,12 +1593,12 @@ class NewAllocationRepository(
 
         }
 
-        if (planDp.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || planDp.planStatus!!.id == AllocationStatusEnum.APPROVED.id) {
-
-            allocationInventoryDetails =
-                allocationInventoryDetails.filter { it.qtyAllocated != null && it.qtyAllocated!! > 0 }
-                    .sortedByDescending { it.qtyAllocated }.toMutableList()
-        }
+//        if (planDp.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || planDp.planStatus!!.id == AllocationStatusEnum.APPROVED.id) {
+//
+//            allocationInventoryDetails =
+//                allocationInventoryDetails.filter { it.qtyAllocated != null && it.qtyAllocated!! > 0 }
+//                    .sortedByDescending { it.qtyAllocated }.toMutableList()
+//        }
 
 
 
@@ -2347,12 +2350,36 @@ class NewAllocationRepository(
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-        var data: MutableMap<String, Any> = mutableMapOf()
+        var allocationDownload = mutableListOf<DownloadAllocationDTO>()
 
-        data.put("planid", planId)
+        var plan = DispatchPlan()
 
-        return sqlSessionFactory.openSession()
-            .selectList<DownloadAllocationDTO>("AllocationRuleMapper.getDownloadAllocation", data)
+        var data0: MutableMap<String, Any> = mutableMapOf()
+
+        data0.put("planId", planId)
+
+        plan = sqlSessionFactory.openSession().selectOne("DispatchPlanMapper.multipleAllocationUploadPlan",data0)
+
+        if(plan.isVirtual == 1 && user.userDesignation!!.id == UserRoleEnum.PRODUCT_MANAGER_ID.id){
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            data.put("planid", planId)
+
+            allocationDownload = sqlSessionFactory.openSession()
+                .selectList<DownloadAllocationDTO>("AllocationRuleMapper.getDownloadAllocationVirtualBM", data)
+        }else{
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            data.put("planid", planId)
+
+            allocationDownload = sqlSessionFactory.openSession()
+                .selectList<DownloadAllocationDTO>("AllocationRuleMapper.getDownloadAllocation", data)
+        }
+
+
+        return allocationDownload
+
+
 
     }
 

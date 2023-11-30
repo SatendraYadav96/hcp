@@ -188,7 +188,7 @@ UNION
     </select>
 
     <select id="multipleAllocation" resultMap="recipientResultMap">
-        SELECT * FROM RECIPIENT_MASTER_RCT WHERE CODE_RCT = #{code}
+        SELECT * FROM RECIPIENT_MASTER_RCT WHERE CODE_RCT = #{code} AND ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
 
     </select>
 
