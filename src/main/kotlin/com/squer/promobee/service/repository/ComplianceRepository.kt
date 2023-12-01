@@ -464,7 +464,7 @@ class ComplianceRepository(
 
         comp.forEach {
             if(it.id != ""){
-                if(user.userDesignation!!.id == UserLovEnum.BEX.id || user.userDesignation!!.id == UserLovEnum.COMPLIANCE_ADMIN.id ){
+                if(user.userDesignation!!.id == UserLovEnum.COMPLIANCE_ADMIN.id ){
 
                     if(it.remark != null && it.remark != ""){
 
