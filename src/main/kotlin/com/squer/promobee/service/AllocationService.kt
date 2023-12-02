@@ -46,15 +46,17 @@ class AllocationService @Autowired constructor(
             plan = dispatchPlanService.getPlanHeaderSelect(month, year, user.id)
         }
         allocationDetailsDTO.plan = plan
-        val items = inventoryService.getMonthlyAllocation(plan!!.id,user.id)
+        var items = inventoryService.getMonthlyAllocation(plan!!.id,user.id)
+
+
+//        var stockCheck = 0
+//        if(plan.planStatus!!.id == AllocationStatusEnum.DRAFT.id){
+//            items.filter { it.stock!! > 0 }
+//        }else{
+//              items.filter { it.quantityAllocated!! > 0 }
+//        }
         allocationDetailsDTO.item = items
-        //IsPlanApprovedOrSubmit
-        /*val allocationTypes = systemLovService.getSystemLov(SLVTypeEnum.MONTHLY_PLAN_STATUS.toString())
-        val plans = dispatchPlanService.getPlanHeaderSelect(month, year, user.id, 0 )
-        var allocationStatus: String? = null
-        allocationTypes.forEach{
-            if(it.id == plans!!.planStatus!!.id){ allocationStatus = it.name}
-        }*/
+
         return allocationDetailsDTO
     }
 

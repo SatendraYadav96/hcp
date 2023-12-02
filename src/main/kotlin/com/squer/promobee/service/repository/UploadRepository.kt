@@ -2100,7 +2100,7 @@ class UploadRepository(
 
                 var data: MutableMap<String, Any> = mutableMapOf()
 
-                var item = Item()
+                var item = ItemDrodownDTO()
 
                 var inv = mutableListOf<Inventory>()
 
@@ -2108,20 +2108,29 @@ class UploadRepository(
 
                 var text = headerRow[i]
 
+
+
                 var  itemCode = text.split("/")
+
+                var invBatchNo = itemCode[4]
 
                 data.put("itemCode", itemCode[1])
 
-                item = sqlSessionFactory.openSession().selectOne<Item>("ItemMapper.multipleAllocation",data)
+                item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocation",data)
 
 
                 var data1: MutableMap<String, Any> = mutableMapOf()
 
-                data1.put("id",item.id!!)
+                data1.put("id",item.itemId!!)
 
                 inv = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data1)
 
-                invOG.addAll(inv)
+
+                var ogInv = inv.filter { it.batchNo == invBatchNo }
+
+                //invOG.addAll(listOf(inv[0]))
+
+                invOG.addAll(ogInv)
 
 
 

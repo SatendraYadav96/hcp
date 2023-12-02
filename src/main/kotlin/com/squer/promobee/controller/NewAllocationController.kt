@@ -125,7 +125,11 @@ open class NewAllocationController @Autowired constructor(
     @PostMapping("/submitMonthlyAllocation")
     open fun submitMonthlyAllocation(@RequestBody alloc : submitAllocationDTO): ResponseEntity<*>{
         val items = newAllocationService.submitMonthlyAllocation(alloc)
-        return ResponseEntity(items, HttpStatus.OK)
+        var errorMap: MutableMap<String, String> = HashMap()
+        println("Monthly Allocation submitted Successfully !")
+        errorMap["message"] = "Monthly Allocation for Month - ${alloc.month} & Year - ${alloc.year} is submitted successfully !"
+        errorMap["error"] = "true"
+        return ResponseEntity(errorMap, HttpStatus.OK)
     }
 
 

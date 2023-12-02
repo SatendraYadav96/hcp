@@ -718,6 +718,8 @@ class NewAllocationRepository(
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
+
+
         try {
             var data: MutableMap<String, Any> = mutableMapOf()
             var plan = DispatchPlan()

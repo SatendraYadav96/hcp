@@ -59,8 +59,10 @@
     </select>
 
 
-    <select id="multipleAllocation" resultMap="itemResultMap">
-        SELECT * FROM ITEM_MASTER_ITM WHERE CODE_ITM = #{itemCode}
+    <select id="multipleAllocation" resultType="com.squer.promobee.controller.dto.ItemDrodownDTO">
+        SELECT ID_ITM AS 'itemId',NAME_ITM AS 'itemName',CODE_ITM AS 'itemCode' FROM ITEM_MASTER_ITM WHERE CODE_ITM = #{itemCode}
+        UNION
+        SELECT ID_SMP AS 'itemId',NAME_SMP AS 'itemName',LMID_SMP AS 'itemCode' FROM SAMPLE_MASTER_SMP WHERE LMID_SMP = #{itemCode}
 
 
     </select>
