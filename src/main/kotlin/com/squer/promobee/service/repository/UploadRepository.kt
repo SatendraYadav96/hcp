@@ -1801,18 +1801,8 @@ class UploadRepository(
 
 
 
-
-      // var headers = mutableListOf<String>("Team Name","Recipient Name","Recipient Code","Designation" ,"productName/porductCode/basePack/poNo/batchNo\n")
-
            csvReader().readAllWithHeader(filePath)
 
-
-//        var headers = mutableListOf<String>()
-//
-//        headers[0] = "Team Name"
-//        headers[1] = "Recipient Name"
-//        headers[2] = "Recipient Code"
-//        headers[3] = "Designation"
 
         // Read CSV file
         var csvReaders = CsvReader()
@@ -1848,7 +1838,7 @@ class UploadRepository(
 
         var isHead = head >= i
 
-      //  var isHeadAnd = head > i
+
 
 
 

@@ -67,6 +67,18 @@
 
     </select>
 
+    <select id="multipleAllocationByInventoryId" resultType="com.squer.promobee.controller.dto.ItemDrodownDTO">
+        SELECT ID_ITM AS 'itemId',NAME_ITM AS 'itemName',CODE_ITM AS 'itemCode' FROM ITEM_MASTER_ITM ITM
+        JOIN INVENTORY_INV INV ON INV.ID_ITM_INV = ITM.ID_ITM
+        WHERE INV.ID_INV = #{inventoryId}
+        UNION
+        SELECT ID_SMP AS 'itemId',NAME_SMP AS 'itemName',LMID_SMP AS 'itemCode' FROM SAMPLE_MASTER_SMP SMP
+        JOIN INVENTORY_INV INV ON INV.ID_ITM_INV = SMP.ID_SMP
+        WHERE INV.ID_INV = #{inventoryId}
+
+
+    </select>
+
 
 
 

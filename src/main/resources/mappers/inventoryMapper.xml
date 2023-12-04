@@ -383,6 +383,13 @@
         ORDER BY EXPIRY_DATE_INV ASC
     </select>
 
+<!--    <select id="multipleAllocationInventoryId" resultMap="inventoryResultMap">-->
+<!--        SELECT * FROM INVENTORY_INV-->
+<!--        WHERE ID_INV = #{id} AND (QTY_RECEIVED_INV - QTY_ALLOCATED_INV- QTY_DISPATCHED_INV) > 0-->
+<!--          AND EXPIRY_DATE_INV > DATEADD(MONTH, 6, GETDATE())-->
+<!--        ORDER BY EXPIRY_DATE_INV ASC-->
+<!--    </select>-->
+
     <select id="SpecialDraftPlanReminder" resultMap="inventoryResultMap">
         select * from INVENTORY_INV where ID_ITM_INV = #{id}
     </select>
