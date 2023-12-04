@@ -1,12 +1,12 @@
 package com.squer.promobee.controller.dto
 
 import com.squer.promobee.service.repository.domain.DispatchPlan
-import java.util.Date
-import kotlin.properties.Delegates
+import java.util.*
 
 class AllocationDetailsDTO{
     var item: List<AllocationInventoryDetailsWithCostCenterDTO>?= null
     var plan: DispatchPlan?= null
+    var planSubmitted: String? = null
 }
 
 class AllocationInventoryDetailsWithCostCenterDTO {

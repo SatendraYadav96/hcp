@@ -298,11 +298,87 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
 
     </select>
 
+<!--    <select id="allocationDetailsWithCostCenter" resultType="com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO" parameterType = "map" statementType = "CALLABLE">-->
+<!--        { call PROC_AllocationDetailsWithCostCenter (#{UserID, jdbcType = VARCHAR, mode = IN}, #{PlanID, jdbcType = VARCHAR, mode = IN}-->
+<!--            ) }-->
+
+<!--    </select>-->
+
     <select id="allocationDetailsWithCostCenter" resultType="com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO" parameterType = "map" statementType = "CALLABLE">
-        { call PROC_AllocationDetailsWithCostCenter (#{UserID, jdbcType = VARCHAR, mode = IN}, #{PlanID, jdbcType = VARCHAR, mode = IN}
-            ) }
+        SELECT IsItem,CostCenterID,CostCenterName,ItemID,ItemName,Stock,ExpiryDate,PoNo,PackSize,QuantityAllocated,InventoryId,PlanId,IsBlockItem,QtyReceived,QtyDispatched FROM
+        (SELECT INV.ID_INV, 1 AS 'IsItem',CCM.ID_CCM AS 'CostCenterID',CCM.NAME_CCM AS 'CostCenterName',ITM.ID_ITM AS 'ItemID',ITM.NAME_ITM AS 'ItemName',
+        isnull((INV.QTY_RECEIVED_INV - INV.QTY_ALLOCATED_INV - INV.QTY_DISPATCHED_INV),0) AS 'Stock',INV.EXPIRY_DATE_INV AS 'ExpiryDate',
+        INV.PO_NO_INV AS 'PoNo',INV.PACK_SIZE_INV AS 'PackSize',
+        SUM_DID.QUANTITY_DISPATCH_DID AS 'QuantityAllocated',
+        INV.ID_INV AS 'InventoryId', #{PlanID} as PlanId,
+        INV.IS_BLOCK_ITEM_INV as 'IsBlockItem',INV.QTY_RECEIVED_INV as 'QtyReceived',inv.QTY_DISPATCHED_INV as 'QtyDispatched'
+        FROM INVENTORY_INV INV JOIN COST_CENTER_MASTER_CCM CCM ON INV.ID_CCM_INV = CCM.ID_CCM
+        JOIN COSTCENTER_BRAND_CBR CBR ON CCM.ID_CCM = CBR.ID_CCM_CBR
+        JOIN ITEM_MASTER_ITM ITM ON INV.ID_ITM_INV = ITM.ID_ITM
+        JOIN ITEM_CATEGORY_MASTER_ITC ITC ON INV.ID_ITC_INV = ITC.ID_ITC
+        JOIN BRANDMANAGER_BRAND_BBR BBR ON CBR.ID_BRD_CBR = BBR.ID_BRD_BBR
+        LEFT JOIN (SELECT DID.ID_INV_DID ID_INV_DID, SUM(QUANTITY_DISPATCH_DID) QUANTITY_DISPATCH_DID  from DISPATCH_DETAIL_DID DID where  DID.ID_DIP_DID = #{PlanID}
+        group by DID.ID_INV_DID) as SUM_DID on SUM_DID.ID_INV_DID = INV.ID_INV
+        WHERE BBR.ID_USR_BBR = #{UserID} AND DATEADD(DAY,ITC.CUTOFF_BEFORE_DAYS_ITC,GETDATE()) &lt; INV.EXPIRY_DATE_INV
+                                                                                               AND ITM.IS_ACTIVE_ITM != 0 and INV.IS_BLOCK_ITEM_INV=0
+        UNION
+        SELECT INV1.ID_INV, 0 AS 'IsItem',BRD1.ID_BRD AS 'CostCenterID', BRD1.NAME_BRD AS 'CostCenterName',SMP.ID_SMP AS 'ItemID',SMP.NAME_SMP AS 'ItemName',
+        isnull((INV1.QTY_RECEIVED_INV - INV1.QTY_ALLOCATED_INV - INV1.QTY_DISPATCHED_INV),0) AS 'STOCK',INV1.EXPIRY_DATE_INV AS 'ExpiryDate',
+        INV1.PO_NO_INV AS 'PoNo',INV1.PACK_SIZE_INV AS 'PackSize',
+        SUM_DID.QUANTITY_DISPATCH_DID AS 'QuantityAllocated',
+        INV1.ID_INV AS 'InventoryId', #{PlanID} as PlanId,
+        INV1.IS_BLOCK_ITEM_INV  as 'IsBlockItem',INV1.QTY_RECEIVED_INV as 'QtyReceived',inv1.QTY_DISPATCHED_INV as 'QtyDispatched'
+        FROM SAMPLE_MASTER_SMP SMP
+        JOIN INVENTORY_INV INV1 ON SMP.LMID_SMP = INV1.LMID_INV
+        JOIN ITEM_CATEGORY_MASTER_ITC ITC1 ON INV1.ID_ITC_INV = ITC1.ID_ITC
+        JOIN BRANDMANAGER_BRAND_BBR BBR1 ON SMP.ID_BRD_SMP = BBR1.ID_BRD_BBR
+        JOIN BRAND_MASTER_BRD BRD1 ON BBR1.ID_BRD_BBR = BRD1.ID_BRD
+        LEFT JOIN (SELECT DID.ID_INV_DID ID_INV_DID, SUM(QUANTITY_DISPATCH_DID) QUANTITY_DISPATCH_DID  from DISPATCH_DETAIL_DID DID where  DID.ID_DIP_DID = #{PlanID}  group by DID.ID_INV_DID) as SUM_DID on SUM_DID.ID_INV_DID = INV1.ID_INV
+        WHERE BBR1.ID_USR_BBR = #{UserID} AND DATEADD(DAY,ITC1.CUTOFF_BEFORE_DAYS_ITC,GETDATE()) &lt; INV1.EXPIRY_DATE_INV
+                                                                                                 AND SMP.IS_ACTIVE_SMP != 0 and INV1.IS_BLOCK_ITEM_INV=0) AS SpecialAllocationInventory
+        WHERE Stock > 0
 
     </select>
+
+
+
+
+    <select id="allocationDetailsWithCostCenterSubmitAllocation" resultType="com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO" parameterType = "map" statementType = "CALLABLE">
+        SELECT IsItem,CostCenterID,CostCenterName,ItemID,ItemName,Stock,ExpiryDate,PoNo,PackSize,QuantityAllocated,InventoryId,PlanId,IsBlockItem,QtyReceived,QtyDispatched FROM
+            (SELECT INV.ID_INV, 1 AS 'IsItem',CCM.ID_CCM AS 'CostCenterID',CCM.NAME_CCM AS 'CostCenterName',ITM.ID_ITM AS 'ItemID',ITM.NAME_ITM AS 'ItemName',
+                    isnull((INV.QTY_RECEIVED_INV - INV.QTY_ALLOCATED_INV - INV.QTY_DISPATCHED_INV),0) AS 'Stock',INV.EXPIRY_DATE_INV AS 'ExpiryDate',
+                    INV.PO_NO_INV AS 'PoNo',INV.PACK_SIZE_INV AS 'PackSize',
+                    SUM_DID.QUANTITY_DISPATCH_DID AS 'QuantityAllocated',
+                    INV.ID_INV AS 'InventoryId', #{PlanID} as PlanId,
+                    INV.IS_BLOCK_ITEM_INV as 'IsBlockItem',INV.QTY_RECEIVED_INV as 'QtyReceived',inv.QTY_DISPATCHED_INV as 'QtyDispatched'
+             FROM INVENTORY_INV INV JOIN COST_CENTER_MASTER_CCM CCM ON INV.ID_CCM_INV = CCM.ID_CCM
+                                    JOIN COSTCENTER_BRAND_CBR CBR ON CCM.ID_CCM = CBR.ID_CCM_CBR
+                                    JOIN ITEM_MASTER_ITM ITM ON INV.ID_ITM_INV = ITM.ID_ITM
+                                    JOIN ITEM_CATEGORY_MASTER_ITC ITC ON INV.ID_ITC_INV = ITC.ID_ITC
+                                    JOIN BRANDMANAGER_BRAND_BBR BBR ON CBR.ID_BRD_CBR = BBR.ID_BRD_BBR
+                                    LEFT JOIN (SELECT DID.ID_INV_DID ID_INV_DID, SUM(QUANTITY_DISPATCH_DID) QUANTITY_DISPATCH_DID  from DISPATCH_DETAIL_DID DID where  DID.ID_DIP_DID = #{PlanID}
+                                               group by DID.ID_INV_DID) as SUM_DID on SUM_DID.ID_INV_DID = INV.ID_INV
+             WHERE BBR.ID_USR_BBR = #{UserID} AND DATEADD(DAY,ITC.CUTOFF_BEFORE_DAYS_ITC,GETDATE()) &lt; INV.EXPIRY_DATE_INV
+               AND ITM.IS_ACTIVE_ITM != 0 and INV.IS_BLOCK_ITEM_INV=0
+             UNION
+             SELECT INV1.ID_INV, 0 AS 'IsItem',BRD1.ID_BRD AS 'CostCenterID', BRD1.NAME_BRD AS 'CostCenterName',SMP.ID_SMP AS 'ItemID',SMP.NAME_SMP AS 'ItemName',
+                    isnull((INV1.QTY_RECEIVED_INV - INV1.QTY_ALLOCATED_INV - INV1.QTY_DISPATCHED_INV),0) AS 'STOCK',INV1.EXPIRY_DATE_INV AS 'ExpiryDate',
+                    INV1.PO_NO_INV AS 'PoNo',INV1.PACK_SIZE_INV AS 'PackSize',
+                    SUM_DID.QUANTITY_DISPATCH_DID AS 'QuantityAllocated',
+                    INV1.ID_INV AS 'InventoryId', #{PlanID} as PlanId,
+                    INV1.IS_BLOCK_ITEM_INV  as 'IsBlockItem',INV1.QTY_RECEIVED_INV as 'QtyReceived',inv1.QTY_DISPATCHED_INV as 'QtyDispatched'
+             FROM SAMPLE_MASTER_SMP SMP
+                      JOIN INVENTORY_INV INV1 ON SMP.LMID_SMP = INV1.LMID_INV
+                      JOIN ITEM_CATEGORY_MASTER_ITC ITC1 ON INV1.ID_ITC_INV = ITC1.ID_ITC
+                      JOIN BRANDMANAGER_BRAND_BBR BBR1 ON SMP.ID_BRD_SMP = BBR1.ID_BRD_BBR
+                      JOIN BRAND_MASTER_BRD BRD1 ON BBR1.ID_BRD_BBR = BRD1.ID_BRD
+                      LEFT JOIN (SELECT DID.ID_INV_DID ID_INV_DID, SUM(QUANTITY_DISPATCH_DID) QUANTITY_DISPATCH_DID  from DISPATCH_DETAIL_DID DID where  DID.ID_DIP_DID = #{PlanID}  group by DID.ID_INV_DID) as SUM_DID on SUM_DID.ID_INV_DID = INV1.ID_INV
+             WHERE BBR1.ID_USR_BBR = #{UserID} AND DATEADD(DAY,ITC1.CUTOFF_BEFORE_DAYS_ITC,GETDATE()) &lt; INV1.EXPIRY_DATE_INV
+               AND SMP.IS_ACTIVE_SMP != 0 and INV1.IS_BLOCK_ITEM_INV=0) AS SpecialAllocationInventory
+        WHERE QuantityAllocated > 0
+
+    </select>
+
 
 
     <select id="GetVirtualAllocationDetailsforRbm" resultType="com.squer.promobee.controller.dto.VirtualAllocationInventoryDetailsWithCostCenterDTO" parameterType = "map" statementType = "CALLABLE">
@@ -312,11 +388,57 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
     </select>
 
 
+<!--    <select id="GetVirtualAllocationInventoryWithCostCenter" resultType="com.squer.promobee.controller.dto.VirtualAllocationInventoryDetailsWithCostCenterDTO" parameterType = "map" statementType = "CALLABLE">-->
+<!--        { call VirtualAllocationDetailsWithCostCenter (#{UserID, jdbcType = VARCHAR, mode = IN}, #{PlanID, jdbcType = VARCHAR, mode = IN}-->
+<!--            ) }-->
+
+<!--    </select>-->
+
     <select id="GetVirtualAllocationInventoryWithCostCenter" resultType="com.squer.promobee.controller.dto.VirtualAllocationInventoryDetailsWithCostCenterDTO" parameterType = "map" statementType = "CALLABLE">
-        { call VirtualAllocationDetailsWithCostCenter (#{UserID, jdbcType = VARCHAR, mode = IN}, #{PlanID, jdbcType = VARCHAR, mode = IN}
-            ) }
+        SELECT IsItem,CostCenterID,CostCenterName,ItemID,ItemName,STOCK,ExpiryDate,PoNo,PackSize,QuantityAllocated,InventoryId,PlanId,IsBlockItem
+        FROM (SELECT INV1.ID_INV, 0 AS 'IsItem',BRD1.ID_BRD AS 'CostCenterID', BRD1.NAME_BRD AS 'CostCenterName',SMP.ID_SMP AS 'ItemID',SMP.NAME_SMP AS 'ItemName',
+        --INC000007841498 08/22/2016
+        --(INV1.QTY_RECEIVED_INV - INV1.QTY_ALLOCATED_INV - INV1.QTY_DISPATCHED_INV) AS 'Stock'
+        isnull((INV1.QTY_RECEIVED_INV - INV1.QTY_ALLOCATED_INV - INV1.QTY_DISPATCHED_INV),0) AS 'STOCK',INV1.EXPIRY_DATE_INV AS 'ExpiryDate',
+        INV1.PO_NO_INV AS 'PoNo',INV1.PACK_SIZE_INV AS 'PackSize',
+        SUM_DID.QUANTITY_DISPATCH_DID AS 'QuantityAllocated',
+        INV1.ID_INV AS 'InventoryId',#{PlanID} as PlanId,
+        INV1.IS_BLOCK_ITEM_INV  as 'IsBlockItem'
+        FROM SAMPLE_MASTER_SMP SMP
+        JOIN INVENTORY_INV INV1 ON SMP.LMID_SMP = INV1.LMID_INV
+        JOIN ITEM_CATEGORY_MASTER_ITC ITC1 ON INV1.ID_ITC_INV = ITC1.ID_ITC
+        JOIN BRANDMANAGER_BRAND_BBR BBR1 ON SMP.ID_BRD_SMP = BBR1.ID_BRD_BBR
+        JOIN BRAND_MASTER_BRD BRD1 ON BBR1.ID_BRD_BBR = BRD1.ID_BRD
+        LEFT JOIN (SELECT DID.ID_INV_DID ID_INV_DID, SUM(QUANTITY_DISPATCH_DID) QUANTITY_DISPATCH_DID  from DISPATCH_DETAIL_DID DID where  DID.ID_DIP_DID = #{PlanID}  group by DID.ID_INV_DID) as SUM_DID on SUM_DID.ID_INV_DID = INV1.ID_INV
+        WHERE BBR1.ID_USR_BBR = #{UserID} AND DATEADD(DAY,ITC1.CUTOFF_BEFORE_DAYS_ITC,GETDATE()) &lt; INV1.EXPIRY_DATE_INV
+                                                                                                   AND SMP.IS_ACTIVE_SMP != 0 and INV1.IS_BLOCK_ITEM_INV=0) As VirtualAllocationInventory
+        WHERE STOCK > 0
 
     </select>
+
+    <select id="GetVirtualAllocationInventoryWithCostCenterSubmitAllocation" resultType="com.squer.promobee.controller.dto.VirtualAllocationInventoryDetailsWithCostCenterDTO" parameterType = "map" statementType = "CALLABLE">
+        SELECT IsItem,CostCenterID,CostCenterName,ItemID,ItemName,STOCK,ExpiryDate,PoNo,PackSize,QuantityAllocated,InventoryId,PlanId,IsBlockItem
+        FROM (SELECT INV1.ID_INV, 0 AS 'IsItem',BRD1.ID_BRD AS 'CostCenterID', BRD1.NAME_BRD AS 'CostCenterName',SMP.ID_SMP AS 'ItemID',SMP.NAME_SMP AS 'ItemName',
+                     --INC000007841498 08/22/2016
+                     --(INV1.QTY_RECEIVED_INV - INV1.QTY_ALLOCATED_INV - INV1.QTY_DISPATCHED_INV) AS 'Stock'
+                     isnull((INV1.QTY_RECEIVED_INV - INV1.QTY_ALLOCATED_INV - INV1.QTY_DISPATCHED_INV),0) AS 'STOCK',INV1.EXPIRY_DATE_INV AS 'ExpiryDate',
+                     INV1.PO_NO_INV AS 'PoNo',INV1.PACK_SIZE_INV AS 'PackSize',
+                     SUM_DID.QUANTITY_DISPATCH_DID AS 'QuantityAllocated',
+                     INV1.ID_INV AS 'InventoryId',#{PlanID} as PlanId,
+                     INV1.IS_BLOCK_ITEM_INV  as 'IsBlockItem'
+              FROM SAMPLE_MASTER_SMP SMP
+                       JOIN INVENTORY_INV INV1 ON SMP.LMID_SMP = INV1.LMID_INV
+                       JOIN ITEM_CATEGORY_MASTER_ITC ITC1 ON INV1.ID_ITC_INV = ITC1.ID_ITC
+                       JOIN BRANDMANAGER_BRAND_BBR BBR1 ON SMP.ID_BRD_SMP = BBR1.ID_BRD_BBR
+                       JOIN BRAND_MASTER_BRD BRD1 ON BBR1.ID_BRD_BBR = BRD1.ID_BRD
+                       LEFT JOIN (SELECT DID.ID_INV_DID ID_INV_DID, SUM(QUANTITY_DISPATCH_DID) QUANTITY_DISPATCH_DID  from DISPATCH_DETAIL_DID DID where  DID.ID_DIP_DID = #{PlanID}  group by DID.ID_INV_DID) as SUM_DID on SUM_DID.ID_INV_DID = INV1.ID_INV
+              WHERE BBR1.ID_USR_BBR = #{UserID} AND DATEADD(DAY,ITC1.CUTOFF_BEFORE_DAYS_ITC,GETDATE()) &lt; INV1.EXPIRY_DATE_INV
+                AND SMP.IS_ACTIVE_SMP != 0 and INV1.IS_BLOCK_ITEM_INV=0) As VirtualAllocationInventory
+        WHERE QuantityAllocated > 0
+
+    </select>
+
+
 
 
     <select id="getConsolidateExpiryReport" resultType="com.squer.promobee.controller.dto.ItemExpireModel" parameterType="map" statementType="CALLABLE">

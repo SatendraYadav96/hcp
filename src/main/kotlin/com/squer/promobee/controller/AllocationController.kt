@@ -16,8 +16,12 @@ open class AllocationController @Autowired constructor(
 
     @GetMapping("/monthly/createview/{year}/{month}")
     open fun createViewMonthlyPlan(@PathVariable year: Int , @PathVariable month: Int): ResponseEntity<*>{
-        val items = allocationService.createViewMonthlyPlan(year,month)
-        return ResponseEntity(items, HttpStatus.OK)
+        val data = allocationService.createViewMonthlyPlan(year,month)
+//        var errorMap: MutableMap<String, String> = HashMap()
+//        println("Allocation submitted Successfully !")
+//        errorMap["message"] = "Allocation for Month - ${month} & Year - ${year} is submitted successfully !"
+//        errorMap["error"] = "true"
+        return ResponseEntity(data, HttpStatus.OK)
     }
 
     @GetMapping("/allocationForPlan/{planId}")

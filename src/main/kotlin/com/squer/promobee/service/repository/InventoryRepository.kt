@@ -37,10 +37,24 @@ class InventoryRepository @Autowired constructor(
     }
 
     fun getMonthlyAllocation(planId: String, userId: String): MutableList<AllocationInventoryDetailsWithCostCenterDTO> {
-        var data : MutableMap<String, String> = mutableMapOf()
-        data.put("planId", planId)
-        data.put("userId", userId)
-        return sqlSessionFactory.openSession().selectList<AllocationInventoryDetailsWithCostCenterDTO>("InventoryMapper.getAllocationInventoryWithCostcenter", data)
+        var data0 : MutableMap<String, String> = mutableMapOf()
+        data0.put("planId", planId)
+
+        var plan = sqlSessionFactory.openSession().selectOne<DispatchPlan>("DispatchPlanMapper.monthlyAllocationDispatchPlanData",data0)
+
+        if(plan.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || plan.planStatus!!.id == AllocationStatusEnum.APPROVED.id){
+            var data : MutableMap<String, String> = mutableMapOf()
+            data.put("planId", planId)
+            data.put("userId", userId)
+            return sqlSessionFactory.openSession().selectList<AllocationInventoryDetailsWithCostCenterDTO>("InventoryMapper.getAllocationInventoryWithCostcenterSubmitAllocation", data)
+        }else{
+            var data : MutableMap<String, String> = mutableMapOf()
+            data.put("planId", planId)
+            data.put("userId", userId)
+            return sqlSessionFactory.openSession().selectList<AllocationInventoryDetailsWithCostCenterDTO>("InventoryMapper.getAllocationInventoryWithCostcenter", data)
+        }
+
+
     }
 
     fun getInventoryDistributionByTeamForPlan(planId: String): List<MutableMap<String, Any>>{

@@ -233,7 +233,11 @@ open class NewAllocationController @Autowired constructor(
             }
 
         }
-        return ResponseEntity(items, HttpStatus.OK)
+        var errorMap: MutableMap<String, String> = HashMap()
+        println("Special Allocation submitted Successfully !")
+        errorMap["message"] = "Monthly Allocation for Month - ${alloc.month} & Year - ${alloc.year} is submitted successfully !"
+        errorMap["error"] = "true"
+        return ResponseEntity(errorMap, HttpStatus.OK)
     }
 
 
@@ -311,7 +315,11 @@ open class NewAllocationController @Autowired constructor(
     @PostMapping("/submitVirtualAllocation")
     open fun submitVirtualAllocation(@RequestBody alloc : submitAllocationDTO): ResponseEntity<*>{
         val items = newAllocationService.submitVirtualAllocation(alloc)
-        return ResponseEntity(items, HttpStatus.OK)
+        var errorMap: MutableMap<String, String> = HashMap()
+        println("Special Allocation submitted Successfully !")
+        errorMap["message"] = "Monthly Allocation for Month - ${alloc.month} & Year - ${alloc.year} is submitted successfully !"
+        errorMap["error"] = "true"
+        return ResponseEntity(errorMap, HttpStatus.OK)
     }
 
     @GetMapping("/getActiveUsers/{userId}")

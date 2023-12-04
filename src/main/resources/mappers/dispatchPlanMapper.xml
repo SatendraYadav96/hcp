@@ -241,6 +241,11 @@
     </select>
 
 
+    <select id="monthlyAllocationDispatchPlanData" resultMap="dispatchPlanResultMap" >
+        SELECT * FROM DISPATCH_PLAN_DIP WHERE ID_DIP = #{planId}
+    </select>
+
+
 
 
 </mapper>

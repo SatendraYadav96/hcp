@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import java.io.ByteArrayOutputStream
 
 
 @Service
@@ -91,7 +90,7 @@ open class NewAllocationServiceImpl @Autowired constructor(
     }
 
 
-    override fun createSpecialPlan(alloc: CreateAllocationDTO): MutableList<AllocationInventoryDetailsWithCostCenterDTO> {
+    override fun createSpecialPlan(alloc: CreateAllocationDTO): CreateSpecialAllocationDTO{
         return newAllocationRepository.createSpecialPlan(alloc)
     }
 
@@ -136,7 +135,7 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getAllocationStatusDropdown()
     }
 
-    override fun createVirtualPlan(year:Int,month: Int): List<VirtualAllocationInventoryDetailsWithCostCenterDTO> {
+    override fun createVirtualPlan(year:Int,month: Int): CreateVirtualAllocationDTO {
         return newAllocationRepository.createVirtualPlan(year,month)
     }
 

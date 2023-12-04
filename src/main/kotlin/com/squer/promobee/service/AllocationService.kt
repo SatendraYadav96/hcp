@@ -1,5 +1,6 @@
 package com.squer.promobee.service
 
+import com.squer.promobee.api.v1.enums.AllocationStatusEnum
 import com.squer.promobee.api.v1.enums.MonthlyPlanStatusEnum
 import com.squer.promobee.controller.dto.AllocationDetailsDTO
 import com.squer.promobee.controller.dto.AllocationDistributionDTO
@@ -48,14 +49,17 @@ class AllocationService @Autowired constructor(
         allocationDetailsDTO.plan = plan
         var items = inventoryService.getMonthlyAllocation(plan!!.id,user.id)
 
+       var planSubmit = ""
 
-//        var stockCheck = 0
-//        if(plan.planStatus!!.id == AllocationStatusEnum.DRAFT.id){
-//            items.filter { it.stock!! > 0 }
-//        }else{
-//              items.filter { it.quantityAllocated!! > 0 }
-//        }
+        if(plan.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || plan.planStatus!!.id == AllocationStatusEnum.APPROVED.id){
+            println(" Allocation submitted Successfully !")
+            planSubmit = "true"
+        }else{
+            println(" Allocation is in draft mode !")
+            planSubmit = "false"
+        }
         allocationDetailsDTO.item = items
+        allocationDetailsDTO.planSubmitted = planSubmit
 
         return allocationDetailsDTO
     }

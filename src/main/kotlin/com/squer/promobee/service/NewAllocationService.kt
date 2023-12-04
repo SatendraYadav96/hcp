@@ -39,7 +39,7 @@ interface NewAllocationService {
 
    fun submitMonthlyAllocation (alloc : submitAllocationDTO)
 
-   fun createSpecialPlan (alloc : CreateAllocationDTO): MutableList<AllocationInventoryDetailsWithCostCenterDTO>
+   fun createSpecialPlan (alloc : CreateAllocationDTO): CreateSpecialAllocationDTO
 
    fun editSpecialPlan (planId: String): MutableList<AllocationInventoryDetailsWithCostCenterDTO>
 
@@ -63,7 +63,7 @@ interface NewAllocationService {
    fun getAllocationStatusDropdown(): List<AllocationStatusDropdownDTO>
 
 
-   fun createVirtualPlan(year:Int,month: Int): List<VirtualAllocationInventoryDetailsWithCostCenterDTO>
+   fun createVirtualPlan(year:Int,month: Int): CreateVirtualAllocationDTO
 
    fun isVirtualPlanApprovedOrSubmitLock( month: String , year: String):Map<String , Any>
 

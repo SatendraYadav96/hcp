@@ -809,10 +809,13 @@ class NewAllocationRepository(
 
     // SPECIAL ALLOCATION
 
-    fun createSpecialPlan(alloc: CreateAllocationDTO): MutableList<AllocationInventoryDetailsWithCostCenterDTO> {
+    fun createSpecialPlan(alloc: CreateAllocationDTO): CreateSpecialAllocationDTO {
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
+        var createSpecialAllocation = CreateSpecialAllocationDTO()
+
+        var planSubmit = ""
 
         var plan = mutableListOf<DispatchPlan>()
 
@@ -881,22 +884,51 @@ class NewAllocationRepository(
 
             var allocationInventoryDetails = mutableListOf<AllocationInventoryDetailsWithCostCenterDTO>()
 
-            var data3: MutableMap<String, Any> = mutableMapOf()
 
-            data3.put("UserID", user.id)
-            data3.put("PlanID", planId)
+            var data5: MutableMap<String, Any> = mutableMapOf()
+
+            data5.put("planId", planId)
+
+            var plan = sqlSessionFactory.openSession().selectOne<DispatchPlan>("DispatchPlanMapper.monthlyAllocationDispatchPlanData",data5)
+
+              if(plan.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || plan.planStatus!!.id == AllocationStatusEnum.APPROVED.id){
+                  var data3: MutableMap<String, Any> = mutableMapOf()
+
+                  data3.put("UserID", user.id)
+                  data3.put("PlanID", plan.id)
 
 
-            allocationInventoryDetails = sqlSessionFactory.openSession()
-                .selectList<AllocationInventoryDetailsWithCostCenterDTO>(
-                    "ReportMapper.allocationDetailsWithCostCenter",
-                    data3
-                )
-            //var i = 0
-            //var inv = allocationInventoryDetails.sortBy { allocationInventoryDetails[i].qtyAllocated!!.dec() }
+                  allocationInventoryDetails = sqlSessionFactory.openSession()
+                      .selectList<AllocationInventoryDetailsWithCostCenterDTO>(
+                          "ReportMapper.allocationDetailsWithCostCenterSubmitAllocation",
+                          data3
+                      )
+
+                  println(" Allocation submitted Successfully !")
+                  planSubmit = "true"
+              }else{
+                  var data3: MutableMap<String, Any> = mutableMapOf()
+
+                  data3.put("UserID", user.id)
+                  data3.put("PlanID", planId)
 
 
-            return allocationInventoryDetails
+                  allocationInventoryDetails = sqlSessionFactory.openSession()
+                      .selectList<AllocationInventoryDetailsWithCostCenterDTO>(
+                          "ReportMapper.allocationDetailsWithCostCenter",
+                          data3
+                      )
+
+                  println(" Allocation is in draft mode !")
+                  planSubmit = "false"
+              }
+
+
+            createSpecialAllocation.specialAllocation = allocationInventoryDetails
+            createSpecialAllocation.planSubmitted = planSubmit
+
+
+            return createSpecialAllocation
 
         } else {
 
@@ -941,22 +973,41 @@ class NewAllocationRepository(
 
             var allocationInventoryDetails = mutableListOf<AllocationInventoryDetailsWithCostCenterDTO>()
 
-            var data3: MutableMap<String, Any> = mutableMapOf()
+            if(plan[i].planStatus!!.id == AllocationStatusEnum.SUBMIT.id || plan[i].planStatus!!.id == AllocationStatusEnum.APPROVED.id){
+                var data3: MutableMap<String, Any> = mutableMapOf()
 
-            data3.put("UserID", user.id)
-            data3.put("PlanID", plan[i].id)
-
-
-            allocationInventoryDetails = sqlSessionFactory.openSession()
-                .selectList<AllocationInventoryDetailsWithCostCenterDTO>(
-                    "ReportMapper.allocationDetailsWithCostCenter",
-                    data3
-                )
-            //var i = 0
-            //var inv = allocationInventoryDetails.sortBy { allocationInventoryDetails[i].qtyAllocated!!.dec() }
+                data3.put("UserID", user.id)
+                data3.put("PlanID", plan[i].id)
 
 
-            return allocationInventoryDetails
+                allocationInventoryDetails = sqlSessionFactory.openSession()
+                    .selectList<AllocationInventoryDetailsWithCostCenterDTO>(
+                        "ReportMapper.allocationDetailsWithCostCenterSubmitAllocation",
+                        data3
+                    )
+                println(" Allocation submitted Successfully !")
+                planSubmit = "true"
+            }else{
+                var data3: MutableMap<String, Any> = mutableMapOf()
+
+                data3.put("UserID", user.id)
+                data3.put("PlanID", plan[i].id)
+
+
+                allocationInventoryDetails = sqlSessionFactory.openSession()
+                    .selectList<AllocationInventoryDetailsWithCostCenterDTO>(
+                        "ReportMapper.allocationDetailsWithCostCenter",
+                        data3
+                    )
+                println(" Allocation is in draft mode !")
+                planSubmit = "false"
+            }
+
+            createSpecialAllocation.specialAllocation = allocationInventoryDetails
+            createSpecialAllocation.planSubmitted = planSubmit
+
+
+            return createSpecialAllocation
 
 
         }
@@ -1408,13 +1459,15 @@ class NewAllocationRepository(
     }
 
 
-    fun createVirtualPlan(year: Int, month: Int): List<VirtualAllocationInventoryDetailsWithCostCenterDTO> {
+    fun createVirtualPlan(year: Int, month: Int): CreateVirtualAllocationDTO{
 
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
 //        val month = (yearMonth % 100).toInt()
 //        val year = (yearMonth / 100).toInt()
+
+        var createVirtualAllocationDTO = CreateVirtualAllocationDTO()
 
 
         var tseID = getTseList(user.id)
@@ -1581,16 +1634,30 @@ class NewAllocationRepository(
 
 
         } else {
-            var data8: MutableMap<String, Any> = mutableMapOf()
+            if(planVir.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || planVir.planStatus!!.id == AllocationStatusEnum.APPROVED.id){
+                var data8: MutableMap<String, Any> = mutableMapOf()
 
-            data8.put("UserID", user.id)
-            data8.put("PlanID", planVir.id)
+                data8.put("UserID", user.id)
+                data8.put("PlanID", planVir.id)
 
-            allocationInventoryDetails = sqlSessionFactory.openSession()
-                .selectList<VirtualAllocationInventoryDetailsWithCostCenterDTO>(
-                    "ReportMapper.GetVirtualAllocationInventoryWithCostCenter",
-                    data8
-                )
+                allocationInventoryDetails = sqlSessionFactory.openSession()
+                    .selectList<VirtualAllocationInventoryDetailsWithCostCenterDTO>(
+                        "ReportMapper.GetVirtualAllocationInventoryWithCostCenterSubmitAllocation",
+                        data8
+                    )
+            }else{
+                var data8: MutableMap<String, Any> = mutableMapOf()
+
+                data8.put("UserID", user.id)
+                data8.put("PlanID", planVir.id)
+
+                allocationInventoryDetails = sqlSessionFactory.openSession()
+                    .selectList<VirtualAllocationInventoryDetailsWithCostCenterDTO>(
+                        "ReportMapper.GetVirtualAllocationInventoryWithCostCenter",
+                        data8
+                    )
+            }
+
 
 
         }
@@ -1602,9 +1669,23 @@ class NewAllocationRepository(
 //                    .sortedByDescending { it.qtyAllocated }.toMutableList()
 //        }
 
+        var planSubmit = ""
+
+        if(planVir.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || planVir.planStatus!!.id == AllocationStatusEnum.APPROVED.id){
+            println(" Allocation submitted Successfully !")
+            planSubmit = "true"
+        }else{
+            println(" Allocation is in draft mode !")
+            planSubmit = "false"
+        }
+
+        createVirtualAllocationDTO.virtualAllocation = allocationInventoryDetails
+        createVirtualAllocationDTO.planSubmitted = planSubmit
 
 
-        return allocationInventoryDetails
+
+
+        return createVirtualAllocationDTO
 
 
     }
