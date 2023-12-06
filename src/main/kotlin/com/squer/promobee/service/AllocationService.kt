@@ -1,6 +1,7 @@
 package com.squer.promobee.service
 
 import com.squer.promobee.api.v1.enums.AllocationStatusEnum
+import com.squer.promobee.api.v1.enums.DispatchPlanInvoiceStatus
 import com.squer.promobee.api.v1.enums.MonthlyPlanStatusEnum
 import com.squer.promobee.controller.dto.AllocationDetailsDTO
 import com.squer.promobee.controller.dto.AllocationDistributionDTO
@@ -38,7 +39,7 @@ class AllocationService @Autowired constructor(
             dispatchplan.planStatus = NamedSquerEntity(MonthlyPlanStatusEnum.DRAFT_ID.id, "")
             dispatchplan.isSpecial = 0
             dispatchplan.remarks = null
-            dispatchplan.invoiceStatus = null
+            dispatchplan.invoiceStatus = NamedSquerEntity(DispatchPlanInvoiceStatus.NOT_INITIATED.id, "")
             dispatchplan.quarterlyPlan =  null
             dispatchplan.isVirtual = 0
             dispatchplan.createdBy = user.id

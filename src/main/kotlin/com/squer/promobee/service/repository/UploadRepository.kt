@@ -3,10 +3,7 @@ package com.squer.promobee.service.repository
 
 import com.github.doyaaaaaken.kotlincsv.client.CsvReader
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import com.squer.promobee.api.v1.enums.DispatchDetailStatusEnum
-import com.squer.promobee.api.v1.enums.UploadStatusEnum
-import com.squer.promobee.api.v1.enums.UploadTypeEnum
-import com.squer.promobee.api.v1.enums.UserLovEnum
+import com.squer.promobee.api.v1.enums.*
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
 import com.squer.promobee.security.domain.User
@@ -1856,12 +1853,13 @@ class UploadRepository(
 
         if(plan.isVirtual == 1 && user.userDesignation!!.id == UserLovEnum.PRODUCT_MANAGER_DESIGNATION.id ){
 
+            var m = 0
             for (i in 4 until head){
 
 
                 var data: MutableMap<String, Any> = mutableMapOf()
 
-                var item = SampleMaster()
+                var item = ItemDrodownDTO()
 
                 var inv = mutableListOf<Inventory>()
 
@@ -1869,20 +1867,33 @@ class UploadRepository(
 
                 var text = headerRow[i]
 
+
+
                 var  itemCode = text.split("/")
+
+                var invBatchNo = itemCode[4]
 
                 data.put("itemCode", itemCode[1])
 
-                item = sqlSessionFactory.openSession().selectOne<SampleMaster>("SampleMasterMapper.multipleAllocation",data)
+                item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocation",data)
 
 
                 var data1: MutableMap<String, Any> = mutableMapOf()
 
-                data1.put("id",item.id!!)
+                data1.put("id",item.itemId!!)
 
                 inv = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data1)
 
-                invOG.addAll(inv)
+
+                if(inv[m].categoryId?.id  == ItemCategoryEnum.SAMPLES.id){
+                    var ogInv = inv.filter { it.batchNo == invBatchNo }
+
+                    invOG.addAll(ogInv)
+                } else{
+                    invOG.addAll(listOf(inv[m]))
+                }
+
+                invOG
 
 
 
@@ -1971,12 +1982,14 @@ class UploadRepository(
 
        else if(plan.isVirtual == 1 && user.userDesignation!!.id == UserLovEnum.REGIONAL_BUSINESS_MANAGER.id ){
 
+           var m = 0
+
             for (i in 4 until head){
 
 
                 var data: MutableMap<String, Any> = mutableMapOf()
 
-                var item = SampleMaster()
+                var item = ItemDrodownDTO()
 
                 var inv = mutableListOf<Inventory>()
 
@@ -1984,20 +1997,33 @@ class UploadRepository(
 
                 var text = headerRow[i]
 
+
+
                 var  itemCode = text.split("/")
+
+                var invBatchNo = itemCode[4]
 
                 data.put("itemCode", itemCode[1])
 
-                item = sqlSessionFactory.openSession().selectOne<SampleMaster>("SampleMasterMapper.multipleAllocation",data)
+                item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocation",data)
 
 
                 var data1: MutableMap<String, Any> = mutableMapOf()
 
-                data1.put("id",item.id!!)
+                data1.put("id",item.itemId!!)
 
                 inv = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data1)
 
-                invOG.addAll(inv)
+
+                if(inv[m].categoryId?.id  == ItemCategoryEnum.SAMPLES.id){
+                    var ogInv = inv.filter { it.batchNo == invBatchNo }
+
+                    invOG.addAll(ogInv)
+                } else{
+                    invOG.addAll(listOf(inv[m]))
+                }
+
+                invOG
 
 
 
@@ -2085,6 +2111,7 @@ class UploadRepository(
 
         else  {
 
+            var m = 0
             for (i in 4 until head){
 
 
@@ -2116,15 +2143,15 @@ class UploadRepository(
                 inv = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data1)
 
 
-                var ogInv = inv.filter { it.batchNo == invBatchNo }
+                if(inv[m].categoryId?.id  == ItemCategoryEnum.SAMPLES.id){
+                    var ogInv = inv.filter { it.batchNo == invBatchNo }
 
-                //invOG.addAll(listOf(inv[0]))
+                    invOG.addAll(ogInv)
+                } else{
+                    invOG.add(inv[m])
+                }
 
-                invOG.addAll(ogInv)
-
-
-
-
+                invOG
 
             }
 
