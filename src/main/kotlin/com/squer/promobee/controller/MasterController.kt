@@ -2,6 +2,7 @@ package com.squer.promobee.controller
 
 
 
+import com.squer.promobee.api.v1.enums.UserRoleEnum
 import com.squer.promobee.controller.dto.FieldForceDTO
 import com.squer.promobee.security.domain.NamedSquerEntity
 import com.squer.promobee.security.domain.User
@@ -1115,9 +1116,49 @@ open class MasterController@Autowired constructor(
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var errorMap: MutableMap<String, String> = HashMap()
 
+        if(user.userDesignation!!.id == UserRoleEnum.PRODUCT_MANAGER_ID.id ){
+            var data: MutableMap<String, Any> = mutableMapOf()
+            var brand = BrandMaster()
 
 
-        var brand = BrandMaster()
+            // delete existing user mapped to brand
+
+            data.put("id",brd.id)
+
+            sqlSessionTemplate.delete("BrandManagerMapper.deleteBrandByBrandId",data)
+
+            // map selected user to brand
+
+            var bbr = BrandManager()
+
+            var i = 0
+
+            brd.user.forEach {
+                var data: MutableMap<String, Any> = mutableMapOf()
+
+                var bbrId = UUID.randomUUID().toString()
+
+                data.put("id",bbrId)
+                data.put("userId",brd.user.get(i))
+                data.put("brandId",brd.id)
+
+                sqlSessionTemplate.insert("BrandManagerMapper.addBrandByBrandId",data)
+
+                i++
+
+
+            }
+
+            println("Brand Owner Updated Successfully !")
+            errorMap["message"] = "Brand Owner updated successfully !"
+            errorMap["error"] = "false"
+
+
+
+            return ResponseEntity(errorMap ,HttpStatus.OK)
+
+        } else{
+            var brand = BrandMaster()
 
             var data: MutableMap<String, Any> = mutableMapOf()
 
@@ -1245,6 +1286,11 @@ open class MasterController@Autowired constructor(
 
 
             return ResponseEntity(errorMap ,HttpStatus.OK)
+        }
+
+
+
+
 
 
     }

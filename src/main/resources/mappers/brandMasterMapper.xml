@@ -43,6 +43,13 @@
 
     </select>
 
+    <select id="getBrandForBrandManager" resultMap="brandMasterResultMap" >
+        select * from BRAND_MASTER_BRD BRD
+                          JOIN BRANDMANAGER_BRAND_BBR BBR ON BBR.ID_BRD_BBR = BRD.ID_BRD
+        WHERE IS_ACTIVE_BRD =  #{active}  AND BBR.ID_USR_BBR  = #{userId}
+
+    </select>
+
 
     <select id="getBrandById" resultMap="brandMasterResultMap" >
         select BRD.*,DIM.ID_DIM,DIM.NAME_DIM,USR.ID_USR,USR.NAME_USR,TEM.ID_TEM,TEM.NAME_TEM,CCM.ID_CCM,CCM.NAME_CCM from BRAND_MASTER_BRD BRD

@@ -925,6 +925,17 @@ class MasterRepository
     //BRAND REPOSITORY
 
     fun getBrand( status: Int) : List<BrandMaster>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        if(user.userDesignation!!.id == UserRoleEnum.PRODUCT_MANAGER_ID.id ){
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            data.put("active",status)
+            data.put("userId",user.id)
+
+            return sqlSessionTemplate.selectList("BrandMasterMapper.getBrandForBrandManager",data)
+        }
+
         var data: MutableMap<String, Any> = mutableMapOf()
 
         data.put("active",status)
