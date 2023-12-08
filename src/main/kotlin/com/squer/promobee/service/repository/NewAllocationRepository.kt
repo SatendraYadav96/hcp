@@ -1178,7 +1178,7 @@ class NewAllocationRepository(
     fun getSpecialQuantityAllocatedDifferentialRecipient(
         planId: String,
         inventoryId: String,
-        teamId: String
+        teamId: ArrayList<String>
     ): List<DifferentialRecipientAllocationDTO> {
 
         val user =
@@ -1190,6 +1190,8 @@ class NewAllocationRepository(
         var i = 0
 
         try {
+
+
 
             var data: MutableMap<String, Any> = mutableMapOf()
 

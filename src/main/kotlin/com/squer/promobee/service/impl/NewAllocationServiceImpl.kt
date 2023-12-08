@@ -110,7 +110,7 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getRecipientForSpecialAllocation(ccmId)
     }
 
-    override fun getSpecialQuantityAllocatedDifferentialRecipient(planId: String, inventoryId: String, teamId: String): List<DifferentialRecipientAllocationDTO> {
+    override fun getSpecialQuantityAllocatedDifferentialRecipient(planId: String, inventoryId: String, teamId: ArrayList<String>): List<DifferentialRecipientAllocationDTO> {
         return newAllocationRepository.getSpecialQuantityAllocatedDifferentialRecipient(planId,inventoryId,teamId)
     }
 

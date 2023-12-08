@@ -182,7 +182,7 @@ open class NewAllocationController @Autowired constructor(
     }
 
     @GetMapping("/getSpecialQuantityAllocatedDifferentialRecipient/{planId}/{inventoryId}/{teamId}")
-    open fun getSpecialQuantityAllocatedDifferentialRecipient(@PathVariable planId :String,@PathVariable inventoryId :String,@PathVariable teamId :String): ResponseEntity<*> {
+    open fun getSpecialQuantityAllocatedDifferentialRecipient(@PathVariable planId :String,@PathVariable inventoryId :String,@PathVariable teamId :ArrayList<String>): ResponseEntity<*> {
         val data = newAllocationService.getSpecialQuantityAllocatedDifferentialRecipient(planId,inventoryId,teamId)
         return ResponseEntity(data, HttpStatus.OK)
     }

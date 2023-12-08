@@ -5,4 +5,5 @@ class saveDifferentialAllocation {
     var recipientId: String? = null
     var inventoryId: String? =null
     var quantity: Int? =null
+    var teamId: String? = null
 }

@@ -204,7 +204,10 @@
                  JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
                  JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = RCT.ID_TEM_RCT
         where DID.ID_DIP_DID = #{planId} and DID.ID_INV_DID = #{inventoryId} and
-            tem.ID_TEM = #{teamId} AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
+            tem.ID_TEM  in <foreach item="item" index="index" collection="teamId"
+                                    open="(" separator="," close=")">
+        #{item}
+    </foreach> AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
           and did.ID_STATUS_SLV_DID = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7'
 
 

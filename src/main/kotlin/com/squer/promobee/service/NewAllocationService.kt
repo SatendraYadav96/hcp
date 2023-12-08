@@ -50,7 +50,7 @@ interface NewAllocationService {
 
    fun getRecipientForSpecialAllocation( ccmId: String): List<Recipient>
 
-   fun getSpecialQuantityAllocatedDifferentialRecipient( planId:String,inventoryId :String,  teamId :String): List<DifferentialRecipientAllocationDTO>
+   fun getSpecialQuantityAllocatedDifferentialRecipient( planId:String,inventoryId :String,  teamId :ArrayList<String>): List<DifferentialRecipientAllocationDTO>
 
    fun saveSpecialAllocation (saveAlloc : List<saveDifferentialAllocation>)
 
