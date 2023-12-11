@@ -1,6 +1,6 @@
 package com.squer.promobee.controller.dto
 
-class HubGrnErrorLogDashboardDTO {
+class   HubGrnErrorLogDashboardDTO {
 
     var  startTime : String? = null
     var  endTime : String? = null

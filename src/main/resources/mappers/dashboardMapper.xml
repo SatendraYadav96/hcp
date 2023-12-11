@@ -60,6 +60,118 @@
 
     </select>
 
+    <select id="dispatchesMonthWise" resultType="com.squer.promobee.controller.dto.DashboardDTO" parameterType = "map" statementType = "CALLABLE">
+        SELECT
+            --CONCAT(YEAR_DIP, RIGHT(CONCAT('0', MONTH_DIP), 2)) AS month,
+            CASE MONTH_DIP
+                WHEN 1 THEN 'JANUARY'
+                WHEN 2 THEN 'FEBRUARY'
+                WHEN 3 THEN 'MARCH'
+                WHEN 4 THEN 'APRIL'
+                WHEN 5 THEN 'MAY'
+                WHEN 6 THEN 'JUNE'
+                WHEN 7 THEN 'JULY'
+                WHEN 8 THEN 'AUGUST'
+                WHEN 9 THEN 'SEPTEMBER'
+                WHEN 10 THEN 'OCTOBER'
+                WHEN 11 THEN 'NOVEMBER'
+                WHEN 12 THEN 'DECEMBER'
+
+                ELSE 'UNKNOWN MONTH' END AS 'month',
+                CASE
+                    WHEN IS_SPECIAL_DIP = 1 AND IS_VIRTUAL_DIP = 0 THEN 'SPECIAL'
+                    WHEN IS_SPECIAL_DIP = 1 AND IS_VIRTUAL_DIP = 1 THEN 'VIRTUAL'
+                    WHEN IS_SPECIAL_DIP = 0 AND IS_VIRTUAL_DIP IS NULL THEN 'MONTHLY'
+                    ELSE 'UNKNOWN PLANTYPE'
+                    END AS 'type',
+
+                COUNT(*) AS 'value'
+        FROM dispatch_plan_dip
+        WHERE YEAR_DIP = YEAR(GETDATE())
+        GROUP BY MONTH_DIP, IS_SPECIAL_DIP, IS_VIRTUAL_DIP
+        ORDER BY month DESC;
+
+    </select>
+
+
+
+
+
+    <select id="specialCourierCostMonthWise" resultType="com.squer.promobee.controller.dto.DashboardDTO" parameterType = "map" statementType = "CALLABLE">
+
+        select   CASE DIP.MONTH_DIP
+                     WHEN 1 THEN 'JANUARY'
+                     WHEN 2 THEN 'FEBRUARY'
+                     WHEN 3 THEN 'MARCH'
+                     WHEN 4 THEN 'APRIL'
+                     WHEN 5 THEN 'MAY'
+                     WHEN 6 THEN 'JUNE'
+                     WHEN 7 THEN 'JULY'
+                     WHEN 8 THEN 'AUGUST'
+                     WHEN 9 THEN 'SEPTEMBER'
+                     WHEN 10 THEN 'OCTOBER'
+                     WHEN 11 THEN 'NOVEMBER'
+                     WHEN 12 THEN 'DECEMBER'
+
+                     ELSE 'UNKNOWN MONTH' END AS 'month',
+
+                SUM(TRD.COST_OF_DELIVERY_TRD) AS 'cost'
+
+
+        from dispatch_Plan_dip dip
+
+                 join dispatch_detail_did did on did.id_dip_did = dip.id_dip
+
+                 join invoice_detail_ind ind on ind.id_did_ind = did.id_did
+
+                 join INVOICE_HEADER_INH inh on inh.id_inh = ind.id_inh_ind
+
+                 join TRANSPORT_DETAIL_TRD trd on trd.id_inh_trd = inh.id_inh
+
+        where dip.is_special_dip = 1 and dip.is_virtual_dip = 0 and dip.id_status_slv_dip = '00000000-0000-0000-0000-000000000024'
+          AND DIP.YEAR_DIP = YEAR(GETDATE())
+          and did.id_status_slv_did = 'E175148F-B4E4-4AFE-9687-7E06BBF7333B'
+        group by dip.MONTH_DIP,trd.COST_OF_DELIVERY_TRD
+
+        UNION
+
+        select CASE DIP.MONTH_DIP
+                   WHEN 1 THEN 'JANUARY'
+                   WHEN 2 THEN 'FEBRUARY'
+                   WHEN 3 THEN 'MARCH'
+                   WHEN 4 THEN 'APRIL'
+                   WHEN 5 THEN 'MAY'
+                   WHEN 6 THEN 'JUNE'
+                   WHEN 7 THEN 'JULY'
+                   WHEN 8 THEN 'AUGUST'
+                   WHEN 9 THEN 'SEPTEMBER'
+                   WHEN 10 THEN 'OCTOBER'
+                   WHEN 11 THEN 'NOVEMBER'
+                   WHEN 12 THEN 'DECEMBER'
+
+                   ELSE 'UNKNOWN MONTH' END AS 'month',
+                SUM(TRD.COST_OF_DELIVERY_TRD) AS 'cost'
+
+        from dispatch_Plan_dip dip
+
+                 join dispatch_detail_did did on did.id_dip_did = dip.id_dip
+
+                 join invoice_detail_ind ind on ind.id_did_ind = did.id_did
+
+                 join INVOICE_HEADER_INH inh on inh.id_inh = ind.id_inh_ind
+
+                 join TRANSPORT_DETAIL_TRD trd on trd.id_inh_trd = inh.id_inh
+
+        where dip.is_special_dip = 1 and dip.is_virtual_dip = 0 and dip.id_status_slv_dip = '00000000-0000-0000-0000-000000000024'
+          AND DIP.YEAR_DIP = YEAR(GETDATE())
+          and did.id_status_slv_did = 'E175148F-B4E4-4AFE-9687-7E06BBF7333B'
+        group by dip.MONTH_DIP,trd.COST_OF_DELIVERY_TRD
+        order by month,cost desc
+
+    </select>
+
+
+
 
 
 

@@ -54,6 +54,14 @@ class DashboardServiceImpl @Autowired constructor(
         return dashboardRepository.bexManagementDashboard(month,year,toMonth,toYear,type)
     }
 
+    override fun dispatchesMonthWise(): List<DashboardDTO> {
+        return dashboardRepository.dispatchesMonthWise()
+    }
+
+    override fun specialCourierCostMonthWise(): List<DashboardDTO> {
+        return dashboardRepository.specialCourierCostMonthWise()
+    }
+
 
 
 

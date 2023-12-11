@@ -23,5 +23,9 @@ interface DashboardService {
 
     fun bexManagementDashboard( month:Int,  year:Int,  toMonth:Int,  toYear: Int,  type:String): Any?
 
+    fun dispatchesMonthWise():List<DashboardDTO>
+
+    fun specialCourierCostMonthWise():List<DashboardDTO>
+
 
 }

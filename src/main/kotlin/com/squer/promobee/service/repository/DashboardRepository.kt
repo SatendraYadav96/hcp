@@ -163,6 +163,25 @@ DashboardRepository(
     }
 
 
+    fun dispatchesMonthWise (): List<DashboardDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        return sqlSessionFactory.openSession().selectList("DashboardMapper.dispatchesMonthWise", data)
+    }
+
+    fun specialCourierCostMonthWise (): List<DashboardDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+
+        return sqlSessionFactory.openSession().selectList("DashboardMapper.specialCourierCostMonthWise", data)
+    }
+
+
 
 
 

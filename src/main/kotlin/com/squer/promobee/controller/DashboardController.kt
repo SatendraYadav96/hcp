@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
-import java.time.Year
 
 
 @Slf4j
@@ -84,6 +83,22 @@ open class DashboardController@Autowired constructor(
 
     }
 
+    @GetMapping("/dispatchesMonthWise")
+    open fun dispatchesMonthWise() : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data = dashboardService.dispatchesMonthWise()
+        return ResponseEntity(data, HttpStatus.OK)
+
+    }
+
+
+    @GetMapping("/specialCourierCostMonthWise")
+    open fun specialCourierCostMonthWise() : ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data = dashboardService.specialCourierCostMonthWise()
+        return ResponseEntity(data, HttpStatus.OK)
+
+    }
 
 
 
