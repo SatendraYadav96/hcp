@@ -204,7 +204,7 @@ open class UIController @Autowired constructor(
             ),
 
             UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id to listOf<UserMenuEnum>(
-                UserMenuEnum.BM_DASHBOARD,
+                UserMenuEnum.RBM_DASHBOARD,
                 UserMenuEnum.ALLOCATION,
                 UserMenuEnum.DISPATCH_AND_INVOICING
             ),
