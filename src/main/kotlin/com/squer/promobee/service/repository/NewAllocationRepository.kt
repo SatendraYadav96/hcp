@@ -1627,68 +1627,77 @@ class NewAllocationRepository(
         }
         var bmPlanId = mutableListOf<VirtualDispatchDetail>()
 
+        var employee = Users()
+
         if (isRbmOrNsm) {
+
+            var data0 : MutableMap<String, String> = mutableMapOf()
+
+            data0.put("userId",user.id)
+
+            employee = sqlSessionFactory.openSession().selectOne<Users>("UsersMasterMapper.getRbm",data0)
+
             var data2: MutableMap<String, Any> = mutableMapOf()
 
             data2.put("month", month)
             data2.put("year", year)
-            data2.put("owner", user.userRecipientId!!)
+            data2.put("owner", employee.userRecipientId!!)
 
             bmPlanId == sqlSessionFactory.openSession()
-                .selectList<VirtualDispatchDetail>("VirtualDispatchDetailMapper.createVirtualPlan", data2)
+                .selectList<VirtualDispatchDetail>("DispatchPlanMapper.rbmStockVirtual", data2)
 
-            bmPlanId.forEach { it ->
-                var data3: MutableMap<String, Any> = mutableMapOf()
-
-                data3.put("id", planDp.id)
-                data3.put("invId", it.inventoryId!!)
-
-                var rbmdetails = sqlSessionFactory.openSession()
-                    .selectList<DispatchDetail>("DispatchDetailMapper.createVirtualPlan", data3)
-
-                var status = SystemLov()
-
-                var data4: MutableMap<String, Any> = mutableMapOf()
-
-                data4.put("id", planDp.id)
-
-                var bmPlan = sqlSessionFactory.openSession()
-                    .selectOne<DispatchPlan>("DispatchPlanMapper.getDispatchPlanById", data4)
-
-                if (bmPlan.isVirtual == 1 && bmPlan.planStatus!!.id == AllocationStatusEnum.SUBMIT.id) {
-                    if (rbmdetails == null) {
-
-                        var detail = DispatchDetail()
-
-                        var data5: MutableMap<String, Any> = mutableMapOf()
-
-                        var didId = UUID.randomUUID().toString()
-
-                        data5.put("id", didId)
-                        data5.put("planId", planDp.id)
-                        data5.put("inventoryId", it.inventoryId!!)
-                        data5.put("recipientId", it.recipientId!!)
-                        data5.put("qtyDispatch", it.qtyDispatch!!)
-                        data5.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                        data5.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                        data5.put("createdBy", user.id)
-                        data5.put("updatedBy", user.id)
-
-                        sqlSessionFactory.openSession().insert("DispatchDetailMapper.insertVirtualPlan", data5)
-
-                        var data6: MutableMap<String, Any> = mutableMapOf()
-
-                        data6.put("id", it.id)
-                        data6.put("qtyDispatch", 0)
-
-                        sqlSessionFactory.openSession().update("VirtualDispatchDetailMapper.updateVirtualPlan", data6)
-
-
-                    }
-                }
-
-
-            }
+//            bmPlanId.forEach { it ->
+//                var data3: MutableMap<String, Any> = mutableMapOf()
+//
+//                data3.put("id", planDp.id)
+//                data3.put("invId", it.inventoryId!!)
+//
+//                var rbmdetails = sqlSessionFactory.openSession()
+//                    .selectList<DispatchDetail>("DispatchDetailMapper.createVirtualPlan", data3)
+//
+//                var status = SystemLov()
+//
+//                var data4: MutableMap<String, Any> = mutableMapOf()
+//
+//                data4.put("id", planDp.id)
+//
+//                var bmPlan = sqlSessionFactory.openSession()
+//                    .selectOne<DispatchPlan>("DispatchPlanMapper.getDispatchPlanById", data4)
+//
+//                if (bmPlan.isVirtual == 1 && bmPlan.planStatus!!.id == AllocationStatusEnum.SUBMIT.id) {
+//                    if (rbmdetails == null) {
+//
+//                        var detail = DispatchDetail()
+//
+//                        var data5: MutableMap<String, Any> = mutableMapOf()
+//
+//                        var didId = UUID.randomUUID().toString()
+//
+//                        data5.put("id", didId)
+//                        data5.put("planId", planDp.id)
+//                        data5.put("inventoryId", it.inventoryId!!)
+//                        data5.put("recipientId", it.recipientId!!)
+//                        data5.put("qtyDispatch", it.qtyDispatch!!)
+//                        data5.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+//                        data5.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+//                        data5.put("createdBy", user.id)
+//                        data5.put("updatedBy", user.id)
+//
+//                        sqlSessionFactory.openSession().insert("DispatchDetailMapper.insertVirtualPlan", data5)
+//
+//                        var data6: MutableMap<String, Any> = mutableMapOf()
+//
+//                        data6.put("id", it.id)
+//                        data6.put("qtyDispatch", 0)
+//
+//                        sqlSessionFactory.openSession().update("VirtualDispatchDetailMapper.updateVirtualPlan", data6)
+//
+//
+//                    }
+//                }
+//
+//
+//            }
 
 
         }
@@ -1708,8 +1717,8 @@ class NewAllocationRepository(
 
             var data7: MutableMap<String, Any> = mutableMapOf()
 
-            data7.put("UserID", user.userRecipientId!!)
-            data7.put("PlanID", planVir.id)
+            data7.put("UserID", employee.userRecipientId!!)
+            data7.put("PlanID", bmPlanId[i].id!!)
 
             allocationInventoryDetails = sqlSessionFactory.openSession()
                 .selectList<VirtualAllocationInventoryDetailsWithCostCenterDTO>(

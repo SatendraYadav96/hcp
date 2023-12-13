@@ -139,6 +139,12 @@
     </delete>
 
 
+    <select id="getRbm" resultMap="usersMasterResultMap" >
+
+        select * from USER_MASTER_USR WHERE ID_USR = #{userId}
+    </select>
+
+
 
 
 </mapper>

@@ -48,7 +48,7 @@ class AllocationService @Autowired constructor(
             plan = dispatchPlanService.getPlanHeaderSelect(month, year, user.id)
         }
         allocationDetailsDTO.plan = plan
-        var items = inventoryService.getMonthlyAllocation(plan!!.id,user.id)
+        var items = inventoryService.getMonthlyAllocation(plan!!.id,user.id,year,month)
 
        var planSubmit = ""
 

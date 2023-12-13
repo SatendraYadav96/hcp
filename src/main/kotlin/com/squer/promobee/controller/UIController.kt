@@ -39,6 +39,7 @@ open class UIController @Autowired constructor(
                         UserMenuEnum.DELIVERY_UPDATE,
                         UserMenuEnum.VENDOR,
                         UserMenuEnum.COST_CENTER,
+                        UserMenuEnum.BRAND,
                         UserMenuEnum.SAMPLE,
                         UserMenuEnum.SEARCH_INVENTORY,
                        // UserMenuEnum.ITEM_WISE_REPORT,

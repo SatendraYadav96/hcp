@@ -8,7 +8,7 @@ interface InventoryService {
 
     fun insertInventory(inventory: Inventory)
 
-    fun getMonthlyAllocation(planId: String, userId: String): MutableList<AllocationInventoryDetailsWithCostCenterDTO>
+    fun getMonthlyAllocation(planId: String, userId: String,year: Int,month: Int): MutableList<AllocationInventoryDetailsWithCostCenterDTO>
 
     fun getInventoryDistributionByTeamForPlan(planId: String): List<MutableMap<String, Any>>
 

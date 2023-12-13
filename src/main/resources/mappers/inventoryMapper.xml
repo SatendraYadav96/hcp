@@ -408,6 +408,12 @@
 
     </update>
 
+    <select id="rbmAllocationInventoryMonthly" resultType="com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_AllocationDetailsOfRbm ( #{UserID, jdbcType = VARCHAR , mode = IN} , #{RBMPlanID, jdbcType = VARCHAR , mode = IN}  )   }
+
+
+    </select>
+
 
 
 </mapper>

@@ -18,8 +18,8 @@ class InventoryServiceImpl @Autowired constructor(
         inventoryRepository.insertInventory(inventory)
     }
 
-    override fun getMonthlyAllocation(planId: String, userId: String): MutableList<AllocationInventoryDetailsWithCostCenterDTO> {
-        return inventoryRepository.getMonthlyAllocation(planId, userId)
+    override fun getMonthlyAllocation(planId: String, userId: String,year: Int,month: Int): MutableList<AllocationInventoryDetailsWithCostCenterDTO> {
+        return inventoryRepository.getMonthlyAllocation(planId, userId,year,month)
     }
 
     override fun getInventoryDistributionByTeamForPlan(planId: String): List<MutableMap<String, Any>> {

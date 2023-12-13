@@ -36,23 +36,61 @@ class InventoryRepository @Autowired constructor(
        sqlSessionFactory.openSession().insert("InventoryMapper.insertInventory", inventory)
     }
 
-    fun getMonthlyAllocation(planId: String, userId: String): MutableList<AllocationInventoryDetailsWithCostCenterDTO> {
+    fun getMonthlyAllocation(planId: String, userId: String,year: Int,month: Int): MutableList<AllocationInventoryDetailsWithCostCenterDTO> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data0 : MutableMap<String, String> = mutableMapOf()
         data0.put("planId", planId)
 
         var plan = sqlSessionFactory.openSession().selectOne<DispatchPlan>("DispatchPlanMapper.monthlyAllocationDispatchPlanData",data0)
 
-        if(plan.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || plan.planStatus!!.id == AllocationStatusEnum.APPROVED.id){
-            var data : MutableMap<String, String> = mutableMapOf()
-            data.put("planId", planId)
-            data.put("userId", userId)
-            return sqlSessionFactory.openSession().selectList<AllocationInventoryDetailsWithCostCenterDTO>("InventoryMapper.getAllocationInventoryWithCostcenterSubmitAllocation", data)
+        var bmPlanId = mutableListOf<DispatchPlan>()
+        var employee = Users()
+        var i = 0
+
+        if(user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id){
+            var data0 : MutableMap<String, String> = mutableMapOf()
+
+            data0.put("userId",userId)
+
+            employee = sqlSessionFactory.openSession().selectOne<Users>("UsersMasterMapper.getRbm",data0)
+
+            data0.put("rbmId",employee.userRecipientId!!)
+            data0.put("year", year.toString())
+            data0.put("month", month.toString())
+
+            bmPlanId = sqlSessionFactory.openSession().selectList<DispatchPlan>("DispatchPlanMapper.rbmStockMonthly",data0)
+
+            if(plan.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || plan.planStatus!!.id == AllocationStatusEnum.APPROVED.id){
+                var data : MutableMap<String, String> = mutableMapOf()
+                data.put("RBMPlanID", bmPlanId[i].id)
+                data.put("UserID", employee.userRecipientId!!)
+                return sqlSessionFactory.openSession().selectList<AllocationInventoryDetailsWithCostCenterDTO>("InventoryMapper.rbmAllocationInventoryMonthly", data)
+            }else{
+                var data : MutableMap<String, String> = mutableMapOf()
+                data.put("RBMPlanID", bmPlanId[i].id)
+                data.put("UserID", employee.userRecipientId!!)
+
+
+                return sqlSessionFactory.openSession().selectList<AllocationInventoryDetailsWithCostCenterDTO>("InventoryMapper.rbmAllocationInventoryMonthly", data)
+            }
+
         }else{
-            var data : MutableMap<String, String> = mutableMapOf()
-            data.put("planId", planId)
-            data.put("userId", userId)
-            return sqlSessionFactory.openSession().selectList<AllocationInventoryDetailsWithCostCenterDTO>("InventoryMapper.getAllocationInventoryWithCostcenter", data)
+            if(plan.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || plan.planStatus!!.id == AllocationStatusEnum.APPROVED.id){
+                var data : MutableMap<String, String> = mutableMapOf()
+                data.put("planId", planId)
+                data.put("userId", userId)
+                return sqlSessionFactory.openSession().selectList<AllocationInventoryDetailsWithCostCenterDTO>("InventoryMapper.getAllocationInventoryWithCostcenterSubmitAllocation", data)
+            }else{
+                var data : MutableMap<String, String> = mutableMapOf()
+                data.put("planId", planId)
+                data.put("userId", userId)
+                return sqlSessionFactory.openSession().selectList<AllocationInventoryDetailsWithCostCenterDTO>("InventoryMapper.getAllocationInventoryWithCostcenter", data)
+            }
         }
+
+
+
+
 
 
     }

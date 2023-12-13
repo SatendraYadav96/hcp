@@ -9,7 +9,7 @@ class AllocationDetailsDTO{
     var planSubmitted: String? = null
 }
 
-class AllocationInventoryDetailsWithCostCenterDTO {
+class       AllocationInventoryDetailsWithCostCenterDTO {
     var isItem: Int?= null
     var costCenterID : String ?= null
     var costCenterName: String ?= null
