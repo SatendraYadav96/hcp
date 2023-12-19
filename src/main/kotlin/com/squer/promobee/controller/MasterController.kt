@@ -208,6 +208,13 @@ open class MasterController@Autowired constructor(
             sqlSessionTemplate.insert("CostCenterMapper.addCostCenter",data)
 
 
+            var data0 : MutableMap<String, Any> = mutableMapOf()
+
+            data0.put("ccmId",ccmId5)
+
+            sqlSessionTemplate.delete("CostCenterMapper.deleteCostCenterBrand",data0)
+
+
 
             var i = 0
 

@@ -599,6 +599,14 @@ class NewAllocationRepository(
 
         var i = 0
 
+//        if(user.userDesignation!!.id === UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id){
+//            saveAlloc.forEach {
+//                if(it.quantity!! > 0){
+//
+//                }
+//            }
+//        }
+
 
 
         saveAlloc.forEach {

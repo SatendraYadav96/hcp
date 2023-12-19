@@ -215,6 +215,20 @@ open class NewAllocationController @Autowired constructor(
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         val items = newAllocationService.submitSpecialAllocation(alloc)
+        val months = mapOf(
+            1 to "January",
+            2 to "February",
+            3 to "March",
+            4 to "April",
+            5 to "May",
+            6 to "June",
+            7 to "July",
+            8 to "August",
+            9 to "September",
+            10 to "October",
+            11 to "November",
+            12 to "December"
+        )
 
         var data: MutableMap<String, Any> = mutableMapOf()
 
@@ -235,7 +249,7 @@ open class NewAllocationController @Autowired constructor(
                 mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
                 mimeMessageHelper.setText("Hi, ", user.name +
 
-                        "\n has submitted the Special Dispatch Plan for Month - #Month Year - #Year(#Remarks), Kindly look into this and take further actions \n" +
+                        "\n has submitted the Special Dispatch Plan for Month - ${months[alloc.month]} - ${alloc.year} & plan - ${alloc.name}, Kindly look into this and take further actions \n" +
 
                         "\nThank You.\n" +
                         " ")
@@ -247,20 +261,7 @@ open class NewAllocationController @Autowired constructor(
             }
 
         }
-        val months = mapOf(
-            1 to "January",
-            2 to "February",
-            3 to "March",
-            4 to "April",
-            5 to "May",
-            6 to "June",
-            7 to "July",
-            8 to "August",
-            9 to "September",
-            10 to "October",
-            11 to "November",
-            12 to "December"
-        )
+
         var errorMap: MutableMap<String, String> = HashMap()
         println("Special Allocation submitted Successfully !")
         errorMap["message"] = "Special Allocation for ${months[alloc.month]} - ${alloc.year}  & plan - ${alloc.name} is submitted successfully !"
