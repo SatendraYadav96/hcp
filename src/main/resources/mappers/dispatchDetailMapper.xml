@@ -174,24 +174,36 @@
 
 
     <select id="getQuantityAllocatedOfUserToItemForBex" resultType="com.squer.promobee.controller.dto.DesignationWiseQuantityAllocatedDTO">
-        select ulv.name_ulv as 'Designation', ulv.id_ulv as 'DesignationId',COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity' from DISPATCH_PLAN_DIP dip
+        select ulv.name_ulv as 'Designation', ulv.id_ulv as 'DesignationId',COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity',RCT.ID_TEM_RCT as 'teamId',
+                tem.NAME_TEM as 'team' from DISPATCH_PLAN_DIP dip
                                                                                       join DISPATCH_DETAIL_DID did on dip.ID_DIP = did.ID_DIP_DID
                                                                                       JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
                                                                                       JOIN USER_LOV_ULV ULV  ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
+                                                                                      join TEAM_MASTER_TEM tem on tem.ID_TEM = RCT.ID_TEM_RCT
         where dip.MONTH_DIP = #{month} AND dip.YEAR_DIP = #{year} AND did.ID_INV_DID = #{inventoryId} AND dip.IS_SPECIAL_DIP = #{isSpecialDispatch}
-        group by ulv.name_ulv,ulv.ID_ULV,did.QUANTITY_DISPATCH_DID
+          and tem.ID_TEM in <foreach item="item" index="index" collection="teamId"
+                                     open="(" separator="," close=")">
+        #{item}
+    </foreach>
+        group by ulv.name_ulv,ulv.ID_ULV,did.QUANTITY_DISPATCH_DID,RCT.ID_TEM_RCT,tem.NAME_TEM
 
     </select>
 
 
     <select id="getQuantityAllocatedOfUserToItem" resultType="com.squer.promobee.controller.dto.DesignationWiseQuantityAllocatedDTO">
-        select ulv.name_ulv as 'Designation',ulv.id_ulv as 'DesignationId', COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity' from DISPATCH_PLAN_DIP dip
+        select ulv.name_ulv as 'Designation',ulv.id_ulv as 'DesignationId', COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity',RCT.ID_TEM_RCT as 'teamId',
+                tem.NAME_TEM as 'team' from DISPATCH_PLAN_DIP dip
                                                                                       join DISPATCH_DETAIL_DID did on dip.ID_DIP = did.ID_DIP_DID
                                                                                       JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
                                                                                       JOIN USER_LOV_ULV ULV  ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
+                                                                                      join TEAM_MASTER_TEM tem on tem.ID_TEM = RCT.ID_TEM_RCT
         where dip.MONTH_DIP = #{month} AND dip.YEAR_DIP = #{year} AND dip.ID_OWNER_USR_DIP = #{userId} AND
               did.ID_INV_DID = #{inventoryId} AND dip.IS_SPECIAL_DIP = #{isSpecialDispatch}
-        group by ulv.name_ulv,ulv.ID_ULV,did.QUANTITY_DISPATCH_DID
+        and tem.ID_TEM in <foreach item="item" index="index" collection="teamId"
+                                   open="(" separator="," close=")">
+        #{item}
+    </foreach>
+        group by ulv.name_ulv,ulv.ID_ULV,did.QUANTITY_DISPATCH_DID,RCT.ID_TEM_RCT,tem.NAME_TEM
 
     </select>
 
@@ -203,11 +215,8 @@
                  join RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
                  JOIN USER_LOV_ULV ULV ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
                  JOIN TEAM_MASTER_TEM TEM ON TEM.ID_TEM = RCT.ID_TEM_RCT
-        where DID.ID_DIP_DID = #{planId} and DID.ID_INV_DID = #{inventoryId} and
-            tem.ID_TEM  in <foreach item="item" index="index" collection="teamId"
-                                    open="(" separator="," close=")">
-        #{item}
-    </foreach> AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
+        where DID.ID_DIP_DID = #{planId} and DID.ID_INV_DID = #{inventoryId}
+            tem.ID_TEM = #{teamId} AND RCT.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
           and did.ID_STATUS_SLV_DID = '986F1D6B-AF4B-4E80-AB09-9EC4F0CCDBE7'
 
 
@@ -294,26 +303,40 @@
 
 
     <select id="getVirtualQuantityAllocatedToUserForRbm" resultType="com.squer.promobee.controller.dto.DesignationWiseQuantityAllocatedDTO">
-        select ulv.name_ulv as 'Designation', ulv.id_ulv as 'DesignationId',COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity' from DISPATCH_PLAN_DIP dip
+        select ulv.name_ulv as 'Designation', ulv.id_ulv as 'DesignationId',COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity',RCT.ID_TEM_RCT as 'teamId',
+                tem.NAME_TEM as 'team' from DISPATCH_PLAN_DIP dip
                                                                                                                                                         join DISPATCH_DETAIL_DID did on dip.ID_DIP = did.ID_DIP_DID
                                                                                                                                                         JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
                                                                                                                                                         JOIN USER_LOV_ULV ULV  ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
+                                                                                                                                                        join TEAM_MASTER_TEM tem on tem.ID_TEM = RCT.ID_TEM_RCT
         where dip.MONTH_DIP = #{month} AND dip.YEAR_DIP = #{year} AND did.ID_INV_DID = #{inventoryId} AND dip.IS_SPECIAL_DIP = #{isSpecialDispatch} AND did.ID_DIP_DID = #{planId}
-          AND dip.IS_VIRTUAL_DIP = 1
-        group by ulv.name_ulv,ulv.ID_ULV,did.QUANTITY_DISPATCH_DID
+          AND dip.IS_VIRTUAL_DIP = 1 AND
+        tem.ID_TEM in <foreach item="item" index="index" collection="teamId"
+                               open="(" separator="," close=")">
+        #{item}
+    </foreach>
+        group by ulv.name_ulv,ulv.ID_ULV,did.QUANTITY_DISPATCH_DID,RCT.ID_TEM_RCT,
+                 tem.NAME_TEM
 
     </select>
 
 
 
     <select id="getVirtualQuantityAllocatedToUserByBM" resultType="com.squer.promobee.controller.dto.DesignationWiseQuantityAllocatedDTO">
-        select ulv.name_ulv as 'Designation', ulv.id_ulv as 'DesignationId',COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity' from DISPATCH_PLAN_DIP dip
+        select ulv.name_ulv as 'Designation', ulv.id_ulv as 'DesignationId',COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity',RCT.ID_TEM_RCT as 'teamId',
+                tem.NAME_TEM as 'team' from DISPATCH_PLAN_DIP dip
                                                                                                                                                         join DISPATCH_DETAIL_DID did on dip.ID_DIP = did.ID_DIP_DID
                                                                                                                                                         JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
                                                                                                                                                         JOIN USER_LOV_ULV ULV  ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
+                                                                                                                                                        join TEAM_MASTER_TEM tem on tem.ID_TEM = RCT.ID_TEM_RCT
         where dip.MONTH_DIP = #{month} AND dip.YEAR_DIP = #{year} AND did.ID_INV_DID = #{inventoryId} AND dip.IS_SPECIAL_DIP = #{isSpecialDispatch} AND did.ID_DIP_DID = #{planId}
-          AND dip.IS_VIRTUAL_DIP = 1
-        group by ulv.name_ulv,ulv.ID_ULV,did.QUANTITY_DISPATCH_DID
+          AND dip.IS_VIRTUAL_DIP = 1 AND
+        tem.ID_TEM in <foreach item="item" index="index" collection="teamId"
+                               open="(" separator="," close=")">
+        #{item}
+    </foreach>
+        group by ulv.name_ulv,ulv.ID_ULV,did.QUANTITY_DISPATCH_DID,RCT.ID_TEM_RCT,
+                 tem.NAME_TEM
 
     </select>
 

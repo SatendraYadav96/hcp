@@ -26,7 +26,8 @@ interface NewAllocationService {
    fun getTeamForCommonAllocation( ccmId: String): List<CommonAllocationTeamDTO>
 
    fun getQuantityAllocatedOfUserToItem( userId :String, inventoryId :String,  month :Int,
-                                         year :Int,  isSpecialDispatch :Int): List<DesignationWiseQuantityAllocatedDTO>
+                                         year :Int,  isSpecialDispatch :Int, teamId: ArrayList<String>
+   ): List<DesignationWiseQuantityAllocatedDTO>
 
    fun getQuantityAllocatedDifferentialRecipient( planId:String,inventoryId :String,  teamId :String): List<DifferentialRecipientAllocationDTO>
 
@@ -70,7 +71,7 @@ interface NewAllocationService {
    fun getVirtualTeamForCommonAllocation( ccmId: String): List<CommonAllocationTeamDTO>
 
    fun getVirtualQuantityAllocatedToUser( userId :String, inventoryId :String,  month :Int,
-                                         year :Int,  isSpecialDispatch :Int,planId: String): List<DesignationWiseQuantityAllocatedDTO>
+                                         year :Int,  isSpecialDispatch :Int,planId: String, teamId: ArrayList<String>): List<DesignationWiseQuantityAllocatedDTO>
 
    fun getVirtualTeamForDifferentialAllocation( planId :String,  teamId :String,  inventoryId :String ): List<AllocationDataTeamPopupDetailsDTO>
 

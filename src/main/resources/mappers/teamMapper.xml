@@ -130,10 +130,10 @@
         SELECT
             distinct
             tem.ID_tem as 'TeamId',
-            tem.NAME_TEM as 'Team',
-            ulv.ID_ULV as 'DesignationId',
+                tem.NAME_TEM as 'Team',
+                ulv.ID_ULV as 'DesignationId',
                 ulv.NAME_ULV as 'Designation',
-                COUNT(rct.NAME_RCT) OVER (PARTITION BY ulv.NAME_ULV) AS 'RecipientCount'
+                COUNT(rct.ID_DESG_ULV_RCT) OVER (PARTITION BY tem.ID_tem,rct.ID_DESG_ULV_RCT) AS 'RecipientCount'
         FROM
             COST_CENTER_MASTER_CCM ccm
                 JOIN
@@ -156,7 +156,7 @@
 
         GROUP BY
             tem.NAME_TEM,
-            ulv.NAME_ULV,rct.NAME_RCT,rct.ID_RCT,tem.ID_tem,ulv.ID_ULV
+            ulv.NAME_ULV,rct.ID_DESG_ULV_RCT,rct.ID_RCT,tem.ID_tem,ulv.ID_ULV
 
 
 

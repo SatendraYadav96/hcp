@@ -89,10 +89,10 @@ open class NewAllocationController @Autowired constructor(
     }
 
 
-    @GetMapping("/getQuantityAllocatedOfUserToItem/{userId}/{inventoryId}/{month}/{year}/{isSpecialDispatch}")
+    @GetMapping("/getQuantityAllocatedOfUserToItem/{userId}/{inventoryId}/{month}/{year}/{isSpecialDispatch}/{teamId}")
     open fun getQuantityAllocatedOfUserToItem(@PathVariable userId :String,@PathVariable inventoryId :String,@PathVariable month :Int,
-        @PathVariable year :Int,@PathVariable isSpecialDispatch :Int): ResponseEntity<*> {
-        val data = newAllocationService.getQuantityAllocatedOfUserToItem(userId,inventoryId,month,year,isSpecialDispatch )
+        @PathVariable year :Int,@PathVariable isSpecialDispatch :Int , @PathVariable teamId: ArrayList<String>): ResponseEntity<*> {
+        val data = newAllocationService.getQuantityAllocatedOfUserToItem(userId,inventoryId,month,year,isSpecialDispatch,teamId )
         return ResponseEntity(data, HttpStatus.OK)
     }
 
@@ -305,10 +305,11 @@ open class NewAllocationController @Autowired constructor(
     }
 
 
-    @GetMapping("/getVirtualQuantityAllocatedToUser/{userId}/{inventoryId}/{month}/{year}/{isSpecialDispatch}/{planId}")
+    @GetMapping("/getVirtualQuantityAllocatedToUser/{userId}/{inventoryId}/{month}/{year}/{isSpecialDispatch}/{planId}/{teamId}")
     open fun getVirtualQuantityAllocatedToUser(@PathVariable userId :String,@PathVariable inventoryId :String,@PathVariable month :Int,
-                                              @PathVariable year :Int,@PathVariable isSpecialDispatch :Int,@PathVariable planId :String): ResponseEntity<*> {
-        val data = newAllocationService.getVirtualQuantityAllocatedToUser(userId,inventoryId,month,year,isSpecialDispatch, planId )
+                                              @PathVariable year :Int,@PathVariable isSpecialDispatch :Int,@PathVariable planId :String,
+         @PathVariable teamId: ArrayList<String>): ResponseEntity<*> {
+        val data = newAllocationService.getVirtualQuantityAllocatedToUser(userId,inventoryId,month,year,isSpecialDispatch, planId,teamId )
         return ResponseEntity(data, HttpStatus.OK)
     }
 

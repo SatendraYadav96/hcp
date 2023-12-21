@@ -64,8 +64,8 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getTeamForCommonAllocation(ccmId)
     }
 
-    override fun getQuantityAllocatedOfUserToItem(userId: String,  inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int): List<DesignationWiseQuantityAllocatedDTO> {
-        return newAllocationRepository.getQuantityAllocatedOfUserToItem(userId,inventoryId,month,year,isSpecialDispatch)
+    override fun getQuantityAllocatedOfUserToItem(userId: String,  inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int , teamId: ArrayList<String>): List<DesignationWiseQuantityAllocatedDTO> {
+        return newAllocationRepository.getQuantityAllocatedOfUserToItem(userId,inventoryId,month,year,isSpecialDispatch,teamId)
     }
 
     override fun getQuantityAllocatedDifferentialRecipient(planId: String,inventoryId: String, teamId: String): List<DifferentialRecipientAllocationDTO> {
@@ -79,6 +79,8 @@ open class NewAllocationServiceImpl @Autowired constructor(
 
     override fun saveCommonAllocation(saveAlloc: List<saveCommonAllocationDTO>) {
         return newAllocationRepository.saveCommonAllocation(saveAlloc)
+
+
     }
 
     override fun saveDifferentialAllocation(saveAlloc: List<saveDifferentialAllocation>) {
@@ -147,8 +149,8 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getVirtualTeamForCommonAllocation(ccmId)
     }
 
-    override fun getVirtualQuantityAllocatedToUser(userId: String, inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int,planId: String): List<DesignationWiseQuantityAllocatedDTO> {
-        return newAllocationRepository.getVirtualQuantityAllocatedToUser(userId,inventoryId,month,year,isSpecialDispatch,planId)
+    override fun getVirtualQuantityAllocatedToUser(userId: String, inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int,planId: String,teamId: ArrayList<String>): List<DesignationWiseQuantityAllocatedDTO> {
+        return newAllocationRepository.getVirtualQuantityAllocatedToUser(userId,inventoryId,month,year,isSpecialDispatch,planId,teamId)
     }
 
     override fun getVirtualTeamForDifferentialAllocation(planId: String, teamId: String, inventoryId: String): List<AllocationDataTeamPopupDetailsDTO> {
