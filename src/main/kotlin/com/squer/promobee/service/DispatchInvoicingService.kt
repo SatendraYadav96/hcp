@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.PathVariable
 import java.util.*
 
 @Service
@@ -86,7 +85,7 @@ class DispatchInvoicingService @Autowired constructor(
         }
 
         var invoiceDetails : List<DataModelInvoiceDetailsDTO> = mutableListOf()
-        if(status == InvoiceStatusEnum.DRAFT.id){
+        if(status == AllocationStatusEnum.APPROVED.id){
             invoiceDetails = dispatchPlanService.getEmployeeInvoiceDetails(month, year, isSpecialDisp, teamId, AllocationStatusEnum.APPROVED.id)
         }else if(status == InvoiceStatusEnum.GENERATED_PRINTED.id){
             invoiceDetails = dispatchPlanService.getEmployeeInvoiceDetails(month, year, isSpecialDisp, teamId, InvoiceStatusEnum.GENERATED_PRINTED.id)
