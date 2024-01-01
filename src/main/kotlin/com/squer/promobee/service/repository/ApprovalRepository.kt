@@ -162,16 +162,29 @@ class ApprovalRepository(
     }
 
 
-    fun getApprovalChainById(id: String): ApprovalChainTransaction {
+    fun getApprovalChainById(id: String): List<ApprovalChainTransaction> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
 
         data.put("id",id)
 
-       return sqlSessionFactory.openSession().selectOne<ApprovalChainTransaction>("ApprovalChainTransactionMapper.getApprovalChainById",data)
+       return sqlSessionFactory.openSession().selectList<ApprovalChainTransaction>("ApprovalChainTransactionMapper.getApprovalChainById",data)
 
 
     }
+
+    fun getApprovalChainByDesignation(id: String , desgId: String): ApprovalChainTransaction {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id",id)
+        data.put("designationId", desgId)
+
+        return sqlSessionFactory.openSession().selectOne<ApprovalChainTransaction>("ApprovalChainTransactionMapper.getApprovalChainByDesignation",data)
+
+
+    }
+
 
     fun getApprovalChainForSpecialPlanConvert(id: String): ApprovalChainTransaction {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -196,45 +209,84 @@ class ApprovalRepository(
 
         var dispatchPlan = plan.planId?.let { getDispatchPlanById(it) }
 
-        plan.apiId?.let { data.put("id", it) }
-        data.put("approvedByUser",user.id)
-        data.put("apiStatus",ApprovalStatusEnum.APPROVED.id)
-        plan.comment?.let { data.put("comments", it) }
-        data.put("updatedBy",user.id)
 
-
-        sqlSessionFactory.openSession().update("ApprovalChainTransactionMapper.updateApprovalChainTransaction",data)
 
         if(user.userDesignation!!.id == UserLovEnum.BUH.id && isSpecial == 1 ){
 
+            var aprTranBUHead = getApprovalChainByDesignation(plan.apiId!! , UserLovEnum.BUH.id)
+
+            var data0: MutableMap<String, Any> = mutableMapOf()
+
+           data0.put("id", aprTranBUHead.id!!)
+            data0.put("approvedByUser",user.id)
+            data0.put("apiStatus",ApprovalStatusEnum.APPROVED.id)
+            plan.comment?.let { data0.put("comments", it) }
+            data0.put("updatedBy",user.id)
+
+
+            sqlSessionFactory.openSession().update("ApprovalChainTransactionMapper.updateApprovalChainTransactionDesignation",data0)
+
+
+
             var data: MutableMap<String, Any> = mutableMapOf()
-
-
 
             plan.planId?.let { data.put("id", it) }
             data.put("planStatus", AllocationStatusEnum.APPROVED_BY_BUH.id)
             data.put("updatedBy",user.id)
+            data.put("comment",plan.comment!!)
 
             sqlSessionFactory.openSession().update("DispatchPlanMapper.approvePlan",data)
 
         }
         if (user.userDesignation!!.id == UserLovEnum.BEX.id && isSpecial == 1){
+            var aprTranBUHead = getApprovalChainByDesignation(plan.apiId!! , UserLovEnum.BEX.id)
+
+            var data0: MutableMap<String, Any> = mutableMapOf()
+
+            data0.put("id", aprTranBUHead.id!!)
+            data0.put("approvedByUser",user.id)
+            data0.put("apiStatus",ApprovalStatusEnum.APPROVED.id)
+            plan.comment?.let { data0.put("comments", it) }
+            data0.put("updatedBy",user.id)
+
+
+            sqlSessionFactory.openSession().update("ApprovalChainTransactionMapper.updateApprovalChainTransactionDesignation",data0)
+
             var data: MutableMap<String, Any> = mutableMapOf()
 
             plan.planId?.let { data.put("id", it) }
             data.put("planStatus", AllocationStatusEnum.APPROVED.id)
             data.put("updatedBy",user.id)
+            data.put("comment",plan.comment!!)
 
             sqlSessionFactory.openSession().update("DispatchPlanMapper.approvePlan",data)
         }
         if(user.userDesignation!!.id == UserLovEnum.BEX.id && isSpecial == 0){
+
+            var aprTranBUHead = getApprovalChainByDesignation(plan.apiId!! , UserLovEnum.BEX.id)
+
+            var data0: MutableMap<String, Any> = mutableMapOf()
+
+            data0.put("id", aprTranBUHead.owner!!)
+            data0.put("approvedByUser",user.id)
+            data0.put("apiStatus",ApprovalStatusEnum.APPROVED.id)
+            plan.comment?.let { data0.put("comments", it) }
+            data0.put("updatedBy",user.id)
+
+
+            sqlSessionFactory.openSession().update("ApprovalChainTransactionMapper.updateApprovalChainTransaction",data0)
+
+
             var data: MutableMap<String, Any> = mutableMapOf()
 
             plan.planId?.let { data.put("id", it) }
             data.put("planStatus", AllocationStatusEnum.APPROVED.id)
             data.put("updatedBy",user.id)
+            data.put("comment",plan.comment!!)
 
             sqlSessionFactory.openSession().update("DispatchPlanMapper.approvePlan",data)
+
+
 
         }
 

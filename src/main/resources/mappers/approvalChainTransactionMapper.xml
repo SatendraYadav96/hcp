@@ -42,6 +42,12 @@
         where ID_OWNER_API = #{id}
     </select>
 
+
+    <select id="getApprovalChainByDesignation" resultMap="approvalChainTransactionResultMap">
+        select * from APPROVAL_CHAIN_TRANSACTION_API
+        where ID_OWNER_API = #{id} and ID_DESG_ULV_API = #{designationId}
+    </select>
+
     <select id="getSpecialApprovalChainById" resultMap="approvalChainTransactionResultMap">
         select * from APPROVAL_CHAIN_TRANSACTION_API
         where ID_OWNER_API = #{id} and ID_DESG_ULV_API = #{desginationId}
@@ -60,6 +66,12 @@
 
         UPDATE APPROVAL_CHAIN_TRANSACTION_API SET ID_APPROVED_BY_USR_API = #{approvedByUser} , ID_STATUS_SLV_API = #{apiStatus} , COMMENT_API = #{comments},UPDATED_ON_API = GETDATE() , UPDATED_BY_API = #{updatedBy}
         WHERE ID_OWNER_API = #{id}
+    </update>
+
+    <update id="updateApprovalChainTransactionDesignation">
+
+        UPDATE APPROVAL_CHAIN_TRANSACTION_API SET ID_APPROVED_BY_USR_API = #{approvedByUser} , ID_STATUS_SLV_API = #{apiStatus} , COMMENT_API = #{comments},UPDATED_ON_API = GETDATE() , UPDATED_BY_API = #{updatedBy}
+        WHERE ID_API = #{id}
     </update>
 
 

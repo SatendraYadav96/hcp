@@ -66,6 +66,13 @@ open class ApprovalController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getApprovalChainByDesignation/{id}/{desgId}")
+    fun getApprovalChainByDesignation(@PathVariable id : String , desgId: String  ): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = approvalService.getApprovalChainByDesignation(id,desgId)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
 
     @GetMapping("/getApprovalChainForSpecialPlanConvert/{id}")
     fun getApprovalChainForSpecialPlanConvert(@PathVariable id : String  ): ResponseEntity<*> {

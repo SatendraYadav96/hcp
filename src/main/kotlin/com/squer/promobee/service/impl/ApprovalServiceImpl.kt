@@ -10,9 +10,7 @@ import com.squer.promobee.service.repository.domain.DispatchPlan
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-
 import org.springframework.stereotype.Service
-import java.util.*
 
 
 @Service
@@ -52,9 +50,13 @@ class ApprovalServiceImpl @Autowired constructor(
         return approvalRepository.resetDraftPlan(planId)
     }
 
-    override fun getApprovalChainById(id: String): ApprovalChainTransaction {
+    override fun getApprovalChainById(id: String): List<ApprovalChainTransaction> {
         return approvalRepository.getApprovalChainById(id)
     }
+    override fun getApprovalChainByDesignation(id: String, desgId: String): ApprovalChainTransaction {
+        return approvalRepository.getApprovalChainByDesignation(id , desgId)
+    }
+
 
     override fun getApprovalChainForSpecialPlanConvert(id: String): ApprovalChainTransaction {
         return approvalRepository.getApprovalChainForSpecialPlanConvert(id)

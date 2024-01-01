@@ -22,7 +22,9 @@ interface ApprovalService {
 
     fun resetDraftPlan(planId : String)
 
-    fun getApprovalChainById(id : String): ApprovalChainTransaction
+    fun getApprovalChainById(id : String): List<ApprovalChainTransaction>
+
+    fun getApprovalChainByDesignation(id : String, desgId: String) :ApprovalChainTransaction
 
     fun getApprovalChainForSpecialPlanConvert(id : String): ApprovalChainTransaction
 
