@@ -246,19 +246,7 @@
     </select>
 
 
-    <select id="rbmStockMonthly" resultMap="dispatchPlanResultMap" >
-        SELECT * FROM DISPATCH_PLAN_DIP DIP
-JOIN DISPATCH_DETAIL_DID DID ON DID.ID_DIP_DID = DIP.ID_DIP
-WHERE DID.ID_RCT_DID =  #{rbmId} AND DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND DIP.IS_SPECIAL_DIP = 0
-  AND DIP.IS_VIRTUAL_DIP = 0
-    </select>
 
-    <select id="rbmStockVirtual" resultMap="dispatchPlanResultMap" >
-        SELECT * FROM DISPATCH_PLAN_DIP DIP
-                          JOIN VIRTUAL_DISPATCH_VID DID ON DID.ID_DIP_DID = DIP.ID_DIP
-        WHERE DID.ID_RCT_DID =  #{rbmId} AND DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND DIP.IS_SPECIAL_DIP = 0
-          AND DIP.IS_VIRTUAL_DIP = 0
-    </select>
 
 
 
