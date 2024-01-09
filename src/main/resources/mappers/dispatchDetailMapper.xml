@@ -419,6 +419,10 @@ DELETE FROM DISPATCH_DETAIL_DID WHERE ID_DIP_DID = #{planId}
         UPDATE DISPATCH_DETAIL_DID SET QUANTITY_DISPATCH_DID = #{qtyDispatch} WHERE ID_DID = #{id}
     </update>
 
+    <update id="updateCommonAllocation">
+        UPDATE DISPATCH_DETAIL_DID SET QUANTITY_DISPATCH_DID = QUANTITY_DISPATCH_DID - #{qtyDispatch} WHERE ID_INV_DID = #{inventoryId} AND ID_RCT_DID = #{recipientId}
+    </update>
+
 
 
 </mapper>

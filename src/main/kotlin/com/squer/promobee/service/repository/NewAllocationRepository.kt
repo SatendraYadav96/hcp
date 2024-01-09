@@ -600,109 +600,219 @@ class NewAllocationRepository(
 
         var recipient = mutableListOf<Recipient>()
 
+        var employee = Users()
+
         var i = 0
 
-//        if(user.userDesignation!!.id === UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id){
-//            saveAlloc.forEach {
-//                if(it.quantity!! > 0){
-//
-//                }
-//            }
-//        }
+        if(user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id){
+            var data0 : MutableMap<String, String> = mutableMapOf()
+
+            data0.put("userId",user.id)
+
+            employee = sqlSessionFactory.openSession().selectOne<Users>("UsersMasterMapper.getRbm",data0)
+
+
+            saveAlloc.forEach {
 
 
 
-        saveAlloc.forEach {
-
-
-            if(it.quantity!! > 0) {
-                var invId = it.inventoryId
-                var planId = it.dispatchPlanId
-                var dispatchedQuantity = it.quantity
-                var data1: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> = kotlin.collections.mutableMapOf()
+                if(it.quantity!! > 0) {
+                    var invId = it.inventoryId
+                    var planId = it.dispatchPlanId
+                    var dispatchedQuantity = it.quantity
+                    var data1: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> = kotlin.collections.mutableMapOf()
 
 //                saveAlloc[i].designationId?.let { it1 -> data1.put("designationId", it1) }
 //                saveAlloc[i].teamId?.let { it1 -> data1.put("teamId", it1) }
-                data1.put("designationId",it.designationId!!)
-                data1.put("teamId",it.teamId!!)
+                    data1.put("designationId",it.designationId!!)
+                    data1.put("teamId",it.teamId!!)
 
-                recipient = sqlSessionFactory.openSession()
-                    .selectList<com.squer.promobee.service.repository.domain.Recipient>(
-                        "RecipientMapper.getRecipientToSaveAllocation",
-                        data1
-                    )
+                    var data3: MutableMap<String, Any> = mutableMapOf()
 
-                var n = 0
+                    data3.put("inventoryId",invId!!)
+                    data3.put("recipientId",employee.userRecipientId!!)
+                    data3.put("qtyDispatch", dispatchedQuantity!!)
 
-                recipient.forEach { it ->
-
-                    var dispatchDetail = com.squer.promobee.service.repository.domain.DispatchDetail()
-
-                    var data: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> =
-                        kotlin.collections.mutableMapOf()
-
-                    var data4: MutableMap<String, Any> = mutableMapOf()
-                   // saveAlloc[i].inventoryId?.let { it1 -> data4.put("inventoryId", it1) }
-                    data4.put("inventoryId",invId!!)
-
-                    var item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocationByInventoryId",data4)
-
-                    var data5: MutableMap<String, Any> = mutableMapOf()
-
-                    data5.put("id",item.itemId!!)
-
-                    var inventory = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data5)
+                    sqlSessionFactory.openSession().update("DispatchDetailMapper.updateCommonAllocation",data3)
 
 
-
-
-                    data.put("id", java.util.UUID.randomUUID().toString())
-                   // saveAlloc[i].dispatchPlanId?.let { it1 -> data.put("planId", it1) }
-
-                    data.put("planId", planId!!)
-
-                    data.put("inventoryId", inventory[n].id)
-                    data.put("recipientId", it.id)
-                    //saveAlloc[i].quantity?.let { it1 -> data.put("qtyDispatch", it1) }
-                    data.put("qtyDispatch", dispatchedQuantity!!)
-                    data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                    data.put("detailStatus", com.squer.promobee.api.v1.enums.DispatchDetailStatusEnum.ALLOCATED.id)
-                    data.put("createdBy", user.id)
-                    data.put("updatedBy", user.id)
-
-                    sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveCommonAllocation", data)
-
-
-                    var data2: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> =
-                        kotlin.collections.mutableMapOf()
-
-
-                    data2.put("id", inventory[n].id)
-
-                    var inv = sqlSessionFactory.openSession()
-                        .selectOne<com.squer.promobee.service.repository.domain.Inventory>(
-                            "InventoryMapper.getInventoryByIdForInvoicing",
-                            data2
+                    recipient = sqlSessionFactory.openSession()
+                        .selectList<com.squer.promobee.service.repository.domain.Recipient>(
+                            "RecipientMapper.getRecipientToSaveAllocation",
+                            data1
                         )
 
-                    var data3: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> =
-                        kotlin.collections.mutableMapOf()
+                    var n = 0
 
-                    var invAllocatedQty = inv.qtyAllocated?.plus(dispatchedQuantity!!)
+                    recipient.forEach { it ->
 
-                    data3.put("id", inv.id)
-                    data3.put("qtyAllocated", invAllocatedQty!!)
-                    data3.put("updatedBy", user.id)
+                        var dispatchDetail = com.squer.promobee.service.repository.domain.DispatchDetail()
 
-                    sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
+                        var data: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> =
+                            kotlin.collections.mutableMapOf()
+
+                        var data4: MutableMap<String, Any> = mutableMapOf()
+                        // saveAlloc[i].inventoryId?.let { it1 -> data4.put("inventoryId", it1) }
+                        data4.put("inventoryId",invId!!)
+
+                        var item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocationByInventoryId",data4)
+
+                        var data5: MutableMap<String, Any> = mutableMapOf()
+
+                        data5.put("id",item.itemId!!)
+
+                        var inventory = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data5)
 
 
+
+
+                        data.put("id", java.util.UUID.randomUUID().toString())
+                        // saveAlloc[i].dispatchPlanId?.let { it1 -> data.put("planId", it1) }
+
+                        data.put("planId", planId!!)
+
+                        data.put("inventoryId", inventory[n].id)
+                        data.put("recipientId", it.id)
+                        //saveAlloc[i].quantity?.let { it1 -> data.put("qtyDispatch", it1) }
+                        data.put("qtyDispatch", dispatchedQuantity!!)
+                        data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+                        data.put("detailStatus", com.squer.promobee.api.v1.enums.DispatchDetailStatusEnum.ALLOCATED.id)
+                        data.put("createdBy", user.id)
+                        data.put("updatedBy", user.id)
+
+                        sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveCommonAllocation", data)
+
+
+//                        var data2: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> =
+//                            kotlin.collections.mutableMapOf()
+//
+//
+//                        data2.put("id", inventory[n].id)
+//
+//                        var inv = sqlSessionFactory.openSession()
+//                            .selectOne<com.squer.promobee.service.repository.domain.Inventory>(
+//                                "InventoryMapper.getInventoryByIdForInvoicing",
+//                                data2
+//                            )
+//
+//                        var data3: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> =
+//                            kotlin.collections.mutableMapOf()
+//
+//                        var invAllocatedQty = inv.qtyAllocated?.plus(dispatchedQuantity!!)
+//
+//                        data3.put("id", inv.id)
+//                        data3.put("qtyAllocated", invAllocatedQty!!)
+//                        data3.put("updatedBy", user.id)
+//
+//                        sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
+
+
+
+
+
+                    }
+
+                    i++
                 }
 
-                i++
+
+
             }
+        } else {
+
+            saveAlloc.forEach {
 
 
+                if(it.quantity!! > 0) {
+                    var invId = it.inventoryId
+                    var planId = it.dispatchPlanId
+                    var dispatchedQuantity = it.quantity
+                    var data1: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> = kotlin.collections.mutableMapOf()
+
+//                saveAlloc[i].designationId?.let { it1 -> data1.put("designationId", it1) }
+//                saveAlloc[i].teamId?.let { it1 -> data1.put("teamId", it1) }
+                    data1.put("designationId",it.designationId!!)
+                    data1.put("teamId",it.teamId!!)
+
+                    recipient = sqlSessionFactory.openSession()
+                        .selectList<com.squer.promobee.service.repository.domain.Recipient>(
+                            "RecipientMapper.getRecipientToSaveAllocation",
+                            data1
+                        )
+
+                    var n = 0
+
+                    recipient.forEach { it ->
+
+                        var dispatchDetail = com.squer.promobee.service.repository.domain.DispatchDetail()
+
+                        var data: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> =
+                            kotlin.collections.mutableMapOf()
+
+                        var data4: MutableMap<String, Any> = mutableMapOf()
+                        // saveAlloc[i].inventoryId?.let { it1 -> data4.put("inventoryId", it1) }
+                        data4.put("inventoryId",invId!!)
+
+                        var item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocationByInventoryId",data4)
+
+                        var data5: MutableMap<String, Any> = mutableMapOf()
+
+                        data5.put("id",item.itemId!!)
+
+                        var inventory = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data5)
+
+
+
+
+                        data.put("id", java.util.UUID.randomUUID().toString())
+                        // saveAlloc[i].dispatchPlanId?.let { it1 -> data.put("planId", it1) }
+
+                        data.put("planId", planId!!)
+
+                        data.put("inventoryId", inventory[n].id)
+                        data.put("recipientId", it.id)
+                        //saveAlloc[i].quantity?.let { it1 -> data.put("qtyDispatch", it1) }
+                        data.put("qtyDispatch", dispatchedQuantity!!)
+                        data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+                        data.put("detailStatus", com.squer.promobee.api.v1.enums.DispatchDetailStatusEnum.ALLOCATED.id)
+                        data.put("createdBy", user.id)
+                        data.put("updatedBy", user.id)
+
+                        sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveCommonAllocation", data)
+
+
+                        var data2: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> =
+                            kotlin.collections.mutableMapOf()
+
+
+                        data2.put("id", inventory[n].id)
+
+                        var inv = sqlSessionFactory.openSession()
+                            .selectOne<com.squer.promobee.service.repository.domain.Inventory>(
+                                "InventoryMapper.getInventoryByIdForInvoicing",
+                                data2
+                            )
+
+                        var data3: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> =
+                            kotlin.collections.mutableMapOf()
+
+                        var invAllocatedQty = inv.qtyAllocated?.plus(dispatchedQuantity!!)
+
+                        data3.put("id", inv.id)
+                        data3.put("qtyAllocated", invAllocatedQty!!)
+                        data3.put("updatedBy", user.id)
+
+                        sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
+
+
+                    }
+
+                    i++
+                }
+
+
+
+            }
 
         }
 
@@ -718,65 +828,146 @@ class NewAllocationRepository(
 
         var dispatchDetails = DispatchDetail()
 
+        var employee = Users()
+
         var i = 0
 
-        saveAlloc.forEach { it ->
+        if(user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id){
+
+            var data0 : MutableMap<String, String> = mutableMapOf()
+
+            data0.put("userId",user.id)
+
+            employee = sqlSessionFactory.openSession().selectOne<Users>("UsersMasterMapper.getRbm",data0)
+
+            saveAlloc.forEach { it ->
 
 
 
-            if(it.quantity!! > 0 ) {
+                if(it.quantity!! > 0 ) {
 
-                var invId = it.inventoryId
-                var planId = it.dispatchPlanId
-                var dispatchedQuantity = it.quantity
-                var ffId = it.recipientId
-                var data4: MutableMap<String, Any> = mutableMapOf()
-                data4.put("inventoryId", invId!!)
+                    var invId = it.inventoryId
+                    var planId = it.dispatchPlanId
+                    var dispatchedQuantity = it.quantity
+                    var ffId = it.recipientId
+                    var data4: MutableMap<String, Any> = mutableMapOf()
+                    data4.put("inventoryId", invId!!)
 
-                var item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocationByInventoryId",data4)
+                    var item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocationByInventoryId",data4)
 
-                var data5: MutableMap<String, Any> = mutableMapOf()
+                    var data5: MutableMap<String, Any> = mutableMapOf()
 
-                data5.put("id",item.itemId!!)
+                    data5.put("id",item.itemId!!)
 
-                var inventory = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data5)
+                    var inventory = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data5)
 
-                data.put("id", UUID.randomUUID().toString())
-                data.put("planId", planId!!)
-                data.put("inventoryId", inventory[i].id)
-                data.put("recipientId", ffId!!)
-                data.put("qtyDispatch", dispatchedQuantity!!)
-                data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                data.put("createdBy", user.id)
-                data.put("updatedBy", user.id)
+                    data.put("id", UUID.randomUUID().toString())
+                    data.put("planId", planId!!)
+                    data.put("inventoryId", inventory[i].id)
+                    data.put("recipientId", ffId!!)
+                    data.put("qtyDispatch", dispatchedQuantity!!)
+                    data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+                    data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+                    data.put("createdBy", user.id)
+                    data.put("updatedBy", user.id)
 
-                sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveCommonAllocation", data)
+                    sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveCommonAllocation", data)
+
+                    var data3: MutableMap<String, Any> = mutableMapOf()
+
+                    data3.put("inventoryId",invId!!)
+                    data3.put("recipientId",employee.userRecipientId!!)
+                    data3.put("qtyDispatch", dispatchedQuantity!!)
+
+                    sqlSessionFactory.openSession().update("DispatchDetailMapper.updateCommonAllocation",data3)
 
 
-                var data2: MutableMap<String, Any> = mutableMapOf()
+//                    var data2: MutableMap<String, Any> = mutableMapOf()
+//
+//
+//                    data2.put("id", inventory[i].id)
+//
+//                    var inv = sqlSessionFactory.openSession()
+//                        .selectOne<Inventory>("InventoryMapper.getInventoryByIdForInvoicing", data2)
+//
+//                    var data3: MutableMap<String, Any> = mutableMapOf()
+//
+//                    var invAllocatedQty = inv.qtyAllocated?.plus(dispatchedQuantity!!)
+//
+//                    data3.put("id", inv.id)
+//                    data3.put("qtyAllocated", invAllocatedQty!!)
+//                    data3.put("updatedBy", user.id)
+//
+//                    sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
+                }
 
 
-                data2.put("id", inventory[i].id)
 
-                var inv = sqlSessionFactory.openSession()
-                    .selectOne<Inventory>("InventoryMapper.getInventoryByIdForInvoicing", data2)
 
-                var data3: MutableMap<String, Any> = mutableMapOf()
+            }
+        } else {
 
-                var invAllocatedQty = inv.qtyAllocated?.plus(dispatchedQuantity!!)
+            saveAlloc.forEach { it ->
 
-                data3.put("id", inv.id)
-                data3.put("qtyAllocated", invAllocatedQty!!)
-                data3.put("updatedBy", user.id)
 
-                sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
+
+                if(it.quantity!! > 0 ) {
+
+                    var invId = it.inventoryId
+                    var planId = it.dispatchPlanId
+                    var dispatchedQuantity = it.quantity
+                    var ffId = it.recipientId
+                    var data4: MutableMap<String, Any> = mutableMapOf()
+                    data4.put("inventoryId", invId!!)
+
+                    var item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocationByInventoryId",data4)
+
+                    var data5: MutableMap<String, Any> = mutableMapOf()
+
+                    data5.put("id",item.itemId!!)
+
+                    var inventory = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data5)
+
+                    data.put("id", UUID.randomUUID().toString())
+                    data.put("planId", planId!!)
+                    data.put("inventoryId", inventory[i].id)
+                    data.put("recipientId", ffId!!)
+                    data.put("qtyDispatch", dispatchedQuantity!!)
+                    data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+                    data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+                    data.put("createdBy", user.id)
+                    data.put("updatedBy", user.id)
+
+                    sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveCommonAllocation", data)
+
+
+                    var data2: MutableMap<String, Any> = mutableMapOf()
+
+
+                    data2.put("id", inventory[i].id)
+
+                    var inv = sqlSessionFactory.openSession()
+                        .selectOne<Inventory>("InventoryMapper.getInventoryByIdForInvoicing", data2)
+
+                    var data3: MutableMap<String, Any> = mutableMapOf()
+
+                    var invAllocatedQty = inv.qtyAllocated?.plus(dispatchedQuantity!!)
+
+                    data3.put("id", inv.id)
+                    data3.put("qtyAllocated", invAllocatedQty!!)
+                    data3.put("updatedBy", user.id)
+
+                    sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
+                }
+
+
+
+
             }
 
-
-
-
         }
+
+
 
 
     }
@@ -1234,63 +1425,144 @@ class NewAllocationRepository(
 
         var dispatchDetails = DispatchDetail()
 
+        var employee = Users()
+
         var i = 0
 
-        saveAlloc.forEach { it ->
+        if(user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id){
 
-            if(it.quantity!! > 0) {
-                var invId =  it.inventoryId
-                var planId = it.dispatchPlanId
-                var ffId = it.recipientId
-                var dispatchedQuantity = it.quantity
+            var data0 : MutableMap<String, String> = mutableMapOf()
 
+            data0.put("userId",user.id)
 
+            employee = sqlSessionFactory.openSession().selectOne<Users>("UsersMasterMapper.getRbm",data0)
 
-                var data4: MutableMap<String, Any> = mutableMapOf()
-                data4.put("inventoryId", invId!!)
+            saveAlloc.forEach { it ->
 
-                var item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocationByInventoryId",data4)
-
-                var data5: MutableMap<String, Any> = mutableMapOf()
-
-                data5.put("id",item.itemId!!)
-
-                var inventory = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data5)
+                if(it.quantity!! > 0) {
+                    var invId =  it.inventoryId
+                    var planId = it.dispatchPlanId
+                    var ffId = it.recipientId
+                    var dispatchedQuantity = it.quantity
 
 
-                data.put("id", UUID.randomUUID().toString())
-                data.put("planId", planId!!)
-                data.put("inventoryId", inventory[i].id)
-                data.put("recipientId", ffId!!)
-                data.put("qtyDispatch", dispatchedQuantity!!)
-                data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                data.put("createdBy", user.id)
-                data.put("updatedBy", user.id)
 
-                sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveCommonAllocation", data)
+                    var data4: MutableMap<String, Any> = mutableMapOf()
+                    data4.put("inventoryId", invId!!)
 
+                    var item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocationByInventoryId",data4)
 
-                var data2: MutableMap<String, Any> = mutableMapOf()
+                    var data5: MutableMap<String, Any> = mutableMapOf()
+
+                    data5.put("id",item.itemId!!)
+
+                    var inventory = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data5)
 
 
-                data2.put("id", inventory[i].id)
+                    data.put("id", UUID.randomUUID().toString())
+                    data.put("planId", planId!!)
+                    data.put("inventoryId", inventory[i].id)
+                    data.put("recipientId", ffId!!)
+                    data.put("qtyDispatch", dispatchedQuantity!!)
+                    data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+                    data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+                    data.put("createdBy", user.id)
+                    data.put("updatedBy", user.id)
 
-                var inv = sqlSessionFactory.openSession()
-                    .selectOne<Inventory>("InventoryMapper.getInventoryByIdForInvoicing", data2)
+                    sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveCommonAllocation", data)
 
-                var data3: MutableMap<String, Any> = mutableMapOf()
 
-                var invAllocatedQty = inv.qtyAllocated?.plus(dispatchedQuantity!!)
+                    var data3: MutableMap<String, Any> = mutableMapOf()
 
-                data3.put("id", inv.id)
-                data3.put("qtyAllocated", invAllocatedQty!!)
-                data3.put("updatedBy", user.id)
+                    data3.put("inventoryId",invId!!)
+                    data3.put("recipientId",employee.userRecipientId!!)
+                    data3.put("qtyDispatch", dispatchedQuantity!!)
 
-                sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
+                    sqlSessionFactory.openSession().update("DispatchDetailMapper.updateCommonAllocation",data3)
+
+
+//                    var data2: MutableMap<String, Any> = mutableMapOf()
+//
+//
+//                    data2.put("id", inventory[i].id)
+//
+//                    var inv = sqlSessionFactory.openSession()
+//                        .selectOne<Inventory>("InventoryMapper.getInventoryByIdForInvoicing", data2)
+//
+//                    var data3: MutableMap<String, Any> = mutableMapOf()
+//
+//                    var invAllocatedQty = inv.qtyAllocated?.plus(dispatchedQuantity!!)
+//
+//                    data3.put("id", inv.id)
+//                    data3.put("qtyAllocated", invAllocatedQty!!)
+//                    data3.put("updatedBy", user.id)
+//
+//                    sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
+
+                }
+
 
             }
 
+        } else {
+
+            saveAlloc.forEach { it ->
+
+                if(it.quantity!! > 0) {
+                    var invId =  it.inventoryId
+                    var planId = it.dispatchPlanId
+                    var ffId = it.recipientId
+                    var dispatchedQuantity = it.quantity
+
+
+
+                    var data4: MutableMap<String, Any> = mutableMapOf()
+                    data4.put("inventoryId", invId!!)
+
+                    var item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocationByInventoryId",data4)
+
+                    var data5: MutableMap<String, Any> = mutableMapOf()
+
+                    data5.put("id",item.itemId!!)
+
+                    var inventory = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data5)
+
+
+                    data.put("id", UUID.randomUUID().toString())
+                    data.put("planId", planId!!)
+                    data.put("inventoryId", inventory[i].id)
+                    data.put("recipientId", ffId!!)
+                    data.put("qtyDispatch", dispatchedQuantity!!)
+                    data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+                    data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+                    data.put("createdBy", user.id)
+                    data.put("updatedBy", user.id)
+
+                    sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveCommonAllocation", data)
+
+
+                    var data2: MutableMap<String, Any> = mutableMapOf()
+
+
+                    data2.put("id", inventory[i].id)
+
+                    var inv = sqlSessionFactory.openSession()
+                        .selectOne<Inventory>("InventoryMapper.getInventoryByIdForInvoicing", data2)
+
+                    var data3: MutableMap<String, Any> = mutableMapOf()
+
+                    var invAllocatedQty = inv.qtyAllocated?.plus(dispatchedQuantity!!)
+
+                    data3.put("id", inv.id)
+                    data3.put("qtyAllocated", invAllocatedQty!!)
+                    data3.put("updatedBy", user.id)
+
+                    sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
+
+                }
+
+
+            }
 
         }
 
