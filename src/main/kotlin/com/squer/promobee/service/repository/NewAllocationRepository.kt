@@ -2846,16 +2846,7 @@ class NewAllocationRepository(
             sqlSessionFactory.openSession().selectList<ApprovalChainTransaction>("ApprovalChainTransactionMapper.getApprovalChainById", data8)
 
         if (approvalChainTransaction.isNullOrEmpty()) {
-            var data9: MutableMap<String, Any> = mutableMapOf()
 
-            data9.put("owner", plan.id)
-            data9.put("apiStatus", ApprovalStatusEnum.PENDING_APPROVAL.id)
-            data9.put("updatedBy", user.id)
-
-            sqlSessionFactory.openSession()
-                .update("ApprovalChainTransactionMapper.updateSaveMonthlyToSpecial", data9)
-
-        } else {
             var data10: MutableMap<String, Any> = mutableMapOf()
 
             data10.put("id", UUID.randomUUID().toString())
@@ -2866,7 +2857,20 @@ class NewAllocationRepository(
             data10.put("updatedBy", user.id)
 
             sqlSessionFactory.openSession()
-                .update("ApprovalChainTransactionMapper.insertSaveMonthlyToSpecial", data10)
+                .insert("ApprovalChainTransactionMapper.insertSaveMonthlyToSpecial", data10)
+
+
+
+        } else {
+            var data9: MutableMap<String, Any> = mutableMapOf()
+
+            data9.put("owner", plan.id)
+            data9.put("apiStatus", ApprovalStatusEnum.PENDING_APPROVAL.id)
+            data9.put("updatedBy", user.id)
+
+            sqlSessionFactory.openSession()
+                .update("ApprovalChainTransactionMapper.updateSaveMonthlyToSpecial", data9)
+
         }
 
 
