@@ -2,7 +2,6 @@ package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.repository.domain.DispatchPlan
-import com.squer.promobee.service.repository.domain.Recipient
 import com.squer.promobee.service.repository.domain.Team
 import org.springframework.http.ResponseEntity
 
@@ -26,7 +25,7 @@ interface NewAllocationService {
    fun getTeamForCommonAllocation( ccmId: String): List<CommonAllocationTeamDTO>
 
    fun getQuantityAllocatedOfUserToItem( userId :String, inventoryId :String,  month :Int,
-                                         year :Int,  isSpecialDispatch :Int, teamId: ArrayList<String>
+                                         year :Int,  isSpecialDispatch :Int
    ): List<DesignationWiseQuantityAllocatedDTO>
 
    fun getQuantityAllocatedDifferentialRecipient( planId:String,inventoryId :String,  teamId :String): List<DifferentialRecipientAllocationDTO>
@@ -49,9 +48,9 @@ interface NewAllocationService {
 
    fun getTeamForSpecialAllocation( ccmId: String): List<Team>
 
-   fun getRecipientForSpecialAllocation( ccmId: String): List<Recipient>
+   fun getRecipientForSpecialAllocation( ccmId: String): List<RecipientReportDTO>
 
-   fun getSpecialQuantityAllocatedDifferentialRecipient( planId:String,inventoryId :String,  teamId :ArrayList<String>): List<DifferentialRecipientAllocationDTO>
+   fun getSpecialQuantityAllocatedDifferentialRecipient( planId:String,inventoryId :String): List<DifferentialRecipientAllocationDTO>
 
    fun saveSpecialAllocation (saveAlloc : List<saveDifferentialAllocation>)
 
@@ -71,7 +70,7 @@ interface NewAllocationService {
    fun getVirtualTeamForCommonAllocation( ccmId: String): List<CommonAllocationTeamDTO>
 
    fun getVirtualQuantityAllocatedToUser( userId :String, inventoryId :String,  month :Int,
-                                         year :Int,  isSpecialDispatch :Int,planId: String, teamId: ArrayList<String>): List<DesignationWiseQuantityAllocatedDTO>
+                                         year :Int,  isSpecialDispatch :Int,planId: String): List<DesignationWiseQuantityAllocatedDTO>
 
    fun getVirtualTeamForDifferentialAllocation( planId :String,  teamId :String,  inventoryId :String ): List<AllocationDataTeamPopupDetailsDTO>
 

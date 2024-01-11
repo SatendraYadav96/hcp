@@ -89,10 +89,10 @@ open class NewAllocationController @Autowired constructor(
     }
 
 
-    @GetMapping("/getQuantityAllocatedOfUserToItem/{userId}/{inventoryId}/{month}/{year}/{isSpecialDispatch}/{teamId}")
+    @GetMapping("/getQuantityAllocatedOfUserToItem/{userId}/{inventoryId}/{month}/{year}/{isSpecialDispatch}")
     open fun getQuantityAllocatedOfUserToItem(@PathVariable userId :String,@PathVariable inventoryId :String,@PathVariable month :Int,
-        @PathVariable year :Int,@PathVariable isSpecialDispatch :Int , @PathVariable teamId: ArrayList<String>): ResponseEntity<*> {
-        val data = newAllocationService.getQuantityAllocatedOfUserToItem(userId,inventoryId,month,year,isSpecialDispatch,teamId )
+        @PathVariable year :Int,@PathVariable isSpecialDispatch :Int ): ResponseEntity<*> {
+        val data = newAllocationService.getQuantityAllocatedOfUserToItem(userId,inventoryId,month,year,isSpecialDispatch )
         return ResponseEntity(data, HttpStatus.OK)
     }
 
@@ -181,9 +181,9 @@ open class NewAllocationController @Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
-    @GetMapping("/getSpecialQuantityAllocatedDifferentialRecipient/{planId}/{inventoryId}/{teamId}")
-    open fun getSpecialQuantityAllocatedDifferentialRecipient(@PathVariable planId :String,@PathVariable inventoryId :String,@PathVariable teamId :ArrayList<String>): ResponseEntity<*> {
-        val data = newAllocationService.getSpecialQuantityAllocatedDifferentialRecipient(planId,inventoryId,teamId)
+    @GetMapping("/getSpecialQuantityAllocatedDifferentialRecipient/{planId}/{inventoryId}")
+    open fun getSpecialQuantityAllocatedDifferentialRecipient(@PathVariable planId :String,@PathVariable inventoryId :String): ResponseEntity<*> {
+        val data = newAllocationService.getSpecialQuantityAllocatedDifferentialRecipient(planId,inventoryId)
         return ResponseEntity(data, HttpStatus.OK)
     }
 
@@ -305,11 +305,11 @@ open class NewAllocationController @Autowired constructor(
     }
 
 
-    @GetMapping("/getVirtualQuantityAllocatedToUser/{userId}/{inventoryId}/{month}/{year}/{isSpecialDispatch}/{planId}/{teamId}")
+    @GetMapping("/getVirtualQuantityAllocatedToUser/{userId}/{inventoryId}/{month}/{year}/{isSpecialDispatch}/{planId}")
     open fun getVirtualQuantityAllocatedToUser(@PathVariable userId :String,@PathVariable inventoryId :String,@PathVariable month :Int,
-                                              @PathVariable year :Int,@PathVariable isSpecialDispatch :Int,@PathVariable planId :String,
-         @PathVariable teamId: ArrayList<String>): ResponseEntity<*> {
-        val data = newAllocationService.getVirtualQuantityAllocatedToUser(userId,inventoryId,month,year,isSpecialDispatch, planId,teamId )
+                                              @PathVariable year :Int,@PathVariable isSpecialDispatch :Int,@PathVariable planId :String
+       ): ResponseEntity<*> {
+        val data = newAllocationService.getVirtualQuantityAllocatedToUser(userId,inventoryId,month,year,isSpecialDispatch, planId )
         return ResponseEntity(data, HttpStatus.OK)
     }
 

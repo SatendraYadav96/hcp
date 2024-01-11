@@ -458,8 +458,8 @@ class NewAllocationRepository(
         inventoryId: String,
         month: Int,
         year: Int,
-        isSpecialDispatch: Int,
-        teamId: ArrayList<String>
+        isSpecialDispatch: Int
+
     ): List<DesignationWiseQuantityAllocatedDTO> {
 
         val user =
@@ -478,7 +478,7 @@ class NewAllocationRepository(
                 data.put("year", year)
                 data.put("inventoryId", inventoryId)
                 data.put("isSpecialDispatch", isSpecialDispatch)
-                data.put("teamId",teamId)
+
 
                 quantityDispatch = sqlSessionFactory.openSession().selectList<DesignationWiseQuantityAllocatedDTO>(
                     "DispatchDetailMapper.getQuantityAllocatedOfUserToItemForBex",
@@ -496,7 +496,7 @@ class NewAllocationRepository(
                 data.put("inventoryId", inventoryId)
                 data.put("isSpecialDispatch", isSpecialDispatch)
                 data.put("userId", user.id)
-                data.put("teamId",teamId)
+
 
                 quantityDispatch = sqlSessionFactory.openSession().selectList<DesignationWiseQuantityAllocatedDTO>(
                     "DispatchDetailMapper.getQuantityAllocatedOfUserToItem",
@@ -1362,7 +1362,7 @@ class NewAllocationRepository(
     }
 
 
-    fun getRecipientForSpecialAllocation(ccmId: String): List<Recipient> {
+    fun getRecipientForSpecialAllocation(ccmId: String): List<RecipientReportDTO> {
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
@@ -1371,7 +1371,7 @@ class NewAllocationRepository(
         data.put("ccmId", ccmId)
 
         return sqlSessionFactory.openSession()
-            .selectList<Recipient>("RecipientMapper.getRecipientSpecialAllocation", data)
+            .selectList<RecipientReportDTO>("RecipientMapper.getRecipientSpecialAllocation", data)
 
 
     }
@@ -1379,8 +1379,8 @@ class NewAllocationRepository(
 
     fun getSpecialQuantityAllocatedDifferentialRecipient(
         planId: String,
-        inventoryId: String,
-        teamId: ArrayList<String>
+        inventoryId: String
+
     ): List<DifferentialRecipientAllocationDTO> {
 
         val user =
@@ -1400,7 +1400,7 @@ class NewAllocationRepository(
 
             data.put("planId", planId)
             data.put("inventoryId", inventoryId)
-            data.put("teamId", teamId)
+
 
 
             quantityDispatch = sqlSessionFactory.openSession().selectList<DifferentialRecipientAllocationDTO>(
@@ -1507,6 +1507,7 @@ class NewAllocationRepository(
         } else {
 
             saveAlloc.forEach { it ->
+                var ff = it.recipientId
 
                 if(it.quantity!! > 0) {
                     var invId =  it.inventoryId
@@ -2290,7 +2291,7 @@ class NewAllocationRepository(
 
             var data: MutableMap<String, Any> = mutableMapOf()
 
-            data.put("code", user.userRecipientId!!)
+            data.put("id", user.userRecipientId!!)
 
             virtualCommonTeam = sqlSessionFactory.openSession()
                 .selectList<CommonAllocationTeamDTO>("TeamMapper.getVirtualTeamForCommonAllocationRBM", data)
@@ -2315,8 +2316,8 @@ class NewAllocationRepository(
         month: Int,
         year: Int,
         isSpecialDispatch: Int,
-        planId: String,
-        teamId: ArrayList<String>
+        planId: String
+
     ): List<DesignationWiseQuantityAllocatedDTO> {
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -2331,8 +2332,6 @@ class NewAllocationRepository(
             data.put("inventoryId", inventoryId)
             data.put("isSpecialDispatch", isSpecialDispatch)
             data.put("planId", planId)
-            data.put("teamId",teamId)
-
             quantityDispatch = sqlSessionFactory.openSession().selectList<DesignationWiseQuantityAllocatedDTO>(
                 "DispatchDetailMapper.getVirtualQuantityAllocatedToUserForRbm",
                 data
@@ -2345,7 +2344,7 @@ class NewAllocationRepository(
             data0.put("inventoryId", inventoryId)
             data0.put("isSpecialDispatch", isSpecialDispatch)
             data0.put("planId", planId)
-            data0.put("teamId",teamId)
+
 
             quantityDispatch = sqlSessionFactory.openSession().selectList<DesignationWiseQuantityAllocatedDTO>(
                 "DispatchDetailMapper.getVirtualQuantityAllocatedToUserByBM",

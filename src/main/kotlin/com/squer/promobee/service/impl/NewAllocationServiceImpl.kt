@@ -6,7 +6,6 @@ import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.NewAllocationService
 import com.squer.promobee.service.repository.NewAllocationRepository
 import com.squer.promobee.service.repository.domain.DispatchPlan
-import com.squer.promobee.service.repository.domain.Recipient
 import com.squer.promobee.service.repository.domain.Team
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
@@ -64,8 +63,8 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getTeamForCommonAllocation(ccmId)
     }
 
-    override fun getQuantityAllocatedOfUserToItem(userId: String,  inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int , teamId: ArrayList<String>): List<DesignationWiseQuantityAllocatedDTO> {
-        return newAllocationRepository.getQuantityAllocatedOfUserToItem(userId,inventoryId,month,year,isSpecialDispatch,teamId)
+    override fun getQuantityAllocatedOfUserToItem(userId: String,  inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int ): List<DesignationWiseQuantityAllocatedDTO> {
+        return newAllocationRepository.getQuantityAllocatedOfUserToItem(userId,inventoryId,month,year,isSpecialDispatch)
     }
 
     override fun getQuantityAllocatedDifferentialRecipient(planId: String,inventoryId: String, teamId: String): List<DifferentialRecipientAllocationDTO> {
@@ -108,12 +107,12 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getTeamForSpecialAllocation(ccmId)
     }
 
-    override fun getRecipientForSpecialAllocation(ccmId: String): List<Recipient> {
+    override fun getRecipientForSpecialAllocation(ccmId: String): List<RecipientReportDTO> {
         return newAllocationRepository.getRecipientForSpecialAllocation(ccmId)
     }
 
-    override fun getSpecialQuantityAllocatedDifferentialRecipient(planId: String, inventoryId: String, teamId: ArrayList<String>): List<DifferentialRecipientAllocationDTO> {
-        return newAllocationRepository.getSpecialQuantityAllocatedDifferentialRecipient(planId,inventoryId,teamId)
+    override fun getSpecialQuantityAllocatedDifferentialRecipient(planId: String, inventoryId: String): List<DifferentialRecipientAllocationDTO> {
+        return newAllocationRepository.getSpecialQuantityAllocatedDifferentialRecipient(planId,inventoryId)
     }
 
     override fun saveSpecialAllocation(saveAlloc: List<saveDifferentialAllocation>) {
@@ -149,8 +148,8 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getVirtualTeamForCommonAllocation(ccmId)
     }
 
-    override fun getVirtualQuantityAllocatedToUser(userId: String, inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int,planId: String,teamId: ArrayList<String>): List<DesignationWiseQuantityAllocatedDTO> {
-        return newAllocationRepository.getVirtualQuantityAllocatedToUser(userId,inventoryId,month,year,isSpecialDispatch,planId,teamId)
+    override fun getVirtualQuantityAllocatedToUser(userId: String, inventoryId: String, month: Int, year: Int, isSpecialDispatch: Int,planId: String): List<DesignationWiseQuantityAllocatedDTO> {
+        return newAllocationRepository.getVirtualQuantityAllocatedToUser(userId,inventoryId,month,year,isSpecialDispatch,planId)
     }
 
     override fun getVirtualTeamForDifferentialAllocation(planId: String, teamId: String, inventoryId: String): List<AllocationDataTeamPopupDetailsDTO> {

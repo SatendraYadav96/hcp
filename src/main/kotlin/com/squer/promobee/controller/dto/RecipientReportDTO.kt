@@ -1,6 +1,7 @@
 package com.squer.promobee.controller.dto
 
 class RecipientReportDTO {
+     var recipientId : String? = null
      var businessUnit: String ?= null
      var divison: String ?= null
      var employeeCode: String ?= null
