@@ -343,7 +343,7 @@
 
 
     <insert id="multipleAllocationVirtualBM" >
-        insert into VIRTUAL_DISPATCH_VID(ID_DID, ID_DIP_DID, ID_INV_DID, ID_RCT_DID, QUANTITY_DISPATCH_DID, ID_QTP_DID, ID_STATUS_SLV_DID,  CREATED_ON_DID, CREATED_BY_DID, UPDATED_ON_DID, UPDATED_BY_DID)
+        insert into DISPATCH_DETAIL_DID(ID_DID, ID_DIP_DID, ID_INV_DID, ID_RCT_DID, QUANTITY_DISPATCH_DID, ID_QTP_DID, ID_STATUS_SLV_DID,  CREATED_ON_DID, CREATED_BY_DID, UPDATED_ON_DID, UPDATED_BY_DID)
         values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})
     </insert>
 
@@ -360,7 +360,7 @@ DELETE FROM DISPATCH_DETAIL_DID WHERE ID_DIP_DID = #{planId}
 
 
     <delete id="deleteZeroQuantityAllocationVirtualBM">
-        DELETE FROM VIRTUAL_DISPATCH_VID WHERE ID_DIP_DID = #{planId} AND ID_INV_DID = #{inventoryId} AND QUANTITY_DISPATCH_DID = 0
+        DELETE FROM DISPATCH_DETAIL_DID WHERE ID_DIP_DID = #{planId} AND ID_INV_DID = #{inventoryId} AND QUANTITY_DISPATCH_DID = 0
 
     </delete>
 
@@ -381,7 +381,7 @@ DELETE FROM DISPATCH_DETAIL_DID WHERE ID_DIP_DID = #{planId}
 
     <select id="rbmStockVirtual" resultMap="dispatchDetailResultMap" >
         SELECT DID.* FROM DISPATCH_PLAN_DIP DIP
-                          JOIN VIRTUAL_DISPATCH_VID DID ON DID.ID_DIP_DID = DIP.ID_DIP
+                          JOIN DISPATCH_DETAIL_DID DID ON DID.ID_DIP_DID = DIP.ID_DIP
         WHERE DID.ID_RCT_DID =  #{rbmId} AND DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND DIP.IS_SPECIAL_DIP = 0
           AND DIP.IS_VIRTUAL_DIP = 0
     </select>

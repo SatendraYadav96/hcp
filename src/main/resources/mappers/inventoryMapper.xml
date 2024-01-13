@@ -57,7 +57,7 @@
             (
         SELECT INV.ID_INV, 1 AS 'isItem',CCM.ID_CCM AS 'costCenterID',CCM.NAME_CCM AS 'costCenterName',ITM.ID_ITM AS 'itemID',ITM.NAME_ITM AS 'itemName',
         INV.QTY_RECEIVED_INV AS qtyReceived, INV.QTY_ALLOCATED_INV AS qtyAllocated, INV.QTY_DISPATCHED_INV AS qtyDispatched,
-        isnull((INV.QTY_RECEIVED_INV - INV.QTY_ALLOCATED_INV - INV.QTY_DISPATCHED_INV),0) AS 'stock',INV.EXPIRY_DATE_INV AS 'expiryDate',
+        isnull((INV.QTY_RECEIVED_INV - INV.QTY_ALLOCATED_INV - INV.QTY_DISPATCHED_INV),0) AS 'stock',FORMAT(INV.EXPIRY_DATE_INV,'dd/MM/yyyy') AS 'expiryDate',
         INV.PO_NO_INV AS 'poNo',INV.PACK_SIZE_INV AS 'packSize',
         SUM_DID.QUANTITY_DISPATCH_DID AS 'quantityAllocated',
         INV.ID_INV AS 'inventoryId', #{planId} as 'planId',
@@ -73,7 +73,7 @@
         UNION
         SELECT INV1.ID_INV, 0 AS 'isItem',BRD1.ID_BRD AS 'costCenterID', BRD1.NAME_BRD AS 'costCenterName',SMP.ID_SMP AS 'itemID',SMP.NAME_SMP AS 'itemName',
                 INV1.QTY_RECEIVED_INV AS qtyReceived, INV1.QTY_ALLOCATED_INV AS qtyAllocated, INV1.QTY_DISPATCHED_INV AS qtyDispatched,
-        isnull((INV1.QTY_RECEIVED_INV - INV1.QTY_ALLOCATED_INV - INV1.QTY_DISPATCHED_INV),0) AS 'stock',INV1.EXPIRY_DATE_INV AS 'expiryDate',
+        isnull((INV1.QTY_RECEIVED_INV - INV1.QTY_ALLOCATED_INV - INV1.QTY_DISPATCHED_INV),0) AS 'stock',FORMAT(INV1.EXPIRY_DATE_INV,'dd/MM/yyyy') AS 'expiryDate',
         INV1.PO_NO_INV AS 'poNo',INV1.PACK_SIZE_INV AS 'packSize',
         SUM_DID.QUANTITY_DISPATCH_DID AS 'quantityAllocated',
         INV1.ID_INV AS 'inventoryId', #{planId} as 'planId',

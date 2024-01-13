@@ -1909,7 +1909,7 @@ class NewAllocationRepository(
             sqlSessionFactory.openSession().insert("DispatchPlanMapper.insertVirtualPlan", data1)
 
         }
-        var bmPlanId = mutableListOf<VirtualDispatchDetail>()
+        var bmPlanId = mutableListOf<DispatchDetail>()
 
         var employee = Users()
 
@@ -1928,7 +1928,7 @@ class NewAllocationRepository(
             data2.put("owner", employee.userRecipientId!!)
 
             bmPlanId == sqlSessionFactory.openSession()
-                .selectList<VirtualDispatchDetail>("DispatchPlanMapper.rbmStockVirtual", data2)
+                .selectList<DispatchDetail>("DispatchDetailMapper.rbmStockVirtual", data2)
 
 //            bmPlanId.forEach { it ->
 //                var data3: MutableMap<String, Any> = mutableMapOf()
@@ -2002,7 +2002,7 @@ class NewAllocationRepository(
             var data7: MutableMap<String, Any> = mutableMapOf()
 
             data7.put("UserID", employee.userRecipientId!!)
-            data7.put("PlanID", bmPlanId[i].id!!)
+            data7.put("PlanID", plan[i].id)
 
             allocationInventoryDetails = sqlSessionFactory.openSession()
                 .selectList<VirtualAllocationInventoryDetailsWithCostCenterDTO>(

@@ -1,7 +1,6 @@
 package com.squer.promobee.controller.dto
 
 import com.squer.promobee.service.repository.domain.DispatchPlan
-import java.util.*
 
 class AllocationDetailsDTO{
     var item: List<AllocationInventoryDetailsWithCostCenterDTO>?= null
@@ -16,7 +15,7 @@ class       AllocationInventoryDetailsWithCostCenterDTO {
     var itemID : String ?= null
     var itemName: String ?= null
     var stock: Int?= null
-    var expiryDate : Date ?= null
+    var expiryDate : String ?= null
     var poNo: String ?= null
     var packSize : Int? = null
     var quantityAllocated : Int? = null

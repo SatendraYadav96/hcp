@@ -82,7 +82,7 @@ class InventoryRepository @Autowired constructor(
                         var data : MutableMap<String, String> = mutableMapOf()
                         var detailPlanId = UUID.randomUUID().toString()
                         data.put("id",detailPlanId)
-                        data.put("planId",it.planId!!.id)
+                        data.put("planId",plan.id)
                         data.put("inventoryId",it.inventoryId!!.id)
                         data.put("recipientId",it.recipientId!!.id)
                         data.put("qtyDispatch",it.qtyDispatch.toString())
