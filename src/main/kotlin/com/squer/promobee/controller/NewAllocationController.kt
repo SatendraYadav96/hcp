@@ -245,8 +245,8 @@ open class NewAllocationController @Autowired constructor(
                 val mimeMessage = mailSender.createMimeMessage()
                 val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
                 mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
-                mimeMessageHelper.setTo(it.UserEmailAddress!!)
-                mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+              //  mimeMessageHelper.setTo(it.UserEmailAddress!!)
+                mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
                 mimeMessageHelper.setText("Hi, ", user.name +
 
                         "\n has submitted the Special Dispatch Plan for Month - ${months[alloc.month]} - ${alloc.year} & plan - ${alloc.name}, Kindly look into this and take further actions \n" +

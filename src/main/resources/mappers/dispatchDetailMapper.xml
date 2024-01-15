@@ -379,6 +379,13 @@ DELETE FROM DISPATCH_DETAIL_DID WHERE ID_DIP_DID = #{planId}
           AND DIP.IS_VIRTUAL_DIP = 0
     </select>
 
+    <select id="rbmStockSpecial" resultMap="dispatchDetailResultMap" >
+        SELECT DID.* FROM DISPATCH_PLAN_DIP DIP
+                              JOIN DISPATCH_DETAIL_DID DID ON DID.ID_DIP_DID = DIP.ID_DIP
+        WHERE DID.ID_RCT_DID =  #{rbmId} AND DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND DIP.IS_SPECIAL_DIP = 1
+          AND DIP.IS_VIRTUAL_DIP = 0
+    </select>
+
     <select id="rbmStockVirtual" resultMap="dispatchDetailResultMap" >
         SELECT DID.* FROM DISPATCH_PLAN_DIP DIP
                           JOIN DISPATCH_DETAIL_DID DID ON DID.ID_DIP_DID = DIP.ID_DIP
@@ -400,7 +407,7 @@ DELETE FROM DISPATCH_DETAIL_DID WHERE ID_DIP_DID = #{planId}
     </update>
 
     <update id="updateCommonAllocation">
-        UPDATE DISPATCH_DETAIL_DID SET QUANTITY_DISPATCH_DID = QUANTITY_DISPATCH_DID - #{qtyDispatch} WHERE ID_INV_DID = #{inventoryId} AND ID_RCT_DID = #{recipientId}
+        UPDATE DISPATCH_DETAIL_DID SET QUANTITY_DISPATCH_DID = QUANTITY_DISPATCH_DID - #{qtyDispatch} WHERE ID_INV_DID = #{inventoryId} AND ID_RCT_DID = #{recipientId} AND ID_DIP_DID = #{planId}
     </update>
 
 

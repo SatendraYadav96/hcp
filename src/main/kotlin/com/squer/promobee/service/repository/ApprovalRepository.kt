@@ -78,9 +78,17 @@ class ApprovalRepository(
 
         var filteredAllocationDetails = mutableListOf<AllocationInventoryDetailsWithCostCenterDTO>()
 
-        if(isuserRbm){
+        var employee = Users()
 
-            data.put("USERID", userId)
+        if(isuserRbm){
+            var data0 : MutableMap<String, String> = mutableMapOf()
+
+            data0.put("userId",userId)
+
+            employee = sqlSessionFactory.openSession().selectOne<Users>("UsersMasterMapper.getRbm",data0)
+
+
+            data.put("USERID", employee.userRecipientId!!)
             data.put("RBMPLANID", planId)
 
 
