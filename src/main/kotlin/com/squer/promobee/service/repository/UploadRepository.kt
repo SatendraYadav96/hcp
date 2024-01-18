@@ -2,7 +2,6 @@ package com.squer.promobee.service.repository
 
 
 import com.github.doyaaaaaken.kotlincsv.client.CsvReader
-import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
 import com.squer.promobee.api.v1.enums.*
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
@@ -1741,661 +1740,723 @@ class UploadRepository(
 
 
 
-    fun multipleAllocationUpload(dto: MultipleAllocationUploadDTO) {
-        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-
-        //var data10: MutableMap<String, Any> = mutableMapOf()
-
-
-        val filePath = "${configPath}/multipleAllocationUpload/${dto.fileName}"
-
-        File(filePath).writeBytes(Base64.getDecoder().decode(dto.byteCode.toString()))
-
-
-
-        var counter = 0
-
-        val validHeader: Boolean = true
-
-        val line  = ""
-
-        val successCount = 0
-
-        var upl = UploadLog()
-
-        var uplId =  UUID.randomUUID().toString()
-
-        if(dto.byteCode.isEmpty() || dto.byteCode.isBlank()){
-            var data: MutableMap<String, Any> = mutableMapOf()
-
-            data.put("id",uplId)
-            data.put("type",UploadTypeEnum.MULTIPLE_ALLOCATION.id)
-            data.put("totalRecord",counter)
-            data.put("recordUpload",counter)
-            data.put("statusId",UploadStatusEnum.FILE_NOT_FOUND.id)
-            data.put("createdBy",user.id)
-            data.put("updatedBy",user.id)
-            data.put("parentId",uplId)
-
-            sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogFileNotFound", data)
-        }
-
-        else{
-            var data: MutableMap<String, Any> = mutableMapOf()
-            data.put("id",uplId)
-            data.put("type",UploadTypeEnum.MULTIPLE_ALLOCATION.id)
-            data.put("recordUpload",counter)
-            data.put("statusId",UploadStatusEnum.QUEUED.id)
-            data.put("createdBy",user.id)
-            data.put("updatedBy",user.id)
-            data.put("parentId",uplId)
-
-
-            sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogQueued", data)
-        }
-
-        var allocationInventory = mutableListOf<MultipleAllocationInventoryDTO>()
-
-
-
-           csvReader().readAllWithHeader(filePath)
-
-
-        // Read CSV file
-        var csvReaders = CsvReader()
-        var csvData = csvReaders.readAll(File(filePath))
-
-        // Extract headers horizontally
-        var headerRow = csvData.firstOrNull() ?: emptyList()
-
-
-        println("Headers: $headerRow")
-
-
-
-
-        var csvReader = CsvReader()
-       csvReader.autoRenameDuplicateHeaders
-
-
-
-
-
-
-        var rows = CsvReader().readAllWithHeader(File(filePath))
-
-        var i = 4
-
-        var invOG = mutableListOf<Inventory>()
-
-        var inv1 = mutableListOf<Inventory>()
-
-        var head = headerRow.size
-
-
-        var isHead = head >= i
-
-
-
-
-
-
-
-
-
-
-        var plan = DispatchPlan()
-        var data7: MutableMap<String, Any> = mutableMapOf()
-        data7.put("planId",dto.planId)
-        plan = sqlSessionFactory.openSession().selectOne<DispatchPlan>("DispatchPlanMapper.multipleAllocationUploadPlan",data7)
-
-
-
-        if(plan.isVirtual == 1 && user.userDesignation!!.id == UserLovEnum.PRODUCT_MANAGER_DESIGNATION.id ){
-
-            var m = 0
-            for (i in 4 until head){
-
-
-                var data: MutableMap<String, Any> = mutableMapOf()
-
-                var item = ItemDrodownDTO()
-
-                var inv = mutableListOf<Inventory>()
-
-
-
-                var text = headerRow[i]
-
-
-
-                var  itemCode = text.split("/")
-
-                var invBatchNo = itemCode[4]
-
-                data.put("itemCode", itemCode[1])
-
-                item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocation",data)
-
-
-                var data1: MutableMap<String, Any> = mutableMapOf()
-
-                data1.put("id",item.itemId!!)
-
-                inv = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data1)
-
-
-                if(inv[m].categoryId?.id  == ItemCategoryEnum.SAMPLES.id){
-                    var ogInv = inv.filter { it.batchNo == invBatchNo }
-
-                    invOG.addAll(ogInv)
-                } else{
-                    invOG.addAll(listOf(inv[m]))
-                }
-
-                invOG
-
-
-
-
-
-            }
-
-            var n = 4
-            invOG.forEach {
-                var inventoryId = it.id
-
-
-
-                rows.forEach {
-
-                    if(it.get(headerRow[n])!!.isNotEmpty()){
-
-                    var data2: MutableMap<String, Any> = mutableMapOf()
-
-                    var dispatchDetail = DispatchDetail()
-
-                    var ff = Recipient()
-
-                    data2.put("id", UUID.randomUUID().toString())
-                    data2.put("planId", dto.planId)
-
-                    var data3: MutableMap<String, Any> = mutableMapOf()
-                    it.get(headerRow[2].toString().trim())?.let { it1 -> data3.put("code", it1) }
-                    ff = sqlSessionFactory.openSession()
-                        .selectOne<Recipient>("RecipientMapper.multipleAllocation", data3)
-
-                    data2.put("inventoryId", inventoryId)
-                    data2.put("recipientId", ff.id)
-                    it.get(headerRow[n])?.let { it1 -> data2.put("qtyDispatch", it1) }
-                    data2.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                    data2.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                    data2.put("createdBy", user.id)
-                    data2.put("updatedBy", user.id)
-
-                    sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocationVirtualBM", data2)
-
-                    var data4: MutableMap<String, Any> = mutableMapOf()
-                    data4.put("id", inventoryId)
-                    var inv = sqlSessionFactory.openSession()
-                        .selectOne<Inventory>("InventoryMapper.multipleAllocations", data4)
-
-                    var didQty = it.get(headerRow[n])
-
-                    var dispatchedQty = 0
-
-                    if (didQty.isNullOrEmpty()) {
-                        dispatchedQty
-                    } else {
-                        dispatchedQty = didQty!!.toInt()
-                    }
-
-
-                    var qtyAlloc = inv.qtyAllocated!!.plus(dispatchedQty)
-
-                    var data5: MutableMap<String, Any> = mutableMapOf()
-
-                    data5.put("id", inventoryId)
-                    data5.put("qtyAllocated", qtyAlloc)
-                    data5.put("updatedBy", user.id)
-
-                    sqlSessionFactory.openSession().update("InventoryMapper.multipleAllocationQtyAllocated", data5)
-
-
-                    var data6: MutableMap<String, Any> = mutableMapOf()
-
-                    data6.put("planId", dto.planId)
-                    data6.put("inventoryId", inventoryId)
-
-                    sqlSessionFactory.openSession()
-                        .delete("DispatchDetailMapper.deleteZeroQuantityAllocationVirtualBM", data6)
-
-                }
-
-                }
-
-
-                n++
-
-
-
-            }
-        }
-
-       else if(plan.isVirtual == 1 && user.userDesignation!!.id == UserLovEnum.REGIONAL_BUSINESS_MANAGER.id ){
-
-           var m = 0
-
-            for (i in 4 until head){
-
-
-                var data: MutableMap<String, Any> = mutableMapOf()
-
-                var item = ItemDrodownDTO()
-
-                var inv = mutableListOf<Inventory>()
-
-
-
-                var text = headerRow[i]
-
-
-
-                var  itemCode = text.split("/")
-
-                var invBatchNo = itemCode[4]
-
-                data.put("itemCode", itemCode[1])
-
-                item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocation",data)
-
-
-                var data1: MutableMap<String, Any> = mutableMapOf()
-
-                data1.put("id",item.itemId!!)
-
-                inv = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data1)
-
-
-                if(inv[m].categoryId?.id  == ItemCategoryEnum.SAMPLES.id){
-                    var ogInv = inv.filter { it.batchNo == invBatchNo }
-
-                    invOG.addAll(ogInv)
-                } else{
-                    invOG.addAll(listOf(inv[m]))
-                }
-
-                invOG
-
-
-
-
-
-            }
-            var n = 4
-
-            invOG.forEach {
-                var inventoryId = it.id
-
-                rows.forEach {
-
-                    if(it.get(headerRow[n])!!.isNotEmpty()){
-
-                        var data2: MutableMap<String, Any> = mutableMapOf()
-
-                        var dispatchDetail = DispatchDetail()
-
-                        var ff = Recipient()
-
-                        data2.put("id", UUID.randomUUID().toString())
-                        data2.put("planId", dto.planId)
-
-                        var data3: MutableMap<String, Any> = mutableMapOf()
-                        it.get(headerRow[2].toString().trim())?.let { it1 -> data3.put("code", it1) }
-                        ff = sqlSessionFactory.openSession()
-                            .selectOne<Recipient>("RecipientMapper.multipleAllocation", data3)
-
-                        data2.put("inventoryId", inventoryId)
-                        data2.put("recipientId", ff.id)
-                        it.get(headerRow[n])?.let { it1 -> data2.put("qtyDispatch", it1) }
-                        data2.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                        data2.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                        data2.put("createdBy", user.id)
-                        data2.put("updatedBy", user.id)
-
-                        sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocation", data2)
-
-                        var data4: MutableMap<String, Any> = mutableMapOf()
-                        data4.put("id", inventoryId)
-                        var inv = sqlSessionFactory.openSession()
-                            .selectOne<Inventory>("InventoryMapper.multipleAllocations", data4)
-
-                        var didQty = it.get(headerRow[n])
-
-                        var dispatchedQty = 0
-
-                        if(didQty.isNullOrEmpty()){
-                            dispatchedQty
-                        } else{
-                            dispatchedQty =  didQty!!.toInt()
-                        }
-
-
-
-                        var qtyAlloc = inv.qtyAllocated!!.plus(dispatchedQty)
-
-                        var data5: MutableMap<String, Any> = mutableMapOf()
-
-                        data5.put("id", inventoryId)
-                        data5.put("qtyAllocated", qtyAlloc)
-                        data5.put("updatedBy", user.id)
-
-                        sqlSessionFactory.openSession().update("InventoryMapper.multipleAllocationQtyAllocated", data5)
-
-                        var data6: MutableMap<String, Any> = mutableMapOf()
-
-                        data6.put("planId", dto.planId)
-                        data6.put("inventoryId", inventoryId)
-
-                        sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocation",data6)
-
-
-                    }
-
-
-                }
-
-
-                n++
-
-
-
-            }
-        }
-
-        else  {
-
-            if (user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id){
-
-                var employee = Users()
-
-                var data0 : MutableMap<String, String> = mutableMapOf()
-
-                data0.put("userId",user.id)
-
-                employee = sqlSessionFactory.openSession().selectOne<Users>("UsersMasterMapper.getRbm",data0)
-
-                var m = 0
-                for (i in 4 until head){
-
-
-                    var data: MutableMap<String, Any> = mutableMapOf()
-
-                    var item = ItemDrodownDTO()
-
-                    var inv = mutableListOf<Inventory>()
-
-
-
-                    var text = headerRow[i]
-
-
-
-                    var  itemCode = text.split("/")
-
-                    var invBatchNo = itemCode[4]
-
-                    data.put("itemCode", itemCode[1])
-
-                    item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocation",data)
-
-
-                    var data1: MutableMap<String, Any> = mutableMapOf()
-
-                    data1.put("id",item.itemId!!)
-
-                    inv = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data1)
-
-
-                    if(inv[m].categoryId?.id  == ItemCategoryEnum.SAMPLES.id){
-                        var ogInv = inv.filter { it.batchNo == invBatchNo }
-
-                        invOG.addAll(ogInv)
-                    } else{
-                        invOG.add(inv[m])
-                    }
-
-                    invOG
-
-                }
-
-                var n = 4
-
-                invOG.forEach {
-                    var inventoryId = it.id
-
-                    rows.forEach {
-
-                        if(it.get(headerRow[n])!!.isNotEmpty()){
-
-                            var data2: MutableMap<String, Any> = mutableMapOf()
-
-                            var dispatchDetail = DispatchDetail()
-
-                            var ff = Recipient()
-
-                            data2.put("id", UUID.randomUUID().toString())
-                            data2.put("planId", dto.planId)
-
-                            var data3: MutableMap<String, Any> = mutableMapOf()
-                            it.get(headerRow[2].toString().trim())?.let { it1 -> data3.put("code", it1) }
-                            ff = sqlSessionFactory.openSession()
-                                .selectOne<Recipient>("RecipientMapper.multipleAllocation", data3)
-
-                            data2.put("inventoryId", inventoryId)
-                            data2.put("recipientId", ff.id)
-                            it.get(headerRow[n])?.let { it1 -> data2.put("qtyDispatch", it1) }
-                            data2.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                            data2.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                            data2.put("createdBy", user.id)
-                            data2.put("updatedBy", user.id)
-
-                            sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocation", data2)
-
-                            var data4: MutableMap<String, Any> = mutableMapOf()
-                            data4.put("id", inventoryId)
-                            var inv = sqlSessionFactory.openSession()
-                                .selectOne<Inventory>("InventoryMapper.multipleAllocations", data4)
-
-                            var data6: MutableMap<String, Any> = mutableMapOf()
-                            data6.put("planId", dto.planId)
-                            data6.put("inventoryId", inventoryId)
-
-                            sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocation",data6)
-
-                            var didQty = it.get(headerRow[n])
-
-                            var data7: MutableMap<String, Any> = mutableMapOf()
-
-                            data7.put("inventoryId",inventoryId)
-                            data7.put("recipientId",employee.userRecipientId!!)
-                            data7.put("qtyDispatch", didQty!!)
-                            data7.put("planId",plan.id!!)
-
-                            sqlSessionFactory.openSession().update("DispatchDetailMapper.updateCommonAllocation",data7)
-                        }
-
-
-
-
-
-                    }
-
-
-                    n++
-
-
-
-                }
-
-            } else {
-                var m = 0
-                for (i in 4 until head){
-
-
-                    var data: MutableMap<String, Any> = mutableMapOf()
-
-                    var item = ItemDrodownDTO()
-
-                    var inv = mutableListOf<Inventory>()
-
-
-
-                    var text = headerRow[i]
-
-
-
-                    var  itemCode = text.split("/")
-
-                    var invBatchNo = itemCode[4]
-
-                    data.put("itemCode", itemCode[1])
-
-                    item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocation",data)
-
-
-                    var data1: MutableMap<String, Any> = mutableMapOf()
-
-                    data1.put("id",item.itemId!!)
-
-                    inv = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data1)
-
-
-                    if(inv[m].categoryId?.id  == ItemCategoryEnum.SAMPLES.id){
-                        var ogInv = inv.filter { it.batchNo == invBatchNo }
-
-                        invOG.addAll(ogInv)
-                    } else{
-                        invOG.add(inv[m])
-                    }
-
-                    invOG
-
-                }
-
-                var n = 4
-
-                invOG.forEach {
-                    var inventoryId = it.id
-
-
-
-
-
-                    rows.forEach {
-
-                        if(it.get(headerRow[n])!!.isNotEmpty()){
-
-                            var data2: MutableMap<String, Any> = mutableMapOf()
-
-                            var dispatchDetail = DispatchDetail()
-
-                            var ff = Recipient()
-
-                            data2.put("id", UUID.randomUUID().toString())
-                            data2.put("planId", dto.planId)
-
-                            var data3: MutableMap<String, Any> = mutableMapOf()
-                            it.get(headerRow[2].toString().trim())?.let { it1 -> data3.put("code", it1) }
-                            ff = sqlSessionFactory.openSession()
-                                .selectOne<Recipient>("RecipientMapper.multipleAllocation", data3)
-
-                            data2.put("inventoryId", inventoryId)
-                            data2.put("recipientId", ff.id)
-                            it.get(headerRow[n])?.let { it1 -> data2.put("qtyDispatch", it1) }
-                            data2.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                            data2.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                            data2.put("createdBy", user.id)
-                            data2.put("updatedBy", user.id)
-
-                            sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocation", data2)
-
-                            var data4: MutableMap<String, Any> = mutableMapOf()
-                            data4.put("id", inventoryId)
-                            var inv = sqlSessionFactory.openSession()
-                                .selectOne<Inventory>("InventoryMapper.multipleAllocations", data4)
-
-                            var didQty = it.get(headerRow[n])
-
-                            var dispatchedQty = 0
-
-                            if(didQty.isNullOrEmpty()){
-                                dispatchedQty
-                            } else{
-                                dispatchedQty =  didQty!!.toInt()
-                            }
-
-
-
-                            var qtyAlloc = inv.qtyAllocated!!.plus(dispatchedQty)
-
-                            var data5: MutableMap<String, Any> = mutableMapOf()
-
-                            data5.put("id", inventoryId)
-                            data5.put("qtyAllocated", qtyAlloc)
-                            data5.put("updatedBy", user.id)
-
-                            sqlSessionFactory.openSession().update("InventoryMapper.multipleAllocationQtyAllocated", data5)
-
-                            var data6: MutableMap<String, Any> = mutableMapOf()
-
-                            data6.put("planId", dto.planId)
-                            data6.put("inventoryId", inventoryId)
-
-                            sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocation",data6)
-                        }
-
-
-
-
-
-                    }
-
-
-                    n++
-
-
-
-                }
-            }
-
-
-        }
-
-
-            var record = rows.count()
-
-            var data: MutableMap<String, Any> = mutableMapOf()
-            data.put("id",uplId)
-            data.put("type",UploadTypeEnum.MULTIPLE_ALLOCATION.id)
-            data.put("totalRecord",record)
-            data.put("recordUpload",record)
-            data.put("statusId",UploadStatusEnum.COMPLETED_SUCCESSFULLY.id)
-            data.put("createdBy",user.id)
-            data.put("updatedBy",user.id)
-            data.put("parentId",uplId)
-
-
-            sqlSessionFactory.openSession().update("UploadLogMapper.multipleAllocation", data)
-
-
-
-
-
-
-
-
-    }
+//    fun multipleAllocationUpload(dto: MultipleAllocationUploadDTO) : ResponseEntity<*>{
+//        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+//
+//        //var data10: MutableMap<String, Any> = mutableMapOf()
+//        var errorMap: MutableMap<String, String> = HashMap()
+//
+//
+//
+//        val filePath = "${configPath}/multipleAllocationUpload/${dto.fileName}"
+//
+//        File(filePath).writeBytes(Base64.getDecoder().decode(dto.byteCode.toString()))
+//
+//
+//
+//        var counter = 0
+//
+//        val validHeader: Boolean = true
+//
+//        val line  = ""
+//
+//        val successCount = 0
+//
+//        var upl = UploadLog()
+//
+//        var uplId =  UUID.randomUUID().toString()
+//
+//        if(dto.byteCode.isEmpty() || dto.byteCode.isBlank()){
+//            var data: MutableMap<String, Any> = mutableMapOf()
+//
+//            data.put("id",uplId)
+//            data.put("type",UploadTypeEnum.MULTIPLE_ALLOCATION.id)
+//            data.put("totalRecord",counter)
+//            data.put("recordUpload",counter)
+//            data.put("statusId",UploadStatusEnum.FILE_NOT_FOUND.id)
+//            data.put("createdBy",user.id)
+//            data.put("updatedBy",user.id)
+//            data.put("parentId",uplId)
+//
+//            sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogFileNotFound", data)
+//        }
+//
+//        else{
+//            var data: MutableMap<String, Any> = mutableMapOf()
+//            data.put("id",uplId)
+//            data.put("type",UploadTypeEnum.MULTIPLE_ALLOCATION.id)
+//            data.put("recordUpload",counter)
+//            data.put("statusId",UploadStatusEnum.QUEUED.id)
+//            data.put("createdBy",user.id)
+//            data.put("updatedBy",user.id)
+//            data.put("parentId",uplId)
+//
+//
+//            sqlSessionFactory.openSession().insert("UploadLogMapper.insertUploadLogQueued", data)
+//        }
+//
+//        var allocationInventory = mutableListOf<MultipleAllocationInventoryDTO>()
+//
+//
+//
+//           csvReader().readAllWithHeader(filePath)
+//
+//
+//        // Read CSV file
+//        var csvReaders = CsvReader()
+//        var csvData = csvReaders.readAll(File(filePath))
+//
+//        // Extract headers horizontally
+//        var headerRow = csvData.firstOrNull() ?: emptyList()
+//
+//
+//        println("Headers: $headerRow")
+//
+//
+//
+//
+//        var csvReader = CsvReader()
+//       csvReader.autoRenameDuplicateHeaders
+//
+//
+//
+//
+//
+//
+//        var rows = CsvReader().readAllWithHeader(File(filePath))
+//
+//        var i = 4
+//
+//        var invOG = mutableListOf<Inventory>()
+//
+//        var inv1 = mutableListOf<Inventory>()
+//
+//        var head = headerRow.size
+//
+//
+//        var isHead = head >= i
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//        var plan = DispatchPlan()
+//        var data7: MutableMap<String, Any> = mutableMapOf()
+//        data7.put("planId",dto.planId)
+//        plan = sqlSessionFactory.openSession().selectOne<DispatchPlan>("DispatchPlanMapper.multipleAllocationUploadPlan",data7)
+//
+//
+//
+//        if(plan.isVirtual == 1 && user.userDesignation!!.id == UserLovEnum.PRODUCT_MANAGER_DESIGNATION.id ){
+//
+//            var m = 0
+//            for (i in 4 until head){
+//
+//
+//                var data: MutableMap<String, Any> = mutableMapOf()
+//
+//                var item = ItemDrodownDTO()
+//
+//                var inv = mutableListOf<Inventory>()
+//
+//
+//
+//                var text = headerRow[i]
+//
+//
+//
+//                var  itemCode = text.split("/")
+//
+//                var invBatchNo = itemCode[4]
+//
+//                data.put("itemCode", itemCode[1])
+//
+//                item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocation",data)
+//
+//
+//                var data1: MutableMap<String, Any> = mutableMapOf()
+//
+//                data1.put("id",item.itemId!!)
+//
+//                inv = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data1)
+//
+//
+//                if(inv[m].categoryId?.id  == ItemCategoryEnum.SAMPLES.id){
+//                    var ogInv = inv.filter { it.batchNo == invBatchNo }
+//
+//                    invOG.addAll(ogInv)
+//                } else{
+//                    invOG.addAll(listOf(inv[m]))
+//                }
+//
+//                invOG
+//
+//
+//
+//
+//
+//            }
+//
+//            var n = 4
+//            invOG.forEach {
+//                var inventoryId = it.id
+//
+//
+//
+//                rows.forEach {
+//
+//                    if(it.get(headerRow[n])!!.isNotEmpty()){
+//
+//                    var data2: MutableMap<String, Any> = mutableMapOf()
+//
+//                    var dispatchDetail = VirtualDispatchDetail()
+//
+//                    var ff = Recipient()
+//
+//                    data2.put("id", UUID.randomUUID().toString())
+//                    data2.put("planId", dto.planId)
+//
+//                    var data3: MutableMap<String, Any> = mutableMapOf()
+//                    it.get(headerRow[2].toString().trim())?.let { it1 -> data3.put("code", it1) }
+//                    ff = sqlSessionFactory.openSession()
+//                        .selectOne<Recipient>("RecipientMapper.multipleAllocation", data3)
+//
+//                    data2.put("inventoryId", inventoryId)
+//                    data2.put("recipientId", ff.id)
+//                    it.get(headerRow[n])?.let { it1 -> data2.put("qtyDispatch", it1) }
+//                    data2.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+//                    data2.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+//                    data2.put("createdBy", user.id)
+//                    data2.put("updatedBy", user.id)
+//
+//                    sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocationVirtualBM", data2)
+//
+////                    var data4: MutableMap<String, Any> = mutableMapOf()
+////                    data4.put("id", inventoryId)
+////                    var inv = sqlSessionFactory.openSession()
+////                        .selectOne<Inventory>("InventoryMapper.multipleAllocations", data4)
+////
+////                    var didQty = it.get(headerRow[n])
+////
+////                    var dispatchedQty = 0
+////
+////                    if (didQty.isNullOrEmpty()) {
+////                        dispatchedQty
+////                    } else {
+////                        dispatchedQty = didQty!!.toInt()
+////                    }
+////
+////
+////                    var qtyAlloc = inv.qtyAllocated!!.plus(dispatchedQty)
+////
+////                    var data5: MutableMap<String, Any> = mutableMapOf()
+////
+////                    data5.put("id", inventoryId)
+////                    data5.put("qtyAllocated", qtyAlloc)
+////                    data5.put("updatedBy", user.id)
+////
+////                    sqlSessionFactory.openSession().update("InventoryMapper.multipleAllocationQtyAllocated", data5)
+//
+//
+//                    var data6: MutableMap<String, Any> = mutableMapOf()
+//
+//                    data6.put("planId", dto.planId)
+//                    data6.put("inventoryId", inventoryId)
+//
+//                    sqlSessionFactory.openSession()
+//                        .delete("DispatchDetailMapper.deleteZeroQuantityAllocationVirtualBM", data6)
+//
+//                }
+//
+//                }
+//
+//
+//                n++
+//
+//
+//
+//            }
+//        }
+//
+//       else if(plan.isVirtual == 1 && user.userDesignation!!.id == UserLovEnum.REGIONAL_BUSINESS_MANAGER.id ){
+//
+//            var employee = Users()
+//
+//            var data0 : MutableMap<String, String> = mutableMapOf()
+//
+//            data0.put("userId",user.id)
+//
+//            employee = sqlSessionFactory.openSession().selectOne<Users>("UsersMasterMapper.getRbm",data0)
+//
+//           var m = 0
+//
+//            for (i in 4 until head){
+//
+//
+//                var data: MutableMap<String, Any> = mutableMapOf()
+//
+//                var item = ItemDrodownDTO()
+//
+//                var inv = mutableListOf<Inventory>()
+//
+//
+//
+//                var text = headerRow[i]
+//
+//
+//
+//                var  itemCode = text.split("/")
+//
+//                var invBatchNo = itemCode[4]
+//
+//                data.put("itemCode", itemCode[1])
+//
+//                item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocation",data)
+//
+//
+//                var data1: MutableMap<String, Any> = mutableMapOf()
+//
+//                data1.put("id",item.itemId!!)
+//
+//                inv = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data1)
+//
+//
+//                if(inv[m].categoryId?.id  == ItemCategoryEnum.SAMPLES.id){
+//                    var ogInv = inv.filter { it.batchNo == invBatchNo }
+//
+//                    invOG.addAll(ogInv)
+//                } else{
+//                    invOG.addAll(listOf(inv[m]))
+//                }
+//
+//                invOG
+//
+//
+//
+//
+//
+//            }
+//            var n = 4
+//
+//            invOG.forEach {
+//                var inventoryId = it.id
+//
+//                rows.forEach {
+//
+//                        if(it.get(headerRow[n])!!.isNotEmpty()){
+//
+//                            var sum = rows.map { it -> it[headerRow[n]]}
+//
+//                            var result = sum.filter { it!!.isNotBlank()}
+//
+//                            var resultWithoutSpaces = result.map { it!!.trim() }
+//
+//                            val resultInts = resultWithoutSpaces.map { it.toInt() }
+//
+//                            var allocationQtySum = resultInts.sum()
+//
+//                            var data5: MutableMap<String, Any> = mutableMapOf()
+//                            data5.put("planId", dto.planId)
+//                            data5.put("inventoryId", inventoryId)
+//                            data5.put("recipientId", employee.userRecipientId!!)
+//
+//                            var rbmAvailableStock = sqlSessionFactory.openSession().selectOne<DispatchDetailDTO>("VirtualDispatchDetailMapper.rbmStockVirtualDID",data5)
+//
+//                            if(allocationQtySum > rbmAvailableStock.qtyDispatch!! ){
+//                                errorMap["message"] = "Allocation quantity is greater than the available stock !"
+//                                errorMap["error"] = "true"
+//
+//                                return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
+//                            } else {
+//
+//                                var data2: MutableMap<String, Any> = mutableMapOf()
+//
+//                                var dispatchDetail = DispatchDetail()
+//
+//                                var ff = Recipient()
+//
+//                                data2.put("id", UUID.randomUUID().toString())
+//                                data2.put("planId", dto.planId)
+//
+//                                var data3: MutableMap<String, Any> = mutableMapOf()
+//                                it.get(headerRow[2].toString().trim())?.let { it1 -> data3.put("code", it1) }
+//                                ff = sqlSessionFactory.openSession()
+//                                    .selectOne<Recipient>("RecipientMapper.multipleAllocation", data3)
+//
+//                                data2.put("inventoryId", inventoryId)
+//                                data2.put("recipientId", ff.id)
+//                                it.get(headerRow[n])?.let { it1 -> data2.put("qtyDispatch", it1) }
+//                                data2.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+//                                data2.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+//                                data2.put("createdBy", user.id)
+//                                data2.put("updatedBy", user.id)
+//
+//                                sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocationVirtualBM", data2)
+//
+//                                var data4: MutableMap<String, Any> = mutableMapOf()
+//
+//                                var didQty = it.get(headerRow[n])
+//
+//                                data4.put("planId", dto.planId)
+//                                data4.put("inventoryId", inventoryId)
+//                                data4.put("recipientId", employee.userRecipientId!!)
+//                                data4.put("qtyDispatch",didQty!!)
+//
+//                                sqlSessionFactory.openSession().update("DispatchDetailMapper.updateRBMDidStock", data4)
+//
+////                        var data4: MutableMap<String, Any> = mutableMapOf()
+////                        data4.put("id", inventoryId)
+////                        var inv = sqlSessionFactory.openSession()
+////                            .selectOne<Inventory>("InventoryMapper.multipleAllocations", data4)
+////
+////                        var didQty = it.get(headerRow[n])
+////
+////                        var dispatchedQty = 0
+////
+////                        if(didQty.isNullOrEmpty()){
+////                            dispatchedQty
+////                        } else{
+////                            dispatchedQty =  didQty!!.toInt()
+////                        }
+////
+////
+////
+////                        var qtyAlloc = inv.qtyAllocated!!.plus(dispatchedQty)
+////
+////                        var data5: MutableMap<String, Any> = mutableMapOf()
+////
+////                        data5.put("id", inventoryId)
+////                        data5.put("qtyAllocated", qtyAlloc)
+////                        data5.put("updatedBy", user.id)
+////
+////                        sqlSessionFactory.openSession().update("InventoryMapper.multipleAllocationQtyAllocated", data5)
+//
+//                                var data6: MutableMap<String, Any> = mutableMapOf()
+//
+//                                data6.put("planId", dto.planId)
+//                                data6.put("inventoryId", inventoryId)
+//
+//                                sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocation",data6)
+//
+//                                errorMap["message"] = "Allocation completed successfully!"
+//                                errorMap["error"] = "true"
+//                                return ResponseEntity(errorMap ,HttpStatus.OK)
+//
+//
+//                            }
+//
+//
+//
+//
+//                        }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//                }
+//
+//
+//                n++
+//
+//
+//
+//            }
+//        }
+//
+//        else  {
+//
+//            if (user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id){
+//
+//                var employee = Users()
+//
+//                var data0 : MutableMap<String, String> = mutableMapOf()
+//
+//                data0.put("userId",user.id)
+//
+//                employee = sqlSessionFactory.openSession().selectOne<Users>("UsersMasterMapper.getRbm",data0)
+//
+//                var m = 0
+//                for (i in 4 until head){
+//
+//
+//                    var data: MutableMap<String, Any> = mutableMapOf()
+//
+//                    var item = ItemDrodownDTO()
+//
+//                    var inv = mutableListOf<Inventory>()
+//
+//
+//
+//                    var text = headerRow[i]
+//
+//
+//
+//                    var  itemCode = text.split("/")
+//
+//                    var invBatchNo = itemCode[4]
+//
+//                    data.put("itemCode", itemCode[1])
+//
+//                    item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocation",data)
+//
+//
+//                    var data1: MutableMap<String, Any> = mutableMapOf()
+//
+//                    data1.put("id",item.itemId!!)
+//
+//                    inv = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data1)
+//
+//
+//                    if(inv[m].categoryId?.id  == ItemCategoryEnum.SAMPLES.id){
+//                        var ogInv = inv.filter { it.batchNo == invBatchNo }
+//
+//                        invOG.addAll(ogInv)
+//                    } else{
+//                        invOG.add(inv[m])
+//                    }
+//
+//                    invOG
+//
+//                }
+//
+//                var n = 4
+//
+//                invOG.forEach {
+//                    var inventoryId = it.id
+//
+//                    rows.forEach {
+//
+//                        if(it.get(headerRow[n])!!.isNotEmpty()){
+//
+//                            var data2: MutableMap<String, Any> = mutableMapOf()
+//
+//                            var dispatchDetail = DispatchDetail()
+//
+//                            var ff = Recipient()
+//
+//                            data2.put("id", UUID.randomUUID().toString())
+//                            data2.put("planId", dto.planId)
+//
+//                            var data3: MutableMap<String, Any> = mutableMapOf()
+//                            it.get(headerRow[2].toString().trim())?.let { it1 -> data3.put("code", it1) }
+//                            ff = sqlSessionFactory.openSession()
+//                                .selectOne<Recipient>("RecipientMapper.multipleAllocation", data3)
+//
+//                            data2.put("inventoryId", inventoryId)
+//                            data2.put("recipientId", ff.id)
+//                            it.get(headerRow[n])?.let { it1 -> data2.put("qtyDispatch", it1) }
+//                            data2.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+//                            data2.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+//                            data2.put("createdBy", user.id)
+//                            data2.put("updatedBy", user.id)
+//
+//                            sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocation", data2)
+//
+//                            var data4: MutableMap<String, Any> = mutableMapOf()
+//                            data4.put("id", inventoryId)
+//                            var inv = sqlSessionFactory.openSession()
+//                                .selectOne<Inventory>("InventoryMapper.multipleAllocations", data4)
+//
+//                            var data6: MutableMap<String, Any> = mutableMapOf()
+//                            data6.put("planId", dto.planId)
+//                            data6.put("inventoryId", inventoryId)
+//
+//                            sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocation",data6)
+//
+//                            var didQty = it.get(headerRow[n])
+//
+//                            var data7: MutableMap<String, Any> = mutableMapOf()
+//
+//                            data7.put("inventoryId",inventoryId)
+//                            data7.put("recipientId",employee.userRecipientId!!)
+//                            data7.put("qtyDispatch", didQty!!)
+//                            data7.put("planId",plan.id!!)
+//
+//                            sqlSessionFactory.openSession().update("DispatchDetailMapper.updateCommonAllocation",data7)
+//                        }
+//
+//
+//
+//
+//
+//                    }
+//
+//
+//                    n++
+//
+//
+//
+//                }
+//
+//            } else {
+//                var m = 0
+//                for (i in 4 until head){
+//
+//
+//                    var data: MutableMap<String, Any> = mutableMapOf()
+//
+//                    var item = ItemDrodownDTO()
+//
+//                    var inv = mutableListOf<Inventory>()
+//
+//
+//
+//                    var text = headerRow[i]
+//
+//
+//
+//                    var  itemCode = text.split("/")
+//
+//                    var invBatchNo = itemCode[4]
+//
+//                    data.put("itemCode", itemCode[1])
+//
+//                    item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocation",data)
+//
+//
+//                    var data1: MutableMap<String, Any> = mutableMapOf()
+//
+//                    data1.put("id",item.itemId!!)
+//
+//                    inv = sqlSessionFactory.openSession().selectList<Inventory>("InventoryMapper.multipleAllocation",data1)
+//
+//
+//                    if(inv[m].categoryId?.id  == ItemCategoryEnum.SAMPLES.id){
+//                        var ogInv = inv.filter { it.batchNo == invBatchNo }
+//
+//                        invOG.addAll(ogInv)
+//                    } else{
+//                        invOG.add(inv[m])
+//                    }
+//
+//                    invOG
+//
+//                }
+//
+//                var n = 4
+//
+//                invOG.forEach {
+//                    var inventoryId = it.id
+//
+//
+//
+//
+//
+//                    rows.forEach {
+//
+//                        if(it.get(headerRow[n])!!.isNotEmpty()){
+//
+//                            var data2: MutableMap<String, Any> = mutableMapOf()
+//
+//                            var dispatchDetail = DispatchDetail()
+//
+//                            var ff = Recipient()
+//
+//                            data2.put("id", UUID.randomUUID().toString())
+//                            data2.put("planId", dto.planId)
+//
+//                            var data3: MutableMap<String, Any> = mutableMapOf()
+//                            it.get(headerRow[2].toString().trim())?.let { it1 -> data3.put("code", it1) }
+//                            ff = sqlSessionFactory.openSession()
+//                                .selectOne<Recipient>("RecipientMapper.multipleAllocation", data3)
+//
+//                            data2.put("inventoryId", inventoryId)
+//                            data2.put("recipientId", ff.id)
+//                            it.get(headerRow[n])?.let { it1 -> data2.put("qtyDispatch", it1) }
+//                            data2.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+//                            data2.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+//                            data2.put("createdBy", user.id)
+//                            data2.put("updatedBy", user.id)
+//
+//                            sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocation", data2)
+//
+//                            var data4: MutableMap<String, Any> = mutableMapOf()
+//                            data4.put("id", inventoryId)
+//                            var inv = sqlSessionFactory.openSession()
+//                                .selectOne<Inventory>("InventoryMapper.multipleAllocations", data4)
+//
+//                            var didQty = it.get(headerRow[n])
+//
+//                            var dispatchedQty = 0
+//
+//                            if(didQty.isNullOrEmpty()){
+//                                dispatchedQty
+//                            } else{
+//                                dispatchedQty =  didQty!!.toInt()
+//                            }
+//
+//
+//
+//                            var qtyAlloc = inv.qtyAllocated!!.plus(dispatchedQty)
+//
+//                            var data5: MutableMap<String, Any> = mutableMapOf()
+//
+//                            data5.put("id", inventoryId)
+//                            data5.put("qtyAllocated", qtyAlloc)
+//                            data5.put("updatedBy", user.id)
+//
+//                            sqlSessionFactory.openSession().update("InventoryMapper.multipleAllocationQtyAllocated", data5)
+//
+//                            var data6: MutableMap<String, Any> = mutableMapOf()
+//
+//                            data6.put("planId", dto.planId)
+//                            data6.put("inventoryId", inventoryId)
+//
+//                            sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocation",data6)
+//                        }
+//
+//
+//
+//
+//
+//                    }
+//
+//
+//                    n++
+//
+//
+//
+//                }
+//            }
+//
+//
+//        }
+//
+//
+//            var record = rows.count()
+//
+//            var data: MutableMap<String, Any> = mutableMapOf()
+//            data.put("id",uplId)
+//            data.put("type",UploadTypeEnum.MULTIPLE_ALLOCATION.id)
+//            data.put("totalRecord",record)
+//            data.put("recordUpload",record)
+//            data.put("statusId",UploadStatusEnum.COMPLETED_SUCCESSFULLY.id)
+//            data.put("createdBy",user.id)
+//            data.put("updatedBy",user.id)
+//            data.put("parentId",uplId)
+//
+//
+//            sqlSessionFactory.openSession().update("UploadLogMapper.multipleAllocation", data)
+//
+//
+//
+//
+//        return ResponseEntity(errorMap ,HttpStatus.OK)
+//
+//
+//
+//    }
 
 
 

@@ -394,6 +394,10 @@
         select * from INVENTORY_INV where ID_ITM_INV = #{id}
     </select>
 
+    <select id="multipleAllocationAvailableStock" resultMap="inventoryResultMap">
+        select * from INVENTORY_INV where ID_INV = #{id}
+    </select>
+
 
     <select id="multipleAllocations" resultMap="inventoryResultMap">
         select * from INVENTORY_INV where ID_INV = #{id}

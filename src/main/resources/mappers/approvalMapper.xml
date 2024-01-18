@@ -54,7 +54,7 @@
     </select>
 
     <select id="getVirtualPlanApprovalDetails" resultType="com.squer.promobee.controller.dto.SpecialAllocationDetailsForApprovalDTO" parameterType = "map" statementType = "CALLABLE">
-        { call PROC_GetSpecialAllocationDetailsForApproval ( #{DipID, jdbcType = VARCHAR, mode = IN} ) }
+        { call PROC_GetVirtualAllocationDetailsForApproval ( #{DipID, jdbcType = VARCHAR, mode = IN} ) }
 
     </select>
 

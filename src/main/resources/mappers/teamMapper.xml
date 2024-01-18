@@ -192,17 +192,33 @@
 
     <select id="getVirtualTeamForCommonAllocationRBM" resultType="com.squer.promobee.controller.dto.CommonAllocationTeamDTO">
 
-        SELECT TEM.ID_TEM AS 'TeamID',TEM.NAME_TEM AS 'Team',RCT.ID_DESG_ULV_RCT AS
-	'DesignationId',ULV.NAME_ULV AS 'Designation',COUNT(RCT.ID_RCT) AS 'RecipientCount',rct.ID_RCT as 'RecipientId'
-        FROM SAMPLE_MASTER_SMP SMP
-                 JOIN TEAM_BRAND_TBR TBR ON SMP.ID_BRD_SMP=TBR.ID_BRD_TBR
-                 JOIN TEAM_MASTER_TEM TEM ON TBR.ID_TEM_TBR=TEM.ID_TEM
-                 JOIN RECIPIENT_MASTER_RCT RCT ON TBR.ID_TEM_TBR=RCT.ID_TEM_RCT
-                 JOIN USER_LOV_ULV ULV ON ULV.ID_ULV=RCT.ID_DESG_ULV_RCT
-        WHERE RCT.ID_RCT=#{id} AND TEM.IS_ACTIVE_TEM ='1' --AND SMP.ID_SMP=@BrandId
-          --AND RCT.ID_TEM_RCT=@TeamId
-          AND RCT.ID_STATUS_SLV_RCT='80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
-        GROUP BY ID_DESG_ULV_RCT,ULV.NAME_ULV,TEM.ID_TEM,TEM.NAME_TEM,rct.ID_RCT
+        SELECT
+            distinct
+            tem.ID_tem as 'TeamId',
+                tem.NAME_TEM as 'Team',
+                ulv.ID_ULV as 'DesignationId',
+                ulv.NAME_ULV as 'Designation',
+                COUNT(rct.NAME_RCT) OVER (PARTITION BY ulv.NAME_ULV) AS 'RecipientCount'
+        FROM
+            BRAND_MASTER_BRD brd
+                JOIN
+            TEAM_BRAND_TBR tbr ON tbr.ID_BRD_TBR = brd.ID_BRD
+                JOIN
+            TEAM_MASTER_TEM tem ON tem.ID_TEM = tbr.ID_TEM_TBR
+                JOIN
+            RECIPIENT_MASTER_RCT rct ON rct.ID_TEM_RCT = tem.ID_TEM
+                JOIN
+            USER_LOV_ULV ulv ON ulv.ID_ULV = rct.ID_DESG_ULV_RCT
+
+        WHERE
+            BRD.ID_BRD = #{ccmId}
+          AND rct.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
+          AND ULV.ID_ULV != '4BFB3E58-1629-4B61-B7C7-A5090A277252'
+
+
+        GROUP BY
+            tem.NAME_TEM,
+            ulv.NAME_ULV,rct.NAME_RCT,rct.ID_RCT,tem.ID_tem,ulv.ID_ULV
 
 
 

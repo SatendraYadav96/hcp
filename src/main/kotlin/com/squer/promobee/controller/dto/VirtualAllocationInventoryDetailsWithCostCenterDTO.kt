@@ -1,7 +1,5 @@
 package com.squer.promobee.controller.dto
 
-import java.util.*
-
 class VirtualAllocationInventoryDetailsWithCostCenterDTO {
     var isItem: Int?= null
     var costCenterID : String ?= null
@@ -9,7 +7,7 @@ class VirtualAllocationInventoryDetailsWithCostCenterDTO {
     var itemID : String ?= null
     var itemName: String ?= null
     var stock: Int?= null
-    var expiryDate : Date?= null
+    var expiryDate : String?= null
     var poNo: String ?= null
     var packSize : Int? = null
     var quantityAllocated : Int? = null

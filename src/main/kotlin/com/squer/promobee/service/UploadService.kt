@@ -67,7 +67,7 @@ interface UploadService {
 
     fun materialExpiryExcelData(uplId : String): List<OptimaMiUploadDTO>
 
-    fun multipleAllocationUpload(dto: MultipleAllocationUploadDTO)
+//    fun multipleAllocationUpload(dto: MultipleAllocationUploadDTO): ResponseEntity<*>
 
 
 
