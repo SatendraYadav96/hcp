@@ -76,7 +76,7 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getTeamForDifferentialAllocation(planId , teamId , inventoryId)
     }
 
-    override fun saveCommonAllocation(saveAlloc: List<saveCommonAllocationDTO>) {
+    override fun saveCommonAllocation(saveAlloc: List<saveCommonAllocationDTO>) : ResponseEntity<MutableMap<String, String>>{
         return newAllocationRepository.saveCommonAllocation(saveAlloc)
 
 

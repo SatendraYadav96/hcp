@@ -474,7 +474,7 @@ open class UploadController@Autowired constructor(
 
 
                         if(allocationQtySum > inventoryStock ){
-                            errorMap["message"] = "Allocation quantity is greater than the available stock !"
+                            errorMap["message"] = "Allocation quantity is greater than the available stock for ${availableStock.poNo}"
                             errorMap["error"] = "true"
 
                             return ResponseEntity(errorMap , HttpStatus.OK)
@@ -946,8 +946,9 @@ open class UploadController@Autowired constructor(
 
 
                             if(allocationQtySum > inventoryStock ){
-                                errorMap["message"] = "Allocation quantity is greater than the available stock !"
+                                errorMap["message"] = "Allocation quantity is greater than the available stock for ${availableStock.poNo}"
                                 errorMap["error"] = "true"
+                                errorMap["info"] = "error"
 
                                 return ResponseEntity(errorMap , HttpStatus.OK)
                             }else{
@@ -1048,12 +1049,12 @@ open class UploadController@Autowired constructor(
 
         errorMap["message"] = "Allocation completed successfully!"
         errorMap["error"] = "false"
+        errorMap["info"] = "success"
         return ResponseEntity(errorMap ,HttpStatus.OK)
 
 
 
 
-         return ResponseEntity(errorMap ,HttpStatus.OK)
 
 
 
