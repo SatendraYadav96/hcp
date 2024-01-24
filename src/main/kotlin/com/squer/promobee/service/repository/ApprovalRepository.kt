@@ -46,7 +46,7 @@ class ApprovalRepository(
         data.put("Year", year)
         data.put("UserID", userId)
         data.put("UserDesignation", userDesgId)
-        return sqlSessionFactory.openSession().selectList("ApprovalMapper.getMonthlyApprovalForBex", data)
+        return sqlSessionFactory.openSession().selectList<MontlyApprovalBexDTO?>("ApprovalMapper.getMonthlyApprovalForBex", data).sortedByDescending { it.requestedOn }
     }
 
     fun getDispatchPlanById(id: String): DispatchPlan {
@@ -555,7 +555,7 @@ class ApprovalRepository(
 
                     data.put("id",apiId1)
                     data.put("owner", plan.planId!!)
-                    data.put("designation", UserLovEnum.BEX.id)
+                    data.put("designation", UserLovEnum.BUH.id)
                     data.put("apiStatus", ApprovalStatusEnum.PENDING_APPROVAL.id)
                     data.put("createdBy",user.id)
                     data.put("updatedBy",user.id)
@@ -619,15 +619,20 @@ class ApprovalRepository(
         data.put("UserID", userId)
         data.put("UserDesignation", userDesgId)
 
+        var planList = mutableListOf<MontlyApprovalBexDTO>()
+
         var plans: List<MontlyApprovalBexDTO> = ArrayList<MontlyApprovalBexDTO>()
         if(userDesgId == UserLovEnum.BEX.id){
              plans =  sqlSessionFactory.openSession().selectList<MontlyApprovalBexDTO?>("ApprovalMapper.getSpecialApprovalForBex", data).toList()
+           planList = plans.sortedByDescending { it.requestedOn!! }.toMutableList()
+
         }
         if(userDesgId == UserLovEnum.BUH.id){
             plans =  sqlSessionFactory.openSession().selectList<MontlyApprovalBexDTO?>("ApprovalMapper.getSpecialApprovalForBuh", data).toList()
+            planList = plans.sortedByDescending { it.requestedOn!! }.toMutableList()
         }
 
-        return plans
+        return planList
 
 
     }

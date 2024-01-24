@@ -142,9 +142,11 @@ class InvoiceRepository(
 
 
 
-        var finalArray = mutableListOf<ByteArray>()
+       var finalArray = mutableListOf<ByteArray>()
 
-        var printInvoiceArray = mutableListOf<ByteArray>()
+       // var finalArray = ByteArray()
+
+        //var printInvoiceArray = mutableListOf<ByteArray>()
 
 
       inh.forEach { i ->
@@ -276,24 +278,25 @@ class InvoiceRepository(
           System.out.println(writer.toString())
           val byteArrayOutputStream = ByteArrayOutputStream()
 
+
+
           try {
 
               val k = writer.toString()
 
-
-              val document = Document()
+              var document = Document()
 
               document.open()
 
-              val paragraph = Paragraph(k)
+              var paragraph = Paragraph(k)
 
               document.add(paragraph)
 
               HtmlConverter.convertToPdf(k, byteArrayOutputStream)
 
-
               document.close()
               finalArray.add(byteArrayOutputStream.toByteArray());
+          //    printInvoiceArray.add(finalArray)
 
 
           } catch (e: Exception) {
@@ -308,12 +311,14 @@ class InvoiceRepository(
 
 
       }
-       // return printInvoiceArray;
+      // return printInvoiceArray;
 
         return finalArray;
 
 
     }
+
+  
 
 
     fun searchInvoice(searchInvoice: SearchInvoiceDTO): List<InvoiceHeaderDTO> {
@@ -1618,6 +1623,10 @@ class InvoiceRepository(
 
 
     }
+
+private fun <E> MutableList<E>.add(element: MutableList<E>) {
+
+}
 
 
 

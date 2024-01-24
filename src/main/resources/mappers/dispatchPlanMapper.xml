@@ -146,7 +146,7 @@
     <update id="saveMonthlyToSpecial">
 
         UPDATE DISPATCH_PLAN_DIP SET SUBMISSION_DATE_DIP = GETDATE() , ID_STATUS_SLV_DIP = #{planStatus}, UPDATED_ON_DIP = GETDATE(), UPDATED_BY_DIP = #{updatedBy} , MONTH_DIP = #{month}, YEAR_DIP = #{year},
-                                     IS_SPECIAL_DIP = #{isSpecial}, REMARKS_DIP = #{remarks}
+                                     IS_SPECIAL_DIP = #{isSpecial}, REMARKS_DIP = #{remarks} ,IS_VIRTUAL_DIP = 0
         WHERE ID_DIP = #{id}
     </update>
 

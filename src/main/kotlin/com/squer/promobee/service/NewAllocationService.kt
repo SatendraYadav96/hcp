@@ -33,7 +33,7 @@ interface NewAllocationService {
 
    fun getTeamForDifferentialAllocation( planId :String,  teamId :String,  inventoryId :String ): List<AllocationDifferentialRecipientDTO>
 
-   fun saveCommonAllocation (saveAlloc : List<saveCommonAllocationDTO>)
+   fun saveCommonAllocation (saveAlloc : List<saveCommonAllocationDTO>): ResponseEntity<MutableMap<String, String>>
 
    fun saveDifferentialAllocation (saveAlloc : List<saveDifferentialAllocation>)
 
@@ -52,7 +52,7 @@ interface NewAllocationService {
 
    fun getSpecialQuantityAllocatedDifferentialRecipient( planId:String,inventoryId :String): List<DifferentialRecipientAllocationDTO>
 
-   fun saveSpecialAllocation (saveAlloc : List<saveDifferentialAllocation>)
+   fun saveSpecialAllocation (saveAlloc : List<saveDifferentialAllocation>): ResponseEntity<MutableMap<String, String>>
 
    fun deleteSpecialAllocation( dipId: String): Map<String, Any>
 

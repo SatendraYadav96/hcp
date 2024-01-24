@@ -115,7 +115,7 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getSpecialQuantityAllocatedDifferentialRecipient(planId,inventoryId)
     }
 
-    override fun saveSpecialAllocation(saveAlloc: List<saveDifferentialAllocation>) {
+    override fun saveSpecialAllocation(saveAlloc: List<saveDifferentialAllocation>): ResponseEntity<MutableMap<String, String>> {
         return newAllocationRepository.saveSpecialAllocation(saveAlloc)
     }
 
