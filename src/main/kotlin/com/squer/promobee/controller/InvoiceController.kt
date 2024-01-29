@@ -141,10 +141,10 @@ open class InvoiceController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
-    @GetMapping("/getRecipientItemCategoryCount/{month}/{year}/{recipientId}/{isSpecial}")
-    open fun getRecipientItemCategoryCount(@PathVariable month: Int,@PathVariable year: Int,@PathVariable recipientId: String , @PathVariable isSpecial:Int): ResponseEntity<*> {
+    @GetMapping("/getRecipientItemCategoryCount/{month}/{year}/{recipientId}/{isSpecial}/{planId}")
+    open fun getRecipientItemCategoryCount(@PathVariable month: Int,@PathVariable year: Int,@PathVariable recipientId: String , @PathVariable isSpecial:Int , @PathVariable planId: String): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        val data = invoiceService.getRecipientItemCategoryCount(month,year,recipientId,isSpecial)
+        val data = invoiceService.getRecipientItemCategoryCount(month,year,recipientId,isSpecial,planId)
 
         return ResponseEntity(data, HttpStatus.OK)
     }
@@ -158,10 +158,10 @@ open class InvoiceController@Autowired constructor(
     }
 
 
-    @GetMapping("/getDispatchDetailsForInvoicing/{month}/{year}/{recipientId}/{isSpecial}")
-    open fun getDispatchDetailsForInvoicing(@PathVariable month: Int,@PathVariable year: Int,@PathVariable recipientId: String, @PathVariable isSpecial:Int): ResponseEntity<*> {
+    @GetMapping("/getDispatchDetailsForInvoicing/{month}/{year}/{recipientId}/{isSpecial}/{planId}")
+    open fun getDispatchDetailsForInvoicing(@PathVariable month: Int,@PathVariable year: Int,@PathVariable recipientId: String, @PathVariable isSpecial:Int , @PathVariable planId: String): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        val data = invoiceService.getDispatchDetailsForInvoicing(month,year,recipientId,isSpecial)
+        val data = invoiceService.getDispatchDetailsForInvoicing(month,year,recipientId,isSpecial,planId)
 
         return ResponseEntity(data, HttpStatus.OK)
     }

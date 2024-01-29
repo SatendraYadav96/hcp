@@ -681,7 +681,7 @@ class InvoiceRepository(
     }
 
 
-        fun getRecipientItemCategoryCount(month: Int, year: Int, recipientId: String,isSpecial:Int): MutableList<ItemCategoryCountDTO> {
+        fun getRecipientItemCategoryCount(month: Int, year: Int, recipientId: String,isSpecial:Int,planId: String): ItemCategoryCountDTO {
             val user =
                 (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
@@ -692,29 +692,35 @@ class InvoiceRepository(
             data.put("year", year)
             data.put("recipientId", recipientId)
             data.put("isSpecial",isSpecial)
+            data.put("planId",planId)
 
             var i = 0
 
-            var samplesCount =
-                return sqlSessionFactory.openSession().selectList<ItemCategoryCountDTO>("InvoiceHeaderMapper.getSamplesCount", data).toMutableList()
+            var samplesCount = 0.0
+
+            var inputCount = 0.0
+
+             samplesCount =
+                 sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getSamplesCount", data)
 
             var data0: MutableMap<String, Any> = mutableMapOf()
             data0.put("month", month)
             data0.put("year", year)
             data0.put("recipientId", recipientId)
             data0.put("isSpecial",isSpecial)
+            data0.put("planId",planId)
 
-            var inputCount =
-                return sqlSessionFactory.openSession().selectList<ItemCategoryCountDTO>("InvoiceHeaderMapper.getInputCount", data0).toMutableList()
+             inputCount =
+                 sqlSessionFactory.openSession().selectOne("InvoiceHeaderMapper.getInputCount", data0)
 
 
-            var itcCount = MutableList<ItemCategoryCountDTO>()
+            var itcCount = ItemCategoryCountDTO()
 
-            itcCount.get(i).sampleItems = samplesCount
+            itcCount.sampleItems = samplesCount
 //        if(itcCount.sampleItems == null){
 //            itcCount.sampleItems = 0.0
 //        }
-            itcCount.get(i).nonSampleItems = inputCount
+            itcCount.nonSampleItems = inputCount
 //        if(itcCount.nonSampleItems == null){
 //            itcCount.nonSampleItems = 0.0
 //        }
@@ -771,7 +777,7 @@ class InvoiceRepository(
     }
 
 
-    fun getDispatchDetailsForInvoicing(month: Int, year: Int, recipientId: String,isSpecial:Int): MutableList<DispatchDetailDTO> {
+    fun getDispatchDetailsForInvoicing(month: Int, year: Int, recipientId: String,isSpecial:Int,planId:String): MutableList<DispatchDetailDTO> {
             val user =
                 (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
@@ -782,6 +788,7 @@ class InvoiceRepository(
             data.put("year", year)
             data.put("recipientId", recipientId)
             data.put("isSpecial",isSpecial)
+        data.put("planId",planId)
 
             return sqlSessionFactory.openSession().selectList<DispatchDetailDTO>("DispatchDetailMapper.getDispatchDetails", data).toMutableList()
 
@@ -919,20 +926,26 @@ class InvoiceRepository(
                 var recipient = genInv.recipientId?.let { getRecipientToGenerateInvoice(it) }
 
                 var itcCount = genInv.month?.let { genInv.year?.let { it1 -> genInv.recipientId?.let { it2 ->
-                    genInv.isSpecial?.let { it3 ->
-                        getRecipientItemCategoryCount(it, it1,
+                    genInv.isSpecial?.let { it3 -> genInv.planId?.let { it4 ->
+                        getRecipientItemCategoryCount(
+                            it, it1,
                             it2,
-                            it3
+                            it3,
+                            it4
                         )
+                    }
                     }
                 } } }
 
                 var dispatchDetails = genInv.month?.let { genInv.year?.let { it1 -> genInv.recipientId?.let { it2 ->
-                    genInv.isSpecial?.let { it3 ->
-                        getDispatchDetailsForInvoicing(it, it1,
+                    genInv.isSpecial?.let { it3 -> genInv.planId?.let { it4 ->
+                        getDispatchDetailsForInvoicing(
+                            it, it1,
                             it2,
-                            it3
+                            it3,
+                            it4
                         )
+                    }
                     }
                 } } }
 
@@ -966,15 +979,15 @@ class InvoiceRepository(
                     genInv.boxes?.let { data1.put("noOfBoxes", it) }
                     genInv.transporter?.let { data1.put("transporterId", it) }
                     //sample value
-                    if (itcCount?.get(i)?.sampleItems !== null) {
-                        itcCount?.get(i)?.sampleItems?.let { data1.put("sampleValue", it) }
+                    if (itcCount?.sampleItems !== null) {
+                        itcCount?.sampleItems?.let { data1.put("sampleValue", it) }
                     } else {
                         data1.put("sampleValue", 0)
                     }
 
                     // item value
-                    if (itcCount?.get(i)?.nonSampleItems !== null) {
-                        itcCount?.get(i)?.nonSampleItems?.let { data1.put("otherItemValue", it) }
+                    if (itcCount?.nonSampleItems !== null) {
+                        itcCount?.nonSampleItems?.let { data1.put("otherItemValue", it) }
                     } else {
                         data1.put("otherItemValue", 0)
                     }
@@ -1094,11 +1107,14 @@ class InvoiceRepository(
                         genInv.year?.let { it1 ->
                             genInv.recipientId?.let { it2 ->
                                 genInv.isSpecial?.let { it3 ->
-                                    getDispatchDetailsForInvoicing(
-                                        it,
-                                        it1, it2,
-                                        it3
-                                    )
+                                    genInv.planId?.let { it4 ->
+                                        getDispatchDetailsForInvoicing(
+                                            it,
+                                            it1, it2,
+                                            it3,
+                                            it4
+                                        )
+                                    }
                                 }
                             }
                         }

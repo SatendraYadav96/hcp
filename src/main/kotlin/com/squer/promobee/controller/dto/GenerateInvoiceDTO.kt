@@ -11,5 +11,6 @@ class GenerateInvoiceDTO {
     var  month :Int? = null
     var  year :Int? = null
     var isSpecial : Int? = null
+    var planId : String? = null
 
 }

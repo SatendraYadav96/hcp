@@ -777,7 +777,7 @@ class InventoryRepository @Autowired constructor(
         data.put("IsSpecial", isSpecial.toString())
         data.put("RecipientID", employeeId)
 
-        if(invoiceHeaderId == "0") {
+        if(invoiceHeaderId == "null") {
 
 
             var data1 : MutableMap<String, String> = mutableMapOf()

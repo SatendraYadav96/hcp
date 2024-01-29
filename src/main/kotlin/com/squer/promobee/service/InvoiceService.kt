@@ -36,11 +36,11 @@ interface InvoiceService {
 
     fun getInventoryByIdForInvoicing( invId: String):MutableList<Inventory>
 
-    fun getRecipientItemCategoryCount( month:Int,year:Int,recipientId:String,isSpecial:Int):MutableList<ItemCategoryCountDTO>
+    fun getRecipientItemCategoryCount( month:Int,year:Int,recipientId:String,isSpecial:Int,planId: String):ItemCategoryCountDTO
 
     fun getDoctorItemCategoryCount( planId: String,  recipientId: String):MutableList<ItemCategoryCountDTO>
 
-    fun getDispatchDetailsForInvoicing( month:Int,year:Int,recipientId:String,isSpecial:Int):MutableList<DispatchDetailDTO>
+    fun getDispatchDetailsForInvoicing( month:Int,year:Int,recipientId:String,isSpecial:Int , planId: String):MutableList<DispatchDetailDTO>
 
     fun getDispatchDetailVirtual( planId: String,  recipientId: String):MutableList<DispatchDetailDTO>
 

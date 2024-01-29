@@ -5,7 +5,6 @@ import com.squer.promobee.controller.dto.*
 import com.squer.promobee.service.InvoiceService
 import com.squer.promobee.service.repository.InvoiceRepository
 import com.squer.promobee.service.repository.domain.*
-
 import lombok.extern.slf4j.Slf4j
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -80,16 +79,16 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getInventoryByIdForInvoicing(invId)
     }
 
-    override fun getRecipientItemCategoryCount(month: Int, year: Int,  recipientId: String,isSpecial:Int):MutableList<ItemCategoryCountDTO> {
-        return invoiceRepository.getRecipientItemCategoryCount(month,year,recipientId,isSpecial)
+    override fun getRecipientItemCategoryCount(month: Int, year: Int,  recipientId: String,isSpecial:Int,planId: String):ItemCategoryCountDTO {
+        return invoiceRepository.getRecipientItemCategoryCount(month,year,recipientId,isSpecial,planId)
     }
 
     override fun getDoctorItemCategoryCount(planId: String, recipientId: String): MutableList<ItemCategoryCountDTO> {
         return invoiceRepository.getDoctorItemCategoryCount(planId,recipientId)
     }
 
-    override fun getDispatchDetailsForInvoicing(month: Int, year: Int, recipientId: String,isSpecial:Int): MutableList<DispatchDetailDTO> {
-        return invoiceRepository.getDispatchDetailsForInvoicing(month,year,recipientId,isSpecial)
+    override fun getDispatchDetailsForInvoicing(month: Int, year: Int, recipientId: String,isSpecial:Int , planId: String): MutableList<DispatchDetailDTO> {
+        return invoiceRepository.getDispatchDetailsForInvoicing(month,year,recipientId,isSpecial,planId)
     }
 
     override fun getDispatchDetailVirtual(planId: String, recipientId: String): MutableList<DispatchDetailDTO> {
