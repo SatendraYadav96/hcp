@@ -208,6 +208,15 @@
     </select>
 
 
+    <select id="isInvoiceCreated" resultType="int" >
+
+        select count(*) from DISPATCH_DETAIL_DID DID
+                                 JOIN INVOICE_DETAIL_IND IND ON IND.ID_DID_IND = DID.ID_DID
+                                 JOIN INVOICE_HEADER_INH INH ON INH.ID_INH = IND.ID_INH_IND
+        WHERE DID.ID_DIP_DID = #{planId} AND INH.ID_RCT_INH = #{recipientId}
+    </select>
+
+
     <select id="isInvoiceGeneratedForTheRecipientVirtual"  resultType="int" >
 
         select count(*) from VIRTUAL_UPLOAD_VRL vrl

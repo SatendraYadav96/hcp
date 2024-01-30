@@ -2722,11 +2722,12 @@ class NewAllocationRepository(
     }
 
 
-    fun saveVirtualCommonAllocation(saveAlloc: List<saveVirtualCommonAllocationDTO>) {
+    fun saveVirtualCommonAllocation(saveAlloc: List<saveVirtualCommonAllocationDTO>): ResponseEntity<MutableMap<String, String>>  {
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var recipient = mutableListOf<Recipient>()
+        var errorMap: MutableMap<String, String> = HashMap()
 
 
 
@@ -2790,27 +2791,6 @@ class NewAllocationRepository(
                         sqlSessionFactory.openSession().update("DispatchDetailMapper.updateRBMDidStock", data2)
 
 
-
-
-//                        var data2: MutableMap<String, Any> = mutableMapOf()
-//
-//
-//                        data2.put("id", invId!!)
-//
-//                        var inv = sqlSessionFactory.openSession()
-//                            .selectOne<Inventory>("InventoryMapper.getInventoryByIdForInvoicing", data2)
-//
-//                        var data3: MutableMap<String, Any> = mutableMapOf()
-//
-//                        var invAllocatedQty = inv.qtyAllocated?.plus(dispatchedQuantity!!)
-//
-//                        data3.put("id", inv.id)
-//                        data3.put("qtyAllocated", invAllocatedQty!!)
-//                        data3.put("updatedBy", user.id)
-//
-//                        sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
-
-
                     }
 
 
@@ -2828,6 +2808,8 @@ class NewAllocationRepository(
             var i = 0
 
             saveAlloc.forEach {
+
+                var virtualAllocatedStock = 0
 
                 if(it.quantity!! > 0){
 
@@ -2848,53 +2830,71 @@ class NewAllocationRepository(
                             data2
                         )
 
-                    recipient.forEach { it ->
+                    var recipientCount = recipient.size.toInt()
+                    var allocationQtySum =  recipientCount * dispatchedQuantity!!
 
-                        var data: MutableMap<String, Any> = mutableMapOf()
-                        var virtualDispatchDetail = VirtualDispatchDetail()
-                        var vidId = UUID.randomUUID().toString()
-                        data.put("id", vidId)
-                        data.put("planId", planId!!)
-                        data.put("inventoryId", invId!!)
-                        data.put("recipientId", it.id)
-                        data.put("qtyDispatch", dispatchedQuantity!!)
-                        data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                        data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                        data.put("createdBy", user.id)
-                        data.put("updatedBy", user.id)
+                    var data11: kotlin.collections.MutableMap<kotlin.String, kotlin.Any> = kotlin.collections.mutableMapOf()
 
-                        sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveVirtualCommonAllocationBM", data)
+                    data11.put("id",invId!!)
 
+                    var availableStock = sqlSessionFactory.openSession().selectOne<Inventory>("InventoryMapper.multipleAllocationAvailableStock",data11)
 
-//                        var data2: MutableMap<String, Any> = mutableMapOf()
-//
-//
-//                        data2.put("id", invId!!)
-//
-//                        var inv = sqlSessionFactory.openSession()
-//                            .selectOne<Inventory>("InventoryMapper.getInventoryByIdForInvoicing", data2)
-//
-//                        var data3: MutableMap<String, Any> = mutableMapOf()
-//
-//                        var invAllocatedQty = inv.qtyAllocated?.plus(dispatchedQuantity!!)
-//
-//                        data3.put("id", inv.id)
-//                        data3.put("qtyAllocated", invAllocatedQty!!)
-//                        data3.put("updatedBy", user.id)
-//
-//                        sqlSessionFactory.openSession().update("InventoryMapper.saveCommonAllocation", data3)
+                    var inventoryStock = availableStock.qtyReceived!! -availableStock.qtyAllocated!!-availableStock.qtyDispatched!!
+
+                    var data12: MutableMap<String, Any> = mutableMapOf()
+                    data12.put("planId",planId!!)
+                    data12.put("invId",invId!!)
+
+                    virtualAllocatedStock = sqlSessionFactory.openSession().selectOne("DispatchDetailMapper.virtualAllocatedStock",data12)
+
+                    var realAllocatedVirtualStock = inventoryStock - virtualAllocatedStock
 
 
+
+                    if(allocationQtySum > realAllocatedVirtualStock ){
+                        errorMap["message"] = "Allocation quantity is greater than the available stock for ${availableStock.poNo}"
+                        errorMap["error"] = "true"
+                        errorMap["info"] = "error"
+
+
+                        return ResponseEntity(errorMap , HttpStatus.OK)
+
+
+                    } else {
+                        recipient.forEach { it ->
+
+                            var data: MutableMap<String, Any> = mutableMapOf()
+                            var virtualDispatchDetail = VirtualDispatchDetail()
+                            var vidId = UUID.randomUUID().toString()
+                            data.put("id", vidId)
+                            data.put("planId", planId!!)
+                            data.put("inventoryId", invId!!)
+                            data.put("recipientId", it.id)
+                            data.put("qtyDispatch", dispatchedQuantity!!)
+                            data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
+                            data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
+                            data.put("createdBy", user.id)
+                            data.put("updatedBy", user.id)
+
+                            sqlSessionFactory.openSession().insert("DispatchDetailMapper.saveVirtualCommonAllocationBM", data)
+
+
+                        }
+
+
+                        i++
                     }
 
 
-                    i++
                 }
             }
 
 
         }
-
+        errorMap["message"] = "Allocation completed successfully!"
+        errorMap["error"] = "false"
+        errorMap["info"] = "success"
+        return ResponseEntity(errorMap ,HttpStatus.OK)
     }
 
 

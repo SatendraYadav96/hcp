@@ -447,6 +447,8 @@ open class UploadController@Autowired constructor(
             invOG.forEach {
                 var inventoryId = it.id
 
+                var virtualAllocatedStock = 0
+
 
 
                 rows.forEach {
@@ -472,10 +474,21 @@ open class UploadController@Autowired constructor(
 
 
 
+                        var data12: MutableMap<String, Any> = mutableMapOf()
+                        data12.put("planId",dto.planId!!)
+                        data12.put("invId",inventoryId!!)
 
-                        if(allocationQtySum > inventoryStock ){
+                        virtualAllocatedStock = sqlSessionFactory.openSession().selectOne("DispatchDetailMapper.virtualAllocatedStock",data12)
+
+                        var realAllocatedVirtualStock = inventoryStock - virtualAllocatedStock
+
+
+
+
+                        if(allocationQtySum > realAllocatedVirtualStock ){
                             errorMap["message"] = "Allocation quantity is greater than the available stock for ${availableStock.poNo}"
                             errorMap["error"] = "true"
+                            errorMap["info"] = "error"
 
                             return ResponseEntity(errorMap , HttpStatus.OK)
                         } else {

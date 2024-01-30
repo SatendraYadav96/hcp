@@ -718,7 +718,7 @@ class InventoryRepository @Autowired constructor(
 
     fun getSpecialDispatchListForInvoicing(planId: String, status: String): List<DataModelInvoiceDetailsDTO> {
         val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+                (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var data: MutableMap<String, String> = mutableMapOf()
         data.put("Plan_ID", planId)

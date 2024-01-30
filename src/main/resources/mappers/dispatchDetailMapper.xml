@@ -113,7 +113,7 @@
 
 
         UPDATE DISPATCH_DETAIL_DID SET ID_STATUS_SLV_DID =  #{detailStatus} , UPDATED_BY_DID = #{updatedBy} , UPDATED_ON_DID = GETDATE()
-        WHERE ID_RCT_DID = #{recipientId}
+        WHERE ID_RCT_DID = #{recipientId} AND ID_DIP_DID = #{planId} AND ID_INV_DID = #{invId}
 
     </update>
 
@@ -146,6 +146,12 @@
         SELECT *
         FROM DISPATCH_DETAIL_DID
         where ID_DIP_DID = #{planId}
+
+    </select>
+
+    <select id="virtualAllocatedStock"  resultType="int">
+        SELECT ISNULL(SUM(QUANTITY_DISPATCH_DID),0) FROM VIRTUAL_DISPATCH_VID
+        WHERE ID_DIP_DID = #{planId} AND ID_INV_DID = #{invId}
 
     </select>
 

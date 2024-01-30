@@ -160,7 +160,7 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getVirtualQuantityAllocatedDifferentialRecipient(planId,inventoryId,teamId)
     }
 
-    override fun saveVirtualCommonAllocation(saveAlloc: List<saveVirtualCommonAllocationDTO>) {
+    override fun saveVirtualCommonAllocation(saveAlloc: List<saveVirtualCommonAllocationDTO>): ResponseEntity<MutableMap<String, String>>  {
         return newAllocationRepository.saveVirtualCommonAllocation(saveAlloc)
     }
 

@@ -78,7 +78,7 @@ interface NewAllocationService {
 
    fun saveVirtualDifferentialAllocation (saveAlloc : List<saveDifferentialAllocation>)
 
-   fun saveVirtualCommonAllocation (saveAlloc : List<saveVirtualCommonAllocationDTO>)
+   fun saveVirtualCommonAllocation (saveAlloc : List<saveVirtualCommonAllocationDTO>): ResponseEntity<MutableMap<String, String>>
 
    fun submitVirtualAllocation (alloc : submitAllocationDTO)
 
