@@ -127,7 +127,7 @@ open class UIController @Autowired constructor(
                 UserMenuEnum.MONTHLY_ALLOCATION,
                 UserMenuEnum.SPECIAL_ALLOCATION,
                 UserMenuEnum.VIRTUAL_ALLOCATION,
-                UserMenuEnum.PICKING_SLIP,
+//                UserMenuEnum.PICKING_SLIP,
 
             ),
 
@@ -207,7 +207,7 @@ open class UIController @Autowired constructor(
             UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id to listOf<UserMenuEnum>(
                 UserMenuEnum.RBM_DASHBOARD,
                 UserMenuEnum.ALLOCATION,
-                UserMenuEnum.DISPATCH_AND_INVOICING
+                //UserMenuEnum.DISPATCH_AND_INVOICING
             ),
 
             UserRoleEnum.NATIONAL_SALES_MANAGER_ID.id to listOf<UserMenuEnum>(

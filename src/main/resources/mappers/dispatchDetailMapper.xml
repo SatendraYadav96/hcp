@@ -156,6 +156,12 @@
     </select>
 
 
+    <select id="virtualAllocatedStockRBM"  resultType="int">
+        SELECT ISNULL(SUM(QUANTITY_DISPATCH_DID),0) FROM DISPATCH_DETAIL_DID
+        WHERE ID_DIP_DID = #{planId} AND ID_INV_DID = #{invId}
+
+    </select>
+
 
     <select id="rbmDetails" resultMap="dispatchDetailResultMap">
         SELECT *
@@ -265,6 +271,12 @@
     update DISPATCH_DETAIL_DID set QUANTITY_DISPATCH_DID = QUANTITY_DISPATCH_DID -#{qtyDispatch}
 where ID_DIP_DID = #{planId} and ID_INV_DID = #{inventoryId} and ID_RCT_DID = #{recipientId}
     </update>
+
+    <update id="updateBMVidStock" >
+        update VIRTUAL_DISPATCH_VID set QUANTITY_DISPATCH_DID = QUANTITY_DISPATCH_DID -#{qtyDispatch}
+        where ID_DIP_DID = #{planId} and ID_INV_DID = #{inventoryId} and ID_RCT_DID = #{recipientId}
+    </update>
+
 
 
 
@@ -427,6 +439,10 @@ DELETE FROM DISPATCH_DETAIL_DID WHERE ID_DIP_DID = #{planId}
     <select id="rbmDetailsVirtual" resultMap="dispatchDetailResultMap" >
         SELECT * FROM DISPATCH_DETAIL_DID WHERE ID_DIP_DID = #{planId} AND ID_INV_DID = #{inventoryId}
     </select>
+
+    <update id="updateVirtualCommonAllocation">
+        UPDATE VIRTUAL_DISPATCH_VID SET QUANTITY_DISPATCH_DID = QUANTITY_DISPATCH_DID - #{qtyDispatch} WHERE ID_INV_DID = #{inventoryId} AND ID_RCT_DID = #{recipientId} AND ID_DIP_DID = #{planId}
+    </update>
 
 
 
