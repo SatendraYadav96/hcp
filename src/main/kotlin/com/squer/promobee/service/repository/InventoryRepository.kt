@@ -820,7 +820,7 @@ class InventoryRepository @Autowired constructor(
            data.put("status","00000000-0000-0000-0000-000000000024")
 
             if(status == InvoiceStatusEnum.GENERATED_PRINTED.id || status == InvoiceStatusEnum.CANCELLED.id || status == InvoiceStatusEnum.REDIRECTED.id){
-        exportData =        return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.GetEmployeeInvoiceDetail_GP_C_R", data)
+        exportData =     return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.GetEmployeeInvoiceDetail_GP_C_R", data)
            }else{
                exportData =    return sqlSessionFactory.openSession().selectList("DispatchInvoicingMapper.getEmployeeInvoiceDetailDraft", data)
            }

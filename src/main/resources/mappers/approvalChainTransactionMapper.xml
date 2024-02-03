@@ -64,8 +64,8 @@
 
     <update id="updateApprovalChainTransaction">
 
-        UPDATE APPROVAL_CHAIN_TRANSACTION_API SET ID_APPROVED_BY_USR_API = #{approvedByUser} , ID_STATUS_SLV_API = #{apiStatus} , COMMENT_API = #{comments},UPDATED_ON_API = GETDATE() , UPDATED_BY_API = #{updatedBy},
-                                                  SUBMISSION_DATE_DIP = NULL , APPROVAL_DATE_DIP = NULL
+        UPDATE APPROVAL_CHAIN_TRANSACTION_API SET ID_APPROVED_BY_USR_API = #{approvedByUser} , ID_STATUS_SLV_API = #{apiStatus} , COMMENT_API = #{comments},UPDATED_ON_API = GETDATE() , UPDATED_BY_API = #{updatedBy}
+
         WHERE ID_OWNER_API = #{id}
     </update>
 
