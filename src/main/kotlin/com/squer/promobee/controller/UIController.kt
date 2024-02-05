@@ -64,7 +64,7 @@ open class UIController @Autowired constructor(
                         UserMenuEnum.SPECIAL_ALLOCATION,
                         UserMenuEnum.VIRTUAL_ALLOCATION,
                         UserMenuEnum.PICKING_SLIP,
-                        UserMenuEnum.VIRTUAL_DISPATCHE,
+//                        UserMenuEnum.VIRTUAL_DISPATCHE,
                         UserMenuEnum.FF_REPORT,
                         UserMenuEnum.INVENTORY_REPORT,
                         //UserMenuEnum.PURCHASE_REPORT,
