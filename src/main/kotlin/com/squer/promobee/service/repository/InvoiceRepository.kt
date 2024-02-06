@@ -21,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -43,10 +44,10 @@ class InvoiceRepository(
     lateinit var inventoryRepository : InventoryRepository
 
 
-    @Value("./src/main/resources/htmlPrint/promoPrintInvoice.vm")
+    @Value("src/main/resources/htmlPrint/promoPrintInvoice.vm")
     private lateinit var vmConfigPath: String
 
-    @Value("./src/main/resources/htmlPrint/promoPrintLabel.vm")
+    @Value("src/main/resources/htmlPrint/promoPrintLabel.vm")
     private lateinit var vmConfigPathLabel: String
 
 
@@ -169,12 +170,15 @@ class InvoiceRepository(
           ve.init()
           /*  next, get the Template  */
           /*  next, get the Template  */
+//          val file = File(this.javaClass.getResource( "/htmlPrint/promoPrintInvoice.vm").toURI())
+//          println(file.absolutePath)
+//          println(file.name)
           val t: Template = ve.getTemplate(vmConfigPath)
           /*  create a context and add data */
           /*  create a context and add data */
+          //val t: Template = ve.getTemplate(file.absolutePath)
 
           val context = VelocityContext()
-
 
           var i = 0
 
