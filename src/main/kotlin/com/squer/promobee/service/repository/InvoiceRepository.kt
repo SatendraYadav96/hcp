@@ -21,7 +21,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -32,7 +31,7 @@ import java.util.*
 
 @Repository
 class InvoiceRepository(
-    securityUtility: SecurityUtility
+    securityUtility: SecurityUtility,
 ): BaseRepository<InvoiceHeader>(
     securityUtility = securityUtility
 ) {
@@ -161,22 +160,17 @@ class InvoiceRepository(
 
           i.inhId?.let { getInvoiceDetailsForPrint(i.inhId!!) }?.let { printDetailsBody.add(it) }
 
-          //var hoUser: Boolean = printDetails?.teamId?.equals(TeamEnum.DEFAULT_HO_TEAM.id) ?: true; false
 
-
-          /*  first, get and initialize an engine  */
-          /*  first, get and initialize an engine  */
           val ve = VelocityEngine()
           ve.init()
-          /*  next, get the Template  */
-          /*  next, get the Template  */
-//          val file = File(this.javaClass.getResource( "/htmlPrint/promoPrintInvoice.vm").toURI())
-//          println(file.absolutePath)
-//          println(file.name)
-          val t: Template = ve.getTemplate(vmConfigPath)
-          /*  create a context and add data */
-          /*  create a context and add data */
-          //val t: Template = ve.getTemplate(file.absolutePath)
+
+
+       //   var relativePath  = "/src/main/resources/htmlPrint/promoPrintInvoice.vm";
+
+
+          var absolutePath =    this.javaClass.getResource("/htmlPrint/promoPrintInvoice.vm").path
+
+          val t: Template = ve.getTemplate(absolutePath)
 
           val context = VelocityContext()
 
