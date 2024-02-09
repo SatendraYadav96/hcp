@@ -235,7 +235,7 @@
                 tem.NAME_TEM as 'Team',
                 ulv.ID_ULV as 'DesignationId',
                 ulv.NAME_ULV as 'Designation',
-                COUNT(rct.NAME_RCT) OVER (PARTITION BY ulv.NAME_ULV) AS 'RecipientCount'
+                COUNT(rct.NAME_RCT) OVER (PARTITION BY ulv.ID_ULV) AS 'RecipientCount'
         FROM
             BRAND_MASTER_BRD brd
                 JOIN

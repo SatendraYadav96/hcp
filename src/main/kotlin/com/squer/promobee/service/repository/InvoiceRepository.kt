@@ -160,17 +160,39 @@ class InvoiceRepository(
 
           i.inhId?.let { getInvoiceDetailsForPrint(i.inhId!!) }?.let { printDetailsBody.add(it) }
 
+          //var hoUser: Boolean = printDetails?.teamId?.equals(TeamEnum.DEFAULT_HO_TEAM.id) ?: true; false
 
+
+          /*  first, get and initialize an engine  */
+          /*  first, get and initialize an engine  */
           val ve = VelocityEngine()
           ve.init()
-
+          /*  next, get the Template  */
+          /*  next, get the Template  */
+//          val file = File(this.javaClass.getResource( "/htmlPrint/promoPrintInvoice.vm").toURI())
+//          println(file.absolutePath)
+//          println(file.name)
 
        //   var relativePath  = "/src/main/resources/htmlPrint/promoPrintInvoice.vm";
 
 
-          var absolutePath =    this.javaClass.getResource("/htmlPrint/promoPrintInvoice.vm").path
 
-          val t: Template = ve.getTemplate(absolutePath)
+        //  val absolutePath = this.javaClass.getResource("").path + path
+
+//          var absolutePath =    this.javaClass.getResource("").path + relativePath;
+//          // Replace backslashes with forward slashes if needed
+//          if (!System.getProperty("os.name").toLowerCase().contains("windows")) {
+//              absolutePath = absolutePath.replace("\\", "/");
+//          }
+
+
+//          val res: URL? = javaClass.classLoader.getResource("/htmlPrint/promoPrintInvoice.vm")
+//          val file: File = Paths.get(res!!.toURI()).toFile()
+        //  val absolutePath = file.absolutePath
+         // val t: Template = ve.getTemplate(vmConfigPath)
+          /*  create a context and add data */
+          /*  create a context and add data */
+          val t: Template = ve.getTemplate(vmConfigPath)
 
           val context = VelocityContext()
 
