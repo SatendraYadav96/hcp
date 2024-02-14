@@ -75,7 +75,8 @@
 
     <select id="getUserDropdown" resultType="com.squer.promobee.controller.dto.UserDropdownDTO">
 
-        SELECT ID_USR AS 'userId',NAME_USR AS 'userName' FROM USER_MASTER_USR WHERE ID_STATUS_SLV_USR = '1D2F12F3-F84A-4200-9590-70680528779B'
+        SELECT ID_USR AS 'userId',NAME_USR AS 'userName' FROM USER_MASTER_USR
+        WHERE ID_STATUS_SLV_USR = '1D2F12F3-F84A-4200-9590-70680528779B' and ID_DESG_ULV_USR = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5'
 
     </select>
 

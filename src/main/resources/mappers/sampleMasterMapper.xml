@@ -35,21 +35,22 @@
     <select id="getSample" resultMap="sampleMasterResultMap" >
         select ID_SMP,NAME_SMP,LMID_SMP,PACK_SIZE_SMP,DESCRIPTION_SMP from SAMPLE_MASTER_SMP
         where IS_ACTIVE_SMP = #{active}
+ORDER BY UPDATED_ON_SMP DESC
     </select>
 
 
     <insert id="addSample">
         insert into SAMPLE_MASTER_SMP (ID_SMP,LMID_SMP,NAME_SMP,CI_NAME_SMP,DESCRIPTION_SMP,ID_BRD_SMP,PACK_SIZE_SMP,IS_ACTIVE_SMP,
-                                       CREATED_ON_SMP,CREATED_BY_SMP,UPDATED_ON_SMP,UPDATED_BY_SMP,HSN_CODE_SMP,CAP_SMP)
+                                       CREATED_ON_SMP,CREATED_BY_SMP,UPDATED_ON_SMP,UPDATED_BY_SMP,HSN_CODE_SMP)
         values( #{id}, #{lmid}, #{name}, #{ciName},  #{description}, #{brandId.id}, #{packSize}, #{active}, GETDATE(), #{createdBy}, GETDATE(),
-                #{updatedBy},  #{hsnCode},  #{cap} )
+                #{updatedBy},  #{hsnCode} )
     </insert>
 
 
     <update id="editSample" >
 
         UPDATE SAMPLE_MASTER_SMP SET LMID_SMP = #{lmid}, NAME_SMP = #{name}, CI_NAME_SMP = #{ciName} ,DESCRIPTION_SMP = #{description}, ID_BRD_SMP = #{brandId.id}, PACK_SIZE_SMP = #{packSize},
-                                     IS_ACTIVE_SMP = #{active}, CAP_SMP = #{cap} ,UPDATED_BY_SMP = #{updatedBy} , UPDATED_ON_SMP = GETDATE()
+                                     IS_ACTIVE_SMP = #{active} ,UPDATED_BY_SMP = #{updatedBy} , UPDATED_ON_SMP = GETDATE()
         WHERE ID_SMP = #{id}
 
     </update>

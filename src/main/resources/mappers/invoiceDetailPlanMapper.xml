@@ -32,6 +32,12 @@
         VALUES(#{id},#{headerId},#{planId})
     </insert>
 
+    <select id="getInvoiceHeaderIdByPlan" resultMap="invoiceDetailPlanResultMap" >
+        select * from INVOICE_DISPATCH_PLAN_IDP where ID_PLAN_IDP = #{planId}
+    </select>
+
+
+
 
 
 </mapper>

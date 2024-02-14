@@ -169,18 +169,17 @@ class MasterRepository
 
             var i = 0
 
-            ccm.brandId.forEach {
+
                 var cbr = CostCenterBrand()
                 var cbrId = UUID.randomUUID().toString()
 
                 data.put("id", cbrId)
                 data.put("ccmId", ccmId5)
-                data.put("brandId",ccm.brandId.get(i))
+                data.put("brandId",ccm.brandId!!)
 
                 sqlSessionTemplate.insert("CostCenterBrandMapper.addCostCenterBrand", data)
 
-                i++
-            }
+
 
             jsonResult = mapOf("success" to true, "message" to "Cost Center created successfully !")
 
@@ -220,7 +219,7 @@ class MasterRepository
         var cbr = CostCenterBrand()
 
         var i = 0
-        ccm.brandId.forEach {
+
 
 
 
@@ -231,12 +230,10 @@ class MasterRepository
 //        data.put("brandId",NamedSquerEntity(ccm.brandId?.id.toString(),""))
             // ccm.brandId?.let { data.put("brandId", it) }
             //data.put("brandId",NamedSquerEntity(ccm.brandId?id.toString(),""))
-            data.put("brandId", ccm.brandId.get(i))
+            data.put("brandId", ccm.brandId!!)
 
             sqlSessionTemplate.insert("CostCenterBrandMapper.editCostCenterBrand",data)
 
-            i++
-        }
 
 
 
@@ -246,9 +243,21 @@ class MasterRepository
     fun getCostCenterById( id: String) : CostCenter {
         var data: MutableMap<String, Any> = mutableMapOf()
 
+        var brandMap = mutableListOf<CostCenter>()
+
+        var costCenterMap = CostCenter()
+
         data.put("id",id)
 
-         return sqlSessionTemplate.selectOne("CostCenterMapper.getCostCenterById",data)
+        brandMap = sqlSessionTemplate.selectList<CostCenter>("CostCenterMapper.getCostCenterBrandMap",data)
+
+        if(brandMap.size > 0){
+           costCenterMap =  sqlSessionTemplate.selectOne("CostCenterMapper.getCostCenterById",data)
+        }else{
+            costCenterMap = sqlSessionTemplate.selectOne("CostCenterMapper.getCostCenterMap",data)
+        }
+
+         return costCenterMap
     }
 
 
@@ -296,7 +305,7 @@ class MasterRepository
             smp.packSize?.let { data.put("packSize", it) }
             smp.active?.let { data.put("active", it) }
             smp.hsnCode?.let { data.put("hsnCode", it) }
-            smp.cap?.let { data.put("cap", it) }
+           // smp.cap?.let { data.put("cap", it) }
             data.put("createdBy", user.id )
             data.put("updatedBy", user.id)
 
@@ -329,7 +338,7 @@ class MasterRepository
        data.put("brandId",NamedSquerEntity(smp.brandId?.id.toString(),""))
         smp.packSize?.let { data.put("packSize", it) }
         smp.active?.let { data.put("active", it) }
-        smp.cap?.let { data.put("cap", it) }
+        //smp.cap?.let { data.put("cap", it) }
         data.put("updatedBy", user.id)
 
 
@@ -1060,20 +1069,18 @@ class MasterRepository
 
         i = 0
 
-        brd.costCenter.forEach {
-            var data: MutableMap<String, Any> = mutableMapOf()
+
+
 
             var cbrId = UUID.randomUUID().toString()
 
             data.put("id",cbrId)
-            data.put("costCenter",brd.costCenter.get(i))
+            data.put("costCenter",brd.costCenter!!)
             data.put("brand",brd.id)
 
             sqlSessionTemplate.insert("CostCenterBrandMapper.addBrandByBrandId",data)
 
-            i++
 
-        }
 
 
         println("Brand Updated Successfully !")
@@ -1193,20 +1200,18 @@ class MasterRepository
 
             i = 0
 
-            brd.costCenter.forEach {
-                var data: MutableMap<String, Any> = mutableMapOf()
+
+
 
                 var cbrId = UUID.randomUUID().toString()
 
                 data.put("id",cbrId)
-                data.put("costCenter",brd.costCenter.get(i))
+                data.put("costCenter",brd.costCenter!!)
                 data.put("brand",brdId)
 
                 sqlSessionTemplate.insert("CostCenterBrandMapper.addBrandByBrandId",data)
 
-                i++
 
-            }
 
 
             println("Brand Added Successfully !")

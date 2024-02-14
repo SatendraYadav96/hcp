@@ -81,6 +81,7 @@
     <select id="reverseInventoryPlan" resultMap="dispatchPlanResultMap" >
         SELECT * FROM DISPATCH_PLAN_DIP
         WHERE MONTH_DIP = #{month} AND YEAR_DIP = #{year} AND REMARKS_DIP = #{remarks}
+        ORDER BY CREATED_ON_DIP DESC
     </select>
 
 

@@ -34,6 +34,8 @@
     <select id="getCostCenter" resultMap="costCenterResultMap" >
         select * from COST_CENTER_MASTER_CCM
         where IS_ACTIVE_CCM = #{active}
+        ORDER BY UPDATED_ON_CCM DESC
+
     </select>
 
     <insert id="addCostCenter">
@@ -65,11 +67,16 @@
         where ccm.ID_CCM = #{id}
     </select>
 
-<!--    <select id="getCostCenterById" resultMap="costCenterResultMap" >-->
-<!--        select * from COST_CENTER_MASTER_CCM-->
-<!--        where ID_CCM = #{id}-->
-<!--    </select>-->
+    <select id="getCostCenterBrandMap" resultMap="costCenterResultMap" >
+        SELECT * FROM COSTCENTER_BRAND_CBR WHERE ID_CCM_CBR = #{id}
 
+    </select>
+
+
+    <select id="getCostCenterMap" resultMap="costCenterResultMap" >
+        SELECT * FROM COST_CENTER_MASTER_CCM WHERE ID_CCM = #{id}
+
+    </select>
 
 
     <select id="getCostCenterDropdown" resultMap="costCenterResultMap" >

@@ -11,5 +11,6 @@ class MasterBrand: AuditableEntity() {
     var division: NamedSquerEntity? = null
     var user:ArrayList<String> = ArrayList<String>()
     var team: ArrayList<String> = ArrayList<String>()
-    var costCenter:ArrayList<String> = ArrayList<String>()
+//    var costCenter:ArrayList<String> = ArrayList<String>()
+    var costCenter:String?= null
 }

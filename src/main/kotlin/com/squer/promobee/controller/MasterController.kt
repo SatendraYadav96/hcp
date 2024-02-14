@@ -218,18 +218,17 @@ open class MasterController@Autowired constructor(
 
             var i = 0
 
-            ccm.brandId.forEach {
+
                 var cbr = CostCenterBrand()
                 var cbrId = UUID.randomUUID().toString()
 
                 data.put("id", cbrId)
                 data.put("ccmId", ccmId5)
-                data.put("brandId",ccm.brandId.get(i))
+                data.put("brandId",ccm.brandId!!)
 
                 sqlSessionTemplate.insert("CostCenterBrandMapper.addCostCenterBrand", data)
 
-                i++
-            }
+
 
             errorMap["message"] = "Cost Center created successfully !"
             errorMap["error"] = "false"
@@ -249,8 +248,8 @@ open class MasterController@Autowired constructor(
     }
 
 
-    @PutMapping("/editCostCenters/{id}")
-    open fun editCostCenters(@PathVariable id: String , @RequestBody ccm: MasterCostCenter): ResponseEntity<*>{
+    @PutMapping("/editCostCenters")
+    open fun editCostCenters( @RequestBody ccm: MasterCostCenter): ResponseEntity<*>{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
 
@@ -281,23 +280,20 @@ open class MasterController@Autowired constructor(
             var cbr = CostCenterBrand()
 
             var i = 0
-            ccm.brandId.forEach {
 
 
 
-                var cbrId = UUID.randomUUID().toString()
+               var cbrId = UUID.randomUUID().toString()
 
                 data.put("id", cbrId)
                 ccmId2?.let { data.put("ccmId", it) }
-//        data.put("brandId",NamedSquerEntity(ccm.brandId?.id.toString(),""))
-                // ccm.brandId?.let { data.put("brandId", it) }
-                //data.put("brandId",NamedSquerEntity(ccm.brandId?id.toString(),""))
-                data.put("brandId", ccm.brandId.get(i))
+
+                data.put("brandId", ccm.brandId!!)
 
                 sqlSessionTemplate.insert("CostCenterBrandMapper.editCostCenterBrand",data)
 
-                i++
-            }
+
+
             errorMap["message"] = "Cost Center updated successfully !"
             errorMap["error"] = "false"
 
@@ -368,7 +364,7 @@ open class MasterController@Autowired constructor(
             smp.packSize?.let { data.put("packSize", it) }
             smp.active?.let { data.put("active", it) }
             smp.hsnCode?.let { data.put("hsnCode", it) }
-            smp.cap?.let { data.put("cap", it) }
+            //smp.cap?.let { data.put("cap", it) }
             data.put("createdBy", user.id )
             data.put("updatedBy", user.id)
 
@@ -412,7 +408,7 @@ open class MasterController@Autowired constructor(
             data.put("brandId",NamedSquerEntity(smp.brandId?.id.toString(),""))
             smp.packSize?.let { data.put("packSize", it) }
             smp.active?.let { data.put("active", it) }
-            smp.cap?.let { data.put("cap", it) }
+            //smp.cap?.let { data.put("cap", it) }
             data.put("updatedBy", user.id)
 
 
@@ -1270,20 +1266,18 @@ open class MasterController@Autowired constructor(
 
             i = 0
 
-            brd.costCenter.forEach {
-                var data: MutableMap<String, Any> = mutableMapOf()
+
 
                 var cbrId = UUID.randomUUID().toString()
 
                 data.put("id",cbrId)
-                data.put("costCenter",brd.costCenter.get(i))
+                data.put("costCenter",brd.costCenter!!)
                 data.put("brand",brd.id)
 
                 sqlSessionTemplate.insert("CostCenterBrandMapper.addBrandByBrandId",data)
 
-                i++
 
-            }
+
 
 
             println("Brand Updated Successfully !")
@@ -1423,20 +1417,18 @@ open class MasterController@Autowired constructor(
 
             i = 0
 
-            brd.costCenter.forEach {
-                var data: MutableMap<String, Any> = mutableMapOf()
+
+
 
                 var cbrId = UUID.randomUUID().toString()
 
                 data.put("id",cbrId)
-                data.put("costCenter",brd.costCenter.get(i))
+                data.put("costCenter",brd.costCenter!!)
                 data.put("brand",brdId)
 
                 sqlSessionTemplate.insert("CostCenterBrandMapper.addBrandByBrandId",data)
 
-                i++
 
-            }
 
 
             println("Brand Added Successfully !")

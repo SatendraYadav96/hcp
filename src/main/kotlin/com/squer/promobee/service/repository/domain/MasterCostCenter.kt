@@ -7,7 +7,8 @@ class MasterCostCenter: AuditableEntity() {
     var ciName: String?= null
     var code: String?= null
     var active: Int?= null
-    var brandId: ArrayList<String> = ArrayList<String>()
+//    var brandId: ArrayList<String> = ArrayList<String>()
+    var brandId: String?= null
 
 
 }

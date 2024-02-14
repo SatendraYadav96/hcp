@@ -32,6 +32,7 @@
     <select id="getVendor" resultMap="vendorResultMap" >
         select * from VENDOR_MASTER_VND
         where IS_ACTIVE_VND = #{active}
+        order by UPDATED_ON_VND desc
     </select>
 
     <insert id="addVendor">

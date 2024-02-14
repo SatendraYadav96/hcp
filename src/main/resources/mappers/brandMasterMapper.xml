@@ -40,6 +40,7 @@
 
     <select id="getBrand" resultMap="brandMasterResultMap" >
         select * from BRAND_MASTER_BRD WHERE IS_ACTIVE_BRD = #{active}
+ORDER BY UPDATED_ON_BRD DESC
 
     </select>
 
@@ -47,6 +48,7 @@
         select * from BRAND_MASTER_BRD BRD
                           JOIN BRANDMANAGER_BRAND_BBR BBR ON BBR.ID_BRD_BBR = BRD.ID_BRD
         WHERE IS_ACTIVE_BRD =  #{active}  AND BBR.ID_USR_BBR  = #{userId}
+        ORDER BY UPDATED_ON_BRD DESC
 
     </select>
 
