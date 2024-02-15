@@ -135,7 +135,7 @@ open class ReportController @Autowired constructor(
 
 
     @GetMapping("/getVirtualReconciliationReport/{quarter}/{year}/{businessUnit}")
-    fun getVirtualReconciliationReport(@PathVariable quarter: String, @PathVariable  year: String,@PathVariable  businessUnit: String): ResponseEntity<*>{
+    fun getVirtualReconciliationReport(@PathVariable quarter: String, @PathVariable  year: String,@PathVariable  businessUnit: ArrayList<String> ): ResponseEntity<*>{
         val data = reportService.getVirtualReconciliationReport(quarter,year,businessUnit)
         return  ResponseEntity(data,HttpStatus.OK)
     }

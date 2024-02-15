@@ -568,7 +568,7 @@ class ReportRepository
     }
 
 
-    fun getVirtualReconciliationReport(quarter: String, year: String, businessUnit: String): List<VirtualReconciliationDTO>{
+    fun getVirtualReconciliationReport(quarter: String, year: String, businessUnit: ArrayList<String> ): List<VirtualReconciliationDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
 
         var (fromDate, toDate) = getDates(quarter, year)
@@ -592,17 +592,20 @@ class ReportRepository
 
         var endDate1 = endDate.format(parsedDate1)
 
+        var virtualReconciliationReport = mutableListOf<VirtualReconciliationDTO>()
+
+        businessUnit.forEach {
+
+            data.put("fromdate", startDate1)
+            data.put("enddate", endDate1)
+            data.put("BusinessUnit", it)
+
+            virtualReconciliationReport = sqlSessionFactory.openSession().selectList<VirtualReconciliationDTO>("ReportMapper.getVirtualReconciliationReport", data)
+        }
 
 
+      return virtualReconciliationReport
 
-      data.put("fromdate", startDate1)
-       data.put("enddate", endDate1)
-        data.put("BusinessUnit", businessUnit)
-
-
-
-
-        return sqlSessionFactory.openSession().selectList("ReportMapper.getVirtualReconciliationReport", data)
     }
 
     fun getBatchReconciliation(): List<BatchReconciliationDTO>{

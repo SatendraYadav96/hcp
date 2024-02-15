@@ -30,6 +30,7 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
                                      open="(" separator="," close=")">
         #{item}
     </foreach>
+order by RCT.JOINING_DATE_RCT desc
     </select>
 
 
@@ -84,7 +85,8 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
         JOIN BRAND_MASTER_BRD BRD1 ON BBR1.ID_BRD_BBR = BRD1.ID_BRD
         join USER_MASTER_USR usr on usr.ID_USR = BBR1.ID_USR_BBR
         JOIN  #FilterTable FT  ON BRD1.ID_BRD = FT.ID_BRD
-        WHERE INV.POSTING_DATE_INV &gt;= #{startDate} AND INV.POSTING_DATE_INV &lt;=  #{endDate})
+        WHERE INV.POSTING_DATE_INV &gt;= #{startDate} AND INV.POSTING_DATE_INV &lt;=  #{endDate}
+        )
         AS Purchase1
 
         IF(#{userDesgId} = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5')--BM
@@ -198,6 +200,7 @@ SELECT BUM.NAME_BUM as 'businessUnit',RCT.CODE_RCT as 'employeeCode',RCT.NAME_RC
         join BU_MASTER_BUM BUM on DIM.ID_BUM_DIM = BUM.ID_BUM
         WHERE CAST(INH.CREATED_ON_INH AS DATE) &gt;= CAST(#{FromDate} AS DATE) AND CAST(INH.CREATED_ON_INH AS DATE) &lt;= CAST(#{ToDate} AS DATE)
         AND INH.ID_TYPE_SLV_INH = #{StatusID} AND BUM.ID_BUM = #{BusinessUnit} AND DIM.ID_DIM = #{Division}
+        order by inh.INVOICE_NO_INH
 
 
     </select>
