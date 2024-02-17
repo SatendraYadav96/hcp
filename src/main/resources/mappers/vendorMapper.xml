@@ -45,7 +45,7 @@
 
     <update id="editVendor">
 
-        UPDATE VENDOR_MASTER_VND SET ADDRESS_LINE_1_VND = #{addressLine1}, ADDRESS_LINE_2_VND = #{addressLine2}, CITY_VND = #{city}, STATE_VND = #{state}, ZIP_VND = #{zip},
+        UPDATE VENDOR_MASTER_VND SET NAME_VND = #{name}, CI_NAME_VND =#{ciName} , CODE_VND = #{code} , ADDRESS_LINE_1_VND = #{addressLine1}, ADDRESS_LINE_2_VND = #{addressLine2}, CITY_VND = #{city}, STATE_VND = #{state}, ZIP_VND = #{zip},
                                      IS_ACTIVE_VND = #{active},  UPDATED_BY_VND = #{updatedBy} , UPDATED_ON_VND = GETDATE()
         WHERE ID_VND = #{id}
 
