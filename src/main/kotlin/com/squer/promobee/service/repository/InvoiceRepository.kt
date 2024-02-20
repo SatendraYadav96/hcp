@@ -16,13 +16,14 @@ import org.apache.velocity.Template
 import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.VelocityEngine
 import org.apache.velocity.runtime.RuntimeConstants
+import org.apache.velocity.runtime.RuntimeSingleton
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.io.ByteArrayOutputStream
-import java.io.File
+import java.io.StringReader
 import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -239,7 +240,9 @@ class InvoiceRepository(
           // Get a template from the file
 
 
-          val template = ve.getTemplate(contentConfig )
+         // val template = ve.getTemplate(contentConfig )
+
+          val template = convertToTemplate(contentConfig)
 
 
 
@@ -1881,6 +1884,16 @@ class InvoiceRepository(
 
     }
 
+    fun convertToTemplate(content: String): Template {
+        val rs = RuntimeSingleton.getRuntimeServices()
+        val sr = StringReader(content)
+        val sn = rs.parse(sr, "User Information")
+        val t = Template()
+        t.setRuntimeServices(rs)
+        t.setData(sn)
+        t.initDocument()
+        return t
+    }
 
 
 
