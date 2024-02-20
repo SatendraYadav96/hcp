@@ -281,6 +281,11 @@ order by RCT.JOINING_DATE_RCT desc
 
     </select>
 
+    <select id="printInvoiceDatabase" resultType="com.squer.promobee.controller.dto.PrintInvoiceTableDto" >
+        SELECT ID_PIC as 'idPic',CODE_PIC as 'codePic',CONTENT_PIC as 'contentPic' FROM PRINT_INVOICE_CONTENT where CODE_PIC = #{code}
+
+    </select>
+
     <select id="getDivisionForReport" resultType="com.squer.promobee.controller.dto.BuDTO" >
 
         select ID_DIM_TEM as 'divId' from TEAM_MASTER_TEM where IS_ACTIVE_TEM = 1 and ID_TEM = #{Team}

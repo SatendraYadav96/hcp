@@ -15,12 +15,14 @@ import org.apache.ibatis.session.SqlSessionFactory
 import org.apache.velocity.Template
 import org.apache.velocity.VelocityContext
 import org.apache.velocity.app.VelocityEngine
+import org.apache.velocity.runtime.RuntimeConstants
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.StringWriter
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -43,7 +45,7 @@ class InvoiceRepository(
     lateinit var inventoryRepository : InventoryRepository
 
 
-    @Value("src/main/resources/htmlPrint/promoPrintInvoice.vm")
+    @Value("src/main/resources/htmlPrint/promoPrintInvoices.vm")
     private lateinit var vmConfigPath: String
 
     @Value("src/main/resources/htmlPrint/promoPrintLabel.vm")
@@ -120,8 +122,7 @@ class InvoiceRepository(
 
 
     fun printInvoice(inh: List<PrintInvoiceDTO>):  MutableList<ByteArray>? {
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
 
 
@@ -143,56 +144,106 @@ class InvoiceRepository(
 
        var finalArray = mutableListOf<ByteArray>()
 
-       // var finalArray = ByteArray()
-
-        //var printInvoiceArray = mutableListOf<ByteArray>()
-
-
       inh.forEach { i ->
-
-          //var invoice = i.inhId?.let { getInvoiceHeaderById(i.inhId!!) }
-
-
-
 
           i.inhId?.let { getPrintInvoiceHeaders(i.inhId!!) }?.let { printDetails.add(it) }
 
 
           i.inhId?.let { getInvoiceDetailsForPrint(i.inhId!!) }?.let { printDetailsBody.add(it) }
 
-          //var hoUser: Boolean = printDetails?.teamId?.equals(TeamEnum.DEFAULT_HO_TEAM.id) ?: true; false
-
 
           /*  first, get and initialize an engine  */
           /*  first, get and initialize an engine  */
           val ve = VelocityEngine()
+          ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath")
+          ve.setProperty("file.resource.loader.path","/templates/printInvoice.vm" )
           ve.init()
-          /*  next, get the Template  */
-          /*  next, get the Template  */
-//          val file = File(this.javaClass.getResource( "/htmlPrint/promoPrintInvoice.vm").toURI())
+
+
+
+//          val file = File(this.javaClass.getResource( "/htmlPrint/promoPrintInvoices.vm").toURI())
 //          println(file.absolutePath)
 //          println(file.name)
-
-       //   var relativePath  = "/src/main/resources/htmlPrint/promoPrintInvoice.vm";
-
-
-
-        //  val absolutePath = this.javaClass.getResource("").path + path
-
-//          var absolutePath =    this.javaClass.getResource("").path + relativePath;
-//          // Replace backslashes with forward slashes if needed
-//          if (!System.getProperty("os.name").toLowerCase().contains("windows")) {
-//              absolutePath = absolutePath.replace("\\", "/");
+//          val resourceAsStream = javaClass.classLoader.getResourceAsStream("htmlPrint/promoPrintInvoices.vm")
+//          val content = resourceAsStream?.bufferedReader().use { it?.readText() }
+//
+//          val filePath = "/templates/printInvoice.vm" // Your relative file path
+//
+//          if (isTemplateFilePresent(filePath)) {
+//              println("Template file is present.")
+//          } else {
+//              println("Template file is not present.")
 //          }
+//
+//          println("Working Directory: ${System.getProperty("user.dir")}")
+//
+//           //Assuming your project structure is like: projectRoot/src/main/resources/htmlPrint/promoPrintInvoices.vm
+//          val projectRoot = File(".").absoluteFile.parentFile
+//
+//          var file = File(projectRoot, "src//main//kotlin$filePath")
 
 
-//          val res: URL? = javaClass.classLoader.getResource("/htmlPrint/promoPrintInvoice.vm")
-//          val file: File = Paths.get(res!!.toURI()).toFile()
-        //  val absolutePath = file.absolutePath
+
+
+
+
+
+
+
+           //Now, obtain the modified absolute path
+//          var modifiedAbsolutePath = file.absolutePath
+//
+//          println("Modified Absolute Path: $modifiedAbsolutePath")
+          /*  create a context and add data */
+          /*  create a context and add data */
+
+        //  val modifiedAbsolutePath = file.absolutePath
+
+        //  val t: Template = ve.getTemplate(modifiedAbsolutePath)
          // val t: Template = ve.getTemplate(vmConfigPath)
-          /*  create a context and add data */
-          /*  create a context and add data */
-          val t: Template = ve.getTemplate(vmConfigPath)
+
+
+          // Add the StringResourceLoader to the engine
+//          ve.addProperty("resource.loader", "string")
+//          ve.addProperty("string.resource.loader.class", "org.apache.velocity.runtime.resource.loader.StringResourceLoader")
+//          ve.addProperty("string.resource.loader.repository.class", "org.apache.velocity.runtime.resource.util.StringResourceRepositoryImpl")
+//
+
+
+
+
+
+          var pic = PrintInvoiceTableDto()
+
+          var data0: MutableMap<String, Any> = mutableMapOf()
+          data0.put("code","INVOICE")
+
+          pic = sqlSessionFactory.openSession().selectOne<PrintInvoiceTableDto>("ReportMapper.printInvoiceDatabase",data0)
+
+          var contentConfig = ""
+
+          contentConfig = pic.contentPic.toString()
+
+          println(contentConfig)
+
+
+//
+//          // Get a template from the template content
+//          val template = Template()
+//         template.setResourceLoader(StringResourceLoader())
+//         template.data = contentConfig
+
+
+
+
+          // Get a template from the file
+
+
+          val template = ve.getTemplate(contentConfig )
+
+
+
+
 
           val context = VelocityContext()
 
@@ -292,7 +343,9 @@ class InvoiceRepository(
           context.put("tableRow", tableRow)
 
           val writer = StringWriter()
-          t.merge(context, writer)
+         template.merge(context, writer)
+
+
 
           System.out.println(writer.toString())
           val byteArrayOutputStream = ByteArrayOutputStream()
@@ -1837,12 +1890,9 @@ class InvoiceRepository(
 
 
 
-
     }
 
-private fun <E> MutableList<E>.add(element: MutableList<E>) {
 
-}
 
 
 
