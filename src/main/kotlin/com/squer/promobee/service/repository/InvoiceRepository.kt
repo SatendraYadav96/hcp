@@ -4,6 +4,7 @@ package com.squer.promobee.service.repository
 
 import com.itextpdf.html2pdf.HtmlConverter
 import com.itextpdf.text.Document
+import com.itextpdf.text.Element
 import com.itextpdf.text.Paragraph
 import com.squer.promobee.api.v1.enums.*
 import com.squer.promobee.controller.dto.*
@@ -126,7 +127,6 @@ class InvoiceRepository(
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String, Any> = mutableMapOf()
 
-
         var printDetails =  mutableListOf<MutableList<InvoicePrintDetailsDTO>>()
 
         var printDetailsBody =  mutableListOf<MutableList<InvoiceDetailsPrintDTO>>()
@@ -161,59 +161,6 @@ class InvoiceRepository(
           ve.init()
 
 
-
-//          val file = File(this.javaClass.getResource( "/htmlPrint/promoPrintInvoices.vm").toURI())
-//          println(file.absolutePath)
-//          println(file.name)
-//          val resourceAsStream = javaClass.classLoader.getResourceAsStream("htmlPrint/promoPrintInvoices.vm")
-//          val content = resourceAsStream?.bufferedReader().use { it?.readText() }
-//
-//          val filePath = "/templates/printInvoice.vm" // Your relative file path
-//
-//          if (isTemplateFilePresent(filePath)) {
-//              println("Template file is present.")
-//          } else {
-//              println("Template file is not present.")
-//          }
-//
-//          println("Working Directory: ${System.getProperty("user.dir")}")
-//
-//           //Assuming your project structure is like: projectRoot/src/main/resources/htmlPrint/promoPrintInvoices.vm
-//          val projectRoot = File(".").absoluteFile.parentFile
-//
-//          var file = File(projectRoot, "src//main//kotlin$filePath")
-
-
-
-
-
-
-
-
-
-           //Now, obtain the modified absolute path
-//          var modifiedAbsolutePath = file.absolutePath
-//
-//          println("Modified Absolute Path: $modifiedAbsolutePath")
-          /*  create a context and add data */
-          /*  create a context and add data */
-
-        //  val modifiedAbsolutePath = file.absolutePath
-
-        //  val t: Template = ve.getTemplate(modifiedAbsolutePath)
-         // val t: Template = ve.getTemplate(vmConfigPath)
-
-
-          // Add the StringResourceLoader to the engine
-//          ve.addProperty("resource.loader", "string")
-//          ve.addProperty("string.resource.loader.class", "org.apache.velocity.runtime.resource.loader.StringResourceLoader")
-//          ve.addProperty("string.resource.loader.repository.class", "org.apache.velocity.runtime.resource.util.StringResourceRepositoryImpl")
-//
-
-
-
-
-
           var pic = PrintInvoiceTableDto()
 
           var data0: MutableMap<String, Any> = mutableMapOf()
@@ -227,26 +174,7 @@ class InvoiceRepository(
 
           println(contentConfig)
 
-
-//
-//          // Get a template from the template content
-//          val template = Template()
-//         template.setResourceLoader(StringResourceLoader())
-//         template.data = contentConfig
-
-
-
-
-          // Get a template from the file
-
-
-         // val template = ve.getTemplate(contentConfig )
-
           val template = convertToTemplate(contentConfig)
-
-
-
-
 
           val context = VelocityContext()
 
@@ -562,42 +490,21 @@ class InvoiceRepository(
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-
-//
-//
         var labelDetails = mutableListOf<MutableList<LabelPrintDetailsDTO>>()
 
-//        inh.inhId?.let { data.put("id", it) }
-//        inh.invoiceNo?.let { data.put("invoiceNo", it) }
-//
-//        var dataInh = data
+        val byteArrayOutputStream = ByteArrayOutputStream()
+
+        var finalArray = mutableListOf<ByteArray>()
+
         var i = 0
-//
-//        //var label = LabelPrintDetailsDTO()
 
-
-
-
-
-//
-//
-//        dataInh.forEach {
-//            println(it)
-//        }
-
-        //var ids: List<String> = dataInh.get("id") as List<String>
         inh.forEach {i ->
-
-            //var i = 0
 
             var data: MutableMap<String, Any> = mutableMapOf()
 
             i.inhId?.let { data.put("id", it) }
 
-
-
             i.invoiceNo?.let { data.put("invoiceNo", it) }
-
 
             labelDetails.add(
                 sqlSessionFactory.openSession()
@@ -608,36 +515,37 @@ class InvoiceRepository(
             )
 
 
-            //arrayOf(labelDetails)
-
-
-
-
         }
 
         labelDetails
 
-
-        /*  first, get and initialize an engine  */
-        /*  first, get and initialize an engine  */
         val ve = VelocityEngine()
+        ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath")
+        ve.setProperty("file.resource.loader.path","/templates/printInvoice.vm" )
         ve.init()
-        /*  next, get the Template  */
-        /*  next, get the Template  */
-        val t: Template = ve.getTemplate(vmConfigPathLabel)
-        /*  create a context and add data */
-        /*  create a context and add data */
+
+        var pic = PrintInvoiceTableDto()
+
+        var data0: MutableMap<String, Any> = mutableMapOf()
+        data0.put("code","LABEL")
+
+        pic = sqlSessionFactory.openSession().selectOne<PrintInvoiceTableDto>("ReportMapper.printInvoiceDatabase",data0)
+
+        var contentConfig = ""
+
+        contentConfig = pic.contentPic.toString()
+
+        println(contentConfig)
+
+        val template = convertToTemplate(contentConfig)
+
         val context = VelocityContext()
-
-
-//
-
 
         var n = 0
 
         i = 0
 
-        var finalArray = mutableListOf<ByteArray>()
+
         labelDetails.forEach {
 
             var length = "";
@@ -670,20 +578,18 @@ class InvoiceRepository(
                 context.put("height", height)
             }
 
+            var writer = StringWriter()
 
-            val writer = StringWriter()
-            t.merge(context, writer)
+            template.merge(context, writer)
 
             System.out.println(writer.toString())
-            val byteArrayOutputStream = ByteArrayOutputStream()
+
 
             try {
 
-                val k = writer.toString()
-
+                var k = writer.toString()
 
                 val document = Document()
-
 
                 document.open()
 
@@ -707,18 +613,15 @@ class InvoiceRepository(
             }
         }
 
-
-
-
             return finalArray
-
 
         }
 
 
 
 
-        fun getRecipientToGenerateInvoice(recipientId: String): Recipient {
+
+    fun getRecipientToGenerateInvoice(recipientId: String): Recipient {
             val user =
                 (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
             var data: MutableMap<String, Any> = mutableMapOf()
@@ -1904,6 +1807,10 @@ class InvoiceRepository(
 
 
     }
+
+private fun Template.merge(context: VelocityContext, k: MutableList<StringWriter>) {
+
+}
 
 
 
