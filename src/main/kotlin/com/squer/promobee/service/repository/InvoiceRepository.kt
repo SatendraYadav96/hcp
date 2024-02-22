@@ -4,8 +4,11 @@ package com.squer.promobee.service.repository
 
 import com.itextpdf.html2pdf.HtmlConverter
 import com.itextpdf.text.Document
-import com.itextpdf.text.Element
 import com.itextpdf.text.Paragraph
+import com.itextpdf.text.pdf.PdfCopy
+import com.itextpdf.text.pdf.PdfImportedPage
+import com.itextpdf.text.pdf.PdfReader
+import com.itextpdf.text.pdf.PdfSmartCopy
 import com.squer.promobee.api.v1.enums.*
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.persistence.BaseRepository
@@ -590,6 +593,7 @@ class InvoiceRepository(
                 var k = writer.toString()
 
                 val document = Document()
+                val copy: PdfCopy = PdfSmartCopy(document, byteArrayOutputStream)
 
                 document.open()
 
