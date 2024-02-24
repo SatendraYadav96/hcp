@@ -39,7 +39,7 @@ interface ReportService {
 
     fun getShiprocketReport(fromDate: String,toDate: String): List<ShiprocketReportDTO>
 
-    fun getVirtualReconciliationReport(quarter: String,year: String,businessUnit: ArrayList<String> ): List<VirtualReconciliationDTO>
+    fun getVirtualReconciliationReport(startDate: String,endDate: String,businessUnit: ArrayList<String> ): List<VirtualReconciliationDTO>
 
     fun getBatchReconciliation(): List<BatchReconciliationDTO>
 }

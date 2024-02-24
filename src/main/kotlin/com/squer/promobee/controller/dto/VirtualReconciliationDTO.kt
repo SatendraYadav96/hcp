@@ -8,6 +8,8 @@ class VirtualReconciliationDTO {
 
     var  invoiceNo : Int? = null
 
+    var invoiceHeaderID :String? = null
+
     var  itemName : String? = null
 
     var  uploadItemName : String? = null

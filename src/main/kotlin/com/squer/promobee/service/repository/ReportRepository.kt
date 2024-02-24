@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -568,36 +567,36 @@ class ReportRepository
     }
 
 
-    fun getVirtualReconciliationReport(quarter: String, year: String, businessUnit: ArrayList<String> ): List<VirtualReconciliationDTO>{
+    fun getVirtualReconciliationReport(startDate: String, endDate: String, businessUnit: ArrayList<String> ): List<VirtualReconciliationDTO>{
         var data: MutableMap<String, Any> = mutableMapOf()
 
-        var (fromDate, toDate) = getDates(quarter, year)
-
-        var sdf = SimpleDateFormat(
-            "EE MMM dd HH:mm:ss z yyyy",
-            Locale.ENGLISH
-        )
-
-        var parsedDate: Date = sdf.parse(fromDate.toString())
-
-        var startDate = SimpleDateFormat("yyyy-MM-dd")
-
-        var startDate1 = startDate.format(parsedDate)
-
-
-
-        var parsedDate1: Date = sdf.parse(toDate.toString())
-
-        var endDate = SimpleDateFormat("yyyy-MM-dd")
-
-        var endDate1 = endDate.format(parsedDate1)
+//        var (fromDate, toDate) = getDates(quarter, year)
+//
+//        var sdf = SimpleDateFormat(
+//            "EE MMM dd HH:mm:ss z yyyy",
+//            Locale.ENGLISH
+//        )
+//
+//        var parsedDate: Date = sdf.parse(fromDate.toString())
+//
+//        var startDate = SimpleDateFormat("yyyy-MM-dd")
+//
+//        var startDate1 = startDate.format(parsedDate)
+//
+//
+//
+//        var parsedDate1: Date = sdf.parse(toDate.toString())
+//
+//        var endDate = SimpleDateFormat("yyyy-MM-dd")
+//
+//        var endDate1 = endDate.format(parsedDate1)
 
         var virtualReconciliationReport = mutableListOf<VirtualReconciliationDTO>()
 
         businessUnit.forEach {
 
-            data.put("fromdate", startDate1)
-            data.put("enddate", endDate1)
+            data.put("fromdate", startDate)
+            data.put("enddate", endDate)
             data.put("BusinessUnit", it)
 
             virtualReconciliationReport = sqlSessionFactory.openSession().selectList<VirtualReconciliationDTO>("ReportMapper.getVirtualReconciliationReport", data)

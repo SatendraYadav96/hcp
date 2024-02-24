@@ -87,8 +87,8 @@ class ReportServiceImpl @Autowired constructor(
         return reportRepository.getShiprocketReport(fromDate,toDate)
     }
 
-    override fun getVirtualReconciliationReport(quarter: String, year: String, businessUnit: ArrayList<String> ): List<VirtualReconciliationDTO> {
-        return reportRepository.getVirtualReconciliationReport(quarter,year,businessUnit)
+    override fun getVirtualReconciliationReport(startDate: String, endDate: String, businessUnit: ArrayList<String> ): List<VirtualReconciliationDTO> {
+        return reportRepository.getVirtualReconciliationReport(startDate,endDate,businessUnit)
     }
 
     override fun getBatchReconciliation(): List<BatchReconciliationDTO> {

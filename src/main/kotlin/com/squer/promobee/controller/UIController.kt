@@ -118,8 +118,8 @@ open class UIController @Autowired constructor(
 
                 UserMenuEnum.MONTHLY_ALLOCATION,
                 UserMenuEnum.SPECIAL_ALLOCATION,
-                UserMenuEnum.VIRTUAL_ALLOCATION
-
+                UserMenuEnum.VIRTUAL_ALLOCATION,
+                UserMenuEnum.TSE,
 
             ),
 
@@ -197,7 +197,8 @@ open class UIController @Autowired constructor(
             ),
 
             UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id to listOf<UserMenuEnum>(
-                UserMenuEnum.TSE_DASHBOARD,
+                UserMenuEnum.ADMIN_PAGE_LOAD,
+                UserMenuEnum.ADMIN,
                 UserMenuEnum.ALLOCATION,
 //                UserMenuEnum.COMPLIANCE_PROCESS,
 //                UserMenuEnum.OVERSAMPLING_DETAILS
