@@ -3454,4 +3454,20 @@ class NewAllocationRepository(
     }
 
 
+
+    fun loginAsBM(id: String): User {
+
+
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("id", id)
+
+        return  sqlSessionFactory.openSession().selectOne<User>("UserMapper.loginAsBM", data)
+
+    }
+
+
+
+
+
 }

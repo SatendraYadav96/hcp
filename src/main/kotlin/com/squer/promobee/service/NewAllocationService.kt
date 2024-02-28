@@ -1,6 +1,7 @@
 package com.squer.promobee.service
 
 import com.squer.promobee.controller.dto.*
+import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.repository.domain.DispatchPlan
 import com.squer.promobee.service.repository.domain.Team
 import org.springframework.http.ResponseEntity
@@ -93,6 +94,8 @@ interface NewAllocationService {
    fun getMultipleAllocationAll (mulAlloc: List<MultipleAllocationExcelDTO>):ByteArray
 
    fun getMultipleAllocationInventory (mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationInventoryDTO>
+
+   fun loginAsBM( id: String):User
 
 
 

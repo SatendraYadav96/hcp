@@ -48,6 +48,10 @@
         SELECT * from USER_MASTER_USR where login_name_usr = #{username}
     </select>
 
+    <select id="loginAsBM" resultMap="usersResultMap">
+        SELECT * from USER_MASTER_USR where ID_USR = #{id}
+    </select>
+
 
     <select id="SpecialDraftPlanReminder" resultMap="usersResultMap">
         SELECT * from USER_MASTER_USR where ID_USR = #{userId}

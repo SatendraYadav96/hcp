@@ -410,6 +410,12 @@ open class NewAllocationController @Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/loginAsBM/{id}")
+    open fun loginAsBM(@PathVariable id: String): ResponseEntity<*> {
+        val data = newAllocationService.loginAsBM(id)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
 
 
 

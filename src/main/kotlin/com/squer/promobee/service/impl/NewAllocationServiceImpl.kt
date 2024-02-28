@@ -3,6 +3,7 @@ package com.squer.promobee.service.impl
 
 
 import com.squer.promobee.controller.dto.*
+import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.NewAllocationService
 import com.squer.promobee.service.repository.NewAllocationRepository
 import com.squer.promobee.service.repository.domain.DispatchPlan
@@ -197,6 +198,9 @@ open class NewAllocationServiceImpl @Autowired constructor(
         return newAllocationRepository.getMultipleAllocationInventory(mulAlloc)
     }
 
+    override fun loginAsBM(id: String):  User {
+        return newAllocationRepository.loginAsBM(id)
+    }
 
 
 
