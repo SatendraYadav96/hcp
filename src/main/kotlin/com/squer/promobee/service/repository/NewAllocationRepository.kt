@@ -3457,12 +3457,33 @@ class NewAllocationRepository(
 
     fun loginAsBM(id: String): User {
 
+            val userProfile = sqlSessionFactory.openSession().selectOne<User>("UserMapper.loginAsBM",id)
+            val user =
+                (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-        var data: MutableMap<String, Any> = mutableMapOf()
+            // Update user data in a secure manner (consider database update)
+            updateDataForUserSwitch(userProfile, user)
 
-        data.put("id", id)
+            return userProfile
 
-        return  sqlSessionFactory.openSession().selectOne<User>("UserMapper.loginAsBM", data)
+    }
+
+
+     fun updateDataForUserSwitch(userProfile: User, user: User) {
+         var data: MutableMap<String, Any> = mutableMapOf()
+
+
+         user.id == userProfile.id
+         user.name == userProfile.name
+         user.ciName == userProfile.ciName
+         user.employeeCode == userProfile.employeeCode
+         user.userDesignation!!.id == userProfile.userDesignation!!.id
+         user.email == userProfile.email
+         user.userStatus!!.id == userProfile.userStatus!!.id
+         user.userRecipientId == userProfile.userRecipientId
+
+         sqlSessionFactory.openSession().update("UserMapper.updateDataForUserSwitch",user)
+
 
     }
 
@@ -3471,3 +3492,4 @@ class NewAllocationRepository(
 
 
 }
+

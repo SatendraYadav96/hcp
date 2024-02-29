@@ -52,6 +52,12 @@
         SELECT * from USER_MASTER_USR where ID_USR = #{id}
     </select>
 
+    <update id="updateDataForUserSwitch">
+        UPDATE USER_MASTER_USR set name_usr=#{name}, ci_name_usr=#{ciName}, employee_code_usr=#{employeeCode},
+                         id_desg_ulv_usr=#{userDesignation.id},
+                         email_address_usr=#{email}, id_status_slv_usr=#{userStatus.id}, updated_on_usr= GETDATE(), updated_by_usr=#{id} where id_usr=#{id}
+    </update>
+
 
     <select id="SpecialDraftPlanReminder" resultMap="usersResultMap">
         SELECT * from USER_MASTER_USR where ID_USR = #{userId}
