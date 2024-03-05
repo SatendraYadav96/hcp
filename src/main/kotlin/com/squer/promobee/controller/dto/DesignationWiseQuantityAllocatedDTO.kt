@@ -6,4 +6,5 @@ class DesignationWiseQuantityAllocatedDTO {
     var allocatedQuantity:Int? = 0
     var teamId : String? = null
     var team : String? = null
+    var recipientId:String? = null
 }

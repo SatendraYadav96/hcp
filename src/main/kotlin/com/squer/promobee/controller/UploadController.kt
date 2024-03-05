@@ -7,6 +7,7 @@ import com.squer.promobee.api.v1.enums.*
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.UploadService
+import com.squer.promobee.service.repository.NewAllocationRepository
 import com.squer.promobee.service.repository.domain.*
 import lombok.extern.slf4j.Slf4j
 import org.apache.ibatis.session.SqlSessionFactory
@@ -27,7 +28,9 @@ import java.util.*
 
 @Slf4j
 open class UploadController@Autowired constructor(
-    private val uploadService: UploadService
+    private val uploadService: UploadService,
+    @Autowired
+    var newAllocationRepository: NewAllocationRepository
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -282,7 +285,16 @@ open class UploadController@Autowired constructor(
 
     @PostMapping("/multipleAllocationUpload")
     fun multipleAllocationUpload(@RequestBody dto: MultipleAllocationUploadDTO) : ResponseEntity<*>{
-        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users =  newAllocationRepository.loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         //var data10: MutableMap<String, Any> = mutableMapOf()
         var errorMap: MutableMap<String, String> = HashMap()

@@ -132,6 +132,8 @@ class NewAllocationRepository(
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
+
+
 //        val month = (yearMonth % 100).toInt()
 //        val year = (yearMonth / 100).toInt()
 
@@ -463,8 +465,16 @@ class NewAllocationRepository(
 
     ): List<DesignationWiseQuantityAllocatedDTO> {
 
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
 
         var quantityDispatch = mutableListOf<DesignationWiseQuantityAllocatedDTO>()
@@ -594,8 +604,16 @@ class NewAllocationRepository(
 
     fun saveCommonAllocation(saveAlloc: List<saveCommonAllocationDTO>): ResponseEntity<MutableMap<String, String>> {
 
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         var errorMap: MutableMap<String, String> = HashMap()
 
@@ -1031,8 +1049,16 @@ class NewAllocationRepository(
 
 
     fun submitMonthlyAllocation(alloc: submitAllocationDTO) {
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
 
 
@@ -1126,8 +1152,16 @@ class NewAllocationRepository(
     // SPECIAL ALLOCATION
 
     fun createSpecialPlan(alloc: CreateAllocationDTO): CreateSpecialAllocationDTO {
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         var createSpecialAllocation = CreateSpecialAllocationDTO()
 
@@ -1505,8 +1539,16 @@ class NewAllocationRepository(
 
     fun editSpecialPlan(planId: String): MutableList<AllocationInventoryDetailsWithCostCenterDTO> {
 
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         var plan = DispatchPlan()
 
@@ -1541,8 +1583,16 @@ class NewAllocationRepository(
 
     fun searchSpecialPlan(month: Int, year: Int, status: String, remark: String): MutableList<DispatchPlan> {
 
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         var planList = mutableListOf<DispatchPlan>()
         var plan = mutableListOf<DispatchPlan>()
@@ -1652,8 +1702,16 @@ class NewAllocationRepository(
 
 
     fun saveSpecialAllocation(saveAlloc: List<saveDifferentialAllocation>): ResponseEntity<MutableMap<String, String>> {
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         var data: MutableMap<String, Any> = mutableMapOf()
 
@@ -1888,8 +1946,16 @@ class NewAllocationRepository(
 
 
     fun deleteSpecialAllocationDID(dipId: String): Map<String, Any> {
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         lateinit var jsonResult: Map<String, Any>
 
@@ -1958,8 +2024,16 @@ class NewAllocationRepository(
 
 
     fun submitSpecialAllocation(alloc: submitSpecialAllocationDTO) {
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         try {
             var data: MutableMap<String, Any> = mutableMapOf()
@@ -2099,16 +2173,18 @@ class NewAllocationRepository(
     fun createVirtualPlan(year: Int, month: Int): CreateVirtualAllocationDTO{
 
 
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
 
-//        val month = (yearMonth % 100).toInt()
-//        val year = (yearMonth / 100).toInt()
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         var createVirtualAllocationDTO = CreateVirtualAllocationDTO()
-
-
-        var tseID = getTseList(user.id)
 
         var allocationInventoryDetails = mutableListOf<VirtualAllocationInventoryDetailsWithCostCenterDTO>()
 
@@ -2132,16 +2208,6 @@ class NewAllocationRepository(
         } else{
              planDp = plan[i]
         }
-
-
-
-//       var  planList = sqlSessionFactory.openSession().selectList<DispatchPlan>("DispatchPlanMapper.createVirtualPlan",data)
-
-//        if(planList.size > 0 ){
-//            plan = planList[0]
-//        } else{
-//
-//        }
 
         var isRbmOrNsm = false;
 
@@ -2324,13 +2390,6 @@ class NewAllocationRepository(
 
 
             }
-
-//        if (planDp.planStatus!!.id == AllocationStatusEnum.SUBMIT.id || planDp.planStatus!!.id == AllocationStatusEnum.APPROVED.id) {
-//
-//            allocationInventoryDetails =
-//                allocationInventoryDetails.filter { it.qtyAllocated != null && it.qtyAllocated!! > 0 }
-//                    .sortedByDescending { it.qtyAllocated }.toMutableList()
-//        }
 
             var planSubmit = ""
 
@@ -2561,15 +2620,16 @@ class NewAllocationRepository(
 
 
     fun getVirtualTeamForCommonAllocation(ccmId: String): List<CommonAllocationTeamDTO> {
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
 
-//        var recipient = Recipient()
-//
-//        var data1: MutableMap<String, Any> = mutableMapOf()
-//        data1.put("id",user.id)
-//
-//        recipient = sqlSessionFactory.openSession().selectOne("RecipientMapper.getRecipientForVirtualTeamForCommonAllocation",data1)
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
 
         var virtualCommonTeam = mutableListOf<CommonAllocationTeamDTO>()
@@ -2606,8 +2666,16 @@ class NewAllocationRepository(
         planId: String
 
     ): List<DesignationWiseQuantityAllocatedDTO> {
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         var quantityDispatch = mutableListOf<DesignationWiseQuantityAllocatedDTO>()
 
@@ -2694,8 +2762,16 @@ class NewAllocationRepository(
         teamId: String,
     ): List<DifferentialRecipientAllocationDTO> {
 
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
 
         var quantityDispatch = mutableListOf<DifferentialRecipientAllocationDTO>()
@@ -2744,8 +2820,16 @@ class NewAllocationRepository(
 
 
     fun saveVirtualCommonAllocation(saveAlloc: List<saveVirtualCommonAllocationDTO>): ResponseEntity<MutableMap<String, String>>  {
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         var recipient = mutableListOf<Recipient>()
         var errorMap: MutableMap<String, String> = HashMap()
@@ -2958,8 +3042,16 @@ class NewAllocationRepository(
 
 
     fun saveVirtualDifferentialAllocation(saveAlloc: List<saveDifferentialAllocation>) {
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         var data: MutableMap<String, Any> = mutableMapOf()
 
@@ -3062,8 +3154,16 @@ class NewAllocationRepository(
 
 
     fun submitVirtualAllocation(alloc: submitAllocationDTO) {
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         var isUserRbmOrNsm = false;
 
@@ -3222,12 +3322,20 @@ class NewAllocationRepository(
 
 
     fun getActiveUsers(userId: String): List<ActiveUsersDTO> {
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         var data: MutableMap<String, Any> = mutableMapOf()
 
-        data.put("UserID", userId)
+        data.put("UserID", user.id)
 
         return sqlSessionFactory.openSession()
             .selectList<ActiveUsersDTO>("AllocationRuleMapper.getActiveUsers", data)
@@ -3238,8 +3346,16 @@ class NewAllocationRepository(
 
     fun getDownloadAllocation(planId: String): List<DownloadAllocationDTO> {
 
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
 
         var allocationDownload = mutableListOf<DownloadAllocationDTO>()
 
@@ -3456,36 +3572,49 @@ class NewAllocationRepository(
 
 
     fun loginAsBM(id: String): User {
+        var data: MutableMap<String, Any> = mutableMapOf()
+        var users = sqlSessionFactory.openSession().selectOne<User>("UserMapper.loginAPI",id)
 
-            val userProfile = sqlSessionFactory.openSession().selectOne<User>("UserMapper.loginAsBM",id)
+
+        var userProfile = User()
+
+        if(users.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id ) {
+
+            userProfile = sqlSessionFactory.openSession().selectOne<User>("UserMapper.loginAsTSE",id)
+        }else{
+            userProfile = sqlSessionFactory.openSession().selectOne<User>("UserMapper.loginAsBM",id)
+        }
+
+
             val user =
                 (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
             // Update user data in a secure manner (consider database update)
-            updateDataForUserSwitch(userProfile, user)
+
+          //  updateDataForUserSwitch(userProfile, user)
 
             return userProfile
 
     }
 
 
-     fun updateDataForUserSwitch(userProfile: User, user: User) {
-         var data: MutableMap<String, Any> = mutableMapOf()
-
-
-         user.id == userProfile.id
-         user.name == userProfile.name
-         user.ciName == userProfile.ciName
-         user.employeeCode == userProfile.employeeCode
-         user.userDesignation!!.id == userProfile.userDesignation!!.id
-         user.email == userProfile.email
-         user.userStatus!!.id == userProfile.userStatus!!.id
-         user.userRecipientId == userProfile.userRecipientId
-
-         sqlSessionFactory.openSession().update("UserMapper.updateDataForUserSwitch",user)
-
-
-    }
+//     fun updateDataForUserSwitch(userProfile: User, user: User) {
+//         var data: MutableMap<String, Any> = mutableMapOf()
+//
+//
+//         user.id == userProfile.id
+//         user.name == userProfile.name
+//         user.ciName == userProfile.ciName
+//         user.employeeCode == userProfile.employeeCode
+//         user.userDesignation!!.id == userProfile.userDesignation!!.id
+//         user.email == userProfile.email
+//         user.userStatus!!.id == userProfile.userStatus!!.id
+//         user.userRecipientId == userProfile.userRecipientId
+//
+//         sqlSessionFactory.openSession().update("UserMapper.updateDataForUserSwitch",userProfile)
+//
+//
+//    }
 
 
 

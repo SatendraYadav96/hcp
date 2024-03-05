@@ -29,7 +29,7 @@ class DispatchPlanRepository(
         var data : MutableMap<String, Any> = mutableMapOf()
         data.put("monthPlan", monthPlan)
         data.put("yearPlan", yearPlan)
-        data.put("userId", user.id)
+        data.put("userId", userId)
 //        if(isSpecial!=null)
             data.put("isSpecial",0)
         return sqlSessionFactory.openSession().selectOne("DispatchPlanMapper.getPlanHeaderSelect", data)

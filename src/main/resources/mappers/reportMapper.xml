@@ -345,6 +345,7 @@ order by RCT.JOINING_DATE_RCT desc
         WHERE BBR1.ID_USR_BBR = #{UserID} AND DATEADD(DAY,ITC1.CUTOFF_BEFORE_DAYS_ITC,GETDATE()) &lt; INV1.EXPIRY_DATE_INV
                                                                                                  AND SMP.IS_ACTIVE_SMP != 0 and INV1.IS_BLOCK_ITEM_INV=0) AS SpecialAllocationInventory
         WHERE Stock > 0
+        order by QuantityAllocated desc
 
     </select>
 
@@ -424,6 +425,7 @@ order by RCT.JOINING_DATE_RCT desc
         WHERE BBR1.ID_USR_BBR = #{UserID} AND DATEADD(DAY,ITC1.CUTOFF_BEFORE_DAYS_ITC,GETDATE()) &lt; INV1.EXPIRY_DATE_INV AND SMP.IS_ACTIVE_SMP != 0 and
               INV1.IS_BLOCK_ITEM_INV=0) As VirtualAllocationInventory
         WHERE STOCK > 0
+ORDER BY QuantityAllocated DESC 
 
     </select>
 

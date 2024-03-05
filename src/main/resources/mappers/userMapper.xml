@@ -48,8 +48,21 @@
         SELECT * from USER_MASTER_USR where login_name_usr = #{username}
     </select>
 
+    <select id="loginAPI" resultMap="usersResultMap">
+        SELECT * FROM USER_MASTER_USR
+        WHERE ID_USR = #{id}
+    </select>
+
+    <select id="loginAsTSE" resultMap="usersResultMap">
+        SELECT TOP 1 USR.* FROM USER_MASTER_USR USR
+                                    JOIN USER_TSE_UST UST ON UST.ID_BM_USR_UST =  USR.ID_USR
+        WHERE UST.ID_TSE_USR_UST = #{id}
+    </select>
+
     <select id="loginAsBM" resultMap="usersResultMap">
-        SELECT * from USER_MASTER_USR where ID_USR = #{id}
+        SELECT TOP 1 USR.* FROM USER_MASTER_USR USR
+                                    JOIN USER_TSE_UST UST ON UST.ID_BM_USR_UST =  USR.ID_USR
+        WHERE UST.ID_BM_USR_UST = #{id}
     </select>
 
     <update id="updateDataForUserSwitch">

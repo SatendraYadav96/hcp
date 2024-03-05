@@ -18,13 +18,14 @@ import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Repository
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Repository
 class ComplianceRepository(
     securityUtility: SecurityUtility,
-    private val mailSender: JavaMailSender
+    private val mailSender: JavaMailSender,
 ): BaseRepository<Users>(
     securityUtility = securityUtility
 
@@ -380,7 +381,20 @@ class ComplianceRepository(
             var yearValue = calendar.get(Calendar.YEAR)
             blockedList.Month = monthValue.toString()
             blockedList.Year = yearValue.toString()
-            blockedList.Blocked_On = it.REC_BLOCKED_ON_LOG
+            // Assuming it.REC_BLOCKED_ON_LOG is a String representing a date
+
+            val dateString1 = it.REC_BLOCKED_ON_LOG
+
+// Parsing the input date string into a Date object
+            val originalFormatter: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S")
+            val parsedDate: Date = originalFormatter.parse(dateString1)
+
+// Formatting the Date object into the desired format "dd/MM/yyyy"
+            val desiredFormatter: DateFormat = SimpleDateFormat("dd/MM/yyyy")
+            val formattedDate: String = desiredFormatter.format(parsedDate)
+
+
+            blockedList.Blocked_On = formattedDate
             blockedList.IsBockedFF = it.REC_ISBLOCKED_LOG
             blockedList.Remark = it.REC_REMARKS_LOG
             blockedList.Blocked_type = it.REC_BLOCKEDTYPE_LOG

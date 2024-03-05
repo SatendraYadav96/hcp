@@ -87,7 +87,7 @@
         WHERE BBR1.ID_USR_BBR = #{userId} AND DATEADD(DAY,ITC1.CUTOFF_BEFORE_DAYS_ITC,CONVERT(date, GETDATE())) &lt; INV1.EXPIRY_DATE_INV
         AND SMP.IS_ACTIVE_SMP != 0 and INV1.IS_BLOCK_ITEM_INV=0) as allocationInventory
         WHERE stock > 0
-        --ORDER BY stock DESC
+        ORDER BY quantityAllocated DESC
         -- ORDER BY CCM.NAME_CCM,ITM.NAME_ITM
     </select>
 

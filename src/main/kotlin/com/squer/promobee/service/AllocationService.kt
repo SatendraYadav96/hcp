@@ -3,10 +3,12 @@ package com.squer.promobee.service
 import com.squer.promobee.api.v1.enums.AllocationStatusEnum
 import com.squer.promobee.api.v1.enums.DispatchPlanInvoiceStatus
 import com.squer.promobee.api.v1.enums.MonthlyPlanStatusEnum
+import com.squer.promobee.api.v1.enums.UserRoleEnum
 import com.squer.promobee.controller.dto.AllocationDetailsDTO
 import com.squer.promobee.controller.dto.AllocationDistributionDTO
 import com.squer.promobee.security.domain.NamedSquerEntity
 import com.squer.promobee.security.domain.User
+import com.squer.promobee.service.repository.NewAllocationRepository
 import com.squer.promobee.service.repository.domain.DispatchPlan
 import lombok.extern.slf4j.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,13 +24,24 @@ class AllocationService @Autowired constructor(
         private val inventoryService: InventoryService,
         private val systemLovService: SystemLovService,
         private val teamService: TeamService,
+        @Autowired
+         var newAllocationRepository: NewAllocationRepository
 ) {
 
     fun createViewMonthlyPlan(year:Int,month:Int): AllocationDetailsDTO {
 //        val month = (yearMonth % 100).toInt()
 //        val year = (yearMonth / 100).toInt()
         var allocationDetailsDTO = AllocationDetailsDTO()
-        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        var users = User()
+
+        if(user.userDesignation!!.id == UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id){
+            users = newAllocationRepository.loginAsBM(user.id)
+            user = users
+
+        }else{
+            user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        }
         var plan = dispatchPlanService.getPlanHeaderSelect(month, year, user.id)
         if(plan == null){
             var dispatchplan = DispatchPlan()
