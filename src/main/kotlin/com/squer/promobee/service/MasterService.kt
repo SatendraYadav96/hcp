@@ -78,6 +78,8 @@ interface MasterService {
 
     fun getBusinessUnit(status: Int): List<BU>
 
+    fun getDivision(status: Int): List<Division>
+
     fun getBusinessUnitById (id: String): BU
 
     fun editBusinessUnit(bu: BU)

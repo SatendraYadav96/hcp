@@ -458,6 +458,14 @@ class MasterRepository
         return sqlSessionTemplate.selectList("BUMapper.getBusinessUnit",data)
     }
 
+    fun getDivision( status: Int) : List<Division>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+
+        data.put("active",status)
+
+        return sqlSessionTemplate.selectList("BUMapper.getDivision",data)
+    }
+
     fun getBusinessUnitById( id: String) : BU {
         var data: MutableMap<String, Any> = mutableMapOf()
 
@@ -1352,7 +1360,7 @@ class MasterRepository
         ff.statusChangeDate?.let { data.put("changedOnDate", it) }
         data.put("createdBy", user.id)
         data.put("updatedBy", user.id)
-        ff.remarks?.let { data.put("remarks", it) }
+       // ff.remarks?.let { data.put("remarks", it) }
         ff.emailRBM?.let { data.put("emailRBM", it) }
         ff.emailAM?.let { data.put("emailAM", it) }
         ff.businessUnit?.let { data.put("businessUnit", it.id) }
@@ -1460,7 +1468,7 @@ class MasterRepository
             ff.statusChangeDate?.let { data.put("changedOnDate", it) }
             data.put("createdBy", user.id)
             data.put("updatedBy", user.id)
-            ff.remarks?.let { data.put("remarks", it) }
+          //      ff.remarks?.let { data.put("remarks", it) }
             ff.emailRBM?.let { data.put("emailRBM", it) }
             ff.emailAM?.let { data.put("emailAM", it) }
             ff.businessUnit?.let { data.put("businessUnit", it.id) }

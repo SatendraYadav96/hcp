@@ -148,6 +148,10 @@ class MasterServiceImpl @Autowired constructor(
         return masterRepository.getBusinessUnit(status)
     }
 
+    override fun getDivision(status: Int): List<Division> {
+        return masterRepository.getDivision(status)
+    }
+
     override fun getBusinessUnitById(id: String): BU {
         return masterRepository.getBusinessUnitById(id)
     }

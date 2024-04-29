@@ -16,7 +16,7 @@ class RecipientUploadDTO {
     var designation: String ?= null
     var designationId: String?= null
     var zone: String ?= null
-    var joiningDate: String?= null
+    var joiningDate: Date?= null
     var team: String ?= null
     var teamId: String ?= null
     var status: String ?= null

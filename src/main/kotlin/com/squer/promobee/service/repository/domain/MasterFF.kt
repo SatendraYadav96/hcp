@@ -30,7 +30,7 @@ open class MasterFF: AuditableEntity() {
     var statusChangeDate: String?= null
     var loginId: String?= null
     var gender: String?= null
-    var remarks: String?= null
+    //var remarks: String?= null
     var workId: String?= null
     var emailAM: String?= null
     var emailRBM: String?= null

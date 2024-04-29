@@ -20,16 +20,22 @@
     </resultMap>
 
 
-<!--    <select id="getDivison" resultMap="buResultMap" >-->
-<!--        select * from DIVISION_MASTER_DIM-->
-<!--        where IS_ACTIVE_DIM = #{active}-->
-<!--    </select>-->
+    <select id="getDivison" resultMap="divisionResultMap" >
+        select * from DIVISION_MASTER_DIM
+        where IS_ACTIVE_DIM = #{active}
+    </select>
 
     <select id="getDivisionDropdown" resultMap="divisionResultMap" >
         select * from DIVISION_MASTER_DIM DIM
                           JOIN BU_MASTER_BUM BUM ON BUM.ID_BUM = DIM.ID_BUM_DIM
         where IS_ACTIVE_DIM = 1
     </select>
+
+    <insert id="addDivision">
+        insert into DIVISION_MASTER_DIM (ID_DIM, ID_BUM_DIM,NAME_DIM, CI_NAME_DIM, CODE_DIM, IS_ACTIVE_DIM, CREATED_ON_DIM  , CREATED_BY_DIM  ,
+                                     UPDATED_ON_DIM,UPDATED_BY_DIM)
+        values( #{id}, #{bu}, #{name}, #{ciName}, #{code}, #{active}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy} )
+    </insert>
 
 
 </mapper>

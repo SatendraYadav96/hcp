@@ -134,7 +134,7 @@
         UPDATED_ON_RHT,UPDATED_BY_RHT,REMARKS_RHT,EMAIL_RM_RHT,EMAIL_AM_RHT,ID_BUM_RHT)
         VALUES(#{id},#{recipientId},#{name},#{ciName},#{code},#{address},#{city},#{state},#{zip},#{email},#{mobile},
                #{designation},#{headQuarter},#{zone},#{joiningDate},#{team},#{cfa},#{status},GETDATE(),GETDATE(),#{createdBy},
-               GETDATE(),#{updatedBy},#{remarks},#{emailRBM},#{emailAM},#{businessUnit})
+               GETDATE(),#{updatedBy},NULL,#{emailRBM},#{emailAM},#{businessUnit})
     </insert>
 
 

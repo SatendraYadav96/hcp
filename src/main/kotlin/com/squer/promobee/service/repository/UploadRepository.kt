@@ -317,6 +317,25 @@ class UploadRepository(
         sqlSessionFactory.openSession().update("UploadLogMapper.uploadGrnDetails", data)
 
 
+
+            data.put("id", uplId)
+            data.put("type", UploadTypeEnum.GRN.id)
+            data.put("totalRecord", rows.count())
+            data.put("recordUpload", rows.count() )
+            data.put("statusId", UploadStatusEnum.COMPLETED_SUCCESSFULLY.id)
+            data.put("createdBy", user.id)
+            data.put("updatedBy", user.id)
+            data.put("parentId", uplId)
+
+
+            sqlSessionFactory.openSession().update("UploadLogMapper.updatedUploadLogCompletedSuccessFully", data)
+
+
+
+
+
+
+
     }
 
 
@@ -390,8 +409,6 @@ class UploadRepository(
         csvReader.autoRenameDuplicateHeaders
         var rows = CsvReader().readAllWithHeader(File(filePath))
 
-
-
         var i = 0
 
         rows.forEach {
@@ -413,7 +430,7 @@ class UploadRepository(
             data.put("zone",it.get(headers[7]).toString().trim())
             data.put("workId",it.get(headers[8]).toString().trim())
             data.put("gender",it.get(headers[9]).toString().trim())
-            data.put("joiningDate",it.get(headers[10]).toString().trim())
+            it.get(headers[10])?.let { it1 -> data.put("joiningDate", it1) }
             data.put("mobile",it.get(headers[11]).toString().trim())
             data.put("email",it.get(headers[12]).toString().trim())
             data.put("bu",it.get(headers[13]).toString().trim())
@@ -435,6 +452,18 @@ class UploadRepository(
         data.put("createdBy",user.id)
 
         sqlSessionFactory.openSession().update("UploadLogMapper.uploadRecipientDetails", data)
+
+        data.put("id", uplId)
+        data.put("type", UploadTypeEnum.RECIPIENT.id)
+        data.put("totalRecord", rows.count())
+        data.put("recordUpload", rows.count() )
+        data.put("statusId", UploadStatusEnum.COMPLETED_SUCCESSFULLY.id)
+        data.put("createdBy", user.id)
+        data.put("updatedBy", user.id)
+        data.put("parentId", uplId)
+
+
+        sqlSessionFactory.openSession().update("UploadLogMapper.updatedUploadLogCompletedSuccessFully", data)
 
 
     }
@@ -593,6 +622,18 @@ class UploadRepository(
         data.put("tomonth",toMonth)
 
         sqlSessionFactory.openSession().update("UploadLogMapper.uploadVirtualSampleDetails", data)
+
+        data.put("id", uplId)
+        data.put("type", UploadTypeEnum.VIRTUAL_SAMPLES.id)
+        data.put("totalRecord", rows.count())
+        data.put("recordUpload", rows.count() )
+        data.put("statusId", UploadStatusEnum.COMPLETED_SUCCESSFULLY.id)
+        data.put("createdBy", user.id)
+        data.put("updatedBy", user.id)
+        data.put("parentId", uplId)
+
+
+        sqlSessionFactory.openSession().update("UploadLogMapper.updatedUploadLogCompletedSuccessFully", data)
 
 
     }

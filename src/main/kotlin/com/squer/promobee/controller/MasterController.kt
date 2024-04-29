@@ -571,6 +571,13 @@ open class MasterController@Autowired constructor(
         return ResponseEntity(data, HttpStatus.OK)
     }
 
+    @GetMapping("/getDivision/{status}")
+    fun getDivision(@PathVariable status: Int): ResponseEntity<*> {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        val data = masterService.getDivision(status)
+        return ResponseEntity(data, HttpStatus.OK)
+    }
+
     @GetMapping("/getBusinessUnitById/{id}")
     fun getBusinessUnitById(@PathVariable id: String): ResponseEntity<*> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -715,6 +722,7 @@ open class MasterController@Autowired constructor(
 
         var errorMap: MutableMap<String, String> = HashMap()
 
+
             var data: MutableMap<String, Any> = mutableMapOf()
 
             // add team
@@ -734,6 +742,8 @@ open class MasterController@Autowired constructor(
             data.put("id",tem.id)
 
             sqlSessionTemplate.delete("TeamBrandMapper.deleteBrandByTeamId",data)
+
+
 
 
             // mapped requested brand to team
@@ -824,6 +834,20 @@ open class MasterController@Autowired constructor(
             return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
 
         } else {
+            //add division
+
+            var data1: MutableMap<String, Any> = mutableMapOf()
+            var divId = UUID.randomUUID().toString()
+            data1.put("id",divId)
+            tem.division?.id.let { it?.let { it1 -> data1.put("bu", it1) } }
+            tem.name?.let { data1.put("name", it) }
+            tem.name?.let { data1.put("ciName", it.lowercase()) }
+            tem.code?.let { data1.put("code", it) }
+            tem.active?.let { data1.put("active", it) }
+
+
+            sqlSessionTemplate.insert("DivisionMapper.addDivision",data1)
+
             // add team
 
             var data: MutableMap<String, Any> = mutableMapOf()
@@ -836,9 +860,15 @@ open class MasterController@Autowired constructor(
             tem.active?.let { data.put("active", it) }
             data.put("createdBy",user.id)
             data.put("updatedBy",user.id)
-            tem.division?.id.let { it?.let { it1 -> data.put("division", it1) } }
+           data.put("division",divId)
 
             sqlSessionTemplate.insert("TeamMapper.addTeam",data)
+
+
+
+
+
+
 
 
 
@@ -1543,7 +1573,7 @@ open class MasterController@Autowired constructor(
             ff.statusChangeDate?.let { data.put("changedOnDate", it) }
             data.put("createdBy", user.id)
             data.put("updatedBy", user.id)
-            ff.remarks?.let { data.put("remarks", it) }
+            //ff.remarks?.let { data.put("remarks", it) }
             ff.emailRBM?.let { data.put("emailRBM", it) }
             ff.emailAM?.let { data.put("emailAM", it) }
             ff.businessUnit?.let { data.put("businessUnit", it.id) }
@@ -1662,7 +1692,7 @@ open class MasterController@Autowired constructor(
             ff.statusChangeDate?.let { data.put("changedOnDate", it) }
             data.put("createdBy", user.id)
             data.put("updatedBy", user.id)
-            ff.remarks?.let { data.put("remarks", it) }
+           // ff.remarks?.let { data.put("remarks", it) }
             ff.emailRBM?.let { data.put("emailRBM", it) }
             ff.emailAM?.let { data.put("emailAM", it) }
             ff.businessUnit?.let { data.put("businessUnit", it.id) }
