@@ -16,7 +16,7 @@ open class MasterUsers: AuditableEntity() {
     var userRecipientId: String?= null
     var userDesignation: NamedSquerEntity? = null
     var userStatus: NamedSquerEntity?= null
-    var legalEntity: NamedSquerEntity? = null
+    var legalEntity: ArrayList<String> = ArrayList<String>()
     var appBu: NamedSquerEntity? = null
     var brand: ArrayList<String> = ArrayList<String>()
 

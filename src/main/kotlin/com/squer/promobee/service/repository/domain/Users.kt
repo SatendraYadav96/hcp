@@ -16,7 +16,7 @@ open class Users: AuditableEntity() {
     var userRecipientId: String?= null
     var userDesignation: NamedSquerEntity? = null
     var userStatus: NamedSquerEntity?= null
-    var legalEntity: NamedSquerEntity? = null
+    var legalEntity: ArrayList<NamedSquerEntity> = ArrayList<NamedSquerEntity>()
     var appBu: NamedSquerEntity? = null
     var brand: ArrayList<NamedSquerEntity> = ArrayList<NamedSquerEntity>()
 

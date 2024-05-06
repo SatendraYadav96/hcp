@@ -844,6 +844,8 @@ open class MasterController@Autowired constructor(
             tem.name?.let { data1.put("ciName", it.lowercase()) }
             tem.code?.let { data1.put("code", it) }
             tem.active?.let { data1.put("active", it) }
+            data1.put("createdBy",user.id)
+            data1.put("updatedBy",user.id)
 
 
             sqlSessionTemplate.insert("DivisionMapper.addDivision",data1)
@@ -967,7 +969,7 @@ open class MasterController@Autowired constructor(
 
             data.put("id",usr.id)
             usr.email?.let { data.put("email", it) }
-            usr.legalEntity?.let { data.put("legalEntity", it.id) }
+            data.put("legalEntity",usr.legalEntity[0])
             usr.userDesignation?.let { data.put("userDesignation", it.id) }
             usr.userStatus?.let { data.put("userStatus", it.id) }
             usr.approver?.let { data.put("approver", it) }
@@ -992,13 +994,34 @@ open class MasterController@Autowired constructor(
 
                 data.put("id",bbrId)
                 data.put("userId",usr.id)
-                data.put("brandId",usr.brand.get(i))
+                data.put("brandId",it)
 
                 sqlSessionTemplate.insert("BrandManagerMapper.addBrandByUserId",data)
 
                 i++
 
             }
+
+        var ule = UserLegalEntity()
+
+        data.put("id",usr.id)
+
+        sqlSessionTemplate.delete("UsersMasterMapper.deleteUserEntity",data)
+
+
+        var n= 0
+        usr.legalEntity.forEach {
+            var uleId = UUID.randomUUID().toString()
+            var data1: MutableMap<String, Any> = mutableMapOf()
+
+            data1.put("id",uleId)
+            data1.put("etyId",it)
+            data1.put("userId",usr.id)
+            sqlSessionTemplate.insert("UsersMasterMapper.InsertUserEntity",data1)
+
+            n++
+        }
+
 
 
             println("User Updated Successfully !")
@@ -1053,6 +1076,8 @@ open class MasterController@Autowired constructor(
             return ResponseEntity(errorMap , HttpStatus.BAD_REQUEST)
         } else{
             // add user
+
+
             var data: MutableMap<String, Any> = mutableMapOf()
             var usrId = UUID.randomUUID().toString()
 
@@ -1069,12 +1094,12 @@ open class MasterController@Autowired constructor(
             data.put("activeFrom", actFrm)
 //        usr.activeTo?.let { data.put("activeTo", it) }
             usr.userStatus?.let { data.put("userStatus", it.id) }
-            usr.legalEntity?.let { data.put("legalEntity", it.id) }
+            data.put("legalEntity",usr.legalEntity[0])
             usr.email?.let { data.put("email", it) }
             // usr.lastLoggedIn?.let { data.put("lastLoggedIn", it) }
             data.put("createdBy",user.id)
             data.put("updatedBy",user.id)
-            usr.appBu?.let { data.put("appBu", it.id) }
+            //usr.appBu?.let { data.put("appBu", it.id) }
             //usr.userRecipientId?.let { data.put("userRecipientId", it) }
             usr.approver?.let { data.put("approver", it) }
 
@@ -1095,12 +1120,29 @@ open class MasterController@Autowired constructor(
 
                 data.put("id",bbrId)
                 data.put("userId",usrId)
-                data.put("brandId",usr.brand.get(i))
+                data.put("brandId",it)
 
                 sqlSessionTemplate.insert("BrandManagerMapper.addBrandByUserId",data)
 
                 i++
 
+            }
+
+            var ule = UserLegalEntity()
+
+
+
+            var n= 0
+            usr.legalEntity.forEach {
+                var uleId = UUID.randomUUID().toString()
+                var data1: MutableMap<String, Any> = mutableMapOf()
+
+                data1.put("id",uleId)
+                data1.put("etyId",it)
+                data1.put("userId",usrId)
+                sqlSessionTemplate.insert("UsersMasterMapper.InsertUserEntity",data1)
+
+                n++
             }
 
 

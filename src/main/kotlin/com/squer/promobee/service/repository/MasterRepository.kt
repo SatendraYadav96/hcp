@@ -757,10 +757,11 @@ class MasterRepository
     }
 
     fun getUserById(id: String):Users{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String,Any> = mutableMapOf()
 
         var usr = Users()
-        data.put("id",id)
+        data.put("id",user.id)
 
         usr =  sqlSessionTemplate.selectOne<Users>("UsersMasterMapper.getUserById",data)
 
@@ -788,7 +789,7 @@ class MasterRepository
 
         data.put("id",usr.id)
         usr.email?.let { data.put("email", it) }
-        usr.legalEntity?.let { data.put("legalEntity", it.id) }
+        data.put("legalEntity",usr.legalEntity[0])
         usr.userDesignation?.let { data.put("userDesignation", it.id) }
         usr.userStatus?.let { data.put("userStatus", it.id) }
         usr.approver?.let { data.put("approver", it) }
@@ -887,7 +888,7 @@ class MasterRepository
             data.put("activeFrom", actFrm)
 //        usr.activeTo?.let { data.put("activeTo", it) }
             usr.userStatus?.let { data.put("userStatus", it.id) }
-            usr.legalEntity?.let { data.put("legalEntity", it.id) }
+            data.put("legalEntity",usr.legalEntity[0])
             usr.email?.let { data.put("email", it) }
             // usr.lastLoggedIn?.let { data.put("lastLoggedIn", it) }
             data.put("createdBy",user.id)

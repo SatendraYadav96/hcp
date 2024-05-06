@@ -49,12 +49,14 @@
                           join USER_LOV_ULV ulv on ulv.ID_ULV = usr.ID_DESG_ULV_USR
                           join SYSTEM_LOV_SLV slv on slv.ID_SLV = usr.ID_STATUS_SLV_USR
         where usr.ID_STATUS_SLV_USR = #{userStatus}
+ORDER BY usr.UPDATED_ON_USR desc
     </select>
 
     <select id="getUserByIdBm" resultMap="usersMasterResultMap" >
         select usr.*,ulv.ID_ULV,ulv.NAME_ULV,slv.ID_SLV,slv.NAME_SLV,ety.ID_ETY,ety.NAME_ETY,brd.ID_BRD,brd.NAME_BRD,bum.ID_BUM,bum.NAME_BUM from USER_MASTER_USR usr
         join USER_LOV_ULV ulv on ulv.ID_ULV = usr.ID_DESG_ULV_USR
         join SYSTEM_LOV_SLV slv on slv.ID_SLV = usr.ID_STATUS_SLV_USR
+        JOIN USER_LEGAL_ENTITY_ULE ULE ON ULE.ID_USR_ULE = USR.ID_USR
         join LEGAL_ENTITY_MASTER_ETY ety on ety.ID_ETY = usr.ID_ETY_USR
         join BRANDMANAGER_BRAND_BBR bbr on bbr.ID_USR_BBR = usr.ID_USR
         join BRAND_MASTER_BRD brd on brd.ID_BRD = bbr.ID_BRD_BBR
@@ -67,6 +69,7 @@
         select usr.*,ulv.ID_ULV,ulv.NAME_ULV,slv.ID_SLV,slv.NAME_SLV,ety.ID_ETY,ety.NAME_ETY from USER_MASTER_USR usr
          join USER_LOV_ULV ulv on ulv.ID_ULV = usr.ID_DESG_ULV_USR
          join SYSTEM_LOV_SLV slv on slv.ID_SLV = usr.ID_STATUS_SLV_USR
+         JOIN USER_LEGAL_ENTITY_ULE ULE ON ULE.ID_USR_ULE = USR.ID_USR
          join LEGAL_ENTITY_MASTER_ETY ety on ety.ID_ETY = usr.ID_ETY_USR
         where usr.ID_USR = #{id}
     </select>
@@ -110,7 +113,7 @@
         INSERT INTO USER_MASTER_USR (ID_USR,NAME_USR,CI_NAME_USR,LOGIN_NAME_USR,EMPLOYEE_CODE_USR,ID_DESG_ULV_USR,ACTIVE_FROM_USR,ACTIVE_TO_USR,ID_STATUS_SLV_USR,ID_ETY_USR,EMAIL_ADDRESS_USR,
                                      LAST_LOGGED_IN_USR,CREATED_ON_USR,CREATED_BY_USR,UPDATED_ON_USR,UPDATED_BY_USR,ID_APP_BUM_USR,ID_RCT_USR,EMAIL_BUH_USR)
         values( #{id}, #{name}, #{ciName}, #{username}, #{employeeCode},#{userDesignation} ,#{activeFrom} ,NULL ,#{userStatus} ,#{legalEntity} ,#{email}
-        ,GETDATE() ,GETDATE(), #{createdBy}, GETDATE(), #{updatedBy},#{appBu},NULL,#{approver} )
+        ,GETDATE() ,GETDATE(), #{createdBy}, GETDATE(), #{updatedBy},NULL,NULL,#{approver} )
     </insert>
 
 
@@ -143,6 +146,11 @@
 
         select * from USER_MASTER_USR WHERE ID_USR = #{userId}
     </select>
+
+    <insert id="InsertUserEntity">
+        INSERT INTO USER_LEGAL_ENTITY_ULE (ID_ULE,ID_ETY_ULE,ID_USR_ULE)
+        values( #{id}, #{etyId}, #{userId} )
+    </insert>
 
 
 
