@@ -19,7 +19,7 @@
             <table>
                 <tr>
                     <td><u>Consignor</u></td>
-                    <td><b>SANOFI INDIA LIMITED</b></td>
+                    <td><b>SANOFI CHC INDIA LIMITED</b></td>
                     <td>Date:</td>
                     <td>$InvoiceCreatedDate</td>
                 </tr>
@@ -33,7 +33,11 @@
                     <td>Address:</td>
                     <td colspan="4">
                         <address>
-                            C/o.S.K Logistics, Bldg no.4,1st Floor Gala No. 1 to 7, CitiLink Warehousing Complex,Mumbai Nashik Highway, S.No 120-121, Village- Vadpe, Taluka BHIWANDI,DIST. THANE-421302, Maharashtra 02522398014 / 398016,8879627885 / 9619861901 hub.bhiwandi2@sanofi.com
+                            C/o S. K. LOGISTICS, CITY LINK WAREHOUSING COMPLEX BUILDING
+                            NO B-3 MUMBAI - NASHIK HIGHWAY VADAPE BHIWANDI-421302
+                            STATE:MAHARASHTRA
+                            STATE CODE:27
+
                         </address>
                     </td>
                 </tr>
