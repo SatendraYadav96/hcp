@@ -28,7 +28,7 @@
             <result property="name" column="name_slv" />
         </association>
         <association property="legalEntity" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
-            <id property="id" column="id_ety_usr"/>
+            <id property="id" column="id_ety"/>
             <result property="name" column="name_ety" />
         </association>
         <association property="appBu" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
@@ -53,24 +53,25 @@ ORDER BY usr.UPDATED_ON_USR desc
     </select>
 
     <select id="getUserByIdBm" resultMap="usersMasterResultMap" >
-        select usr.*,ulv.ID_ULV,ulv.NAME_ULV,slv.ID_SLV,slv.NAME_SLV,ety.ID_ETY,ety.NAME_ETY,brd.ID_BRD,brd.NAME_BRD,bum.ID_BUM,bum.NAME_BUM from USER_MASTER_USR usr
+        select usr.*,ulv.ID_ULV,ulv.NAME_ULV,slv.ID_SLV,slv.NAME_SLV,ety.ID_ETY,ety.NAME_ETY,brd.ID_BRD,brd.NAME_BRD from USER_MASTER_USR usr
         join USER_LOV_ULV ulv on ulv.ID_ULV = usr.ID_DESG_ULV_USR
         join SYSTEM_LOV_SLV slv on slv.ID_SLV = usr.ID_STATUS_SLV_USR
         JOIN USER_LEGAL_ENTITY_ULE ULE ON ULE.ID_USR_ULE = USR.ID_USR
         join LEGAL_ENTITY_MASTER_ETY ety on ety.ID_ETY = usr.ID_ETY_USR
         join BRANDMANAGER_BRAND_BBR bbr on bbr.ID_USR_BBR = usr.ID_USR
         join BRAND_MASTER_BRD brd on brd.ID_BRD = bbr.ID_BRD_BBR
-        join BU_MASTER_BUM bum on bum.ID_BUM = usr.ID_APP_BUM_USR
         where usr.ID_USR = #{id}
     </select>
 
 
     <select id="getUserByIds" resultMap="usersMasterResultMap" >
-        select usr.*,ulv.ID_ULV,ulv.NAME_ULV,slv.ID_SLV,slv.NAME_SLV,ety.ID_ETY,ety.NAME_ETY from USER_MASTER_USR usr
-         join USER_LOV_ULV ulv on ulv.ID_ULV = usr.ID_DESG_ULV_USR
-         join SYSTEM_LOV_SLV slv on slv.ID_SLV = usr.ID_STATUS_SLV_USR
-         JOIN USER_LEGAL_ENTITY_ULE ULE ON ULE.ID_USR_ULE = USR.ID_USR
-         join LEGAL_ENTITY_MASTER_ETY ety on ety.ID_ETY = usr.ID_ETY_USR
+        select usr.*,ulv.ID_ULV,ulv.NAME_ULV,slv.ID_SLV,slv.NAME_SLV,ety.ID_ETY,ety.NAME_ETY,brd.ID_BRD,brd.NAME_BRD from USER_MASTER_USR usr
+                                                                                                                              join USER_LOV_ULV ulv on ulv.ID_ULV = usr.ID_DESG_ULV_USR
+                                                                                                                              join SYSTEM_LOV_SLV slv on slv.ID_SLV = usr.ID_STATUS_SLV_USR
+                                                                                                                              JOIN USER_LEGAL_ENTITY_ULE ULE ON ULE.ID_USR_ULE = USR.ID_USR
+                                                                                                                              join LEGAL_ENTITY_MASTER_ETY ety on ety.ID_ETY = ule.ID_ETY_ULE
+                                                                                                                              join BRANDMANAGER_BRAND_BBR bbr on bbr.ID_USR_BBR = usr.ID_USR
+                                                                                                                              join BRAND_MASTER_BRD brd on brd.ID_BRD = bbr.ID_BRD_BBR
         where usr.ID_USR = #{id}
     </select>
 
@@ -96,14 +97,14 @@ ORDER BY usr.UPDATED_ON_USR desc
 
     <select id="getOwnerDropdown" resultType="com.squer.promobee.controller.dto.ApproverDropdownDTO">
 
-        SELECT ID_USR AS 'userId',NAME_USR AS 'userName',EMAIL_BUH_USR AS 'userEmail' FROM USER_MASTER_USR WHERE ID_DESG_ULV_USR = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5'
+        SELECT ID_USR AS 'userId',NAME_USR AS 'userName',EMAIL_BUH_USR AS 'userEmail' FROM USER_MASTER_USR WHERE ID_DESG_ULV_USR = '2B264AFB-E2FD-483C-BD4C-C36A4E352FC5'  AND ID_STATUS_SLV_USR = '1D2F12F3-F84A-4200-9590-70680528779B'
 
     </select>
 
 
     <select id="getTseDropdown" resultType="com.squer.promobee.controller.dto.ApproverDropdownDTO">
 
-        SELECT ID_USR AS 'userId',NAME_USR AS 'userName',EMAIL_ADDRESS_USR AS 'userEmail' FROM USER_MASTER_USR WHERE ID_DESG_ULV_USR = '20B61A71-6102-4E3D-9871-711D205DD0E7'
+        SELECT ID_USR AS 'userId',NAME_USR AS 'userName',EMAIL_ADDRESS_USR AS 'userEmail' FROM USER_MASTER_USR WHERE ID_DESG_ULV_USR = '20B61A71-6102-4E3D-9871-711D205DD0E7' AND ID_STATUS_SLV_USR = '1D2F12F3-F84A-4200-9590-70680528779B'
 
     </select>
 
