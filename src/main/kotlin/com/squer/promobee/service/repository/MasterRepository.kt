@@ -757,11 +757,10 @@ class MasterRepository
     }
 
     fun getUserById(id: String):Users{
-        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         var data: MutableMap<String,Any> = mutableMapOf()
 
         var usr = Users()
-        data.put("id",user.id)
+        data.put("id",id)
 
         usr =  sqlSessionTemplate.selectOne<Users>("UsersMasterMapper.getUserById",data)
 
