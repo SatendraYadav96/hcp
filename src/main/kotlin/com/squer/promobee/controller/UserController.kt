@@ -21,6 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+import javax.servlet.http.HttpSession
 import javax.validation.Valid
 
 @Slf4j
@@ -79,6 +82,16 @@ open class UserController @Autowired constructor(
     fun getUserDetail(): ResponseEntity<*>?{
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         return ResponseEntity(user, HttpStatus.OK)
+    }
+
+    @PostMapping("/logout")
+    fun logoutUser(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<*> {
+        val auth: Authentication? = SecurityContextHolder.getContext().authentication
+        if (auth != null ) {
+            SecurityContextHolder.getContext().authentication = null
+            log.info("User successfully logged out")
+        }
+        return ResponseEntity.ok(mapOf("message" to "Logged out successfully"))
     }
 
 }

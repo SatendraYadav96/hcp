@@ -84,9 +84,9 @@
     </insert>
 
     <update id="updateUser">
-        UPDATE USERS set name_usr=#{fullName}, ci_name_usr=#{ciName}, login_name_usr=#{username}, employee_code_usr=#{employeeCode},
-            id_desg_ulv_usr=#{userDesignation.id}, active_from_usr=#{activeFrom}, active_to_usr=#{activeTo}, id_ety_usr=#{legalEntity.id},
-            email_address_usr=#{email}, last_loggd_in_usr=#{lastLoggedIn}, id_status_slv_usr=#{status.id}, updated_on_usr=#{updatedAt}, updated_by_usr=#{updatedBy} where id_usr=#{id}
+        UPDATE USER_MASTER_USR set name_usr=#{name}, ci_name_usr=#{ciName}, login_name_usr=#{username}, employee_code_usr=#{employeeCode},
+            id_desg_ulv_usr=#{userDesignation.id}, active_from_usr=#{activeFrom}, id_ety_usr=#{legalEntity.id},
+            email_address_usr=#{email}, last_logged_in_usr=#{lastLoggedIn}, id_status_slv_usr=#{userStatus.id}, updated_on_usr=#{updatedAt}, updated_by_usr=#{updatedBy} where id_usr=#{id}
     </update>
 
 
