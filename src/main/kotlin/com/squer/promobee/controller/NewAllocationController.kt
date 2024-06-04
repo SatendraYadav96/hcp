@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.GetMapping
@@ -236,30 +237,30 @@ open class NewAllocationController @Autowired constructor(
 
         var buHead = sqlSessionFactory.openSession().selectList<ApprovalUserDetailsDTO>("ApprovalMapper.specialPlanSubmitMail",data)
 
-//        if(buHead.size > 0) {
-//
-//            buHead.forEach {
-//
-//                val calendar = Calendar.getInstance()
-//                val mimeMessage = mailSender.createMimeMessage()
-//                val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
-//                mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
-//              //  mimeMessageHelper.setTo(it.UserEmailAddress!!)
-//                mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
-//                mimeMessageHelper.setText("Hi, ", user.name +
-//
-//                        "\n has submitted the Special Dispatch Plan for Month - ${months[alloc.month]} - ${alloc.year} & plan - ${alloc.name}, Kindly look into this and take further actions \n" +
-//
-//                        "\nThank You.\n" +
-//                        " ")
-//                mimeMessageHelper.setSubject("Approval Notification Mail")
-//
-//
-//                mailSender.send(mimeMessage)
-//                println("Mail Sent!")
-//            }
-//
-//        }
+        if(buHead.size > 0) {
+
+            buHead.forEach {
+
+                val calendar = Calendar.getInstance()
+                val mimeMessage = mailSender.createMimeMessage()
+                val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
+                mimeMessageHelper.setFrom("chc.promobee@squer.co.in")
+              //  mimeMessageHelper.setTo(it.UserEmailAddress!!)
+                mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
+                mimeMessageHelper.setText("Hi, ", user.name +
+
+                        "\n has submitted the Special Dispatch Plan for Month - ${months[alloc.month]} - ${alloc.year} & plan - ${alloc.name}, Kindly look into this and take further actions \n" +
+
+                        "\nThank You.\n" +
+                        " ")
+                mimeMessageHelper.setSubject("Approval Notification Mail")
+
+
+                mailSender.send(mimeMessage)
+                println("Mail Sent!")
+            }
+
+        }
 
         var errorMap: MutableMap<String, String> = HashMap()
         println("Special Allocation submitted Successfully !")

@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse
 @Repository
 class EmailRepository(
     securityUtility: SecurityUtility,
-    private val mailSender: JavaMailSender
+   //private val emailSender: JavaMailSender
 
 ): BaseRepository<HSN>(
     securityUtility = securityUtility
@@ -374,28 +374,28 @@ class EmailRepository(
             if(currentDate == twentyThirdDay){
 
                 val calendar = Calendar.getInstance()
-                val mimeMessage = mailSender.createMimeMessage()
-                val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
-                mimeMessageHelper.setFrom("satendrayadav01567@gmail.com")
-                mimeMessageHelper.setTo(brandManager.email!!)
-                mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
-                mimeMessageHelper.setText(
-                    """
-        Hi, ${brandManager.name!!.trim()},
-
-        Please note you have not submitted your special dispatch for month ${it.month} year ${it.year}. Remarks: ${it.remarks!!.trim()}
-
-        If you don't submit your special plan, the plan will get deleted after 5 days and allocated quantity will automatically get reversed in inventory.
-
-        Kindly do the needful.
-
-        Thank You.
-    """.trim()
-                )
-                mimeMessageHelper.setSubject("Special Plan Nullify")
-
-
-                mailSender.send(mimeMessage)
+//                val mimeMessage = mailSender.createMimeMessage()
+//                val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
+//                mimeMessageHelper.setFrom("chc.promobee@squer.co.in")
+//                mimeMessageHelper.setTo(brandManager.email!!)
+//                mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
+//                mimeMessageHelper.setText(
+//                    """
+//        Hi, ${brandManager.name!!.trim()},
+//
+//        Please note you have not submitted your special dispatch for month ${it.month} year ${it.year}. Remarks: ${it.remarks!!.trim()}
+//
+//        If you don't submit your special plan, the plan will get deleted after 5 days and allocated quantity will automatically get reversed in inventory.
+//
+//        Kindly do the needful.
+//
+//        Thank You.
+//    """.trim()
+//                )
+//                mimeMessageHelper.setSubject("Special Plan Nullify")
+//
+//
+//                mailSender.send(mimeMessage)
                 println("Mail Sent!")
             }
 

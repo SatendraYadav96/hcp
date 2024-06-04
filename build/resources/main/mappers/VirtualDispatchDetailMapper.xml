@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="VirtualDispatchDetailMapper">
+    <resultMap id="virtualDispatchDetailResultMap" type="com.squer.promobee.service.repository.domain.VirtualDispatchDetail">
+        <id property="id" column="id_did"/>
+        <result property="qtyDispatch" column="quantity_dispatch_did"/>
+        <result property="remarks" column="remarks_did"/>
+        <result property="createdAt" column="created_on_did"/>
+        <result property="createdBy" column="created_by_did"/>
+        <result property="updatedAt" column="updated_on_did"/>
+        <result property="updatedBy" column="updated_by_did"/>
+        <!--        <result property="planId" column="id_dip_did"/>-->
+        <!--        <result property="inventoryId" column="id_inv_did"/>-->
+        <!--        <result property="recipientId" column="id_rct_did"/>-->
+        <!--        <result property="quarterlyPlanId" column="id_qtp_did"/>-->
+        <!--        <result property="detailStatus" column="id_status_slv_did"/>-->
+        <!--        <result property="categoryId" column="id_itc_did"/>-->
+        <association property="planId" column="id_dip_did"  javaType="com.squer.promobee.service.repository.domain.DispatchPlan">
+            <id property="id" column="id_dip"/>
+        </association>
+        <association property="inventoryId" column="id_inv_did"  javaType="com.squer.promobee.service.repository.domain.Inventory">
+            <id property="id" column="id_inv"/>
+        </association>
+        <association property="recipientId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_rct_did"/>
+            <result property="name" column="name_rct"/>
+        </association>
+        <association property="quarterlyPlanId" column="id_qtp_did"  javaType="com.squer.promobee.service.repository.domain.QuarterlyPlan">
+            <id property="id" column="id_qtp"/>
+        </association>
+        <association property="detailStatus" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_status_slv_did"/>
+            <result property="name" column="name_slv"/>
+        </association>
+        <association property="categoryId" javaType="com.squer.promobee.security.domain.NamedSquerEntity">
+            <id property="id" column="id_itc_did"/>
+            <result property="name" column="name_itc"/>
+        </association>
+
+    </resultMap>
+
+
+    <select id="createVirtualPlan" resultMap="virtualDispatchDetailResultMap">
+        select VID.* from DISPATCH_PLAN_DIP DIP
+                              JOIN VIRTUAL_DISPATCH_VID VID ON VID.ID_DIP_DID = DIP.ID_DIP
+        WHERE VID.ID_RCT_DID = #{owner} AND DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND DIP.IS_VIRTUAL_DIP = 1
+    </select>
+
+
+
+    <update id="updateVirtualPlan">
+        UPDATE VIRTUAL_DISPATCH_VID SET QUANTITY_DISPATCH_DID = {qtyDispatch}  , UPDATED_BY_DID = #{updatedBy} , UPDATED_ON_DID = GETDATE()
+        WHERE ID_DID = #{id}
+    </update>
+
+
+    <insert id="insertVid" >
+        insert into VIRTUAL_DISPATCH_VID(ID_DID, ID_DIP_DID, ID_INV_DID, ID_RCT_DID, QUANTITY_DISPATCH_DID, ID_QTP_DID, ID_STATUS_SLV_DID,  CREATED_ON_DID, CREATED_BY_DID, UPDATED_ON_DID, UPDATED_BY_DID)
+        values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})
+    </insert>
+
+
+    <insert id="insertDid" >
+        insert into VIRTUAL_DISPATCH_VID(ID_DID, ID_DIP_DID, ID_INV_DID, ID_RCT_DID, QUANTITY_DISPATCH_DID, ID_QTP_DID, ID_STATUS_SLV_DID,  CREATED_ON_DID, CREATED_BY_DID, UPDATED_ON_DID, UPDATED_BY_DID)
+        values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})
+    </insert>
+
+    <select id="submitVirtualAllocation" resultMap="virtualDispatchDetailResultMap">
+        select * from DISPATCH_DETAIL_DID
+        WHERE ID_DIP_DID = #{id}
+    </select>
+
+
+    <insert id="insertVirtualDispatch" >
+        insert into DISPATCH_DETAIL_DID(ID_DID, ID_DIP_DID, ID_INV_DID, ID_RCT_DID, QUANTITY_DISPATCH_DID, ID_QTP_DID, ID_STATUS_SLV_DID,  CREATED_ON_DID, CREATED_BY_DID, UPDATED_ON_DID, UPDATED_BY_DID)
+        values(#{id}, #{planId}, #{inventoryId}, #{recipientId}, #{qtyDispatch}, #{quarterlyPlanId}, #{detailStatus}, GETDATE(), #{createdBy}, GETDATE(), #{updatedBy})
+    </insert>
+
+    <select id="rbmStockVirtual" resultType="com.squer.promobee.controller.dto.DispatchDetailDTO" parameterType = "map" statementType = "CALLABLE" >
+        SELECT DID.ID_DID as 'Id',DID.ID_DIP_DID as 'PlanId',DID.ID_INV_DID as 'InventoryId',DID.ID_RCT_DID as 'RecipientId',
+        DID.QUANTITY_DISPATCH_DID as 'QtyDispatch',DID.ID_QTP_DID as 'QuarterlyPlanId', DID.ID_STATUS_SLV_DID as 'DetailStatus',
+        DID.REMARKS_DID as 'Remarks',DID.CREATED_ON_DID as 'CreatedAt',DID.CREATED_BY_DID as 'CreatedBy',DID.UPDATED_ON_DID as 'UpdatedAt',
+        DID.UPDATED_BY_DID as 'UpdatedBy',DID.ID_ITC_DID as 'CategoryId' FROM DISPATCH_PLAN_DIP DIP
+                              JOIN VIRTUAL_DISPATCH_VID DID ON DID.ID_DIP_DID = DIP.ID_DIP
+        WHERE DID.ID_RCT_DID =  #{rbmId} AND DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND DIP.IS_SPECIAL_DIP = 1
+          AND DIP.IS_VIRTUAL_DIP = 1
+    </select>
+
+
+    <select id="rbmStockVirtualDID" resultType="com.squer.promobee.controller.dto.DispatchDetailDTO" parameterType = "map" statementType = "CALLABLE" >
+        SELECT DID.ID_DID as 'Id',DID.ID_DIP_DID as 'PlanId',DID.ID_INV_DID as 'InventoryId',DID.ID_RCT_DID as 'RecipientId',
+                DID.QUANTITY_DISPATCH_DID as 'QtyDispatch',DID.ID_QTP_DID as 'QuarterlyPlanId', DID.ID_STATUS_SLV_DID as 'DetailStatus',
+                DID.REMARKS_DID as 'Remarks',DID.CREATED_ON_DID as 'CreatedAt',DID.CREATED_BY_DID as 'CreatedBy',DID.UPDATED_ON_DID as 'UpdatedAt',
+                DID.UPDATED_BY_DID as 'UpdatedBy',DID.ID_ITC_DID as 'CategoryId'
+                FROM DISPATCH_DETAIL_DID DID
+        WHERE DID.ID_RCT_DID =  #{recipientId} AND DID.ID_INV_DID = #{inventoryId} AND DID.ID_DIP_DID = #{planId}
+    </select>
+
+
+
+
+
+
+
+
+
+
+</mapper>

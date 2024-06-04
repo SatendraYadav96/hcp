@@ -25,7 +25,7 @@ import java.util.*
 @Repository
 class ComplianceRepository(
     securityUtility: SecurityUtility,
-    private val mailSender: JavaMailSender,
+    //private val mailSender: JavaMailSender,
 ): BaseRepository<Users>(
     securityUtility = securityUtility
 
