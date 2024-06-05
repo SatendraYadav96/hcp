@@ -15,7 +15,9 @@ class   User : java.io.Serializable, UserDetails, AuditableEntity() {
 
     private var username: @NotBlank(message = "Please enter username") String? = null
 
-    private var password: String? = "\$2a\$12\$xY9m7YCnR.63zf9KGv22ieKyFlkai6K/ANoGN6AH.rL3WdjpY/mou"
+    //private var password: String? = "\$2a\$12\$xY9m7YCnR.63zf9KGv22ieKyFlkai6K/ANoGN6AH.rL3WdjpY/mou"
+
+    private var password: String? =null
 
     var employeeCode: String? = null
 
@@ -50,7 +52,7 @@ class   User : java.io.Serializable, UserDetails, AuditableEntity() {
 
     @JsonIgnore
     @JsonProperty(value = "password")
-    override fun getPassword(): String? = password
+    override fun getPassword(): String? = password!!
 
     fun setPassword(value: String?) {
         password = value

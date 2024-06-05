@@ -1,5 +1,6 @@
 package com.squer.promobee.controller
 
+import com.squer.promobee.controller.dto.setPasswordDTO
 import com.squer.promobee.security.config.SecurityConstants
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.security.dto.LoginRequest
@@ -23,7 +24,6 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-import javax.servlet.http.HttpSession
 import javax.validation.Valid
 
 @Slf4j
@@ -54,8 +54,16 @@ open class UserController @Autowired constructor(
                         loginRequest.username,
                         loginRequest.password
                 )
+
         )
-        SecurityContextHolder.getContext().authentication = authentication
+      SecurityContextHolder.getContext().authentication = authentication
+
+//        var user = userService.findByUsername(loginRequest.username)
+//        var validatePassword = bCryptPasswordEncoder.encode(loginRequest.password)
+//        if(user.password == validatePassword) {
+//            log.info("User '${loginRequest.username}' is logged in and authenticated")
+//
+//        }
         val jwt: String = SecurityConstants.TOKEN_PREFIX + jwdTokenProvider.generateToken(authentication)
         log.info("User '${loginRequest.username}' is logged in and authenticated")
         return ResponseEntity.ok<Any>(LoginSuccessResponse(true, jwt))
@@ -63,9 +71,11 @@ open class UserController @Autowired constructor(
 
 
     @PutMapping(value = ["/setpassword"])
-    open fun setPassword(@RequestBody loginRequest: LoginRequest): ResponseEntity<*>? {
-        var user = userService.findByUsername(loginRequest.username)
-        user!!.password = loginRequest.password
+    open fun setPassword(@RequestBody loginRequest: setPasswordDTO): ResponseEntity<*>? {
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
+        //var user = userService.findByUsername(loginRequest.username)
+        user!!.password = loginRequest.confirmPassword
+       // user.setPassword(bCryptPasswordEncoder.encode(loginRequest.password))
         userService.saveUser(user)
         return ResponseEntity<Any?>(user, HttpStatus.OK)
     }
