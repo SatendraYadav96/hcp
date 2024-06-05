@@ -74,8 +74,8 @@ open class UIController @Autowired constructor(
                        // UserMenuEnum.ITEM_CONSUMPTION_REPORT,
                         //UserMenuEnum.INVENTORY_REVERSAL_REPORT,
                         UserMenuEnum.VIRTUAL_RECONCILIATION,
-                        UserMenuEnum.TSE,
-                        UserMenuEnum.BRAND,
+                      //  UserMenuEnum.TSE,
+                      //  UserMenuEnum.BRAND,
                        // UserMenuEnum.ALLOCATION_REPORT
                 ),
             UserRoleEnum.BEX_ID.id to listOf<UserMenuEnum>(
@@ -157,8 +157,8 @@ open class UIController @Autowired constructor(
                     UserMenuEnum.ALLOCATION,
 //                    UserMenuEnum.ITEM_REVALIDATION,
 //                    UserMenuEnum.MASS_REVALIDATION,
-                    UserMenuEnum.ADMIN,
-                    UserMenuEnum.MASTERS,
+                   // UserMenuEnum.ADMIN,
+                   // UserMenuEnum.MASTERS,
                     UserMenuEnum.REPORT
                 ),
             UserRoleEnum.BEX_ID.id to listOf<UserMenuEnum>(
