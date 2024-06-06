@@ -1,14 +1,11 @@
 package com.squer.promobee.controller
 
 
-import com.squer.promobee.api.v1.enums.UserRoleEnum
-import com.squer.promobee.controller.dto.ComplianceBuChampionDTO
+
 import com.squer.promobee.controller.dto.MailContentPOJO
-import com.squer.promobee.controller.dto.UserEmailSendDTO
-import com.squer.promobee.security.domain.User
-import com.squer.promobee.security.domain.enum.UserStatusEnum
+
 import com.squer.promobee.service.EmailService
-import com.squer.promobee.service.repository.domain.Recipient
+
 import lombok.extern.slf4j.Slf4j
 import org.apache.ibatis.session.SqlSessionFactory
 import org.slf4j.LoggerFactory
@@ -20,14 +17,12 @@ import org.springframework.http.ResponseEntity
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
 import org.springframework.mail.javamail.MimeMessageHelper
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder
+
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
+
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
-import javax.mail.internet.InternetAddress
 import javax.servlet.http.HttpServletResponse
 
 
@@ -35,7 +30,6 @@ import javax.servlet.http.HttpServletResponse
 open class EmailController@Autowired constructor(
     private val emailService: EmailService,
 
-    //private val emailSender:JavaMailSender
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -43,8 +37,7 @@ open class EmailController@Autowired constructor(
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
 
-    @Autowired
-    private val emailSender: JavaMailSender? = null
+
 
     @Bean
     fun getJavaMailSender(): JavaMailSender {
@@ -69,7 +62,6 @@ open class EmailController@Autowired constructor(
 
     @GetMapping("/getConsolidateExpiryReport")
     fun getConsolidateExpiryReport  (response: HttpServletResponse): ResponseEntity<*> {
-
         var intervals= mutableListOf<IntArray>()
         intervals.add(intArrayOf(32, 61, 1))
         intervals.add(intArrayOf(62, 121, 1))
@@ -97,14 +89,14 @@ open class EmailController@Autowired constructor(
             os.close()
         }
         val calendar = Calendar.getInstance()
-        val mimeMessage= emailSender?.createMimeMessage()
+        val mimeMessage= getJavaMailSender().createMimeMessage()
 
         val mimeMessageHelper= mimeMessage?.let { MimeMessageHelper(it,true) }
-        mimeMessageHelper?.setFrom("chc.promobee@squer.co.in")
+        mimeMessageHelper.setFrom("chc.promobee@squer.co.in")
         //mimeMessageHelper.setTo(InternetAddress.parse("shraddha.tambe@sanofi.com , amol.mali@sanofi.com"))
-        mimeMessageHelper?.setTo("satendra.yadav@squer.co.in")
+        mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
         //mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
-        mimeMessageHelper?.setText("Dear All,\n" +
+        mimeMessageHelper.setText("Dear All,\n" +
                 "\n" +
                 "Attached are the Consolidated data of Inputs and Samples which are in “Near Expiry” Category.\n" +
                 "\n" +
@@ -120,12 +112,12 @@ open class EmailController@Autowired constructor(
         var monthNames = arrayOf("JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER")
         var currentMonthName = monthNames[currentMonth]
 
-        mimeMessageHelper?.setSubject("Consolidated Expiry Mail for the Month-" + currentMonthName)
+        mimeMessageHelper.setSubject("Consolidated Expiry Mail for the Month-" + currentMonthName)
         intervals.forEach{
             val fileSystemResource= FileSystemResource(File("D:\\UNS_MAILS\\ExpiryReportIn${it[0]}-${it[1]}days.xlsx"))
-            mimeMessageHelper?.addAttachment(fileSystemResource.filename, fileSystemResource)
+            mimeMessageHelper.addAttachment(fileSystemResource.filename, fileSystemResource)
         }
-        emailSender?.send(mimeMessage)
+        getJavaMailSender().send(mimeMessage)
         println("Mail Sent!")
         return  ResponseEntity(fileContentList, HttpStatus.OK)
 

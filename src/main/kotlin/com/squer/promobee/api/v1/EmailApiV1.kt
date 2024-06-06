@@ -4,7 +4,6 @@ import com.squer.promobee.controller.EmailController
 import com.squer.promobee.service.EmailService
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -20,10 +19,9 @@ import org.springframework.web.bind.annotation.RestController
 
 class EmailApiV1(
    emailService: EmailService,
-  // emailSender: JavaMailSender
+
 ): EmailController(
    emailService = emailService,
-   //emailSender = emailSender
 ) {
 
 
