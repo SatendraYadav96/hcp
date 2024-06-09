@@ -13,6 +13,8 @@ interface InvoiceService {
 
     fun getPrintInvoiceHeaders(inhId:String): MutableList<InvoicePrintDetailsDTO>
 
+
+
     fun getVirtualPrintInvoiceHeaders(inhId:String): InvoicePrintDetailsDTO
 
     fun getInvoiceDetailsForPrint(inhId:String): MutableList<InvoiceDetailsPrintDTO>

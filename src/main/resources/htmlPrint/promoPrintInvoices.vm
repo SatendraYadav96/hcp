@@ -207,10 +207,11 @@
                 <p>
                     These cases contain promotional materials of no commercial value-Not for sale harmless promotional material for free distribution to the medical proession only. Value mentioned is for check post purpose only.
                 </p>
-                <aside>
+                <aside style="page-break-after: always">
                     For Sanofi CHC India LTD <br />
                     Authorized Signatory
                 </aside>
+                <div style="page-break-after: always">&nbsp;</div>
         </section>
     </main>
 </div>

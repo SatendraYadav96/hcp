@@ -35,6 +35,8 @@ class InvoiceServiceImpl @Autowired constructor(
         return invoiceRepository.getPrintInvoiceHeaders(inhId)
     }
 
+
+
     override fun getVirtualPrintInvoiceHeaders(inhId:String): InvoicePrintDetailsDTO {
         return invoiceRepository.getVirtualPrintInvoiceHeaders(inhId)
     }

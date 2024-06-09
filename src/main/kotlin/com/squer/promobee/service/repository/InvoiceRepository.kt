@@ -86,7 +86,7 @@ class InvoiceRepository(
 
         data.put("id", inhId)
 
-        return sqlSessionFactory.openSession().selectList<InvoicePrintDetailsDTO>("InvoiceHeaderMapper.getPrintInvoiceHeaders", data).toMutableList()
+        return sqlSessionFactory.openSession().selectList<InvoicePrintDetailsDTO>("InvoiceHeaderMapper.getPrintInvoiceHeaders", data)
 
 
     }
@@ -126,205 +126,113 @@ class InvoiceRepository(
     }
 
 
-    fun printInvoice(inh: List<PrintInvoiceDTO>):  MutableList<ByteArray>? {
+    fun printInvoice(inh: List<PrintInvoiceDTO>): MutableList<ByteArray>? {
+        val writer = StringWriter()
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-        var data: MutableMap<String, Any> = mutableMapOf()
-
-        var printDetails =  mutableListOf<MutableList<InvoicePrintDetailsDTO>>()
-
-        var printDetailsBody =  mutableListOf<MutableList<InvoiceDetailsPrintDTO>>()
-
         val date = Date()
         val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
         val year = localDate.year
-        val month = localDate.monthValue
-        val day = localDate.dayOfMonth
-
-        var employeePeriod = localDate.month.toString() + "-" + year
-
-        var promoMonth = localDate.month.toString() + "-" + year
-
-
-
-       var finalArray = mutableListOf<ByteArray>()
-
-      inh.forEach { i ->
-
-          i.inhId?.let { getPrintInvoiceHeaders(i.inhId!!) }?.let { printDetails.add(it) }
-
-
-          i.inhId?.let { getInvoiceDetailsForPrint(i.inhId!!) }?.let { printDetailsBody.add(it) }
-
-
-          /*  first, get and initialize an engine  */
-          /*  first, get and initialize an engine  */
-          val ve = VelocityEngine()
-          ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath")
-          ve.setProperty("file.resource.loader.path","/templates/printInvoice.vm" )
-          ve.init()
-
-
-          var pic = PrintInvoiceTableDto()
-
-          var data0: MutableMap<String, Any> = mutableMapOf()
-          data0.put("code","INVOICE")
-
-          pic = sqlSessionFactory.openSession().selectOne<PrintInvoiceTableDto>("ReportMapper.printInvoiceDatabase",data0)
-
-          var contentConfig = ""
-
-          contentConfig = pic.contentPic.toString()
-
-          println(contentConfig)
-
-          val template = convertToTemplate(contentConfig)
-
-          val context = VelocityContext()
-
-          var i = 0
-
-          var n = 0
-
-          printDetails.forEach { pd ->
-
-              pd.forEach {
-
-                  context.put("InvoiceNumber", it.invoiceNumber)
-                  context.put("EmployeeCode", it.employeeCode)
-                  context.put("EmployeeDesignation", it.employeeDesignation)
-                  context.put("EmployeeName", it.employeeName)
-                  context.put("EmployeeAddress", it.employeeAddress)
-                  context.put("EmployeeCity", it.employeeCity)
-                  context.put("EmployeeState", it.employeeState)
-                  context.put("EmployeePinCode", it.employeePinCode)
-                  context.put("EmployeeMobileNumber", it.employeeMobileNumber)
-                  context.put("EmployeePeriod", employeePeriod)
-                  context.put("EmployeeLRNumber", it.employeeLRNumber)
-                  context.put("EmployeeDate", it.employeeDate)
-                  context.put("EmployeeLRDate", it.employeeLRDate)
-                  context.put("EmployeeTeam", it.employeeTeam)
-                  context.put("EmployeeTransport", it.employeeTransport)
-                  context.put("EmployeeCFA", it.employeeCFA)
-                  context.put("PROMOMONTH", promoMonth)
-                  context.put("PLANTYPE", it.type)
-                  context.put("EmployeeTotalNoOfCases", it.employeeTotalNoOfCases)
-                  context.put("EmployeeTotalWeight", it.employeeTotalWeight)
-                  if (it.employeeRemark !== null) {
-                      context.put("EmployeeRemark", it.employeeRemark)
-                  } else {
-                      context.put("EmployeeRemark", "")
-                  }
-                  context.put("TotalSampleValue", it.employeeSampleValue)
-                  context.put("TotalInputValue", it.employeeInputValue)
-                  context.put("TotalSumValue", it.employeeValue)
-
-                  i++
-              }
-
-          }
-
-          var tableRow = ""
-          var srNo = 1
-          var value: Double? = 0.00
-
-
-
-
-
-          printDetailsBody.forEach {pb ->
-              pb.forEach {
-
-                  var taxableValue =
-                      it.InvoiceDetailsRatePerUnit?.let { it1 -> it.invoiceDetailsQuantity?.times(it1) }
-                  var gstAmount = it.InvoiceDetailsGSTRate?.let { it1 -> taxableValue?.times(it1) }?.div(100)
-                  var amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }
-
-                  tableRow = tableRow + "<tr>" +
-                          "<td>" + srNo++ + "</td>" + "\n" + "\t" +
-                          "<td >" + it.invoiceDetailsProductCode + "</td>" + "\n" + "\t" +
-
-
-
-
-                          "<td colspan=\"2\">" + it.invoiceDetailsHSNCode + "</td>" + "\n" + "\t" +
-                          "<td colspan=\"2\">" + it.invoiceDetailsItemDescription + "</td>" + "\n" + "\t" +
-                          "<td>" + it.invoiceDetailsQuantity?.toInt() + "</td>" + "\n" + "\t" +
-                          "<td colspan=\"2\">" + it.invoiceDetailsSAPCode + "</td>" + "\n" + "\t" +
-                          "<td colspan=\"2\">" + if (it.invoiceDetailsBatchNo !== null) {
-                      it.invoiceDetailsBatchNo
-                  } else {
-                      ""
-                  } + "</td>" + "\n" + "\t" +
-                          //                      "<td>" + it[i].invoiceDetailsExpiryDate + "</td>" + "\n" + "\t" +
-                          "<td colspan=\"2\">" + it.invoiceDetailsExpiryDate + "</td>" + "\n" + "\t" +
-                          "<td>" + it.InvoiceDetailsRatePerUnit + "</td>" + "\n" + "\t" +
-                          "<td>" + taxableValue + "</td>" + "\n" + "\t" +
-                          "<td>" + value + "</td>" + "\n" + "\t" +
-                          "<td>" + value + "</td>" + "\n" + "\t" +
-                          "<td>" + value + "</td>" + "\n" + "\t" +
-                          "<td>" + value + "</td>" + "\n" + "\t" +
-                          "<td>" + it.InvoiceDetailsGSTRate + "</td>" + "\n" + "\t" +
-                          "<td>" + gstAmount + "</td>" + "\n" + "\t" +
-                          "<td>" + amount + "</td>" + "\n" + "\t" +
-                          "</tr>"
-
-
-              }
-
-
-          }
-
-          context.put("tableRow", tableRow)
-
-          val writer = StringWriter()
-         template.merge(context, writer)
-
-
-
-          System.out.println(writer.toString())
-          val byteArrayOutputStream = ByteArrayOutputStream()
-
-
-
-          try {
-
-              val k = writer.toString()
-
-              var document = Document()
-
-              document.open()
-
-              var paragraph = Paragraph(k)
-
-              document.add(paragraph)
-
-              HtmlConverter.convertToPdf(k, byteArrayOutputStream)
-
-              document.close()
-              finalArray.add(byteArrayOutputStream.toByteArray());
-          //    printInvoiceArray.add(finalArray)
-
-
-          } catch (e: Exception) {
-              e.printStackTrace()
-          }
-
-
-
-         //printInvoiceArray.addAll(finalArray)
-
-
-
-
-      }
-      // return printInvoiceArray;
-
-        return finalArray;
-
-
+        val employeePeriod = "${localDate.month}-$year"
+        val promoMonth = "${localDate.month}-$year"
+
+        val finalArray = mutableListOf<ByteArray>()
+
+        inh.forEach { i ->
+            val printDetails = i.inhId?.let { getPrintInvoiceHeaders(it) }?.toMutableList() ?: mutableListOf()
+            val printDetailsBody = i.inhId?.let { getInvoiceDetailsForPrint(it) }?.toMutableList() ?: mutableListOf()
+
+            VelocityEngine().apply {
+                setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath")
+                setProperty("file.resource.loader.path", "/templates/printInvoice.vm")
+                init()
+            }
+
+            val data0: MutableMap<String, Any> = mutableMapOf("code" to "INVOICE")
+            val pic = sqlSessionFactory.openSession().selectOne<PrintInvoiceTableDto>("ReportMapper.printInvoiceDatabase", data0)
+            val contentConfig = pic.contentPic.toString()
+            val template = convertToTemplate(contentConfig)
+            val context = VelocityContext()
+
+            printDetails.forEach { it ->
+
+                    context.put("InvoiceNumber", it.invoiceNumber)
+                    context.put("EmployeeCode", it.employeeCode)
+                    context.put("EmployeeDesignation", it.employeeDesignation)
+                    context.put("EmployeeName", it.employeeName)
+                    context.put("EmployeeAddress", it.employeeAddress)
+                    context.put("EmployeeCity", it.employeeCity)
+                    context.put("EmployeeState", it.employeeState)
+                    context.put("EmployeePinCode", it.employeePinCode)
+                    context.put("EmployeeMobileNumber", it.employeeMobileNumber)
+                    context.put("EmployeePeriod", employeePeriod)
+                    context.put("EmployeeLRNumber", it.employeeLRNumber)
+                    context.put("EmployeeDate", it.employeeDate)
+                    context.put("EmployeeLRDate", it.employeeLRDate)
+                    context.put("EmployeeTeam", it.employeeTeam)
+                    context.put("EmployeeTransport", it.employeeTransport)
+                    context.put("EmployeeCFA", it.employeeCFA)
+                    context.put("PROMOMONTH", promoMonth)
+                    context.put("PLANTYPE", it.type)
+                    context.put("EmployeeTotalNoOfCases", it.employeeTotalNoOfCases)
+                    context.put("EmployeeTotalWeight", it.employeeTotalWeight)
+                    context.put("EmployeeRemark", it.employeeRemark ?: "")
+                    context.put("TotalSampleValue", it.employeeSampleValue)
+                    context.put("TotalInputValue", it.employeeInputValue)
+                    context.put("TotalSumValue", it.employeeValue)
+
+            }
+
+            var tableRow = ""
+            var srNo = 1
+
+
+            printDetailsBody.forEach { it ->
+
+                    val taxableValue = it.InvoiceDetailsRatePerUnit?.let { rate -> it.invoiceDetailsQuantity?.times(rate) }
+                    val gstAmount = it.InvoiceDetailsGSTRate?.let { rate -> taxableValue?.times(rate)?.div(100) }
+                    val amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }
+
+                    tableRow += """
+                    <tr>
+                        <td>$srNo</td>
+                        <td>${it.invoiceDetailsProductCode}</td>
+                        <td colspan="2">${it.invoiceDetailsHSNCode}</td>
+                        <td colspan="2">${it.invoiceDetailsItemDescription}</td>
+                        <td>${it.invoiceDetailsQuantity?.toInt()}</td>
+                        <td colspan="2">${it.invoiceDetailsSAPCode}</td>
+                        <td colspan="2">${it.invoiceDetailsBatchNo ?: ""}</td>
+                        <td colspan="2">${it.invoiceDetailsExpiryDate}</td>
+                        <td>${it.InvoiceDetailsRatePerUnit}</td>
+                        <td>${taxableValue}</td>
+                        <td>${gstAmount}</td>
+                        <td>${amount}</td>
+                    </tr>
+                """.trimIndent()
+                    srNo++
+
+            }
+
+
+
+            context.put("tableRow", tableRow)
+
+            template.merge(context, writer)
+        }
+
+        try {
+
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                HtmlConverter.convertToPdf(writer.toString(), byteArrayOutputStream)
+                finalArray.add(byteArrayOutputStream.toByteArray())
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return finalArray
     }
 
-  
+
+
 
 
     fun searchInvoice(searchInvoice: SearchInvoiceDTO): List<InvoiceHeaderDTO> {
@@ -490,6 +398,7 @@ class InvoiceRepository(
 
 
     fun printLabel(inh: List<PrintInvoiceDTO>):MutableList<ByteArray>? {
+        var writer = StringWriter()
         val user =
             (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
@@ -501,7 +410,7 @@ class InvoiceRepository(
 
         var i = 0
 
-        inh.forEach {i ->
+        inh.forEach { i ->
 
             var data: MutableMap<String, Any> = mutableMapOf()
 
@@ -581,43 +490,28 @@ class InvoiceRepository(
                 context.put("height", height)
             }
 
-            var writer = StringWriter()
+            i++
+
 
             template.merge(context, writer)
 
             System.out.println(writer.toString())
 
 
-            try {
-
-                var k = writer.toString()
-
-                val document = Document()
-                val copy: PdfCopy = PdfSmartCopy(document, byteArrayOutputStream)
-
-                document.open()
-
-                val paragraph = Paragraph(k)
-
-                document.add(paragraph)
-
-
-
-
-                HtmlConverter.convertToPdf(k, byteArrayOutputStream)
-
-
-                document.close()
-                finalArray.add(byteArrayOutputStream.toByteArray());
-                i++
-
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
         }
 
-            return finalArray
+        try {
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            HtmlConverter.convertToPdf(writer.toString(), byteArrayOutputStream)
+            finalArray.add(byteArrayOutputStream.toByteArray())
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+
+
+
+        return finalArray
 
         }
 
