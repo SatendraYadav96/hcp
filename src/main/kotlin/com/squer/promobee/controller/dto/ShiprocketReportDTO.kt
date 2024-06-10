@@ -27,4 +27,7 @@ class ShiprocketReportDTO {
     val  territory : String? = null
     val  totalValue : String? = null
     val  tax : String? = null
+    val ratePerUnit: String? = null
+    val value: String? = null
+    val mobile: String? = null
 }

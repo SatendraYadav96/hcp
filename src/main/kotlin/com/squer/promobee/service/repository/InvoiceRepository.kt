@@ -184,6 +184,7 @@ class InvoiceRepository(
 
             var tableRow = ""
             var srNo = 1
+            var value = 0.00
 
 
             printDetailsBody.forEach { it ->
@@ -204,6 +205,10 @@ class InvoiceRepository(
                         <td colspan="2">${it.invoiceDetailsExpiryDate}</td>
                         <td>${it.InvoiceDetailsRatePerUnit}</td>
                         <td>${taxableValue}</td>
+                         <td>$value</td>
+                        <td>$value</td>
+                      <td>$value</td>
+                        <td>$value</td>
                         <td>${gstAmount}</td>
                         <td>${amount}</td>
                     </tr>
