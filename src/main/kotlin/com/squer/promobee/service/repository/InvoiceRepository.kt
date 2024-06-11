@@ -34,6 +34,7 @@ import java.time.LocalDate
 import java.time.LocalDate.of
 import java.time.ZoneId
 import java.util.*
+import kotlin.math.roundToLong
 
 
 @Repository
@@ -50,11 +51,11 @@ class InvoiceRepository(
     lateinit var inventoryRepository : InventoryRepository
 
 
-    @Value("src/main/resources/htmlPrint/promoPrintInvoices.vm")
-    private lateinit var vmConfigPath: String
-
-    @Value("src/main/resources/htmlPrint/promoPrintLabel.vm")
-    private lateinit var vmConfigPathLabel: String
+//    @Value("src/main/resources/htmlPrint/promoPrintInvoices.vm")
+//    private lateinit var vmConfigPath: String
+//
+//    @Value("src/main/resources/htmlPrint/promoPrintLabel.vm")
+//    private lateinit var vmConfigPathLabel: String
 
 
     fun getInvoiceHeaderById(id: String): InvoiceHeader {
@@ -155,30 +156,30 @@ class InvoiceRepository(
 
             printDetails.forEach { it ->
 
-                    context.put("InvoiceNumber", it.invoiceNumber)
-                    context.put("EmployeeCode", it.employeeCode)
-                    context.put("EmployeeDesignation", it.employeeDesignation)
-                    context.put("EmployeeName", it.employeeName)
-                    context.put("EmployeeAddress", it.employeeAddress)
-                    context.put("EmployeeCity", it.employeeCity)
-                    context.put("EmployeeState", it.employeeState)
-                    context.put("EmployeePinCode", it.employeePinCode)
-                    context.put("EmployeeMobileNumber", it.employeeMobileNumber)
+                    context.put("InvoiceNumber", it.invoiceNumber ?: "")
+                    context.put("EmployeeCode", it.employeeCode ?: "")
+                    context.put("EmployeeDesignation", it.employeeDesignation ?: "")
+                    context.put("EmployeeName", it.employeeName ?: "")
+                    context.put("EmployeeAddress", it.employeeAddress ?: "")
+                    context.put("EmployeeCity", it.employeeCity ?: "")
+                    context.put("EmployeeState", it.employeeState ?: "")
+                    context.put("EmployeePinCode", it.employeePinCode ?: "")
+                    context.put("EmployeeMobileNumber", it.employeeMobileNumber ?: "")
                     context.put("EmployeePeriod", employeePeriod)
-                    context.put("EmployeeLRNumber", it.employeeLRNumber)
-                    context.put("EmployeeDate", it.employeeDate)
-                    context.put("EmployeeLRDate", it.employeeLRDate)
-                    context.put("EmployeeTeam", it.employeeTeam)
-                    context.put("EmployeeTransport", it.employeeTransport)
-                    context.put("EmployeeCFA", it.employeeCFA)
+                    context.put("EmployeeLRNumber", it.employeeLRNumber ?: "")
+                    context.put("EmployeeDate", it.employeeDate ?: "")
+                    context.put("EmployeeLRDate", it.employeeLRDate ?: "")
+                    context.put("EmployeeTeam", it.employeeTeam ?: "")
+                    context.put("EmployeeTransport", it.employeeTransport ?: "")
+                    context.put("EmployeeCFA", it.employeeCFA ?: "")
                     context.put("PROMOMONTH", promoMonth)
-                    context.put("PLANTYPE", it.type)
-                    context.put("EmployeeTotalNoOfCases", it.employeeTotalNoOfCases)
-                    context.put("EmployeeTotalWeight", it.employeeTotalWeight)
+                    context.put("PLANTYPE", it.type ?: "")
+                    context.put("EmployeeTotalNoOfCases", it.employeeTotalNoOfCases ?: "")
+                    context.put("EmployeeTotalWeight", it.employeeTotalWeight ?: "")
                     context.put("EmployeeRemark", it.employeeRemark ?: "")
-                    context.put("TotalSampleValue", it.employeeSampleValue)
-                    context.put("TotalInputValue", it.employeeInputValue)
-                    context.put("TotalSumValue", it.employeeValue)
+                    context.put("TotalSampleValue", String.format("%.2f", it.employeeSampleValue).toDouble() ?: "")
+                    context.put("TotalInputValue", String.format("%.2f", it.employeeInputValue).toDouble() ?: "")
+                    context.put("TotalSumValue", String.format("%.2f", it.employeeValue).toDouble() ?: "")
 
             }
 
@@ -190,25 +191,27 @@ class InvoiceRepository(
             printDetailsBody.forEach { it ->
 
                     val taxableValue = it.InvoiceDetailsRatePerUnit?.let { rate -> it.invoiceDetailsQuantity?.times(rate) }
+
                     val gstAmount = it.InvoiceDetailsGSTRate?.let { rate -> taxableValue?.times(rate)?.div(100) }
                     val amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }
 
                     tableRow += """
                     <tr>
                         <td>$srNo</td>
-                        <td>${it.invoiceDetailsProductCode}</td>
-                        <td colspan="2">${it.invoiceDetailsHSNCode}</td>
-                        <td colspan="2">${it.invoiceDetailsItemDescription}</td>
-                        <td>${it.invoiceDetailsQuantity?.toInt()}</td>
-                        <td colspan="2">${it.invoiceDetailsSAPCode}</td>
+                        <td>${it.invoiceDetailsProductCode ?: ""}</td>
+                        <td colspan="2">${it.invoiceDetailsHSNCode ?: ""}</td>
+                        <td colspan="2">${it.invoiceDetailsItemDescription ?: ""}</td>
+                        <td>${it.invoiceDetailsQuantity?.toInt() ?: ""}</td>
+                        <td colspan="2">${it.invoiceDetailsSAPCode?: ""}</td>
                         <td colspan="2">${it.invoiceDetailsBatchNo ?: ""}</td>
-                        <td colspan="2">${it.invoiceDetailsExpiryDate}</td>
+                        <td colspan="2">${it.invoiceDetailsExpiryDate?: ""}</td>
                         <td>${it.InvoiceDetailsRatePerUnit}</td>
                         <td>${taxableValue}</td>
                          <td>$value</td>
                         <td>$value</td>
                       <td>$value</td>
                         <td>$value</td>
+                         <td>${it.InvoiceDetailsGSTRate}</td>
                         <td>${gstAmount}</td>
                         <td>${amount}</td>
                     </tr>
