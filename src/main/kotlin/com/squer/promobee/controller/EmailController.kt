@@ -2,6 +2,7 @@ package com.squer.promobee.controller
 
 
 
+import com.squer.cme.utils.EmailUtils
 import com.squer.promobee.controller.dto.MailContentPOJO
 
 import com.squer.promobee.service.EmailService
@@ -10,11 +11,9 @@ import lombok.extern.slf4j.Slf4j
 import org.apache.ibatis.session.SqlSessionFactory
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Bean
 import org.springframework.core.io.FileSystemResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
 import org.springframework.mail.javamail.MimeMessageHelper
 
@@ -30,35 +29,12 @@ import javax.servlet.http.HttpServletResponse
 open class EmailController@Autowired constructor(
     private val emailService: EmailService,
 
-) {
+    ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Autowired
     lateinit var sqlSessionFactory: SqlSessionFactory
-
-
-
-    @Bean
-    fun getJavaMailSender(): JavaMailSender {
-        val mailSender = JavaMailSenderImpl()
-        mailSender.host = "smtp.office365.com"
-        mailSender.port = 587
-
-        mailSender.username = "chc.promobee@squer.co.in"
-        mailSender.password = "W3lcom@123!"
-
-        val props = mailSender.javaMailProperties
-        props["mail.transport.protocol"] = "smtp"
-        props["mail.smtp.auth"] = "true"
-        props["mail.smtp.starttls.enable"] = "true"
-        props["mail.debug"] = "true"
-
-        return mailSender
-    }
-
-
-
 
     @GetMapping("/getConsolidateExpiryReport")
     fun getConsolidateExpiryReport  (response: HttpServletResponse): ResponseEntity<*> {
@@ -80,31 +56,12 @@ open class EmailController@Autowired constructor(
 
             val os= FileOutputStream(file)
 
-            // Starting writing the bytes in it
-
-            // Starting writing the bytes in it
             os.write(data)
             println("Successfully"
                     + " byte inserted")
             os.close()
         }
         val calendar = Calendar.getInstance()
-        val mimeMessage= getJavaMailSender().createMimeMessage()
-
-        val mimeMessageHelper= mimeMessage?.let { MimeMessageHelper(it,true) }
-        mimeMessageHelper.setFrom("chc.promobee@squer.co.in")
-        //mimeMessageHelper.setTo(InternetAddress.parse("shraddha.tambe@sanofi.com , amol.mali@sanofi.com"))
-        mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
-        //mimeMessageHelper.setCc("satendra.yadav@squer.co.in")
-        mimeMessageHelper.setText("Dear All,\n" +
-                "\n" +
-                "Attached are the Consolidated data of Inputs and Samples which are in “Near Expiry” Category.\n" +
-                "\n" +
-                "Respective Brand Managers and their Superior have been intimated over mail.\n" +
-                "\n" +
-                "Thank You\n" +
-                "\n" +
-                " ")
 
         var currentMonth = calendar.get(Calendar.MONTH)
 
@@ -112,12 +69,12 @@ open class EmailController@Autowired constructor(
         var monthNames = arrayOf("JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER")
         var currentMonthName = monthNames[currentMonth]
 
-        mimeMessageHelper.setSubject("Consolidated Expiry Mail for the Month-" + currentMonthName)
         intervals.forEach{
             val fileSystemResource= FileSystemResource(File("D:\\UNS_MAILS\\ExpiryReportIn${it[0]}-${it[1]}days.xlsx"))
-            mimeMessageHelper.addAttachment(fileSystemResource.filename, fileSystemResource)
         }
-        getJavaMailSender().send(mimeMessage)
+        var emailUtil = EmailUtils()
+        emailUtil.sendMail(mutableListOf("satendra.yadav@squer.co.in","ashutosh.pavaskar@sanofi.com"), mutableListOf(), "Dear All </br> </br> Attached are the Consolidated data of Inputs and Samples which are in Near Expiry Category. </br> </br> Respective Brand Managers and their Superior have been intimated over mail. </br></br> Thank You.",
+            "Consolidated Expiry Mail for the Month- ${currentMonthName}")
         println("Mail Sent!")
         return  ResponseEntity(fileContentList, HttpStatus.OK)
 

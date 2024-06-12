@@ -1,5 +1,6 @@
 package com.squer.promobee.controller
 
+import com.squer.cme.utils.EmailUtils
 import com.squer.promobee.controller.dto.*
 import com.squer.promobee.security.domain.User
 import com.squer.promobee.service.EmailService
@@ -124,6 +125,7 @@ open class NewAllocationController @Autowired constructor(
 
     @PostMapping("/submitMonthlyAllocation")
     open fun submitMonthlyAllocation(@RequestBody alloc : submitAllocationDTO): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val items = newAllocationService.submitMonthlyAllocation(alloc)
         val months = mapOf(
             1 to "January",
@@ -139,6 +141,17 @@ open class NewAllocationController @Autowired constructor(
             11 to "November",
             12 to "December"
         )
+        var emailUtil = EmailUtils()
+//                mutableListOf(it.UserEmailAddress)?.let { it1 ->
+//                    emailUtil.sendMail(
+//                        it1, mutableListOf("shraddha.tambe@sanofi.com"),
+//                        "Hi, <br/> ${user.name} has submitted the Special Dispatch Plan for Month - ${months[alloc.month]} - ${alloc.year} & plan - ${alloc.name}, Kindly look into this and take further actions <br/> Thank You. ",
+//                        "Special Plan Approval Notification Mail")
+//                }
+        emailUtil.sendMail (mutableListOf("shraddha.tambe@sanofi.com"), mutableListOf("satendra.yadav@squer.co.in"),
+            "Hi, <br/></br> ${user.name} has submitted the Monthly Dispatch Plan for Month of <b> ${months[alloc.month]} ${alloc.year}. <br/></br> Kindly look into this and take further actions. </br> <br/> Thank You. ",
+            "Monthly Plan Approval Notification Mail")
+
         var errorMap: MutableMap<String, String> = HashMap()
         println("Monthly Allocation submitted Successfully !")
         errorMap["message"] = "Monthly Allocation for ${months[alloc.month]} - ${alloc.year} is submitted successfully !"
@@ -240,31 +253,24 @@ open class NewAllocationController @Autowired constructor(
         if(buHead.size > 0) {
 
             buHead.forEach {
+                var emailUtil = EmailUtils()
+//                mutableListOf(it.UserEmailAddress)?.let { it1 ->
+//                    emailUtil.sendMail(
+//                        it1, mutableListOf("shraddha.tambe@sanofi.com"),
+//                        "Hi, <br/> ${user.name} has submitted the Special Dispatch Plan for Month - ${months[alloc.month]} - ${alloc.year} & plan - ${alloc.name}, Kindly look into this and take further actions <br/> Thank You. ",
+//                        "Special Plan Approval Notification Mail")
+//                }
+               emailUtil.sendMail (mutableListOf(it.UserEmailAddress), mutableListOf("shraddha.tambe@sanofi.com","satendra.yadav@squer.co.in"),
+                        "Hi, <br/></br> ${user.name} has submitted the Special Dispatch Plan for Month of  <b>  ${months[alloc.month]} ${alloc.year} </b> as plan in name of <b> ${alloc.name} </b>. <br/></br> Kindly look into this and take further actions. </br> <br/> Thank You. ",
+                        "Special Plan Approval Notification Mail")
+                }
 
-                val calendar = Calendar.getInstance()
-                val mimeMessage = mailSender.createMimeMessage()
-                val mimeMessageHelper = MimeMessageHelper(mimeMessage, true)
-                mimeMessageHelper.setFrom("chc.promobee@squer.co.in")
-              //  mimeMessageHelper.setTo(it.UserEmailAddress!!)
-                mimeMessageHelper.setTo("satendra.yadav@squer.co.in")
-                mimeMessageHelper.setText("Hi, ", user.name +
-
-                        "\n has submitted the Special Dispatch Plan for Month - ${months[alloc.month]} - ${alloc.year} & plan - ${alloc.name}, Kindly look into this and take further actions \n" +
-
-                        "\nThank You.\n" +
-                        " ")
-                mimeMessageHelper.setSubject("Approval Notification Mail")
-
-
-                mailSender.send(mimeMessage)
                 println("Mail Sent!")
             }
 
-        }
-
         var errorMap: MutableMap<String, String> = HashMap()
         println("Special Allocation submitted Successfully !")
-        errorMap["message"] = "Special Allocation for ${months[alloc.month]} - ${alloc.year}  & plan - ${alloc.name} is submitted successfully !"
+        errorMap["message"] = "Special Allocation for ${months[alloc.month]}  ${alloc.year}  & Plan - ${alloc.name} is submitted successfully !"
         errorMap["error"] = "true"
         return ResponseEntity(errorMap, HttpStatus.OK)
     }
@@ -344,6 +350,7 @@ open class NewAllocationController @Autowired constructor(
 
     @PostMapping("/submitVirtualAllocation")
     open fun submitVirtualAllocation(@RequestBody alloc : submitAllocationDTO): ResponseEntity<*>{
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
         val items = newAllocationService.submitVirtualAllocation(alloc)
         val months = mapOf(
             1 to "January",
@@ -359,6 +366,17 @@ open class NewAllocationController @Autowired constructor(
             11 to "November",
             12 to "December"
         )
+        var emailUtil = EmailUtils()
+//                mutableListOf(it.UserEmailAddress)?.let { it1 ->
+//                    emailUtil.sendMail(
+//                        it1, mutableListOf("shraddha.tambe@sanofi.com"),
+//                        "Hi, <br/> ${user.name} has submitted the Special Dispatch Plan for Month - ${months[alloc.month]} - ${alloc.year} & plan - ${alloc.name}, Kindly look into this and take further actions <br/> Thank You. ",
+//                        "Special Plan Approval Notification Mail")
+//                }
+        emailUtil.sendMail (mutableListOf("shraddha.tambe@sanofi.com"), mutableListOf("satendra.yadav@squer.co.in"),
+            "Hi, <br/></br> ${user.name} has submitted the Virtual Dispatch Plan for Month of <b> ${months[alloc.month]} ${alloc.year}. <br/></br> Kindly look into this and take further actions. </br> <br/> Thank You. ",
+            "Virtual Plan Approval Notification Mail")
+
         var errorMap: MutableMap<String, String> = HashMap()
         println("Virtual Allocation submitted Successfully !")
         errorMap["message"] = "Virtual Allocation for ${months[alloc.month]} - ${alloc.year} is submitted successfully !"
