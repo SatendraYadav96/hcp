@@ -426,10 +426,20 @@ class InventoryRepository @Autowired constructor(
                 data3.put("statusId", InvoiceStatusEnum.GENERATED_PRINTED.id)
                 data3.put("teamId", TeamEnum.HUB_TEAM.id)
                 data3.put("recipientId", RecipientEnum.HUB_MANAGER.id)
-                invoiceHeader.addressLine1?.let { data3.put("addressLine1", it) }
-                invoiceHeader.states?.let { data3.put("states", it) }
-                invoiceHeader.city?.let { data3.put("city", it) }
-                invoiceHeader.zip?.let { data3.put("zip", it) }
+//                invoiceHeader.addressLine1?.let { data3.put("addressLine1", it) }
+//                invoiceHeader.states?.let { data3.put("states", it) }
+//                invoiceHeader.city?.let { data3.put("city", it) }
+//                invoiceHeader.zip?.let { data3.put("zip", it) }
+                data3.put("addressLine1","C/o S. K. LOGISTICS, CITY LINK WAREHOUSING COMPLEX BUILDING NO B-3 MUMBAI - NASHIK HIGHWAY VADAPE BHIWANDI-421302")
+                data3.put("states", "Maharashtra")
+                data3.put("city","Mumbai")
+                data3.put("zip", "421302")
+                data3.put("phone","9629862902")
+                data3.put("weight","1")
+                data3.put("noOfBoxes","1")
+                data3.put("sampleValue","1")
+                data3.put("otherItemValue","1")
+                data3.put("lrNumber","123")
                 data3.put("notes", it.remarks!!)
                 data3.put("transporterId", TeamEnum.HUB_TRANSPORTER.id)
                 data3.put("createdBy", user.id)

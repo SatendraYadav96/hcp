@@ -190,10 +190,12 @@ class InvoiceRepository(
 
             printDetailsBody.forEach { it ->
 
-                    val taxableValue = it.InvoiceDetailsRatePerUnit?.let { rate -> it.invoiceDetailsQuantity?.times(rate) }
+                    val taxableValue = it.InvoiceDetailsRatePerUnit?.let { rate -> it.invoiceDetailsQuantity?.times(rate) }?.toDouble()
+                    val formattedTaxableValue = String.format("%.2f", taxableValue ?: 0.0)
 
                     val gstAmount = it.InvoiceDetailsGSTRate?.let { rate -> taxableValue?.times(rate)?.div(100) }
-                    val amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }
+                    val amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }?.toDouble()
+                    val formattedTotalAmount = String.format("%.2f", amount ?: 0.0)
 
                     tableRow += """
                     <tr>
@@ -206,14 +208,14 @@ class InvoiceRepository(
                         <td colspan="2">${it.invoiceDetailsBatchNo ?: ""}</td>
                         <td colspan="2">${it.invoiceDetailsExpiryDate?: ""}</td>
                         <td>${it.InvoiceDetailsRatePerUnit}</td>
-                        <td>${taxableValue}</td>
+                        <td>${formattedTaxableValue}</td>
                          <td>$value</td>
                         <td>$value</td>
                       <td>$value</td>
                         <td>$value</td>
                          <td>${it.InvoiceDetailsGSTRate}</td>
                         <td>${gstAmount}</td>
-                        <td>${amount}</td>
+                        <td>${formattedTotalAmount}</td>
                     </tr>
                 """.trimIndent()
                     srNo++
