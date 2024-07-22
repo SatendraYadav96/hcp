@@ -15,7 +15,7 @@ import java.net.URI
 class EmailUtils {
 
     @Value("\${application.email.URI}")
-    var URI: String = "http://robustnext.squer.co.in:7272/v1/notification/send/b0b4b4d9-2d11-4772-aba0-32dd880c57ff?type=EMAIL"
+    var URI: String = "http://robustnext.squer.co.in:7272/v1/notification/send/4357ee61-cdc8-4358-ab10-984ceb5af7cd?type=EMAIL"
 
     @Value("\${application.test.email}")
     var testEmail: String = "PROD"

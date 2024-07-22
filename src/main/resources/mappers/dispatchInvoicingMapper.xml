@@ -75,7 +75,7 @@
         SELECT DISTINCT RCT.NAME_RCT AS 'employeeName',RCT.ID_RCT AS 'employeeID',RCT.CODE_RCT AS 'code', '' AS 'invoiceNumber','' AS 'groupInvoiceNumber',
         (SELECT ID_SLV FROM SYSTEM_LOV_SLV WHERE ID_SLV = '00000000-0000-0000-0000-000000000026') AS 'invoiceStatusID',
         'Draft' AS 'invoiceStatus', 0 AS 'boxes', CONVERT(FLOAT,0) AS 'weight','' AS 'lrNumber',
-        RCT.STATE_RCT as 'state',RCT.CITY_RCT 'city',DIP.MONTH_DIP AS 'month', DIP.YEAR_DIP as 'year', DES.NAME_ULV as 'designation',DIP.ID_DIP as 'planId',
+        RCT.STATE_RCT as 'state',RCT.CITY_RCT 'city',DIP.MONTH_DIP AS 'month', DIP.YEAR_DIP as 'year', DES.NAME_ULV as 'designation',
         CASE WHEN DIP.IS_SPECIAL_DIP=0 THEN 'MONTHLY' ELSE 'SPECIAL' END AS 'plan'
         FROM DISPATCH_PLAN_DIP DIP
         JOIN DISPATCH_DETAIL_DID DID ON DIP.ID_DIP = DID.ID_DIP_DID

@@ -267,22 +267,6 @@ open class UploadController@Autowired constructor(
     }
 
 
-//    @PostMapping("/multipleAllocationUpload")
-//    fun multipleAllocationUpload(@RequestBody dto: MultipleAllocationUploadDTO): ResponseEntity<*> {
-//        var errorMap: MutableMap<String, String> = HashMap()
-//        var data = uploadService.multipleAllocationUpload(dto)
-//
-//        return ResponseEntity(errorMap , HttpStatus.OK)
-//    }
-
-//    @PostMapping("/multipleAllocationUpload")
-//    fun multipleAllocationUpload(@RequestBody dto: MultipleAllocationUploadDTO): ResponseEntity<*> {
-//        var errorMap: MutableMap<String, String> = HashMap()
-//        var data = uploadService.multipleAllocationUpload(dto)
-//
-//        return ResponseEntity(errorMap , HttpStatus.OK)
-//    }
-
     @PostMapping("/multipleAllocationUpload")
     fun multipleAllocationUpload(@RequestBody dto: MultipleAllocationUploadDTO) : ResponseEntity<*>{
         var user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
@@ -388,14 +372,6 @@ open class UploadController@Autowired constructor(
 
 
         var isHead = head >= i
-
-
-
-
-
-
-
-
 
 
         var plan = DispatchPlan()
@@ -528,33 +504,6 @@ open class UploadController@Autowired constructor(
 
                             sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocationVirtualBM", data2)
 
-//                    var data4: MutableMap<String, Any> = mutableMapOf()
-//                    data4.put("id", inventoryId)
-//                    var inv = sqlSessionFactory.openSession()
-//                        .selectOne<Inventory>("InventoryMapper.multipleAllocations", data4)
-//
-//                    var didQty = it.get(headerRow[n])
-//
-//                    var dispatchedQty = 0
-//
-//                    if (didQty.isNullOrEmpty()) {
-//                        dispatchedQty
-//                    } else {
-//                        dispatchedQty = didQty!!.toInt()
-//                    }
-//
-//
-//                    var qtyAlloc = inv.qtyAllocated!!.plus(dispatchedQty)
-//
-//                    var data5: MutableMap<String, Any> = mutableMapOf()
-//
-//                    data5.put("id", inventoryId)
-//                    data5.put("qtyAllocated", qtyAlloc)
-//                    data5.put("updatedBy", user.id)
-//
-//                    sqlSessionFactory.openSession().update("InventoryMapper.multipleAllocationQtyAllocated", data5)
-
-
                             var data6: MutableMap<String, Any> = mutableMapOf()
 
                             data6.put("planId", dto.planId)
@@ -641,6 +590,15 @@ open class UploadController@Autowired constructor(
             invOG.forEach {
                 var inventoryId = it.id
 
+                var data5: MutableMap<String, Any> = mutableMapOf()
+                data5.put("planId", dto.planId)
+                data5.put("inventoryId", inventoryId)
+                data5.put("recipientId", employee.userRecipientId!!)
+
+                var rbmAvailableStock = sqlSessionFactory.openSession().selectOne<DispatchDetailDTO>("VirtualDispatchDetailMapper.rbmStockVirtualDID",data5)
+
+                var availableStock = rbmAvailableStock.qtyDispatch!!
+
                 rows.forEach {
 
                     if(it.get(headerRow[n])!!.isNotEmpty()){
@@ -655,14 +613,8 @@ open class UploadController@Autowired constructor(
 
                         var allocationQtySum = resultInts.sum()
 
-                        var data5: MutableMap<String, Any> = mutableMapOf()
-                        data5.put("planId", dto.planId)
-                        data5.put("inventoryId", inventoryId)
-                        data5.put("recipientId", employee.userRecipientId!!)
 
-                        var rbmAvailableStock = sqlSessionFactory.openSession().selectOne<DispatchDetailDTO>("VirtualDispatchDetailMapper.rbmStockVirtualDID",data5)
-
-                        if(allocationQtySum > rbmAvailableStock.qtyDispatch!! ){
+                        if(allocationQtySum > availableStock ){
                             errorMap["message"] = "Allocation quantity is greater than the available stock !"
                             errorMap["error"] = "true"
 
@@ -703,41 +655,6 @@ open class UploadController@Autowired constructor(
                             data4.put("qtyDispatch",didQty!!)
 
                             sqlSessionFactory.openSession().update("DispatchDetailMapper.updateRBMDidStock", data4)
-
-//                        var data4: MutableMap<String, Any> = mutableMapOf()
-//                        data4.put("id", inventoryId)
-//                        var inv = sqlSessionFactory.openSession()
-//                            .selectOne<Inventory>("InventoryMapper.multipleAllocations", data4)
-//
-//                        var didQty = it.get(headerRow[n])
-//
-//                        var dispatchedQty = 0
-//
-//                        if(didQty.isNullOrEmpty()){
-//                            dispatchedQty
-//                        } else{
-//                            dispatchedQty =  didQty!!.toInt()
-//                        }
-//
-//
-//
-//                        var qtyAlloc = inv.qtyAllocated!!.plus(dispatchedQty)
-//
-//                        var data5: MutableMap<String, Any> = mutableMapOf()
-//
-//                        data5.put("id", inventoryId)
-//                        data5.put("qtyAllocated", qtyAlloc)
-//                        data5.put("updatedBy", user.id)
-//
-//                        sqlSessionFactory.openSession().update("InventoryMapper.multipleAllocationQtyAllocated", data5)
-
-                            var data6: MutableMap<String, Any> = mutableMapOf()
-
-                            data6.put("planId", dto.planId)
-                            data6.put("inventoryId", inventoryId)
-
-                            sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocation",data6)
-
 
 
 
@@ -942,8 +859,12 @@ open class UploadController@Autowired constructor(
                 invOG.forEach {
                     var inventoryId = it.id
 
+                    var data5: MutableMap<String, Any> = mutableMapOf()
+                    data5.put("id",inventoryId!!)
 
+                    var availableStock = sqlSessionFactory.openSession().selectOne<Inventory>("InventoryMapper.multipleAllocationAvailableStock",data5)
 
+                    var inventoryStock = availableStock.qtyReceived!! -availableStock.qtyAllocated!!-availableStock.qtyDispatched!!
 
 
                     rows.forEach {
@@ -959,16 +880,6 @@ open class UploadController@Autowired constructor(
                             val resultInts = resultWithoutSpaces.map { it.toInt() }
 
                             var allocationQtySum = resultInts.sum()
-
-                            var data5: MutableMap<String, Any> = mutableMapOf()
-                            data5.put("id",inventoryId!!)
-
-                            var availableStock = sqlSessionFactory.openSession().selectOne<Inventory>("InventoryMapper.multipleAllocationAvailableStock",data5)
-
-                            var inventoryStock = availableStock.qtyReceived!! -availableStock.qtyAllocated!!-availableStock.qtyDispatched!!
-
-
-
 
                             if(allocationQtySum > inventoryStock ){
                                 errorMap["message"] = "Allocation quantity is greater than the available stock for ${availableStock.poNo}"

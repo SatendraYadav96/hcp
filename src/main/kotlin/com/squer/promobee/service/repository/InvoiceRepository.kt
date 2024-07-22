@@ -139,6 +139,7 @@ class InvoiceRepository(
         val finalArray = mutableListOf<ByteArray>()
 
         inh.forEach { i ->
+
             val printDetails = i.inhId?.let { getPrintInvoiceHeaders(it) }?.toMutableList() ?: mutableListOf()
             val printDetailsBody = i.inhId?.let { getInvoiceDetailsForPrint(it) }?.toMutableList() ?: mutableListOf()
 
@@ -194,6 +195,7 @@ class InvoiceRepository(
                     val formattedTaxableValue = String.format("%.2f", taxableValue ?: 0.0)
 
                     val gstAmount = it.InvoiceDetailsGSTRate?.let { rate -> taxableValue?.times(rate)?.div(100) }
+                val formattedGstAmount = String.format("%.2f", gstAmount ?: 0.0)
                     val amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }?.toDouble()
                     val formattedTotalAmount = String.format("%.2f", amount ?: 0.0)
 
@@ -214,7 +216,7 @@ class InvoiceRepository(
                       <td>$value</td>
                         <td>$value</td>
                          <td>${it.InvoiceDetailsGSTRate}</td>
-                        <td>${gstAmount}</td>
+                        <td>${formattedGstAmount}</td>
                         <td>${formattedTotalAmount}</td>
                     </tr>
                 """.trimIndent()
@@ -230,7 +232,9 @@ class InvoiceRepository(
         }
 
         try {
-
+            println("===================================")
+            println(writer.toString())
+            println("===================================")
                 val byteArrayOutputStream = ByteArrayOutputStream()
                 HtmlConverter.convertToPdf(writer.toString(), byteArrayOutputStream)
                 finalArray.add(byteArrayOutputStream.toByteArray())
@@ -428,12 +432,7 @@ class InvoiceRepository(
 
             i.invoiceNo?.let { data.put("invoiceNo", it) }
 
-            labelDetails.add(
-                sqlSessionFactory.openSession()
-                    .selectList<LabelPrintDetailsDTO>(
-                        "InvoiceHeaderMapper.getLabelPrintDetailsByInvoices",
-                        data
-                    ).toMutableList()
+            labelDetails.add(sqlSessionFactory.openSession().selectList<LabelPrintDetailsDTO>("InvoiceHeaderMapper.getLabelPrintDetailsByInvoices", data).toMutableList()
             )
 
 
@@ -468,44 +467,44 @@ class InvoiceRepository(
         i = 0
 
 
-        labelDetails.forEach {
+        labelDetails.forEach {detailList ->
+            detailList.forEach {detail ->
+                var length = "";
+                var breadth = "";
+                var height = "";
+                context.put("InvoiceNo", detail.invoiceNo)
+                context.put("TransporterName", detail.transporterName)
+                context.put("InvoiceLRNo", detail.lRNumber)
+                context.put("InvoiceCreatedDate", detail.invoiceDate)
+                context.put("RecipientCode", detail.recipientCode)
+                context.put("RecipientName", detail.recipientName)
+                context.put("RecipientTeam", detail.teamName)
+                context.put("RecipientDesgination", detail.recipientDesgination)
+                context.put("RecipientAddress", detail.recipientAddress)
+                context.put("RecipientCity", detail.recipientCity)
+                context.put("RecipientState", detail.recipientState)
+                context.put("RecipientPhone", detail.recipientPhone)
+                context.put("RecipientPinCode", detail.recipientPinCode)
+                context.put("RecipientHeadQuarter", detail.recipientHeadQuarter)
+                context.put("InvoiceBoxes", detail.noOfBoxes)
+                context.put("InvoiceWeight", detail.weight)
 
-            var length = "";
-            var breadth = "";
-            var height = "";
-            context.put("InvoiceNo", labelDetails[i].get(n).invoiceNo)
-            context.put("TransporterName", labelDetails[i].get(n).transporterName)
-            context.put("InvoiceLRNo", labelDetails[i].get(n).lRNumber)
-            context.put("InvoiceCreatedDate", labelDetails[i].get(n).invoiceDate)
-            context.put("RecipientCode", labelDetails[i].get(n).recipientCode)
-            context.put("RecipientName", labelDetails[i].get(n).recipientName)
-            context.put("RecipientTeam", labelDetails[i].get(n).teamName)
-            context.put("RecipientDesgination", labelDetails[i].get(n).recipientDesgination)
-            context.put("RecipientAddress", labelDetails[i].get(n).recipientAddress)
-            context.put("RecipientCity", labelDetails[i].get(n).recipientCity)
-            context.put("RecipientState", labelDetails[i].get(n).recipientState)
-            context.put("RecipientPhone", labelDetails[i].get(n).recipientPhone)
-            context.put("RecipientPinCode", labelDetails[i].get(n).recipientPinCode)
-            context.put("RecipientHeadQuarter", labelDetails[i].get(n).recipientHeadQuarter)
-            context.put("InvoiceBoxes", labelDetails[i].get(n).noOfBoxes)
-            context.put("InvoiceWeight", labelDetails[i].get(n).weight)
+                if (detail.dimension !== null) {
+                    context.put("length", length)
+                    context.put("breadth", breadth)
+                    context.put("height", height)
+                } else {
+                    context.put("length", length)
+                    context.put("breadth", breadth)
+                    context.put("height", height)
+                }
+                template.merge(context, writer)
 
-            if (labelDetails[i].get(n).dimension !== null) {
-                context.put("length", length)
-                context.put("breadth", breadth)
-                context.put("height", height)
-            } else {
-                context.put("length", length)
-                context.put("breadth", breadth)
-                context.put("height", height)
+                System.out.println(writer.toString())
             }
 
-            i++
 
 
-            template.merge(context, writer)
-
-            System.out.println(writer.toString())
 
 
         }
@@ -523,7 +522,7 @@ class InvoiceRepository(
 
         return finalArray
 
-        }
+    }
 
 
 

@@ -101,10 +101,10 @@ open class UIController @Autowired constructor(
             UserRoleEnum.BU_HEAD_ID.id to listOf<UserMenuEnum>(
                 UserMenuEnum.SPECIAL_DISPATCHES,
                 UserMenuEnum.FF_REPORT,
-                UserMenuEnum.PURCHASE_REPORT,
-                UserMenuEnum.NEAR_TO_EXPIRY_REPORT,
-                UserMenuEnum.DISPATCH_REPORT,
-                UserMenuEnum.DISPATCH_REGISTERS,
+                UserMenuEnum.INVENTORY_REPORT,
+//                UserMenuEnum.NEAR_TO_EXPIRY_REPORT,
+//                UserMenuEnum.DISPATCH_REPORT,
+//                UserMenuEnum.DISPATCH_REGISTERS,
 
             ),
 
@@ -125,8 +125,8 @@ open class UIController @Autowired constructor(
             ),
 
             UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id to listOf<UserMenuEnum>(
-                UserMenuEnum.MONTHLY_ALLOCATION,
-                UserMenuEnum.SPECIAL_ALLOCATION,
+              //  UserMenuEnum.MONTHLY_ALLOCATION,
+             //   UserMenuEnum.SPECIAL_ALLOCATION,
                 UserMenuEnum.VIRTUAL_ALLOCATION,
 //                UserMenuEnum.PICKING_SLIP,
 
@@ -180,8 +180,8 @@ open class UIController @Autowired constructor(
                 UserMenuEnum.BUHEAD_DASHBOARD,
                 UserMenuEnum.APPROVALS,
                 UserMenuEnum.REPORT,
-                UserMenuEnum.RECIPIENT_BLOCKED,
-                UserMenuEnum.COMPLIANCE_DETAILS,
+//                UserMenuEnum.RECIPIENT_BLOCKED,
+//                UserMenuEnum.COMPLIANCE_DETAILS,
 
             ),
 

@@ -214,6 +214,7 @@
             BRD.ID_BRD = #{ccmId}
           AND rct.ID_STATUS_SLV_RCT = '80BC3490-9F53-4C92-8DBA-3D5C7755FD73'
           AND ULV.ID_ULV != '4BFB3E58-1629-4B61-B7C7-A5090A277252'
+          AND EMAIL_RM = #{emailRM}
 
 
         GROUP BY

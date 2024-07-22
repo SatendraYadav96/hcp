@@ -200,14 +200,14 @@
 
     <select id="getQuantityAllocatedOfUserToItem" resultType="com.squer.promobee.controller.dto.DesignationWiseQuantityAllocatedDTO">
         select ulv.name_ulv as 'Designation',ulv.id_ulv as 'DesignationId', COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity',RCT.ID_TEM_RCT as 'teamId',
-                tem.NAME_TEM as 'team',RCT.ID_RCT AS 'recipientId' from DISPATCH_PLAN_DIP dip
+                tem.NAME_TEM as 'team' from DISPATCH_PLAN_DIP dip
                                                                                       join DISPATCH_DETAIL_DID did on dip.ID_DIP = did.ID_DIP_DID
                                                                                       JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
                                                                                       JOIN USER_LOV_ULV ULV  ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
                                                                                       join TEAM_MASTER_TEM tem on tem.ID_TEM = RCT.ID_TEM_RCT
         where dip.MONTH_DIP = #{month} AND dip.YEAR_DIP = #{year} AND dip.ID_OWNER_USR_DIP = #{userId} AND
               did.ID_INV_DID = #{inventoryId} AND dip.IS_SPECIAL_DIP = #{isSpecialDispatch}
-    group by ulv.name_ulv,ulv.ID_ULV,did.QUANTITY_DISPATCH_DID,RCT.ID_TEM_RCT,tem.NAME_TEM,RCT.ID_RCT
+    group by ulv.name_ulv,ulv.ID_ULV,did.QUANTITY_DISPATCH_DID,RCT.ID_TEM_RCT,tem.NAME_TEM
 
     </select>
 
@@ -325,13 +325,13 @@ where ID_DIP_DID = #{planId} and ID_INV_DID = #{inventoryId} and ID_RCT_DID = #{
     <select id="getVirtualQuantityAllocatedToUserForRbm" resultType="com.squer.promobee.controller.dto.DesignationWiseQuantityAllocatedDTO">
         select ulv.name_ulv as 'Designation', ulv.id_ulv as 'DesignationId',COALESCE(SUM(did.QUANTITY_DISPATCH_DID), 0) AS 'AllocatedQuantity',RCT.ID_TEM_RCT as 'teamId',
                 tem.NAME_TEM as 'team' from DISPATCH_PLAN_DIP dip
-                                                                                                                                                        join VIRTUAL_DISPATCH_VID did on dip.ID_DIP = did.ID_DIP_DID
-                                                                                                                                                        JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
-                                                                                                                                                        JOIN USER_LOV_ULV ULV  ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
-                                                                                                                                                        join TEAM_MASTER_TEM tem on tem.ID_TEM = RCT.ID_TEM_RCT
+                join VIRTUAL_DISPATCH_VID did on dip.ID_DIP = did.ID_DIP_DID
+                JOIN RECIPIENT_MASTER_RCT RCT ON RCT.ID_RCT = DID.ID_RCT_DID
+                JOIN USER_LOV_ULV ULV  ON ULV.ID_ULV = RCT.ID_DESG_ULV_RCT
+                join TEAM_MASTER_TEM tem on tem.ID_TEM = RCT.ID_TEM_RCT
         where dip.MONTH_DIP = #{month} AND dip.YEAR_DIP = #{year} AND did.ID_INV_DID = #{inventoryId} AND dip.IS_SPECIAL_DIP = #{isSpecialDispatch} AND did.ID_DIP_DID = #{planId}
           AND dip.IS_VIRTUAL_DIP = 1
-        group by ulv.name_ulv,ulv.ID_ULV,did.QUANTITY_DISPATCH_DID,RCT.ID_TEM_RCT,
+        group by ulv.name_ulv,ulv.ID_ULV,RCT.ID_TEM_RCT,
                  tem.NAME_TEM
 
     </select>

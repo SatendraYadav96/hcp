@@ -149,7 +149,7 @@ open class NewAllocationController @Autowired constructor(
 //                        "Special Plan Approval Notification Mail")
 //                }
         emailUtil.sendMail (mutableListOf("shraddha.tambe@sanofi.com"), mutableListOf("satendra.yadav@squer.co.in"),
-            "Hi, <br/></br> ${user.name} has submitted the Monthly Dispatch Plan for Month of <b> ${months[alloc.month]} ${alloc.year}. <br/></br> Kindly look into this and take further actions. </br> <br/> Thank You. ",
+            "Hi, <br/></br> ${user.name} has submitted the Monthly Dispatch Plan for Month of <b> ${months[alloc.month]} ${alloc.year} </b>. <br/></br> Kindly look into this and take further actions. </br> <br/> Thank You. ",
             "Monthly Plan Approval Notification Mail")
 
         var errorMap: MutableMap<String, String> = HashMap()
@@ -374,7 +374,7 @@ open class NewAllocationController @Autowired constructor(
 //                        "Special Plan Approval Notification Mail")
 //                }
         emailUtil.sendMail (mutableListOf("shraddha.tambe@sanofi.com"), mutableListOf("satendra.yadav@squer.co.in"),
-            "Hi, <br/></br> ${user.name} has submitted the Virtual Dispatch Plan for Month of <b> ${months[alloc.month]} ${alloc.year}. <br/></br> Kindly look into this and take further actions. </br> <br/> Thank You. ",
+            "Hi, <br/></br> ${user.name} has submitted the Virtual Dispatch Plan for Month of <b> ${months[alloc.month]} ${alloc.year} </b>. <br/></br> Kindly look into this and take further actions. </br> <br/> Thank You. ",
             "Virtual Plan Approval Notification Mail")
 
         var errorMap: MutableMap<String, String> = HashMap()

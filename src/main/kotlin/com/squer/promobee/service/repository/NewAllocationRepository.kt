@@ -1602,6 +1602,7 @@ class NewAllocationRepository(
             data.put("month", month)
             data.put("year", year)
             data.put("status", status)
+            data.put("userId",user!!.id)
 
             plan =
                 sqlSessionFactory.openSession()
@@ -1618,6 +1619,7 @@ class NewAllocationRepository(
             data0.put("year", year)
             data0.put("status", status)
             data0.put("remark", remark)
+            data0.put("userId",user!!.id)
 
             plan = sqlSessionFactory.openSession()
                 .selectList<DispatchPlan>("DispatchPlanMapper.searchSpecialPlanWithRemarks", data0)
@@ -2636,9 +2638,18 @@ class NewAllocationRepository(
 
         if (user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id) {
 
+            var employee = Users()
+
+            var data0 : MutableMap<String, String> = mutableMapOf()
+
+            data0.put("userId",user.id)
+
+            employee = sqlSessionFactory.openSession().selectOne<Users>("UsersMasterMapper.getRbm",data0)
+
             var data: MutableMap<String, Any> = mutableMapOf()
 
             data.put("ccmId", ccmId)
+            data.put("emailRM",employee.userRecipientId!!)
 
             virtualCommonTeam = sqlSessionFactory.openSession()
                 .selectList<CommonAllocationTeamDTO>("TeamMapper.getVirtualTeamForCommonAllocationRBM", data)
@@ -3409,21 +3420,35 @@ class NewAllocationRepository(
 
     fun getMultipleAllocationCostCenter(mulAlloc: List<MultipleAllocationExcelDTO>): List<MultipleAllocationDTO> {
 
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-
-
-        var data: MutableMap<String, Any> = mutableMapOf()
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         var allocation = mutableListOf<MultipleAllocationDTO>()
 
+        var multipleAllocation = mutableListOf<MultipleAllocationDTO>()
 
-        var costCenterIds = mulAlloc.map { it.ccmId }
+        if(user.userDesignation!!.id == UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id){
+            var data: MutableMap<String, Any> = mutableMapOf()
 
-        data.put("ccmId", costCenterIds.distinct())
+            var costCenterIds = mulAlloc.map { it.ccmId }
 
-        return sqlSessionFactory.openSession()
-            .selectList<MultipleAllocationDTO>("AllocationRuleMapper.getMultipleAllocation", data)
+            data.put("ccmId", costCenterIds.distinct())
+            user.email?.let { data.put("rbmEmail", it) }
+
+            multipleAllocation = sqlSessionFactory.openSession()
+                .selectList<MultipleAllocationDTO>("AllocationRuleMapper.getMultipleAllocationRBM", data)
+        }else{
+            var data: MutableMap<String, Any> = mutableMapOf()
+
+            var costCenterIds = mulAlloc.map { it.ccmId }
+
+            data.put("ccmId", costCenterIds.distinct())
+
+            multipleAllocation = sqlSessionFactory.openSession()
+                .selectList<MultipleAllocationDTO>("AllocationRuleMapper.getMultipleAllocation", data)
+        }
+
+        return multipleAllocation
+
 
     }
 
