@@ -56,7 +56,15 @@ order by RCT.JOINING_DATE_RCT desc
         ) AS FilterResult
 
         SELECT * INTO #Purchase1 FROM (
-        SELECT  distinct FT.businessUnit,FT.divison,BBR.ID_USR_BBR AS 'BrandManagerID',usr.NAME_USR as 'BrandManager',INV.ID_INV,CCM.ID_CCM 'CostCenterID',CONVERT(nvarchar(100), INV.POSTING_DATE_INV, 103) AS grnDate, VND.NAME_VND AS vendorName, VND.CODE_VND AS vendorCode, INV.PO_NO_INV AS poNo,
+        SELECT  distinct FT.businessUnit,FT.divison,BRD.ID_BRD AS 'BrandManagerID',BRD.NAME_BRD as 'BrandManager',INV.ID_INV,CCM.ID_CCM 'CostCenterID',CONVERT(nvarchar(100), INV.POSTING_DATE_INV, 103) AS grnDate,
+        CASE
+        WHEN ISNULL(LTRIM(RTRIM(VND.NAME_VND)), '') = '' THEN 'Test'
+        ELSE VND.NAME_VND
+        END AS vendorName,
+        CASE
+        WHEN ISNULL(LTRIM(RTRIM(VND.CODE_VND)), '') = '' THEN 'Test'
+        ELSE VND.CODE_VND
+        END AS vendorCode, INV.PO_NO_INV AS poNo,
         ITM.NAME_ITM AS productName, ITM.CODE_ITM AS productCode, CCM.NAME_CCM AS 'costCenter', INV.QTY_RECEIVED_INV AS quantity,
         --INV.RATE_PER_UNIT_INV AS rate,(INV.RATE_PER_UNIT_INV * INV.QTY_RECEIVED_INV) AS value,
         Round(INV.RATE_PER_UNIT_INV,2) AS rate,Round(INV.RATE_PER_UNIT_INV * INV.QTY_RECEIVED_INV,0) AS value,
@@ -67,13 +75,20 @@ order by RCT.JOINING_DATE_RCT desc
         JOIN COST_CENTER_MASTER_CCM CCM ON ITM.ID_CCM_ITM = CCM.ID_CCM
         join COSTCENTER_BRAND_CBR CBR on CCM.ID_CCM=CBR.ID_CCM_CBR
         JOIN BRAND_MASTER_BRD BRD ON CBR.ID_BRD_CBR = BRD.ID_BRD
-        JOIN BRANDMANAGER_BRAND_BBR BBR ON CBR.ID_BRD_CBR = BBR.ID_BRD_BBR
-        join USER_MASTER_USR usr on usr.ID_USR = BBR.ID_USR_BBR
+        -- JOIN BRANDMANAGER_BRAND_BBR BBR ON CBR.ID_BRD_CBR = BBR.ID_BRD_BBR
+        --join USER_MASTER_USR usr on usr.ID_USR = BBR.ID_USR_BBR
         JOIN #FilterTable FT on BRD.ID_BRD  = FT.ID_BRD
         WHERE INV.POSTING_DATE_INV &gt;= #{startDate} AND INV.POSTING_DATE_INV &lt;=  #{endDate}
         UNION
-        SELECT distinct FT.businessUnit,FT.divison,BBR1.ID_USR_BBR AS 'BrandManagerID',usr.NAME_USR as 'BrandManager',INV.ID_INV,BRD1.ID_BRD 'CostCenterID',CONVERT(nvarchar(100), INV.POSTING_DATE_INV, 103) AS grnDate,
-        ISNULL(VND.NAME_VND,'TEST') AS vendorName,ISNULL(VND.CODE_VND, 'TEST') AS vendorCode, INV.PO_NO_INV AS poNo,
+        SELECT distinct FT.businessUnit,FT.divison,BRD1.ID_BRD AS 'BrandManagerID',BRD1.NAME_BRD as 'BrandManager',INV.ID_INV,BRD1.ID_BRD 'CostCenterID',CONVERT(nvarchar(100), INV.POSTING_DATE_INV, 103) AS grnDate,
+        CASE
+        WHEN ISNULL(LTRIM(RTRIM(VND.NAME_VND)), '') = '' THEN 'Test'
+        ELSE VND.NAME_VND
+        END AS vendorName,
+        CASE
+        WHEN ISNULL(LTRIM(RTRIM(VND.CODE_VND)), '') = '' THEN 'Test'
+        ELSE VND.CODE_VND
+        END AS vendorCode, INV.PO_NO_INV AS poNo,
         SMP.NAME_SMP AS productName, SMP.LMID_SMP AS productCode, BRD1.NAME_BRD AS 'costCenter', INV.QTY_RECEIVED_INV AS quantity,
         --INV.RATE_PER_UNIT_INV AS rate, 	(INV.RATE_PER_UNIT_INV * INV.QTY_RECEIVED_INV) AS value,
         Round(INV.RATE_PER_UNIT_INV,2) AS rate,Round(INV.RATE_PER_UNIT_INV * INV.QTY_RECEIVED_INV,0) AS value,
@@ -81,9 +96,9 @@ order by RCT.JOINING_DATE_RCT desc
         FROM INVENTORY_INV INV
         JOIN SAMPLE_MASTER_SMP SMP ON INV.ID_ITM_INV = SMP.ID_SMP
         left JOIN VENDOR_MASTER_VND VND ON INV.ID_VND_INV = VND.ID_VND
-        JOIN BRANDMANAGER_BRAND_BBR BBR1 ON SMP.ID_BRD_SMP = BBR1.ID_BRD_BBR
-        JOIN BRAND_MASTER_BRD BRD1 ON BBR1.ID_BRD_BBR = BRD1.ID_BRD
-        join USER_MASTER_USR usr on usr.ID_USR = BBR1.ID_USR_BBR
+        --JOIN BRANDMANAGER_BRAND_BBR BBR1 ON SMP.ID_BRD_SMP = BBR1.ID_BRD_BBR
+        JOIN BRAND_MASTER_BRD BRD1 ON SMP.ID_BRD_SMP = BRD1.ID_BRD
+        -- join USER_MASTER_USR usr on usr.ID_USR = BBR1.ID_USR_BBR
         JOIN  #FilterTable FT  ON BRD1.ID_BRD = FT.ID_BRD
         WHERE INV.POSTING_DATE_INV &gt;= #{startDate} AND INV.POSTING_DATE_INV &lt;=  #{endDate}
         )
@@ -425,7 +440,7 @@ order by RCT.JOINING_DATE_RCT desc
         WHERE BBR1.ID_USR_BBR = #{UserID} AND DATEADD(DAY,ITC1.CUTOFF_BEFORE_DAYS_ITC,GETDATE()) &lt; INV1.EXPIRY_DATE_INV AND SMP.IS_ACTIVE_SMP != 0 and
               INV1.IS_BLOCK_ITEM_INV=0) As VirtualAllocationInventory
         WHERE STOCK > 0
-ORDER BY QuantityAllocated DESC 
+ORDER BY QuantityAllocated DESC
 
     </select>
 

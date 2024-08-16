@@ -359,8 +359,6 @@ class MasterRepository
 
     fun getBusinessUnitDropdown( ) : List<BU>{
 //        var data: MutableMap<String, Any> = mutableMapOf()
-
-
         return sqlSessionTemplate.selectList("BUMapper.getBusinessUnitDropdown")
     }
 

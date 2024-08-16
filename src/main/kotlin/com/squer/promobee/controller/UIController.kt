@@ -53,9 +53,9 @@ open class UIController @Autowired constructor(
                         UserMenuEnum.PURCHASE_REPORT,
                         UserMenuEnum.DISPATCH_REPORT,
                         UserMenuEnum.DISPATCH_REGISTERS,
-                        UserMenuEnum.DEVIATION_REPORT,
+                       // UserMenuEnum.DEVIATION_REPORT,
                         UserMenuEnum.ITEM_CONSUMPTION_REPORT,
-                        UserMenuEnum.VIRTUAL_RECONCILIATION,
+                      //  UserMenuEnum.VIRTUAL_RECONCILIATION,
                         UserMenuEnum.INVENTORY_REVERSAL_REPORT,
                         UserMenuEnum.SHIP_ROCKET_REPORT
                 ),
@@ -73,7 +73,7 @@ open class UIController @Autowired constructor(
                         UserMenuEnum.DISPATCH_REGISTERS,
                        // UserMenuEnum.ITEM_CONSUMPTION_REPORT,
                         //UserMenuEnum.INVENTORY_REVERSAL_REPORT,
-                        UserMenuEnum.VIRTUAL_RECONCILIATION,
+                      //  UserMenuEnum.VIRTUAL_RECONCILIATION,
                       //  UserMenuEnum.TSE,
                       //  UserMenuEnum.BRAND,
                        // UserMenuEnum.ALLOCATION_REPORT
@@ -93,7 +93,7 @@ open class UIController @Autowired constructor(
                 UserMenuEnum.FF_REPORT,
                 UserMenuEnum.INVENTORY_REPORT,
                 UserMenuEnum.DISPATCH_REGISTERS,
-                UserMenuEnum.VIRTUAL_RECONCILIATION,
+               // UserMenuEnum.VIRTUAL_RECONCILIATION,
 
 
             ),
@@ -171,8 +171,8 @@ open class UIController @Autowired constructor(
 //                UserMenuEnum.COMPLIANCE_PROCESS,
 //                UserMenuEnum.OPTIMA_MAIL_LOGS,
 //                UserMenuEnum.OVERSAMPLING_DETAILS,
-                UserMenuEnum.MANAGEMENT_DASHBOARD,
-                UserMenuEnum.BATCH_RECONCILIATION,
+              //  UserMenuEnum.MANAGEMENT_DASHBOARD,
+              //  UserMenuEnum.BATCH_RECONCILIATION,
 
                 ),
 
@@ -200,6 +200,7 @@ open class UIController @Autowired constructor(
             UserRoleEnum.TEAM_SUPPORT_EXECUTIVE_ID.id to listOf<UserMenuEnum>(
                // UserMenuEnum.TSE_DASHBOARD,
                // UserMenuEnum.ADMIN,
+                UserMenuEnum.RBM_DASHBOARD,
                 UserMenuEnum.ALLOCATION,
 //                UserMenuEnum.COMPLIANCE_PROCESS,
 //                UserMenuEnum.OVERSAMPLING_DETAILS

@@ -91,7 +91,7 @@
     </select>
 
     <select id="GetEmployeeInvoiceDetail_GP_C_R" resultType="com.squer.promobee.controller.dto.DataModelInvoiceDetailsDTO">
-        SELECT DISTINCT INH.ID_INH AS 'invoiceHeaderID', RCT.NAME_RCT AS 'employeeName',RCT.ID_RCT AS 'employeeID',
+        SELECT distinct INH.ID_INH AS 'invoiceHeaderID', RCT.NAME_RCT AS 'employeeName',RCT.ID_RCT AS 'employeeID',
         RCT.CODE_RCT AS 'code',CONVERT(NVARCHAR(255), INH.INVOICE_NO_INH) AS 'invoiceNumber',
         CASE WHEN INH.IDREDIRECTEDINH_INH IS NULL THEN NULL ELSE (SELECT INVOICE_NO_INH FROM INVOICE_HEADER_INH INH1 WHERE INH1.ID_INH = INH.IDREDIRECTEDINH_INH) END 'redirectedTo',
         (SELECT INH2.INVOICE_NO_INH FROM INVOICE_HEADER_INH INH2 WHERE INH2.IDREDIRECTEDINH_INH = INH.ID_INH) 'redirectedFrom',
@@ -108,6 +108,7 @@
         join USER_LOV_ULV DES ON DES.ID_ULV = RCT.ID_DESG_ULV_RCT
         WHERE DIP.MONTH_DIP = #{month} AND DIP.YEAR_DIP = #{year} AND (#{teamId} = '00000000-0000-0000-0000-000000000000' or TEM.ID_TEM = #{teamId})
         AND INH.ID_STATUS_SLV_INH = #{status} AND DIP.IS_SPECIAL_DIP = #{isSpecialDisp}
+        ORDER BY invoiceNumber ASC;
     </select>
 
     <select id="getGroupingInvoiceForHUB" resultType="com.squer.promobee.controller.dto.GroupingInvoiceDetailsDTO" parameterType = "map" statementType = "CALLABLE">

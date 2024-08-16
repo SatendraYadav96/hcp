@@ -7,8 +7,8 @@ class DispatchesReportDTO {
     val recipientCode:String ?= null
     val productCode:String ?= null
     val productName:String ?= null
-    val quantity:Double ?= null
-    val amount:Double ?= null
+    val quantity:Double ?= 0.0
+    val amount:Double ?= 0.0
     val invoiceDate:String ?= null
     val teamName:String ?= null
     val desigation:String ?= null
@@ -17,5 +17,9 @@ class DispatchesReportDTO {
     val lRNo:String ?= null
     val courierName:String ?= null
     val docketStatus : String? = null
+    var costCenter:String? = null
+    var ratePerUnit:Double? = 0.0
+    var hsnCode: String? = null
+    var gstRate: String? = null
 
 }

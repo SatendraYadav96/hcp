@@ -42,9 +42,6 @@ class ReportRepository
         data.put("team", ff.team)
         ff.statusId?.let { data.put("statusId", it) }
 
-
-
-
         return sqlSessionFactory.openSession().selectList<RecipientReportDTO>("ReportMapper.getReportRecipient", data)
     }
 

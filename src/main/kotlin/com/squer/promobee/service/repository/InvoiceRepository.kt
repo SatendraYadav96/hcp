@@ -201,23 +201,23 @@ class InvoiceRepository(
 
                     tableRow += """
                     <tr>
-                        <td>$srNo</td>
-                        <td>${it.invoiceDetailsProductCode ?: ""}</td>
-                        <td colspan="2">${it.invoiceDetailsHSNCode ?: ""}</td>
-                        <td colspan="2">${it.invoiceDetailsItemDescription ?: ""}</td>
-                        <td>${it.invoiceDetailsQuantity?.toInt() ?: ""}</td>
-                        <td colspan="2">${it.invoiceDetailsSAPCode?: ""}</td>
-                        <td colspan="2">${it.invoiceDetailsBatchNo ?: ""}</td>
-                        <td colspan="2">${it.invoiceDetailsExpiryDate?: ""}</td>
-                        <td>${it.InvoiceDetailsRatePerUnit}</td>
-                        <td>${formattedTaxableValue}</td>
-                         <td>$value</td>
-                        <td>$value</td>
-                      <td>$value</td>
-                        <td>$value</td>
-                         <td>${it.InvoiceDetailsGSTRate}</td>
-                        <td>${formattedGstAmount}</td>
-                        <td>${formattedTotalAmount}</td>
+                        <td style="border-left:none; border-bottom: 1px solid #0000;">$srNo</td>
+                        <td style="border-left:1px solid #0000; border-bottom: 1px solid #0000;" >${it.invoiceDetailsProductCode ?: ""}</td>
+                        <td colspan="2" style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">${it.invoiceDetailsHSNCode ?: ""}</td>
+                        <td colspan="2" style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">${it.invoiceDetailsItemDescription ?: ""}</td>
+                        <td style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">${it.invoiceDetailsQuantity?.toInt() ?: ""}</td>
+                        <td colspan="2" style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">${it.invoiceDetailsSAPCode?: ""}</td>
+                        <td colspan="2" style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">${it.invoiceDetailsBatchNo ?: ""}</td>
+                        <td colspan="2" style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">${it.invoiceDetailsExpiryDate?: ""}</td>
+                        <td style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">${it.InvoiceDetailsRatePerUnit}</td>
+                        <td style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">${formattedTaxableValue}</td>
+                         <td style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">$value</td>
+                        <td style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">$value</td>
+                      <td style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">$value</td>
+                        <td style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">$value</td>
+                         <td style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">${it.InvoiceDetailsGSTRate}</td>
+                        <td style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">${formattedGstAmount}</td>
+                        <td style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">${formattedTotalAmount}</td>
                     </tr>
                 """.trimIndent()
                     srNo++
