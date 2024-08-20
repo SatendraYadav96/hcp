@@ -109,7 +109,7 @@ class InvoiceRepository(
         var data: MutableMap<String, Any> = mutableMapOf()
 
 
-        data.put("InhID", inhId)
+        data.put("id", inhId)
 
         return sqlSessionFactory.openSession().selectList<InvoiceDetailsPrintDTO>("InvoiceHeaderMapper.getPrintInvoiceDetails", data).toMutableList()
 
@@ -157,30 +157,30 @@ class InvoiceRepository(
 
             printDetails.forEach { it ->
 
-                    context.put("InvoiceNumber", it.invoiceNumber ?: "")
-                    context.put("EmployeeCode", it.employeeCode ?: "")
-                    context.put("EmployeeDesignation", it.employeeDesignation ?: "")
-                    context.put("EmployeeName", it.employeeName ?: "")
-                    context.put("EmployeeAddress", it.employeeAddress ?: "")
-                    context.put("EmployeeCity", it.employeeCity ?: "")
-                    context.put("EmployeeState", it.employeeState ?: "")
-                    context.put("EmployeePinCode", it.employeePinCode ?: "")
-                    context.put("EmployeeMobileNumber", it.employeeMobileNumber ?: "")
-                    context.put("EmployeePeriod", employeePeriod)
-                    context.put("EmployeeLRNumber", it.employeeLRNumber ?: "")
-                    context.put("EmployeeDate", it.employeeDate ?: "")
-                    context.put("EmployeeLRDate", it.employeeLRDate ?: "")
-                    context.put("EmployeeTeam", it.employeeTeam ?: "")
-                    context.put("EmployeeTransport", it.employeeTransport ?: "")
-                    context.put("EmployeeCFA", it.employeeCFA ?: "")
-                    context.put("PROMOMONTH", promoMonth)
-                    context.put("PLANTYPE", it.type ?: "")
-                    context.put("EmployeeTotalNoOfCases", it.employeeTotalNoOfCases ?: "")
-                    context.put("EmployeeTotalWeight", it.employeeTotalWeight ?: "")
-                    context.put("EmployeeRemark", it.employeeRemark ?: "")
-                    context.put("TotalSampleValue", String.format("%.2f", it.employeeSampleValue).toDouble() ?: "")
-                    context.put("TotalInputValue", String.format("%.2f", it.employeeInputValue).toDouble() ?: "")
-                    context.put("TotalSumValue", String.format("%.2f", it.employeeValue).toDouble() ?: "")
+                context.put("InvoiceNumber", it.invoiceNumber ?: "")
+                context.put("EmployeeCode", it.employeeCode ?: "")
+                context.put("EmployeeDesignation", it.employeeDesignation ?: "")
+                context.put("EmployeeName", it.employeeName ?: "")
+                context.put("EmployeeAddress", it.employeeAddress ?: "")
+                context.put("EmployeeCity", it.employeeCity ?: "")
+                context.put("EmployeeState", it.employeeState ?: "")
+                context.put("EmployeePinCode", it.employeePinCode ?: "")
+                context.put("EmployeeMobileNumber", it.employeeMobileNumber ?: "")
+                context.put("EmployeePeriod", employeePeriod)
+                context.put("EmployeeLRNumber", it.employeeLRNumber ?: "")
+                context.put("EmployeeDate", it.employeeDate ?: "")
+                context.put("EmployeeLRDate", it.employeeLRDate ?: "")
+                context.put("EmployeeTeam", it.employeeTeam ?: "")
+                context.put("EmployeeTransport", it.employeeTransport ?: "")
+                context.put("EmployeeCFA", it.employeeCFA ?: "")
+                context.put("PROMOMONTH", promoMonth)
+                context.put("PLANTYPE", it.type ?: "")
+                context.put("EmployeeTotalNoOfCases", it.employeeTotalNoOfCases ?: "")
+                context.put("EmployeeTotalWeight", it.employeeTotalWeight ?: "")
+                context.put("EmployeeRemark", it.employeeRemark ?: "")
+                context.put("TotalSampleValue", String.format("%.2f", it.employeeSampleValue).toDouble() ?: "")
+                context.put("TotalInputValue", String.format("%.2f", it.employeeInputValue).toDouble() ?: "")
+                context.put("TotalSumValue", String.format("%.2f", it.employeeValue).toDouble() ?: "")
 
             }
 
@@ -191,15 +191,15 @@ class InvoiceRepository(
 
             printDetailsBody.forEach { it ->
 
-                    val taxableValue = it.InvoiceDetailsRatePerUnit?.let { rate -> it.invoiceDetailsQuantity?.times(rate) }?.toDouble()
-                    val formattedTaxableValue = String.format("%.2f", taxableValue ?: 0.0)
+                val taxableValue = it.InvoiceDetailsRatePerUnit?.let { rate -> it.invoiceDetailsQuantity?.times(rate) }?.toDouble()
+                val formattedTaxableValue = String.format("%.2f", taxableValue ?: 0.0)
 
-                    val gstAmount = it.InvoiceDetailsGSTRate?.let { rate -> taxableValue?.times(rate)?.div(100) }
+                val gstAmount = it.InvoiceDetailsGSTRate?.let { rate -> taxableValue?.times(rate)?.div(100) }
                 val formattedGstAmount = String.format("%.2f", gstAmount ?: 0.0)
-                    val amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }?.toDouble()
-                    val formattedTotalAmount = String.format("%.2f", amount ?: 0.0)
+                val amount = gstAmount?.let { it1 -> taxableValue?.plus(it1) }?.toDouble()
+                val formattedTotalAmount = String.format("%.2f", amount ?: 0.0)
 
-                    tableRow += """
+                tableRow += """
                     <tr>
                         <td style="border-left:none; border-bottom: 1px solid #0000;">$srNo</td>
                         <td style="border-left:1px solid #0000; border-bottom: 1px solid #0000;" >${it.invoiceDetailsProductCode ?: ""}</td>
@@ -220,7 +220,7 @@ class InvoiceRepository(
                         <td style="border-left:1px solid #0000; border-bottom: 1px solid #0000;">${formattedTotalAmount}</td>
                     </tr>
                 """.trimIndent()
-                    srNo++
+                srNo++
 
             }
 
@@ -235,18 +235,15 @@ class InvoiceRepository(
             println("===================================")
             println(writer.toString())
             println("===================================")
-                val byteArrayOutputStream = ByteArrayOutputStream()
-                HtmlConverter.convertToPdf(writer.toString(), byteArrayOutputStream)
-                finalArray.add(byteArrayOutputStream.toByteArray())
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            HtmlConverter.convertToPdf(writer.toString(), byteArrayOutputStream)
+            finalArray.add(byteArrayOutputStream.toByteArray())
 
         } catch (e: Exception) {
             e.printStackTrace()
         }
         return finalArray
     }
-
-
-
 
 
     fun searchInvoice(searchInvoice: SearchInvoiceDTO): List<InvoiceHeaderDTO> {
@@ -410,40 +407,23 @@ class InvoiceRepository(
     }
 
 
-
     fun printLabel(inh: List<PrintInvoiceDTO>):MutableList<ByteArray>? {
         var writer = StringWriter()
-        val user =
-            (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
-
-        var labelDetails = mutableListOf<MutableList<LabelPrintDetailsDTO>>()
+        val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
         val byteArrayOutputStream = ByteArrayOutputStream()
 
         var finalArray = mutableListOf<ByteArray>()
 
-        var i = 0
-
-        inh.forEach { i ->
-
-            var data: MutableMap<String, Any> = mutableMapOf()
-
-            i.inhId?.let { data.put("id", it) }
-
-            i.invoiceNo?.let { data.put("invoiceNo", it) }
-
-            labelDetails.add(sqlSessionFactory.openSession().selectList<LabelPrintDetailsDTO>("InvoiceHeaderMapper.getLabelPrintDetailsByInvoices", data).toMutableList()
-            )
-
-
+        var ids = inh.map {
+            it.inhId
         }
 
-        labelDetails
+       var data: MutableMap<String, Any> = mutableMapOf("ids" to ids)
 
-        val ve = VelocityEngine()
-        ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath")
-        ve.setProperty("file.resource.loader.path","/templates/printInvoice.vm" )
-        ve.init()
+        var labelDetails = sqlSessionFactory.openSession().selectList<LabelPrintDetailsDTO>("InvoiceHeaderMapper.getLabelPrintDetailsByInvoices", data)
+
+        labelDetails
 
         var pic = PrintInvoiceTableDto()
 
@@ -458,56 +438,49 @@ class InvoiceRepository(
 
         println(contentConfig)
 
-        val template = convertToTemplate(contentConfig)
-
-        val context = VelocityContext()
-
-        var n = 0
-
-        i = 0
-
-
-        labelDetails.forEach {detailList ->
-            detailList.forEach {detail ->
+        val labelArray = mutableListOf<Map<String,Any?>>()
+        for(detail in labelDetails) {
+            val invoiceNo = detail.invoiceNo
+            for(i in 1..(detail.noOfBoxes ?: 1)) {
+                val context = mutableMapOf<String, Any?>()
                 var length = "";
                 var breadth = "";
                 var height = "";
-                context.put("InvoiceNo", detail.invoiceNo)
-                context.put("TransporterName", detail.transporterName)
-                context.put("InvoiceLRNo", detail.lRNumber)
-                context.put("InvoiceCreatedDate", detail.invoiceDate)
-                context.put("RecipientCode", detail.recipientCode)
-                context.put("RecipientName", detail.recipientName)
-                context.put("RecipientTeam", detail.teamName)
-                context.put("RecipientDesgination", detail.recipientDesgination)
-                context.put("RecipientAddress", detail.recipientAddress)
-                context.put("RecipientCity", detail.recipientCity)
-                context.put("RecipientState", detail.recipientState)
-                context.put("RecipientPhone", detail.recipientPhone)
-                context.put("RecipientPinCode", detail.recipientPinCode)
-                context.put("RecipientHeadQuarter", detail.recipientHeadQuarter)
-                context.put("InvoiceBoxes", detail.noOfBoxes)
-                context.put("InvoiceWeight", detail.weight)
+                context["InvoiceNo"] =detail.invoiceNo
+                context["TransporterName"] =detail.transporterName
+                context["InvoiceLRNo"] =detail.lRNumber
+                context["InvoiceCreatedDate"] =detail.invoiceDate
+                context["RecipientCode"] =detail.recipientCode
+                context["RecipientName"] =detail.recipientName
+                context["RecipientTeam"] =detail.teamName
+                context["RecipientDesgination"] =detail.recipientDesgination
+                context["RecipientAddress"] =detail.recipientAddress
+                context["RecipientCity"] =detail.recipientCity
+                context["RecipientState"] =detail.recipientState
+                context["RecipientPhone"] =detail.recipientPhone
+                context["RecipientPinCode"] =detail.recipientPinCode
+                context["RecipientHeadQuarter"] =detail.recipientHeadQuarter
+                context["InvoiceBoxes"] =detail.noOfBoxes
+                context["InvoiceWeight"] =detail.weight
 
                 if (detail.dimension !== null) {
-                    context.put("length", length)
-                    context.put("breadth", breadth)
-                    context.put("height", height)
+                    context["length"] =length
+                    context["breadth"] =breadth
+                    context["height"] =height
                 } else {
-                    context.put("length", length)
-                    context.put("breadth", breadth)
-                    context.put("height", height)
+                    context["length"] =length
+                    context["breadth"] =breadth
+                    context["height"] =height
                 }
-                template.merge(context, writer)
+                labelArray.add(context)
 
-                System.out.println(writer.toString())
             }
-
-
-
-
-
         }
+
+        val template = convertToTemplate(contentConfig)
+        val velocityContext = VelocityContext()
+        velocityContext.put("labels", labelArray)
+        template.merge(velocityContext   , writer)
 
         try {
             val byteArrayOutputStream = ByteArrayOutputStream()
@@ -516,9 +489,6 @@ class InvoiceRepository(
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
-
-
 
         return finalArray
 

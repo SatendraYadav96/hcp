@@ -4,6 +4,7 @@ class InvoiceDetailsPrintDTO {
 
 
     var invoiceDetailsSrNo: Int? = null
+    var inhId: String? = null
     var invoiceDetailsProductCode: String? = null
     var invoiceDetailsSAPCode: String? = null
     var invoiceDetailsItemDescription: String? = null

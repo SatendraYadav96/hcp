@@ -125,8 +125,8 @@ open class UIController @Autowired constructor(
             ),
 
             UserRoleEnum.REGIONAL_BUSINESS_MANAGER_ID.id to listOf<UserMenuEnum>(
-              //  UserMenuEnum.MONTHLY_ALLOCATION,
-             //   UserMenuEnum.SPECIAL_ALLOCATION,
+                UserMenuEnum.MONTHLY_ALLOCATION,
+                UserMenuEnum.SPECIAL_ALLOCATION,
                 UserMenuEnum.VIRTUAL_ALLOCATION,
 //                UserMenuEnum.PICKING_SLIP,
 
