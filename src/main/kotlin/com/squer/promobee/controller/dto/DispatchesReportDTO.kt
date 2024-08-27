@@ -21,5 +21,7 @@ class DispatchesReportDTO {
     var ratePerUnit:Double? = 0.0
     var hsnCode: String? = null
     var gstRate: String? = null
+    var costCenterCode:String? = null
+    var gstAmount:Double ?= 0.0
 
 }

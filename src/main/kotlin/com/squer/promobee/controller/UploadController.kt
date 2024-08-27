@@ -439,16 +439,15 @@ open class UploadController@Autowired constructor(
 
                             return ResponseEntity(errorMap , HttpStatus.OK)
                         } else {
-                          //  var data: MutableMap<String, Any> = mutableMapOf()
+                           // var data: MutableMap<String, Any> = mutableMapOf()
 
                             var dispatchDetail = VirtualDispatchDetail()
 
                             var ff = Recipient()
 
-                            data.put("id", UUID.randomUUID().toString())
+                            var vvId = UUID.randomUUID().toString()
+                            data.put("id", vvId)
                             data.put("planId", dto.planId)
-
-                            var data: MutableMap<String, Any> = mutableMapOf()
                             it.get(headerRow[2].toString().trim())?.let { it1 -> data.put("code", it1) }
                             ff = sqlSessionFactory.openSession()
                                 .selectOne<Recipient>("RecipientMapper.multipleAllocation", data)
@@ -687,7 +686,7 @@ open class UploadController@Autowired constructor(
                             data.put("id", UUID.randomUUID().toString())
                             data.put("planId", dto.planId)
 
-                            var data3: MutableMap<String, Any> = mutableMapOf()
+                           // var data3: MutableMap<String, Any> = mutableMapOf()
                             it.get(headerRow[2].toString().trim())?.let { it1 -> data.put("code", it1) }
                             ff = sqlSessionFactory.openSession()
                                 .selectOne<Recipient>("RecipientMapper.multipleAllocation", data)
@@ -707,11 +706,6 @@ open class UploadController@Autowired constructor(
                             var inv = sqlSessionFactory.openSession()
                                 .selectOne<Inventory>("InventoryMapper.multipleAllocations", data)
 
-                         //   var data6: MutableMap<String, Any> = mutableMapOf()
-                            data.put("planId", dto.planId)
-                            data.put("inventoryId", inventoryId)
-
-                            sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocation",data)
 
                             var didQty = it.get(headerRow[n])
 
@@ -723,6 +717,12 @@ open class UploadController@Autowired constructor(
                             data.put("planId",plan.id!!)
 
                             sqlSessionFactory.openSession().update("DispatchDetailMapper.updateCommonAllocation",data)
+
+                            //   var data6: MutableMap<String, Any> = mutableMapOf()
+                            data.put("planId", dto.planId)
+                            data.put("inventoryId", inventoryId)
+
+                            sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocation",data)
                         }
 
 
