@@ -252,18 +252,18 @@ open class NewAllocationController @Autowired constructor(
 
         if(buHead.size > 0) {
 
-//            buHead.forEach {
-//                var emailUtil = EmailUtils()
-////                mutableListOf(it.UserEmailAddress)?.let { it1 ->
-////                    emailUtil.sendMail(
-////                        it1, mutableListOf("shraddha.tambe@sanofi.com"),
-////                        "Hi, <br/> ${user.name} has submitted the Special Dispatch Plan for Month - ${months[alloc.month]} - ${alloc.year} & plan - ${alloc.name}, Kindly look into this and take further actions <br/> Thank You. ",
-////                        "Special Plan Approval Notification Mail")
-////                }
-//               emailUtil.sendMail (mutableListOf(it.UserEmailAddress), mutableListOf("shraddha.tambe@sanofi.com","satendra.yadav@squer.co.in"),
-//                        "Hi, <br/></br> ${user.name} has submitted the Special Dispatch Plan for Month of  <b>  ${months[alloc.month]} ${alloc.year} </b> as plan in name of <b> ${alloc.name} </b>. <br/></br> Kindly look into this and take further actions. </br> <br/> Thank You. ",
+            buHead.forEach {
+                var emailUtil = EmailUtils()
+//                mutableListOf(it.UserEmailAddress)?.let { it1 ->
+//                    emailUtil.sendMail(
+//                        it1, mutableListOf("shraddha.tambe@sanofi.com"),
+//                        "Hi, <br/> ${user.name} has submitted the Special Dispatch Plan for Month - ${months[alloc.month]} - ${alloc.year} & plan - ${alloc.name}, Kindly look into this and take further actions <br/> Thank You. ",
 //                        "Special Plan Approval Notification Mail")
 //                }
+               emailUtil.sendMail (mutableListOf(it.UserEmailAddress), mutableListOf("shraddha.tambe@sanofi.com","satendra.yadav@squer.co.in"),
+                        "Hi, <br/></br> ${user.name} has submitted the Special Dispatch Plan for Month of  <b>  ${months[alloc.month]} ${alloc.year} </b> as plan in name of <b> ${alloc.name} </b>. <br/></br> Kindly look into this and take further actions. </br> <br/> Thank You. ",
+                        "Special Plan Approval Notification Mail")
+                }
 
                 println("Mail Sent!")
             }

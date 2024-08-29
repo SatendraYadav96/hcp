@@ -254,10 +254,7 @@
         JOIN INVOICE_DISPATCH_PLAN_IDP IDP ON IDP.ID_INH_IDP = INH.ID_INH
         JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP = IDP.ID_PLAN_IDP
         JOIN TRANSPORTER_TRN TRN ON TRN.ID_TRN = INH.ID_TRN_INH
-        WHERE ID_INH IN <foreach item="item" index="index" collection="id"
-                                 open="(" separator="," close=")">
-        #{item}
-    </foreach>
+        WHERE ID_INH = #{id}
 		union
         SELECT distinct inh.ID_INH as 'inhId',
                 inh.INVOICE_NO_INH as 'invoiceNumber',
@@ -303,10 +300,7 @@
         JOIN INVOICE_DISPATCH_PLAN_IDP IDP ON IDP.ID_INH_IDP = INH.ID_INH
        JOIN DISPATCH_PLAN_DIP DIP ON DIP.ID_DIP = IDP.ID_PLAN_IDP
        JOIN TRANSPORTER_TRN TRN ON TRN.ID_TRN = INH.ID_TRN_INH
-        WHERE ID_INH IN <foreach item="item" index="index" collection="id"
-                                 open="(" separator="," close=")">
-        #{item}
-    </foreach>
+        WHERE ID_INH = #{id}
 
     </select>
 
@@ -345,10 +339,7 @@
               JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
               JOIN INVENTORY_INV INV ON IND.ID_INV_IND = INV.ID_INV
               JOIN ITEM_MASTER_ITM ITM ON IND.ID_ITM_IND = ITM.ID_ITM
-              WHERE INH.ID_INH in <foreach item="item" index="index" collection="id"
-                                           open="(" separator="," close=")">
-        #{item}
-    </foreach>  and IND.QUANTITY_IND >0
+              WHERE INH.ID_INH = #{id} and IND.QUANTITY_IND >0
               GROUP BY ITM.CODE_ITM,INV.PO_NO_INV,ITM.NAME_ITM,INV.BATCH_NO_INV,INV.EXPIRY_DATE_INV,INV.HSN_CODE_INV,INV.RATE_PER_INV,INV.RATE_PER_UNIT_INV,INH.ID_INH
               UNION
               SELECT 1 'invoiceDetailsSrNo',SMP.LMID_SMP 'invoiceDetailsProductCode',INV.PO_NO_INV 'invoiceDetailsSAPCode',
@@ -359,10 +350,7 @@
               JOIN INVOICE_DETAIL_IND IND ON INH.ID_INH = IND.ID_INH_IND
               JOIN INVENTORY_INV INV ON IND.ID_INV_IND = INV.ID_INV
               JOIN SAMPLE_MASTER_SMP SMP ON IND.ID_ITM_IND = SMP.ID_SMP
-              WHERE INH.ID_INH in <foreach item="item" index="index" collection="id"
-                                           open="(" separator="," close=")">
-        #{item}
-    </foreach> and IND.QUANTITY_IND >0
+              WHERE INH.ID_INH = #{id}  and IND.QUANTITY_IND >0
               GROUP BY SMP.NAME_SMP,INV.PO_NO_INV,SMP.LMID_SMP,INV.BATCH_NO_INV,INV.EXPIRY_DATE_INV,INV.HSN_CODE_INV,INV.RATE_PER_INV,INV.RATE_PER_UNIT_INV,INH.ID_INH
 
     </select>

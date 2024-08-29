@@ -314,9 +314,15 @@ order by RCT.JOINING_DATE_RCT desc
 
     </select>
 
-
     <select id="allocationDetailsOfRbm" resultType="com.squer.promobee.controller.dto.AllocationInventoryDetailsWithCostCenterDTO" parameterType = "map" statementType = "CALLABLE">
         { call PROC_AllocationDetailsOfRbm (#{UserID, jdbcType = VARCHAR, mode = IN}, #{RBMPlanID, jdbcType = VARCHAR, mode = IN}
+            ) }
+
+    </select>
+
+
+    <select id="getPhysicalSamplingReport" resultType="com.squer.promobee.controller.dto.PhysicalReportingDTO" parameterType = "map" statementType = "CALLABLE">
+        { call PROC_PhysicalSamplingReport (#{dipId, jdbcType = VARCHAR, mode = IN}
                                         ) }
 
     </select>

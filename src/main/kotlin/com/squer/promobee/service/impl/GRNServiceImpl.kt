@@ -203,7 +203,8 @@ class GRNServiceImpl @Autowired constructor(
                 addInventoryParam.qtyAllocated = 0
                 addInventoryParam.qtyDispatched = 0
                 addInventoryParam.numBoxes = data.numBoxes?.toDouble()
-                addInventoryParam.isUnitAllocation = null
+                addInventoryParam.isUnitAllocation = 0
+                addInventoryParam.isBlockItem = 0
                 addInventoryParam.batchNo = grn.batchNo
                 addInventoryParam.hsnCode = grn.hsnCode
                 addInventoryParam.rate = grn.ratePerGRN
@@ -277,7 +278,8 @@ class GRNServiceImpl @Autowired constructor(
                 addInventoryParam.qtyAllocated = 0
                 addInventoryParam.qtyDispatched = 0
                 addInventoryParam.numBoxes = data.numBoxes
-                addInventoryParam.isUnitAllocation = null
+                addInventoryParam.isUnitAllocation = 0
+                addInventoryParam.isBlockItem = 0
                 addInventoryParam.batchNo = grn.batchNo
                 addInventoryParam.hsnCode = grn.hsnCode
                 addInventoryParam.rate = grn.ratePerGRN

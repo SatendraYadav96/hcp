@@ -147,6 +147,12 @@ open class ReportController @Autowired constructor(
         return  ResponseEntity(data,HttpStatus.OK)
     }
 
+    @PostMapping("/getPhysicalSamplingReport")
+    fun getPhysicalSamplingReport(@RequestBody psr: List<PhysicalSamplingDTO>): ResponseEntity<*>{
+        val data = reportService.getPhysicalSamplingReport(psr)
+        return  ResponseEntity(data,HttpStatus.OK)
+    }
+
 
 
 

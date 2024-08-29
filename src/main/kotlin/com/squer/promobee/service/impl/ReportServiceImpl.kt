@@ -95,4 +95,9 @@ class ReportServiceImpl @Autowired constructor(
         return reportRepository.getBatchReconciliation()
     }
 
+
+    override fun getPhysicalSamplingReport(psr: List<PhysicalSamplingDTO>): List<PhysicalReportingDTO> {
+        return reportRepository.getPhysicalSamplingReport(psr)
+    }
+
 }

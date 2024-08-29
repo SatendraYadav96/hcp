@@ -632,6 +632,25 @@ class ReportRepository
     }
 
 
+    fun getPhysicalSamplingReport(psr: List<PhysicalSamplingDTO>): List<PhysicalReportingDTO>{
+        var data: MutableMap<String, Any> = mutableMapOf()
+        var physicalSamplingDetails = mutableListOf<PhysicalReportingDTO>()
+        val finalList = mutableListOf<PhysicalReportingDTO>()
+
+        psr.forEach {
+            it.planId?.let { it1 -> data.put("dipId", it1) }
+
+            physicalSamplingDetails = sqlSessionFactory.openSession().selectList<PhysicalReportingDTO>("ReportMapper.getPhysicalSamplingReport",data)
+
+            finalList.addAll(physicalSamplingDetails)
+        }
+
+
+        return finalList
+
+    }
+
+
 
 
 

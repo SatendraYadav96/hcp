@@ -42,4 +42,6 @@ interface ReportService {
     fun getVirtualReconciliationReport(startDate: String,endDate: String,businessUnit: ArrayList<String> ): List<VirtualReconciliationDTO>
 
     fun getBatchReconciliation(): List<BatchReconciliationDTO>
+
+    fun getPhysicalSamplingReport(psr: List<PhysicalSamplingDTO>): List<PhysicalReportingDTO>
 }
