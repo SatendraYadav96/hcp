@@ -355,9 +355,6 @@ open class UploadController@Autowired constructor(
             var m = 0
             for (i in 4 until head){
 
-
-               // var data: MutableMap<String, Any> = mutableMapOf()
-
                 var item = ItemDrodownDTO()
 
                 var inv = mutableListOf<Inventory>()
@@ -394,43 +391,33 @@ open class UploadController@Autowired constructor(
 
             var n = 4
             invOG.forEach {
+                val dataList = mutableListOf<Map<String, Any>>() // List to hold all records for bulk insert
                 var inventoryId = it.id
-
                 var virtualAllocatedStock = 0
+                var allocationQtySum = 0
+                data.put("id",inventoryId!!)
+
+                var availableStock = sqlSessionFactory.openSession().selectOne<Inventory>("InventoryMapper.multipleAllocationAvailableStock",data)
+
+                var inventoryStock = availableStock.qtyReceived!! -availableStock.qtyAllocated!!-availableStock.qtyDispatched!!
+
+                data.put("planId",dto.planId!!)
+                data.put("invId",inventoryId!!)
+
+                virtualAllocatedStock = sqlSessionFactory.openSession().selectOne("DispatchDetailMapper.virtualAllocatedStock",data)
+
+                var realAllocatedVirtualStock = inventoryStock - virtualAllocatedStock
+
 
                 rows.forEach {
+                    var sum = rows.map { it -> it[headerRow[n]]}
 
+                    var result = sum.filter { it!!.isNotBlank()}
+
+                    val resultInts = result.map { it!!.toInt() }
+
+                     allocationQtySum = resultInts.sum()
                     if(it.get(headerRow[n])!!.isNotEmpty()){
-
-                        var sum = rows.map { it -> it[headerRow[n]]}
-
-                        var result = sum.filter { it!!.isNotBlank()}
-
-                        var resultWithoutSpaces = result.map { it!!.trim() }
-
-                        val resultInts = resultWithoutSpaces.map { it.toInt() }
-
-                        var allocationQtySum = resultInts.sum()
-
-                       // var data5: MutableMap<String, Any> = mutableMapOf()
-                        data.put("id",inventoryId!!)
-
-                        var availableStock = sqlSessionFactory.openSession().selectOne<Inventory>("InventoryMapper.multipleAllocationAvailableStock",data)
-
-                        var inventoryStock = availableStock.qtyReceived!! -availableStock.qtyAllocated!!-availableStock.qtyDispatched!!
-
-
-
-                        var data: MutableMap<String, Any> = mutableMapOf()
-                        data.put("planId",dto.planId!!)
-                        data.put("invId",inventoryId!!)
-
-                        virtualAllocatedStock = sqlSessionFactory.openSession().selectOne("DispatchDetailMapper.virtualAllocatedStock",data)
-
-                        var realAllocatedVirtualStock = inventoryStock - virtualAllocatedStock
-
-
-
 
                         if(allocationQtySum > realAllocatedVirtualStock ){
                             errorMap["message"] = "Allocation quantity is greater than the available stock for ${availableStock.poNo}"
@@ -439,41 +426,64 @@ open class UploadController@Autowired constructor(
 
                             return ResponseEntity(errorMap , HttpStatus.OK)
                         } else {
-                           // var data: MutableMap<String, Any> = mutableMapOf()
+                            val data = mutableMapOf<String, Any>()
 
                             var dispatchDetail = VirtualDispatchDetail()
 
                             var ff = Recipient()
 
                             var vvId = UUID.randomUUID().toString()
-                            data.put("id", vvId)
-                            data.put("planId", dto.planId)
+                            data["id"] = vvId
+                            data["planId"] = dto.planId
                             it.get(headerRow[2].toString().trim())?.let { it1 -> data.put("code", it1) }
                             ff = sqlSessionFactory.openSession()
                                 .selectOne<Recipient>("RecipientMapper.multipleAllocation", data)
 
-                            data.put("inventoryId", inventoryId)
-                            data.put("recipientId", ff.id)
+                            data["inventoryId"] = inventoryId
+                            data["recipientId"] = ff.id
                             it.get(headerRow[n])?.let { it1 -> data.put("qtyDispatch", it1) }
-                            data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                            data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                            data.put("createdBy", user.id)
-                            data.put("updatedBy", user.id)
+                            data["quarterlyPlanId"] = "00000000-0000-0000-0000-000000000000"
+                            data["detailStatus"] = DispatchDetailStatusEnum.ALLOCATED.id
+                            data["createdBy"] = user.id
+                            data["updatedBy"] = user.id
+                            // Accumulate data map in the list for bulk insert
+                            dataList.add(data)
 
-                            sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocationVirtualBM", data)
-
-                          //  var data6: MutableMap<String, Any> = mutableMapOf()
-
-                            data.put("planId", dto.planId)
-                            data.put("inventoryId", inventoryId)
-
-                            sqlSessionFactory.openSession()
-                                .delete("DispatchDetailMapper.deleteZeroQuantityAllocationVirtualBM", data)
                         }
 
                     }
 
                 }
+
+                // Function to process in batches
+                fun <T> List<T>.batchProcess(batchSize: Int, process: (List<T>) -> Unit) {
+                    if (batchSize <= 0) {
+                        throw IllegalArgumentException("Step must be positive, was: $batchSize")
+                    }
+                    for (i in indices step batchSize) {
+                        val end = minOf(i + batchSize, size)
+                        process(this.subList(i, end))
+                    }
+                }
+
+// Number of parameters each record uses in the SQL statement
+                val parametersPerRecord = 10 // Adjust this based on your actual parameters
+                val batchSize = maxOf(dataList.size / parametersPerRecord, 1)
+
+// Perform bulk insert in batches
+                if (dataList.isNotEmpty()) {
+                    dataList.batchProcess(batchSize) { batch ->
+                        sqlSessionFactory.openSession().use { session ->
+                            session.insert("DispatchDetailMapper.multipleAllocationVirtualBM", batch)
+                        }
+                    }
+                }
+                data.put("planId", dto.planId)
+                data.put("inventoryId", inventoryId)
+
+                sqlSessionFactory.openSession()
+                    .delete("DispatchDetailMapper.deleteZeroQuantityAllocationVirtualBM", data)
+
 
                 n++
 
@@ -484,8 +494,6 @@ open class UploadController@Autowired constructor(
 
             var employee = Users()
 
-           // var data : MutableMap<String, String> = mutableMapOf()
-
             data.put("userId",user.id)
 
             employee = sqlSessionFactory.openSession().selectOne<Users>("UsersMasterMapper.getRbm",data)
@@ -493,9 +501,6 @@ open class UploadController@Autowired constructor(
             var m = 0
 
             for (i in 4 until head){
-
-
-              //  var data: MutableMap<String, Any> = mutableMapOf()
 
                 var item = ItemDrodownDTO()
 
@@ -533,6 +538,8 @@ open class UploadController@Autowired constructor(
             var n = 4
 
             invOG.forEach {
+                val dataList = mutableListOf<Map<String, Any>>() // List to hold all records for bulk insert
+                var allocationQtySum = 0
                 var inventoryId = it.id
 
                 var data: MutableMap<String, Any> = mutableMapOf()
@@ -544,20 +551,17 @@ open class UploadController@Autowired constructor(
 
                 var availableStock = rbmAvailableStock.qtyDispatch!!
 
+
+
                 rows.forEach {
+                    var sum = rows.map { it -> it[headerRow[n]]}
 
+                    var result = sum.filter { it!!.isNotBlank()}
+
+                    val resultInts = result.map { it!!.toInt() }
+
+                    allocationQtySum = resultInts.sum()
                     if(it.get(headerRow[n])!!.isNotEmpty()){
-
-                        var sum = rows.map { it -> it[headerRow[n]]}
-
-                        var result = sum.filter { it!!.isNotBlank()}
-
-                        var resultWithoutSpaces = result.map { it!!.trim() }
-
-                        val resultInts = resultWithoutSpaces.map { it.toInt() }
-
-                        var allocationQtySum = resultInts.sum()
-
 
                         if(allocationQtySum > availableStock ){
                             errorMap["message"] = "Allocation quantity is greater than the available stock !"
@@ -566,46 +570,68 @@ open class UploadController@Autowired constructor(
                             return ResponseEntity(errorMap , HttpStatus.OK)
                         } else {
 
-                            //var data2: MutableMap<String, Any> = mutableMapOf()
+                            val data = mutableMapOf<String, Any>()
 
                             var dispatchDetail = DispatchDetail()
 
                             var ff = Recipient()
 
-                            data.put("id", UUID.randomUUID().toString())
-                            data.put("planId", dto.planId)
+                            data["id"] = UUID.randomUUID().toString()
+                            data["planId"] = dto.planId
 
-                           // var data3: MutableMap<String, Any> = mutableMapOf()
                             it.get(headerRow[2].toString().trim())?.let { it1 -> data.put("code", it1) }
                             ff = sqlSessionFactory.openSession()
                                 .selectOne<Recipient>("RecipientMapper.multipleAllocation", data)
 
-                            data.put("inventoryId", inventoryId)
-                            data.put("recipientId", ff.id)
+                            data["inventoryId"] = inventoryId
+                            data["recipientId"] = ff.id
                             it.get(headerRow[n])?.let { it1 -> data.put("qtyDispatch", it1) }
-                            data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                            data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                            data.put("createdBy", user.id)
-                            data.put("updatedBy", user.id)
+                            data["quarterlyPlanId"] = "00000000-0000-0000-0000-000000000000"
+                            data["detailStatus"] = DispatchDetailStatusEnum.ALLOCATED.id
+                            data["createdBy"] = user.id
+                            data["updatedBy"] = user.id
 
-                            sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocationVirtualBM", data)
-
-                           // var data4: MutableMap<String, Any> = mutableMapOf()
-
-                            var didQty = it.get(headerRow[n])
-
-                            data.put("planId", dto.planId)
-                            data.put("inventoryId", inventoryId)
-                            data.put("recipientId", employee.userRecipientId!!)
-                            data.put("qtyDispatch",didQty!!)
-
-                            sqlSessionFactory.openSession().update("DispatchDetailMapper.updateRBMDidStock", data)
-
+                            dataList.add(data)
 
                         }
 
                     }
                 }
+                // Function to process in batches
+                fun <T> List<T>.batchProcess(batchSize: Int, process: (List<T>) -> Unit) {
+                    if (batchSize <= 0) {
+                        throw IllegalArgumentException("Step must be positive, was: $batchSize")
+                    }
+                    for (i in indices step batchSize) {
+                        val end = minOf(i + batchSize, size)
+                        process(this.subList(i, end))
+                    }
+                }
+
+// Number of parameters each record uses in the SQL statement
+                val parametersPerRecord = 10 // Adjust this based on your actual parameters
+                val batchSize = maxOf(dataList.size / parametersPerRecord, 1)
+
+// Perform bulk insert in batches
+                if (dataList.isNotEmpty()) {
+                    dataList.batchProcess(batchSize) { batch ->
+                        sqlSessionFactory.openSession().use { session ->
+                            session.insert("DispatchDetailMapper.multipleAllocationVirtualBM", batch)
+                        }
+                    }
+                }
+
+                data.put("planId", dto.planId)
+                data.put("inventoryId", inventoryId)
+                data.put("recipientId", employee.userRecipientId!!)
+                data.put("qtyDispatch",allocationQtySum)
+
+                sqlSessionFactory.openSession().update("DispatchDetailMapper.updateRBMDidStock", data)
+
+                data.put("planId",dto.planId)
+                data.put("inventoryId",inventoryId)
+                sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocationVirtualBM",data)
+
 
                 n++
 
@@ -671,66 +697,83 @@ open class UploadController@Autowired constructor(
                 var n = 4
 
                 invOG.forEach {
+                    val dataList = mutableListOf<Map<String, Any>>() // List to hold all records for bulk insert
                     var inventoryId = it.id
-
+                    var allocationQtySum = 0
                     rows.forEach {
+                        var sum = rows.map { it -> it[headerRow[n]]}
+
+                        var result = sum.filter { it!!.isNotBlank()}
+
+
+                        val resultInts = result.map { it!!.toInt() }
+
+                        allocationQtySum = resultInts.sum()
 
                         if(it.get(headerRow[n])!!.isNotEmpty()){
 
-                           // var data2: MutableMap<String, Any> = mutableMapOf()
-
+                            val data = mutableMapOf<String, Any>()
                             var dispatchDetail = DispatchDetail()
 
                             var ff = Recipient()
 
-                            data.put("id", UUID.randomUUID().toString())
-                            data.put("planId", dto.planId)
+                            data["id"] = UUID.randomUUID().toString()
+                            data["planId"] = dto.planId
 
-                           // var data3: MutableMap<String, Any> = mutableMapOf()
+                            // var data3: MutableMap<String, Any> = mutableMapOf()
                             it.get(headerRow[2].toString().trim())?.let { it1 -> data.put("code", it1) }
                             ff = sqlSessionFactory.openSession()
                                 .selectOne<Recipient>("RecipientMapper.multipleAllocation", data)
 
-                            data.put("inventoryId", inventoryId)
-                            data.put("recipientId", ff.id)
+                            data["inventoryId"] = inventoryId
+                            data["recipientId"] = ff.id
                             it.get(headerRow[n])?.let { it1 -> data.put("qtyDispatch", it1) }
-                            data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                            data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                            data.put("createdBy", user.id)
-                            data.put("updatedBy", user.id)
+                            data["quarterlyPlanId"] = "00000000-0000-0000-0000-000000000000"
+                            data["detailStatus"] = DispatchDetailStatusEnum.ALLOCATED.id
+                            data["createdBy"] = user.id
+                            data["updatedBy"] = user.id
 
-                            sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocation", data)
+                            // Accumulate data map in the list for bulk insert
+                            dataList.add(data)
 
-                         //   var data4: MutableMap<String, Any> = mutableMapOf()
-                            data.put("id", inventoryId)
-                            var inv = sqlSessionFactory.openSession()
-                                .selectOne<Inventory>("InventoryMapper.multipleAllocations", data)
-
-
-                            var didQty = it.get(headerRow[n])
-
-                          //  var data7: MutableMap<String, Any> = mutableMapOf()
-
-                            data.put("inventoryId",inventoryId)
-                            data.put("recipientId",employee.userRecipientId!!)
-                            data.put("qtyDispatch", didQty!!)
-                            data.put("planId",plan.id!!)
-
-                            sqlSessionFactory.openSession().update("DispatchDetailMapper.updateCommonAllocation",data)
-
-                            //   var data6: MutableMap<String, Any> = mutableMapOf()
-                            data.put("planId", dto.planId)
-                            data.put("inventoryId", inventoryId)
-
-                            sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocation",data)
                         }
 
 
-
-
-
+                    }
+                    // Function to process in batches
+                    fun <T> List<T>.batchProcess(batchSize: Int, process: (List<T>) -> Unit) {
+                        if (batchSize <= 0) {
+                            throw IllegalArgumentException("Step must be positive, was: $batchSize")
+                        }
+                        for (i in indices step batchSize) {
+                            val end = minOf(i + batchSize, size)
+                            process(this.subList(i, end))
+                        }
                     }
 
+// Number of parameters each record uses in the SQL statement
+                    val parametersPerRecord = 10 // Adjust this based on your actual parameters
+                    val batchSize = maxOf(dataList.size / parametersPerRecord, 1)
+
+// Perform bulk insert in batches
+                    if (dataList.isNotEmpty()) {
+                        dataList.batchProcess(batchSize) { batch ->
+                            sqlSessionFactory.openSession().use { session ->
+                                session.insert("DispatchDetailMapper.multipleAllocation", batch)
+                            }
+                        }
+                    }
+
+                    data.put("inventoryId",inventoryId)
+                    data.put("recipientId",employee.userRecipientId!!)
+                    data.put("qtyDispatch", allocationQtySum)
+                    data.put("planId",dto.planId)
+
+                    sqlSessionFactory.openSession().update("DispatchDetailMapper.updateCommonAllocation",data)
+
+                    data.put("planId",dto.planId)
+                    data.put("inventoryId",inventoryId)
+                    sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocation",data)
 
                     n++
 
@@ -742,18 +785,13 @@ open class UploadController@Autowired constructor(
                 var m = 0
                 for (i in 4 until head){
 
-
                  //   var data: MutableMap<String, Any> = mutableMapOf()
 
                     var item = ItemDrodownDTO()
 
                     var inv = mutableListOf<Inventory>()
 
-
-
                     var text = headerRow[i]
-
-
 
                     var  itemCode = text.split("/")
 
@@ -762,7 +800,6 @@ open class UploadController@Autowired constructor(
                     data.put("itemCode", itemCode[1])
 
                     item = sqlSessionFactory.openSession().selectOne<ItemDrodownDTO>("ItemMapper.multipleAllocation",data)
-
 
                   //  var data1: MutableMap<String, Any> = mutableMapOf()
 
@@ -786,6 +823,7 @@ open class UploadController@Autowired constructor(
                 var n = 4
 
                 invOG.forEach {
+                    val dataList = mutableListOf<Map<String, Any>>() // List to hold all records for bulk insert
                     var inventoryId = it.id
 
                   //  var data5: MutableMap<String, Any> = mutableMapOf()
@@ -794,21 +832,18 @@ open class UploadController@Autowired constructor(
                     var availableStock = sqlSessionFactory.openSession().selectOne<Inventory>("InventoryMapper.multipleAllocationAvailableStock",data)
 
                     var inventoryStock = availableStock.qtyReceived!! -availableStock.qtyAllocated!!-availableStock.qtyDispatched!!
-
+                    var allocationQtySum = 0
 
                     rows.forEach {
+                        var sum = rows.map { it -> it[headerRow[n]]}
+
+                        var result = sum.filter { it!!.isNotBlank()}
+
+                        val resultInts = result.map { it!!.toInt() }
+
+                        allocationQtySum = resultInts.sum()
 
                         if(it.get(headerRow[n])!!.isNotEmpty()){
-
-                            var sum = rows.map { it -> it[headerRow[n]]}
-
-                            var result = sum.filter { it!!.isNotBlank()}
-
-                            var resultWithoutSpaces = result.map { it!!.trim() }
-
-                            val resultInts = resultWithoutSpaces.map { it.toInt() }
-
-                            var allocationQtySum = resultInts.sum()
 
                             if(allocationQtySum > inventoryStock ){
                                 errorMap["message"] = "Allocation quantity is greater than the available stock for ${availableStock.poNo}"
@@ -817,71 +852,77 @@ open class UploadController@Autowired constructor(
 
                                 return ResponseEntity(errorMap , HttpStatus.OK)
                             }else{
-                            //    var data2: MutableMap<String, Any> = mutableMapOf()
+                                val data = mutableMapOf<String, Any>()
 
                                 var dispatchDetail = DispatchDetail()
 
                                 var ff = Recipient()
 
-                                data.put("id", UUID.randomUUID().toString())
-                                data.put("planId", dto.planId)
+                                data["id"] = UUID.randomUUID().toString()
+                                data["planId"] = dto.planId
 
-                              //  var data3: MutableMap<String, Any> = mutableMapOf()
+                                //  var data3: MutableMap<String, Any> = mutableMapOf()
                                 it.get(headerRow[2].toString().trim())?.let { it1 -> data.put("code", it1) }
                                 ff = sqlSessionFactory.openSession()
                                     .selectOne<Recipient>("RecipientMapper.multipleAllocation", data)
 
-                                data.put("inventoryId", inventoryId)
-                                data.put("recipientId", ff.id)
+                                data["inventoryId"] = inventoryId
+                                data["recipientId"] = ff.id
                                 it.get(headerRow[n])?.let { it1 -> data.put("qtyDispatch", it1) }
-                                data.put("quarterlyPlanId", "00000000-0000-0000-0000-000000000000")
-                                data.put("detailStatus", DispatchDetailStatusEnum.ALLOCATED.id)
-                                data.put("createdBy", user.id)
-                                data.put("updatedBy", user.id)
+                                data["quarterlyPlanId"] = "00000000-0000-0000-0000-000000000000"
+                                data["detailStatus"] = DispatchDetailStatusEnum.ALLOCATED.id
+                                data["createdBy"] = user.id
+                                data["updatedBy"] = user.id
 
-                                sqlSessionFactory.openSession().insert("DispatchDetailMapper.multipleAllocation", data)
+                                // Accumulate data map in the list for bulk insert
+                                dataList.add(data)
 
-                            //    var data4: MutableMap<String, Any> = mutableMapOf()
-                                data.put("id", inventoryId)
-                                var inv = sqlSessionFactory.openSession()
-                                    .selectOne<Inventory>("InventoryMapper.multipleAllocations", data)
-
-                                var didQty = it.get(headerRow[n])
-
-                                var dispatchedQty = 0
-
-                                if(didQty.isNullOrEmpty()){
-                                    dispatchedQty
-                                } else{
-                                    dispatchedQty =  didQty!!.toInt()
-                                }
-
-                                var qtyAlloc = inv.qtyAllocated!!.plus(dispatchedQty)
-
-                             //   var data5: MutableMap<String, Any> = mutableMapOf()
-
-                                data.put("id", inventoryId)
-                                data.put("qtyAllocated", qtyAlloc)
-                                data.put("updatedBy", user.id)
-
-                                sqlSessionFactory.openSession().update("InventoryMapper.multipleAllocationQtyAllocated", data)
-
-                               // var data6: MutableMap<String, Any> = mutableMapOf()
-
-                                data.put("planId", dto.planId)
-                                data.put("inventoryId", inventoryId)
-
-                                sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocation",data)
                             }
 
                         }
 
                     }
+                    if(allocationQtySum < inventoryStock ){
+                        data.put("id",inventoryId)
+                        data.put("qtyAllocated",allocationQtySum)
+                        data.put("updatedBy",user.id)
+
+                        sqlSessionFactory.openSession().update("InventoryMapper.multipleAllocationQtyAllocated",data)
+                    }
+
+                    // Function to process in batches
+                    fun <T> List<T>.batchProcess(batchSize: Int, process: (List<T>) -> Unit) {
+                        if (batchSize <= 0) {
+                            throw IllegalArgumentException("Step must be positive, was: $batchSize")
+                        }
+                        for (i in indices step batchSize) {
+                            val end = minOf(i + batchSize, size)
+                            process(this.subList(i, end))
+                        }
+                    }
+
+// Number of parameters each record uses in the SQL statement
+                    val parametersPerRecord = 10 // Adjust this based on your actual parameters
+                    val batchSize = maxOf(dataList.size / parametersPerRecord, 1)
+
+// Perform bulk insert in batches
+                    if (dataList.isNotEmpty()) {
+                        dataList.batchProcess(batchSize) { batch ->
+                            sqlSessionFactory.openSession().use { session ->
+                                session.insert("DispatchDetailMapper.multipleAllocation", batch)
+                            }
+                        }
+                    }
+
+                    data.put("planId",dto.planId)
+                    data.put("inventoryId",inventoryId)
+                    sqlSessionFactory.openSession().delete("DispatchDetailMapper.deleteZeroQuantityAllocation",data)
 
                     n++
-
-
                 }
+
+
+
             }
 
         }

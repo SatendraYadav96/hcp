@@ -173,6 +173,15 @@
 
     </update>
 
+<!--    <update id="multipleAllocationQtyAllocated" parameterType="java.util.List">-->
+<!--        <foreach collection="list" item="item" separator=";">-->
+<!--            UPDATE INVENTORY_INV-->
+<!--            SET QTY_ALLOCATED_INV = #{item.qtyAllocated}, UPDATED_BY_INV = #{item.updatedBy}, UPDATED_ON_INV = GETDATE()-->
+<!--            WHERE ID_INV = #{item.id}-->
+<!--        </foreach>-->
+<!--    </update>-->
+
+
 
     <select id="searchInventory" resultType="com.squer.promobee.controller.dto.InventoryDTO" parameterType = "map" statementType = "CALLABLE">
         { call PROC_GET_INVENTORY_ITEMS_NEW_PLATFORM ( #{isExhausted, jdbcType = INTEGER  , mode = IN} ) }
