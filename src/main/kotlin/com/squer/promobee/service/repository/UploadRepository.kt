@@ -1224,9 +1224,6 @@ class UploadRepository(
 
         var data: MutableMap<String, Any> = mutableMapOf()
 
-
-
-
         return sqlSessionFactory.openSession().selectList("UploadLogMapper.getVirtualSampleUploadLog", data)
     }
 
@@ -1235,9 +1232,6 @@ class UploadRepository(
 
         var data: MutableMap<String, Any> = mutableMapOf()
 
-
-
-
         return sqlSessionFactory.openSession().selectList("UploadLogMapper.getRecipientUploadLog", data)
     }
 
@@ -1245,46 +1239,26 @@ class UploadRepository(
     fun getNonComplianceUploadLog (): List<UploadLogDTO> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-        var data: MutableMap<String, Any> = mutableMapOf()
-
-
-
-
-        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getNonComplianceUploadLog", data)
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getNonComplianceUploadLog")
     }
 
 
     fun getOverSamplingUploadLog (): List<UploadLogDTO> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-        var data: MutableMap<String, Any> = mutableMapOf()
-
-
-
-
-        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getOverSamplingUploadLog", data)
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getOverSamplingUploadLog")
     }
 
     fun getOverSamplingDetailsUploadLog (): List<UploadLogDTO> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-        var data: MutableMap<String, Any> = mutableMapOf()
-
-
-
-
-        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getOverSamplingDetailsUploadLog", data)
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getOverSamplingDetailsUploadLog")
     }
 
     fun getMaterialExpiryUploadLog (): List<UploadLogDTO> {
         val user = (SecurityContextHolder.getContext().authentication as UsernamePasswordAuthenticationToken).principal as User
 
-        var data: MutableMap<String, Any> = mutableMapOf()
-
-
-
-
-        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getMaterialExpiryUploadLog", data)
+        return sqlSessionFactory.openSession().selectList("UploadLogMapper.getMaterialExpiryUploadLog")
     }
 
     fun nonComplianceUpload(dto: FileUploadDto) {
